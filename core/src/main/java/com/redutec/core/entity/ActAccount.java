@@ -2,6 +2,9 @@ package com.redutec.core.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -124,9 +127,11 @@ public class ActAccount {
     private String quitReason;
 
     @Column(name = "register_datetime", nullable = false, columnDefinition = "DATETIME DEFAULT NOW()")
+    @CreatedDate
     private LocalDateTime registerDatetime;
 
     @Column(name = "modify_datetime", nullable = false, columnDefinition = "DATETIME DEFAULT NOW() ON UPDATE CURRENT_TIMESTAMP")
+    @LastModifiedDate
     private LocalDateTime modifyDatetime;
 
     @Column(name = "admin_ID", length = 30)
