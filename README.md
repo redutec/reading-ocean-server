@@ -1,3 +1,11 @@
-# reading-ocean-server
-
-reading-ocean-server-2.0
+### **reading-ocean-server-2.0 프로젝트 기술 스택**
+- **Language:** Java 21
+- **Framework:** Spring Boot 3.5.0 (SNAPSHOT)
+- **Database:** MySQL 8.5.0
+- **ORM:** Spring Data JPA
+- **Build Tool:** Gradle (Groovy)
+- **Dependency Management:** Spring Dependency Management Plugin
+- **Security:** Spring Security, JWT
+- **API Documentation:** Springfox Swagger 3
+- **Cloud & DevOps:** AWS (EC2, RDS), Docker (Optional)
+- **Logging & Monitoring:** Logback

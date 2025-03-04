@@ -6,3 +6,5 @@ pluginManagement {
     }
 }
 rootProject.name = 'reading-ocean-server'
+include 'core'
+include 'admin'
