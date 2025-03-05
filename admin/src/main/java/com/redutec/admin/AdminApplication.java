@@ -7,8 +7,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication(scanBasePackages = {"com.redutec.admin", "com.redutec.core"})
-@EnableJpaRepositories(basePackages = "com.redutec.core.repository") // 리포지토리 패키지 스캔
-@EntityScan(basePackages = "com.redutec.core.entity") // 엔티티 패키지 스캔
+@EnableJpaRepositories(basePackages = "com.redutec.core.repository")
+@EntityScan(basePackages = "com.redutec.core.entity")
 @EnableJpaAuditing
 public class AdminApplication {
     public static void main(String[] args) {

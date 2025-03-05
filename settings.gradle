@@ -8,3 +8,8 @@ pluginManagement {
 rootProject.name = 'reading-ocean-server'
 include 'core'
 include 'admin'
+include 'reading-ocean-home'
+include 'reading-ocean-edu'
+include 'reading-ocean-school'
+include 'teaching-ocean'
+include 'teaching-ocean-school'
