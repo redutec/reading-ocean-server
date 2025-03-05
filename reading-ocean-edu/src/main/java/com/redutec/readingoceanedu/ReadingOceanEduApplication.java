@@ -1,0 +1,13 @@
+package com.redutec.readingoceanedu;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class ReadingOceanEduApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(ReadingOceanEduApplication.class, args);
+    }
+
+}
