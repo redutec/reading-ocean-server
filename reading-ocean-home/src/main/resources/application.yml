@@ -1,6 +1,12 @@
 # server
 server:
   port: 28081
+  error:
+    path: /error
+  servlet:
+    context-path: /api/ro-home
+    session:
+      timeout: 1440m
 # Spring
 spring:
   application:
@@ -24,6 +30,28 @@ spring:
     hibernate:
       ddl-auto: validate
     show-sql: true
+# Logger Properties
+logging:
+  level:
+    root: info
+    org:
+      hibernate:
+        sql: debug
+        type:
+          descriptor:
+            sql:
+              BasicBinder: warn
+    log4jdbc: off
+    jdbc:
+      sqlonly: warn
+      sqltiming: off
+      audit: off
+      connection: off
+      resultset: off
+      resultsettable: off
+      sqlerror: warn
+  file:
+    name: ./reading-ocean-home/logs/ro-home.log
 # Security
 jwt:
   secret: "re@ding0ce@n#123AdminJsonWebTokenSecret"
