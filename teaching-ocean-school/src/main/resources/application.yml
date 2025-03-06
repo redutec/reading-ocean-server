@@ -1,6 +1,6 @@
 # server
 server:
-  port: 28080
+  port: 28085
 # Spring
 spring:
   application:

@@ -1,10 +1,10 @@
 # server
 server:
-  port: 28080
+  port: 28084
 # Spring
 spring:
   application:
-    name: admin
+    name: teaching-ocean
   config:
     activate:
       on-profile: local

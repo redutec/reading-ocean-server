@@ -24,7 +24,6 @@ dependencies {
     implementation project(':core')
     // 스프링
     implementation 'org.springframework:spring-core'
-    implementation 'org.springframework.batch:spring-batch-core'
     implementation 'org.springframework:spring-context-support'
     // 스프링부트
     implementation 'org.springframework.boot:spring-boot-starter'
