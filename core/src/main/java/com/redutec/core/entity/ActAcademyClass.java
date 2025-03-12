@@ -8,50 +8,52 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 /**
- * BotGroup 엔티티
+ * ActAcademyClass 엔티티
  * 테이블 정보:
- * - 테이블 명: bot_group
- * - 테이블 코멘트: 백오피스 - 그룹
+ * - 테이블 명: act_academy_class
+ * - 테이블 코멘트: 학원 학급
  */
 @Entity
-@Table(name = "bot_group")
+@Table(name = "act_academy_class")
 @Getter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @EntityListeners(AuditingEntityListener.class)
-public class BotGroup {
+public class ActAcademyClass {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "group_no", nullable = false, updatable = false)
-    private Integer groupNo;
+    @Column(name = "class_no", nullable = false, updatable = false)
+    private Integer classNo;
 
-    @Column(name = "group_name", length = 100, nullable = false)
-    private String groupName;
+    @Column(name = "academy_no", nullable = false)
+    private Integer academyNo;
 
-    @Column(name = "group_Key", length = 100)
-    private String groupKey;
+    @Column(name = "class_name", length = 30, nullable = false)
+    private String className;
+
+    @Column(name = "teacher_account_no")
+    private Integer teacherAccountNo;
+
+    @Column(name = "teacher_enable_yn", nullable = false, columnDefinition = "CHAR(1) DEFAULT 'N'")
+    private Character teacherEnableYn;
 
     @Column(name = "use_yn", nullable = false, columnDefinition = "CHAR(1) DEFAULT 'Y'")
     private Character useYn;
 
     @CreatedDate
-    @Column(name = "register_datetime", nullable = false, columnDefinition = "DATETIME DEFAULT NOW()")
+    @Column(name = "register_datetime", nullable = false, columnDefinition = "DATETIME DEFAULT (now())")
     private LocalDateTime registerDatetime;
 
     @LastModifiedDate
-    @Column(name = "modify_datetime", nullable = false, columnDefinition = "DATETIME DEFAULT NOW() ON UPDATE CURRENT_TIMESTAMP")
+    @Column(name = "modify_datetime", nullable = false, columnDefinition = "DATETIME DEFAULT (now()) ON UPDATE CURRENT_TIMESTAMP")
     private LocalDateTime modifyDatetime;
 
-    @Column(name = "admin_ID", length = 20)
+    @Column(name = "admin_ID", length = 30)
     private String adminId;
 
     @Column(name = "description", length = 300)
     private String description;
-
-    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<BotUserGroup> userGroups;
 }

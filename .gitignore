@@ -37,3 +37,5 @@ out/
 .vscode/
 /admin/logs
 /teaching-ocean-school/logs
+.DS_Store
+admin/.DS_Store

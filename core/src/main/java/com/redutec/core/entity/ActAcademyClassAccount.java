@@ -1,6 +1,6 @@
 package com.redutec.core.entity;
 
-import com.redutec.core.entity.key.BotUserGroupKey;
+import com.redutec.core.entity.key.ActAcademyClassAccountKey;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.Comment;
@@ -11,31 +11,31 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDateTime;
 
 /**
- * BotUserGroup 엔티티
+ * ActAcademyClassAccount 엔티티
  * 테이블 정보:
- * - 테이블 명: bot_user_group
- * - 테이블 코멘트: 백오피스 - 사용자 그룹
+ * - 테이블 명: act_academy_class_account
+ * - 테이블 코멘트: 학급 계정
  */
 @Entity
-@Table(name = "bot_user_group")
+@Table(name = "act_academy_class_account")
 @Getter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @EntityListeners(AuditingEntityListener.class)
-public class BotUserGroup {
+public class ActAcademyClassAccount {
     @EmbeddedId
-    private BotUserGroupKey id;
+    private ActAcademyClassAccountKey id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("userNo")
-    @JoinColumn(name = "user_no", nullable = false)
-    private BotUser user;
+    @MapsId("classNo")
+    @JoinColumn(name = "class_no", nullable = false)
+    private ActAcademyClass academyClass;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("groupNo")
-    @JoinColumn(name = "group_no", nullable = false)
-    private BotGroup group;
+    @MapsId("studentAccountNo")
+    @JoinColumn(name = "student_account_no", nullable = false)
+    private ActAccount studentAccount;
 
     @Column(name = "use_yn", nullable = false, columnDefinition = "CHAR(1) DEFAULT 'Y'")
     private Character useYn;
@@ -48,7 +48,7 @@ public class BotUserGroup {
     @Column(name = "modify_datetime", nullable = false, columnDefinition = "DATETIME DEFAULT (now()) ON UPDATE CURRENT_TIMESTAMP")
     private LocalDateTime modifyDatetime;
 
-    @Column(name = "admin_ID", length = 20, nullable = false)
+    @Column(name = "admin_ID", length = 30)
     private String adminId;
 
     @Column(name = "description", length = 300)

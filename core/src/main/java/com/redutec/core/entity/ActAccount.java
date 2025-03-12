@@ -4,20 +4,27 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+/**
+ * 테이블 정보:
+ * - 테이블 명: act_account
+ * - 테이블 코멘트: 계정
+ */
 @Entity
 @Table(name = "act_account", indexes = {
         @Index(name = "idx_act_account_academy_no", columnList = "academy_no"),
-        @Index(name = "idx_act_account_signup_domain_code", columnList = "signup_domain_code")
+        @Index(name = "idx_act_account_signup_domain_code", columnList = "signup_domain_code"),
+        @Index(name = "idx_act_account_register_datetime", columnList = "register_datetime")
 })
 @Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 @Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@EntityListeners(AuditingEntityListener.class)
 public class ActAccount {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -54,7 +61,7 @@ public class ActAccount {
     @Column(name = "birthday", nullable = false)
     private LocalDate birthday;
 
-    @Column(name = "gender", nullable = false)
+    @Column(name = "gender")
     private Byte gender;
 
     @Column(name = "mobile_no", length = 15, nullable = false)
@@ -64,10 +71,12 @@ public class ActAccount {
     private Integer academyNo;
 
     @Column(name = "allow_sms_yn", nullable = false, columnDefinition = "CHAR(1) DEFAULT 'N'")
-    private Character allowSmsYn;
+    @Builder.Default
+    private Character allowSmsYn = 'N';
 
     @Column(name = "allow_email_yn", nullable = false, columnDefinition = "CHAR(1) DEFAULT 'N'")
-    private Character allowEmailYn;
+    @Builder.Default
+    private Character allowEmailYn = 'N';
 
     @Column(name = "profile_image_path", length = 200)
     private String profileImagePath;
@@ -100,25 +109,31 @@ public class ActAccount {
     private LocalDateTime readingDiagnosisDatetime;
 
     @Column(name = "book_point", columnDefinition = "INT DEFAULT 0")
-    private Integer bookPoint;
+    @Builder.Default
+    private Integer bookPoint = 0;
 
     @Column(name = "game_reset_datetime")
     private LocalDateTime gameResetDatetime;
 
     @Column(name = "this_month_goal_book_count", columnDefinition = "SMALLINT DEFAULT 0")
-    private Short thisMonthGoalBookCount;
+    @Builder.Default
+    private Short thisMonthGoalBookCount = 0;
 
     @Column(name = "this_month_verification_book_count", columnDefinition = "SMALLINT DEFAULT 0")
-    private Short thisMonthVerificationBookCount;
+    @Builder.Default
+    private Short thisMonthVerificationBookCount = 0;
 
     @Column(name = "this_month_book_point", columnDefinition = "INT DEFAULT 0")
-    private Integer thisMonthBookPoint;
+    @Builder.Default
+    private Integer thisMonthBookPoint = 0;
 
     @Column(name = "is_test_account", nullable = false, columnDefinition = "TINYINT(1) DEFAULT 0")
-    private Boolean isTestAccount;
+    @Builder.Default
+    private Boolean isTestAccount = false;
 
     @Column(name = "signup_domain_code", length = 20, columnDefinition = "VARCHAR(20) DEFAULT 'READING_OCEAN_EDU'")
-    private String signupDomainCode;
+    @Builder.Default
+    private String signupDomainCode = "READING_OCEAN_EDU";
 
     @Column(name = "quit_datetime")
     private LocalDateTime quitDatetime;
@@ -126,12 +141,12 @@ public class ActAccount {
     @Column(name = "quit_reason", length = 50)
     private String quitReason;
 
-    @Column(name = "register_datetime", nullable = false, columnDefinition = "DATETIME DEFAULT NOW()")
     @CreatedDate
+    @Column(name = "register_datetime", nullable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime registerDatetime;
 
-    @Column(name = "modify_datetime", nullable = false, columnDefinition = "DATETIME DEFAULT NOW() ON UPDATE CURRENT_TIMESTAMP")
     @LastModifiedDate
+    @Column(name = "modify_datetime", nullable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
     private LocalDateTime modifyDatetime;
 
     @Column(name = "admin_ID", length = 30)

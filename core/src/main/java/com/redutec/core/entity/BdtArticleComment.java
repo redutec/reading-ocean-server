@@ -1,9 +1,7 @@
 package com.redutec.core.entity;
 
-import com.redutec.core.entity.key.BotUserGroupKey;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.Comment;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -11,34 +9,34 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDateTime;
 
 /**
- * BotUserGroup 엔티티
+ * BdtArticleComment 엔티티
  * 테이블 정보:
- * - 테이블 명: bot_user_group
- * - 테이블 코멘트: 백오피스 - 사용자 그룹
+ * - 테이블 명: bdt_article_comment
+ * - 테이블 코멘트: 1:1 문의 답변/ 댓글
  */
 @Entity
-@Table(name = "bot_user_group")
+@Table(name = "bdt_article_comment")
 @Getter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @EntityListeners(AuditingEntityListener.class)
-public class BotUserGroup {
-    @EmbeddedId
-    private BotUserGroupKey id;
+public class BdtArticleComment {
+    @Id
+    @Column(name = "article_no", nullable = false, updatable = false)
+    private Integer articleNo;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("userNo")
-    @JoinColumn(name = "user_no", nullable = false)
-    private BotUser user;
+    @OneToOne(fetch = FetchType.LAZY)
+    @MapsId
+    @JoinColumn(name = "article_no", nullable = false)
+    private BdtArticle article;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("groupNo")
-    @JoinColumn(name = "group_no", nullable = false)
-    private BotGroup group;
+    @Column(name = "reply_complete_yn", nullable = false, columnDefinition = "CHAR(1) DEFAULT 'N'")
+    private Character replyCompleteYn;
 
-    @Column(name = "use_yn", nullable = false, columnDefinition = "CHAR(1) DEFAULT 'Y'")
-    private Character useYn;
+    @Lob
+    @Column(name = "reply_content", nullable = false, columnDefinition = "TEXT")
+    private String replyContent;
 
     @CreatedDate
     @Column(name = "register_datetime", nullable = false, columnDefinition = "DATETIME DEFAULT (now())")
@@ -48,7 +46,7 @@ public class BotUserGroup {
     @Column(name = "modify_datetime", nullable = false, columnDefinition = "DATETIME DEFAULT (now()) ON UPDATE CURRENT_TIMESTAMP")
     private LocalDateTime modifyDatetime;
 
-    @Column(name = "admin_ID", length = 20, nullable = false)
+    @Column(name = "admin_ID", nullable = false, length = 30)
     private String adminId;
 
     @Column(name = "description", length = 300)

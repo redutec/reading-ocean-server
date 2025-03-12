@@ -1,9 +1,8 @@
 package com.redutec.core.entity;
 
-import com.redutec.core.entity.key.BotUserGroupKey;
+import com.redutec.core.entity.key.BotGroupPermissionKey;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.Comment;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -11,33 +10,36 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDateTime;
 
 /**
- * BotUserGroup 엔티티
+ * BotGroupPermission 엔티티
  * 테이블 정보:
- * - 테이블 명: bot_user_group
- * - 테이블 코멘트: 백오피스 - 사용자 그룹
+ * - 테이블 명: bot_group_permission
+ * - 테이블 코멘트: 백오피스 - 그룹 권한
  */
 @Entity
-@Table(name = "bot_user_group")
+@Table(name = "bot_group_permission")
 @Getter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @EntityListeners(AuditingEntityListener.class)
-public class BotUserGroup {
+public class BotGroupPermission {
     @EmbeddedId
-    private BotUserGroupKey id;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("userNo")
-    @JoinColumn(name = "user_no", nullable = false)
-    private BotUser user;
+    private BotGroupPermissionKey id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("groupNo")
     @JoinColumn(name = "group_no", nullable = false)
     private BotGroup group;
 
-    @Column(name = "use_yn", nullable = false, columnDefinition = "CHAR(1) DEFAULT 'Y'")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @MapsId("menuNo")
+    @JoinColumn(name = "menu_no", nullable = false)
+    private BotMenu menu;
+
+    @Column(name = "permission_type", nullable = false, length = 6, columnDefinition = "char(6)")
+    private String permissionType;
+
+    @Column(name = "use_yn", nullable = false, columnDefinition = "char(1)")
     private Character useYn;
 
     @CreatedDate
@@ -48,7 +50,7 @@ public class BotUserGroup {
     @Column(name = "modify_datetime", nullable = false, columnDefinition = "DATETIME DEFAULT (now()) ON UPDATE CURRENT_TIMESTAMP")
     private LocalDateTime modifyDatetime;
 
-    @Column(name = "admin_ID", length = 20, nullable = false)
+    @Column(name = "admin_ID", length = 20)
     private String adminId;
 
     @Column(name = "description", length = 300)

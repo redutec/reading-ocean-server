@@ -27,5 +27,5 @@ public interface BlacklistedTokenRepository extends JpaRepository<BlacklistedTok
      * @return 삭제된 엔티티의 개수
      */
     @Transactional
-    long deleteByCreatedAtBefore(LocalDateTime cutoffDate);
+    long deleteByRegisterDatetimeBefore(LocalDateTime cutoffDate);
 }

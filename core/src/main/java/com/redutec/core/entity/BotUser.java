@@ -2,20 +2,28 @@ package com.redutec.core.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Comment;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * BotUser 엔티티
+ * 테이블 정보:
+ * - 테이블 명: bot_user
+ * - 테이블 코멘트: 백오피스 - 사용자
+ */
 @Entity
 @Table(name = "bot_user",
-        uniqueConstraints = {@UniqueConstraint(name = "UQ_bot_user_id", columnNames = "user_ID")})
+       uniqueConstraints = {@UniqueConstraint(name = "UQ_bot_user_id", columnNames = "user_ID")})
 @Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 @Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@EntityListeners(AuditingEntityListener.class)
 public class BotUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,12 +51,12 @@ public class BotUser {
     @Column(name = "last_access_datetime")
     private LocalDateTime lastAccessDatetime;
 
-    @Column(name = "register_datetime", nullable = false, columnDefinition = "DATETIME DEFAULT NOW()")
     @CreatedDate
+    @Column(name = "register_datetime", nullable = false, columnDefinition = "DATETIME DEFAULT NOW()")
     private LocalDateTime registerDatetime;
 
-    @Column(name = "modify_datetime", nullable = false, columnDefinition = "DATETIME DEFAULT NOW() ON UPDATE CURRENT_TIMESTAMP")
     @LastModifiedDate
+    @Column(name = "modify_datetime", nullable = false, columnDefinition = "DATETIME DEFAULT NOW() ON UPDATE CURRENT_TIMESTAMP")
     private LocalDateTime modifyDatetime;
 
     @Column(name = "admin_ID", length = 20)

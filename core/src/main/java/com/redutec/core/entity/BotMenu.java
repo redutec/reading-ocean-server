@@ -1,9 +1,7 @@
 package com.redutec.core.entity;
 
-import com.redutec.core.entity.key.BotUserGroupKey;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.Comment;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -11,33 +9,40 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDateTime;
 
 /**
- * BotUserGroup 엔티티
+ * BotMenu 엔티티
  * 테이블 정보:
- * - 테이블 명: bot_user_group
- * - 테이블 코멘트: 백오피스 - 사용자 그룹
+ * - 테이블 명: bot_menu
+ * - 테이블 코멘트: 백오피스 - 메뉴
  */
 @Entity
-@Table(name = "bot_user_group")
+@Table(name = "bot_menu")
 @Getter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @EntityListeners(AuditingEntityListener.class)
-public class BotUserGroup {
-    @EmbeddedId
-    private BotUserGroupKey id;
+public class BotMenu {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "menu_no", nullable = false, updatable = false)
+    private Integer menuNo;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("userNo")
-    @JoinColumn(name = "user_no", nullable = false)
-    private BotUser user;
+    @Column(name = "menu_name", length = 100, nullable = false)
+    private String menuName;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("groupNo")
-    @JoinColumn(name = "group_no", nullable = false)
-    private BotGroup group;
+    @Column(name = "menu_Key", length = 30)
+    private String menuKey;
 
-    @Column(name = "use_yn", nullable = false, columnDefinition = "CHAR(1) DEFAULT 'Y'")
+    @Column(name = "url", length = 300)
+    private String url;
+
+    @Column(name = "parent_menu_no")
+    private Integer parentMenuNo;
+
+    @Column(name = "display_order")
+    private Byte displayOrder;
+
+    @Column(name = "use_yn", nullable = false, columnDefinition = "CHAR(1)")
     private Character useYn;
 
     @CreatedDate
