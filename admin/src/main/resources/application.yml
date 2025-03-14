@@ -11,13 +11,16 @@ server:
 spring:
   application:
     name: admin
-  config:
-    activate:
-      on-profile: local
+  profiles:
+    group:
+      local: core
+      dev: core
+      prod: core
+  servlet:
+    multipart:
+      max-file-size: 1000MB
+      max-request-size: 1000MB
   datasource:
-    url: jdbc:log4jdbc:mysql://127.0.0.1:3306/READING_OCEAN?characterEncoding=UTF-8&serverTimezone=Asia/Seoul&noAccessToProcedureBodies=true&allowPublicKeyRetrieval=true&useSSL=false&allowMultiQueries=true&useInformationSchema=true&autoReconnect=true
-    username: "redutec"
-    password: "readingocean2022"
     driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
     hikari:
       maximum-pool-size: 20
@@ -57,5 +60,27 @@ jwt:
   secret: "re@ding0ce@n#123AdminJsonWebTokenSecret"
   access-token-expiration: 60000
   refresh-token-expiration: 37600000
+---
+# local
+spring:
+  config:
+    activate:
+      on-profile: local
+  datasource:
+    url: jdbc:log4jdbc:mysql://127.0.0.1:3306/READING_OCEAN?characterEncoding=UTF-8&serverTimezone=Asia/Seoul&noAccessToProcedureBodies=true&allowPublicKeyRetrieval=true&useSSL=false&allowMultiQueries=true&useInformationSchema=true&autoReconnect=true
+    username: "redutec"
+    password: "readingocean2022"
+# Custom
+front-end-server: 127.0.0.1
+---
+# dev
+spring:
+  config:
+    activate:
+      on-profile: dev
+  datasource:
+    url: jdbc:log4jdbc:mysql://dev-readingocean-db-01.ccemsdd2ijls.ap-northeast-2.rds.amazonaws.com:3306/READING_OCEAN?characterEncoding=UTF-8&serverTimezone=Asia/Seoul&noAccessToProcedureBodies=true&useSSL=false&allowMultiQueries=true&useInformationSchema=true&autoReconnect=true
+    username: "redutec"
+    password: "readingocean2022"
 # Custom
 front-end-server: 127.0.0.1
