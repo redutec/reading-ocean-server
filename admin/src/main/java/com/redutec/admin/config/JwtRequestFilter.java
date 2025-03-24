@@ -1,6 +1,6 @@
 package com.redutec.admin.config;
 
-import com.redutec.admin.bot.dto.response.BotUserResponse;
+import com.redutec.admin.bot.dto.BotUserDto;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -64,7 +64,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         if ("local".equals(activeProfile) && accessToken == null) {
             log.info("Local profile detected with no token. Generating test token.");
             // 로컬용 임시 어드민 사용자 데이터
-            BotUserResponse botUserResponse = BotUserResponse.builder()
+            BotUserDto.BotUserResponse botUserResponse = BotUserDto.BotUserResponse.builder()
                     .userNo(0)
                     .userId("master")
                     .userName("로컬 테스트")

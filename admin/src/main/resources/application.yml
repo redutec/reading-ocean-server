@@ -58,7 +58,7 @@ logging:
 # Security
 jwt:
   secret: "re@ding0ce@n#123AdminJsonWebTokenSecret"
-  access-token-expiration: 60000
+  access-token-expiration: 360000
   refresh-token-expiration: 37600000
 ---
 # local

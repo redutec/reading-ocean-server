@@ -2,7 +2,7 @@ package com.redutec.admin.config;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.redutec.admin.bot.dto.response.BotUserResponse;
+import com.redutec.admin.bot.dto.BotUserDto;
 import com.redutec.core.repository.BlacklistedTokenRepository;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
@@ -68,7 +68,7 @@ public class JwtUtil {
      * @param botUserResponse 토큰에 포함할 어드민 사용자 정보
      * @return 생성된 Access Token
      */
-    public String generateAccessToken(BotUserResponse botUserResponse) {
+    public String generateAccessToken(BotUserDto.BotUserResponse botUserResponse) {
         Map<String, Object> claims = objectMapper.convertValue(botUserResponse, new TypeReference<>() {});
         return Jwts.builder()
                 .setClaims(claims)

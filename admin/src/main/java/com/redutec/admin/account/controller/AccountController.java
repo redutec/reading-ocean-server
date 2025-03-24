@@ -1,6 +1,6 @@
 package com.redutec.admin.account.controller;
 
-import com.redutec.admin.account.dto.request.AccountSearchRequest;
+import com.redutec.admin.account.dto.AccountDto;
 import com.redutec.admin.account.service.AccountService;
 import com.redutec.core.config.ApiResponseManager;
 import com.redutec.core.dto.ApiResponseDto;
@@ -32,9 +32,9 @@ public class AccountController {
      */
     @Operation(summary = "조건에 맞는 회원 조회", description = "조건에 맞는 회원 조회 API")
     @GetMapping
-    public ResponseEntity<ApiResponseDto> searchAccounts() {
-        return apiResponseManager.success(accountService.searchAccounts(
-                AccountSearchRequest.builder()
+    public ResponseEntity<ApiResponseDto> find() {
+        return apiResponseManager.success(accountService.find(
+                AccountDto.FindAccount.builder()
                         .build()));
     }
 }
