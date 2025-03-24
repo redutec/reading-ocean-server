@@ -5,7 +5,6 @@ import com.redutec.core.entity.BotUser;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
 
-
 public class BotUserSpecification {
     public static Specification<BotUser> findWith(BotUserCriteria botUserCriteria) {
         return (root, query, criteriaBuilder) -> {

@@ -1,7 +1,10 @@
 package com.redutec.admin.bot.service;
 
 import com.redutec.admin.bot.dto.BotUserDto;
+import com.redutec.admin.config.CurrentAdminUser;
+import com.redutec.core.config.EncryptionUtil;
 import com.redutec.core.entity.BotUser;
+import com.redutec.core.entity.BotUserGroup;
 import com.redutec.core.repository.BotUserRepository;
 import com.redutec.core.specification.BotUserSpecification;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +13,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,6 +22,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class BotUserServiceImpl implements BotUserService {
     private final BotUserRepository botUserRepository;
+    private final BotGroupService botGroupService;
 
     /**
      * 관리자 계정 등록
@@ -24,8 +30,23 @@ public class BotUserServiceImpl implements BotUserService {
      * @return 등록된 관리자 계정 정보
      */
     @Override
-    public BotUserDto.BotUserResponse create(BotUserDto.CreateBotUser createBotUserDto) {
-        return null;
+    public BotUserDto.BotUserResponse create(BotUserDto.CreateBotUser createBotUserDto) throws NoSuchAlgorithmException {
+        // 비밀번호 암호화
+        String passwordSaltValue = EncryptionUtil.getSalt();
+        String encryptPassword = EncryptionUtil.password(createBotUserDto.getPassword(), passwordSaltValue);
+        // 관리자 그룹 정보 조회
+        List<BotUserGroup> botUserGroupList = new ArrayList<>();
+        // 등록한 관리자 계정 정보를 Insert 후 응답 객체에 담아 리턴
+        return BotUserDto.BotUserResponse.fromEntity(botUserRepository.save(BotUser.builder()
+                .userId(createBotUserDto.getUserId())
+                .userName(createBotUserDto.getUserName())
+                .password(encryptPassword)
+                .passwordSaltValue(passwordSaltValue)
+                .useYn("Y")
+                .adminId(CurrentAdminUser.getUserId())
+                .description(createBotUserDto.getDescription())
+                .userGroups(botUserGroupList)
+                .build()));
     }
 
     /**
@@ -41,12 +62,12 @@ public class BotUserServiceImpl implements BotUserService {
                 (findBotUserDto.getPage() != null && findBotUserDto.getSize() != null)
                         ? PageRequest.of(findBotUserDto.getPage(), findBotUserDto.getSize())
                         : Pageable.unpaged());
-        // 조회한 관리자 계정을 fromEntity 메서드를 사용해 DTO로 변환
-        List<BotUserDto.BotUserResponse> botUserList = botUserPage.getContent().stream()
+        // 조회한 관리자 계정들을 fromEntity 메서드를 사용해 응답 객체로 변환 후 리턴
+        List<BotUserDto.BotUserResponse> botUserResponseList = botUserPage.getContent().stream()
                 .map(BotUserDto.BotUserResponse::fromEntity)
                 .collect(Collectors.toList());
         return BotUserDto.BotUserPageResponse.builder()
-                .botUserList(botUserList)
+                .botUserList(botUserResponseList)
                 .totalElements(botUserPage.getTotalElements())
                 .totalPages(botUserPage.getTotalPages())
                 .build();

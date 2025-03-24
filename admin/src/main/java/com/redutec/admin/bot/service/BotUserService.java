@@ -2,13 +2,15 @@ package com.redutec.admin.bot.service;
 
 import com.redutec.admin.bot.dto.BotUserDto;
 
+import java.security.NoSuchAlgorithmException;
+
 public interface BotUserService {
     /**
      * 관리자 계정 등록
      * @param createBotUserDto 관리자 계정 등록 정보를 담은 DTO
      * @return 등록된 관리자 계정 정보
      */
-    BotUserDto.BotUserResponse create(BotUserDto.CreateBotUser createBotUserDto);
+    BotUserDto.BotUserResponse create(BotUserDto.CreateBotUser createBotUserDto) throws NoSuchAlgorithmException;
     /**
      * 조건에 맞는 관리자 계정 목록 조회
      * @param findBotUserDto 조회 조건을 담은 DTO

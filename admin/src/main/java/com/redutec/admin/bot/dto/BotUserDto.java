@@ -34,9 +34,9 @@ public class BotUserDto {
         )
         private String password;
 
-        @Schema(description = "사용 여부")
-        @Pattern(regexp = "^[YN]$", message = "사용 여부는 'Y' 또는 'N'이어야 합니다.")
-        private String useYn;
+        @Schema(description = "관리자 그룹 고유번호")
+        @Positive
+        private Long groupNo;
 
         @Schema(description = "비고")
         @Size(max = 300)

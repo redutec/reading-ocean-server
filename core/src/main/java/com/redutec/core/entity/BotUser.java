@@ -2,7 +2,6 @@ package com.redutec.core.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.Comment;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -43,7 +42,7 @@ public class BotUser {
     private String passwordSaltValue;
 
     @Column(name = "use_yn", nullable = false, columnDefinition = "CHAR(1) DEFAULT 'Y'")
-    private Character useYn;
+    private String useYn;
 
     @Column(name = "last_access_IP", length = 100)
     private String lastAccessIp;

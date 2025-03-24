@@ -3,7 +3,6 @@ package com.redutec.core.entity;
 import com.redutec.core.entity.key.BotUserGroupKey;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.Comment;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -38,7 +37,7 @@ public class BotUserGroup {
     private BotGroup group;
 
     @Column(name = "use_yn", nullable = false, columnDefinition = "CHAR(1) DEFAULT 'Y'")
-    private Character useYn;
+    private String useYn;
 
     @CreatedDate
     @Column(name = "register_datetime", nullable = false, columnDefinition = "DATETIME DEFAULT (now())")

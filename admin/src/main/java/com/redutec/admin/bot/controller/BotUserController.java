@@ -7,10 +7,12 @@ import com.redutec.core.dto.ApiResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 /**
@@ -19,18 +21,18 @@ import java.util.List;
  */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/bot-user")
+@RequestMapping("/bot/user")
 @Tag(name = "관리자 계정 관리", description = "관리자 계정 API 모음")
 public class BotUserController {
     private final ApiResponseManager apiResponseManager;
     private final BotUserService botUserService;
 
-    /**
-     * 관리자 계정 조회 API
-     * 주어진 조건에 따라 관리자 계정 데이터를 조회하여 반환합니다
-     *
-     * @return 조건에 맞는 관리자 계정 목록과 페이징 정보를 포함한 응답 객체를 반환합니다
-     */
+    @Operation(summary = "관리자 계정 등록", description = "관리자 계정을 등록하는 API")
+    @PostMapping
+    public ResponseEntity<ApiResponseDto> create(@Valid @RequestBody BotUserDto.CreateBotUser createBotUserDto) throws NoSuchAlgorithmException {
+        return apiResponseManager.success(botUserService.create(createBotUserDto));
+    }
+
     @Operation(summary = "조건에 맞는 관리자 계정 조회", description = "조건에 맞는 관리자 계정 조회 API")
     @GetMapping
     public ResponseEntity<ApiResponseDto> find(
