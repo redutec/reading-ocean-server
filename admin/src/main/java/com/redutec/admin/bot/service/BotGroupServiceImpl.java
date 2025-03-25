@@ -4,6 +4,7 @@ import com.redutec.admin.bot.dto.BotGroupDto;
 import com.redutec.core.entity.BotGroup;
 import com.redutec.core.repository.BotGroupRepository;
 import com.redutec.core.specification.BotGroupSpecification;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -44,6 +45,11 @@ public class BotGroupServiceImpl implements BotGroupService {
                 .totalElements(botGroupPage.getTotalElements())
                 .totalPages(botGroupPage.getTotalPages())
                 .build();
+    }
+
+    @Override
+    public BotGroup findByGroupNo(Long groupNo) {
+        return botGroupRepository.findById(groupNo).orElseThrow(() -> new EntityNotFoundException("No such BotGroup"));
     }
 
     @Override

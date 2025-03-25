@@ -116,10 +116,10 @@ public class BotGroupDto {
         private String description;
 
         @Schema(description = "해당 그룹에 속한 관리자 계정 고유번호 목록")
-        private List<Integer> userNos;
+        private List<Integer> userNoList;
 
         public static BotGroupResponse fromEntity(BotGroup botGroup) {
-            List<Integer> userNos = botGroup.getUserGroups() != null
+            List<Integer> userNoList = botGroup.getUserGroups() != null
                     ? botGroup.getUserGroups().stream()
                     .map(botUserGroup -> botUserGroup.getUser().getUserNo())
                     .collect(Collectors.toList())
@@ -131,7 +131,7 @@ public class BotGroupDto {
                     .registerDatetime(botGroup.getRegisterDatetime())
                     .modifyDatetime(botGroup.getModifyDatetime())
                     .description(botGroup.getDescription())
-                    .userNos(userNos)
+                    .userNoList(userNoList)
                     .build();
         }
     }

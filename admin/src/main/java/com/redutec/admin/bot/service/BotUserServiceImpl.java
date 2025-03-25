@@ -7,6 +7,7 @@ import com.redutec.core.entity.BotUser;
 import com.redutec.core.entity.BotUserGroup;
 import com.redutec.core.repository.BotUserRepository;
 import com.redutec.core.specification.BotUserSpecification;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -14,8 +15,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -35,7 +36,14 @@ public class BotUserServiceImpl implements BotUserService {
         String passwordSaltValue = EncryptionUtil.getSalt();
         String encryptPassword = EncryptionUtil.password(createBotUserDto.getPassword(), passwordSaltValue);
         // 관리자 그룹 정보 조회
-        List<BotUserGroup> botUserGroupList = new ArrayList<>();
+        List<BotUserGroup> botUserGroupList = Optional.ofNullable(createBotUserDto.getGroupNo())
+                .map(groupNo -> BotUserGroup.builder()
+                        .group(botGroupService.findByGroupNo(groupNo))
+                        .useYn("Y")
+                        .adminId(CurrentAdminUser.getUserId())
+                        .build())
+                .map(List::of)
+                .orElse(List.of());
         // 등록한 관리자 계정 정보를 Insert 후 응답 객체에 담아 리턴
         return BotUserDto.BotUserResponse.fromEntity(botUserRepository.save(BotUser.builder()
                 .userId(createBotUserDto.getUserId())
@@ -73,13 +81,18 @@ public class BotUserServiceImpl implements BotUserService {
                 .build();
     }
 
+    @Override
+    public BotUser findByUserNo(Integer userNo) {
+        return botUserRepository.findById(userNo).orElseThrow(() -> new EntityNotFoundException("No such BotUser"));
+    }
+
     /**
      * 관리자 계정 수정
      * @param userNo 수정할 관리자 계정의 고유번호
      * @param updateBotUserDto 수정할 정보를 담은 DTO
      */
     @Override
-    public void update(Long userNo, BotUserDto.UpdateBotUser updateBotUserDto) {
+    public void update(Integer userNo, BotUserDto.UpdateBotUser updateBotUserDto) {
 
     }
 
@@ -88,7 +101,7 @@ public class BotUserServiceImpl implements BotUserService {
      * @param userNo 삭제할 관리자 계정의 고유번호
      */
     @Override
-    public void delete(Long userNo) {
+    public void delete(Integer userNo) {
 
     }
 }

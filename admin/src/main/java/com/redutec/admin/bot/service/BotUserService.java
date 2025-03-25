@@ -1,6 +1,7 @@
 package com.redutec.admin.bot.service;
 
 import com.redutec.admin.bot.dto.BotUserDto;
+import com.redutec.core.entity.BotUser;
 
 import java.security.NoSuchAlgorithmException;
 
@@ -18,14 +19,20 @@ public interface BotUserService {
      */
     BotUserDto.BotUserPageResponse find(BotUserDto.FindBotUser findBotUserDto);
     /**
+     * 특정 관리자 계정 조회
+     * @param userNo 관리자 계정 고유번호
+     * @return 특정 관리자 계정 엔티티 객체
+     */
+    BotUser findByUserNo(Integer userNo);
+    /**
      * 관리자 계정 수정
      * @param userNo 수정할 관리자 계정의 고유번호
      * @param updateBotUserDto 수정할 정보를 담은 DTO
      */
-    void update(Long userNo, BotUserDto.UpdateBotUser updateBotUserDto);
+    void update(Integer userNo, BotUserDto.UpdateBotUser updateBotUserDto);
     /**
      * 관리자 계정 삭제
      * @param userNo 삭제할 관리자 계정의 고유번호
      */
-    void delete(Long userNo);
+    void delete(Integer userNo);
 }

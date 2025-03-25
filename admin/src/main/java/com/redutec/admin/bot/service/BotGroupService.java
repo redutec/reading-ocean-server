@@ -1,6 +1,7 @@
 package com.redutec.admin.bot.service;
 
 import com.redutec.admin.bot.dto.BotGroupDto;
+import com.redutec.core.entity.BotGroup;
 
 public interface BotGroupService {
     /**
@@ -15,6 +16,12 @@ public interface BotGroupService {
      * @return 조건에 맞는 관리자 그룹 목록
      */
     BotGroupDto.BotGroupPageResponse find(BotGroupDto.FindBotGroup findBotGroupDto);
+    /**
+     * 특정 관리자 그룹 조회
+     * @param groupNo 관리자 그룹 고유번호
+     * @return 특정 관리자 그룹 엔티티 객체
+     */
+    BotGroup findByGroupNo(Long groupNo);
     /**
      * 관리자 그룹 수정
      * @param userNo 수정할 관리자 그룹의 고유번호
