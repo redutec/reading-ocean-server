@@ -3,10 +3,12 @@ package com.redutec.core.entity;
 import com.redutec.core.entity.key.BotGroupPermissionKey;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.sql.Types;
 import java.time.LocalDateTime;
 
 /**
@@ -37,10 +39,12 @@ public class BotGroupPermission {
     private BotMenu menu;
 
     @Column(name = "permission_type", nullable = false, length = 6, columnDefinition = "char(6)")
+    @JdbcTypeCode(Types.CHAR)
     private String permissionType;
 
     @Column(name = "use_yn", nullable = false, columnDefinition = "char(1)")
-    private Character useYn;
+    @JdbcTypeCode(Types.CHAR)
+    private String useYn;
 
     @CreatedDate
     @Column(name = "register_datetime", nullable = false, columnDefinition = "DATETIME DEFAULT (now())")

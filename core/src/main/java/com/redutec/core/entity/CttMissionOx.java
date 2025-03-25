@@ -2,10 +2,12 @@ package com.redutec.core.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.sql.Types;
 import java.time.LocalDateTime;
 
 /**
@@ -33,16 +35,19 @@ public class CttMissionOx {
     private Integer bookNo;
 
     @Column(name = "necessary_display_yn", nullable = false, columnDefinition = "char(1)")
-    private Character necessaryDisplayYn;
+    @JdbcTypeCode(Types.CHAR)
+    private String necessaryDisplayYn;
 
     @Column(name = "use_yn", nullable = false, columnDefinition = "char(1)")
-    private Character useYn;
+    @JdbcTypeCode(Types.CHAR)
+    private String useYn;
 
     @Column(name = "OX_quiz_question", length = 300, nullable = false)
     private String oxQuizQuestion;
 
     @Column(name = "OX_quiz_answer", nullable = false, columnDefinition = "char(1)")
-    private Character oxQuizAnswer;
+    @JdbcTypeCode(Types.CHAR)
+    private String oxQuizAnswer;
 
     @CreatedDate
     @Column(name = "register_datetime", nullable = false, columnDefinition = "DATETIME DEFAULT (now())")
@@ -60,5 +65,6 @@ public class CttMissionOx {
 
     @Lob
     @Column(name = "comment", columnDefinition = "text")
+    @JdbcTypeCode(Types.LONGVARCHAR)
     private String comment;
 }

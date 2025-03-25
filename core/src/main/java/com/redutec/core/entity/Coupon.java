@@ -38,7 +38,7 @@ public class Coupon {
     @Column(name = "status", length = 20)
     private String status;
 
-    @Column(name = "coupon_number", length = 255, unique = true)
+    @Column(name = "coupon_number", unique = true)
     private String couponNumber;
 
     @Column(name = "usage_datetime")

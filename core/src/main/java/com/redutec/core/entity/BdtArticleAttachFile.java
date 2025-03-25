@@ -2,11 +2,12 @@ package com.redutec.core.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.Comment;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.sql.Types;
 import java.time.LocalDateTime;
 
 /**
@@ -33,6 +34,7 @@ public class BdtArticleAttachFile {
     private BdtArticle article;
 
     @Column(name = "attach_file_value", nullable = false, length = 6, columnDefinition = "CHAR(6) DEFAULT 'AFV003'")
+    @JdbcTypeCode(Types.CHAR)
     private String attachFileValue;
 
     @Column(name = "attach_file_name", length = 100)
@@ -42,7 +44,8 @@ public class BdtArticleAttachFile {
     private String attachmentFilePath;
 
     @Column(name = "use_yn", nullable = false, columnDefinition = "CHAR(1)")
-    private Character useYn;
+    @JdbcTypeCode(Types.CHAR)
+    private String useYn;
 
     @CreatedDate
     @Column(name = "register_datetime", nullable = false, columnDefinition = "DATETIME DEFAULT (now())")

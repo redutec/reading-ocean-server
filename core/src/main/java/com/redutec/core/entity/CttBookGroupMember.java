@@ -3,9 +3,11 @@ package com.redutec.core.entity;
 import com.redutec.core.entity.key.CttBookGroupMemberKey;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.sql.Types;
 import java.time.LocalDateTime;
 
 /**
@@ -36,7 +38,8 @@ public class CttBookGroupMember {
     private CttBook book;
 
     @Column(name = "use_yn", nullable = false, columnDefinition = "char(1)")
-    private Character useYn;
+    @JdbcTypeCode(Types.CHAR)
+    private String useYn;
 
     @CreatedDate
     @Column(name = "register_datetime", nullable = false, columnDefinition = "DATETIME DEFAULT (now())")

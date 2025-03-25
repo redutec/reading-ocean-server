@@ -2,10 +2,12 @@ package com.redutec.core.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.sql.Types;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -33,6 +35,7 @@ public class CouponManage {
 
     @Lob
     @Column(name = "issue_reason", columnDefinition = "text")
+    @JdbcTypeCode(Types.LONGVARCHAR)
     private String issueReason;
 
     @Column(name = "discount_type", length = 15)
@@ -49,10 +52,12 @@ public class CouponManage {
 
     @Lob
     @Column(name = "memo", columnDefinition = "longtext")
+    @JdbcTypeCode(Types.LONGVARCHAR)
     private String memo;
 
     @Column(name = "use_yn", columnDefinition = "char(1)")
-    private Character useYn;
+    @JdbcTypeCode(Types.CHAR)
+    private String useYn;
 
     @Column(name = "admin_id", length = 100)
     private String adminId;

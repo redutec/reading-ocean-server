@@ -2,11 +2,12 @@ package com.redutec.core.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.Comment;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.sql.Types;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -36,20 +37,25 @@ public class BdtArticle {
     private String articleTitle;
 
     @Column(name = "category_value", length = 6, columnDefinition = "char(6)")
+    @JdbcTypeCode(Types.CHAR)
     private String categoryValue;
 
     @Lob
     @Column(name = "article_content", columnDefinition = "LONGTEXT")
+    @JdbcTypeCode(Types.LONGVARCHAR)
     private String articleContent;
 
     @Lob
     @Column(name = "article_content_detail", columnDefinition = "TEXT")
+    @JdbcTypeCode(Types.LONGVARCHAR)
     private String articleContentDetail;
 
     @Column(name = "display_yn", nullable = false, columnDefinition = "CHAR(1)")
-    private Character displayYn;
+    @JdbcTypeCode(Types.CHAR)
+    private String displayYn;
 
     @Column(name = "display_domain_code", length = 6, nullable = false, columnDefinition = "CHAR(6) DEFAULT 'DMC002'")
+    @JdbcTypeCode(Types.CHAR)
     private String displayDomainCode;
 
     @Column(name = "domain", length = 24)
@@ -59,10 +65,12 @@ public class BdtArticle {
     private LocalDate displayWriteDate;
 
     @Column(name = "top_pin_yn", columnDefinition = "CHAR(1) DEFAULT 'N'")
-    private Character topPinYn;
+    @JdbcTypeCode(Types.CHAR)
+    private String topPinYn;
 
     @Column(name = "display_configuration_yn", nullable = false, columnDefinition = "CHAR(1)")
-    private Character displayConfigurationYn;
+    @JdbcTypeCode(Types.CHAR)
+    private String displayConfigurationYn;
 
     @Column(name = "writer_account_no")
     private Integer writerAccountNo;
@@ -71,7 +79,8 @@ public class BdtArticle {
     private String displayWriterName;
 
     @Column(name = "use_yn", nullable = false, columnDefinition = "CHAR(1) DEFAULT 'Y'")
-    private Character useYn;
+    @JdbcTypeCode(Types.CHAR)
+    private String useYn;
 
     @Column(name = "read_count", length = 3, columnDefinition = "VARCHAR(3) DEFAULT '0'")
     private String readCount;

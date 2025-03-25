@@ -2,10 +2,12 @@ package com.redutec.core.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.sql.Types;
 import java.time.LocalDateTime;
 
 /**
@@ -32,10 +34,12 @@ public class BdtArticleComment {
     private BdtArticle article;
 
     @Column(name = "reply_complete_yn", nullable = false, columnDefinition = "CHAR(1) DEFAULT 'N'")
-    private Character replyCompleteYn;
+    @JdbcTypeCode(Types.CHAR)
+    private String replyCompleteYn;
 
     @Lob
     @Column(name = "reply_content", nullable = false, columnDefinition = "TEXT")
+    @JdbcTypeCode(Types.LONGVARCHAR)
     private String replyContent;
 
     @CreatedDate

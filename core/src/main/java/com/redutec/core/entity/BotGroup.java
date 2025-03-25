@@ -2,10 +2,12 @@ package com.redutec.core.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.sql.Types;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -35,6 +37,7 @@ public class BotGroup {
     private String groupKey;
 
     @Column(name = "use_yn", nullable = false, columnDefinition = "CHAR(1) DEFAULT 'Y'")
+    @JdbcTypeCode(Types.CHAR)
     private String useYn;
 
     @CreatedDate

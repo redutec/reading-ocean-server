@@ -2,10 +2,12 @@ package com.redutec.core.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.sql.Types;
 import java.time.LocalDateTime;
 
 /**
@@ -28,6 +30,7 @@ public class BdtArticleBoard {
     private Integer articleBoardNo;
 
     @Column(name = "article_board_type", nullable = false, length = 6, columnDefinition = "char(6)")
+    @JdbcTypeCode(Types.CHAR)
     private String articleBoardType;
 
     @Column(name = "article_board_name", nullable = false, length = 45)
@@ -37,19 +40,24 @@ public class BdtArticleBoard {
     private String articleBoardDescription;
 
     @Column(name = "use_yn", nullable = false, columnDefinition = "CHAR(1)")
-    private Character useYn;
+    @JdbcTypeCode(Types.CHAR)
+    private String useYn;
 
     @Column(name = "set_attach_file_yn", nullable = false, columnDefinition = "CHAR(1)")
-    private Character setAttachFileYn;
+    @JdbcTypeCode(Types.CHAR)
+    private String setAttachFileYn;
 
     @Column(name = "set_comment_yn", nullable = false, columnDefinition = "CHAR(1)")
-    private Character setCommentYn;
+    @JdbcTypeCode(Types.CHAR)
+    private String setCommentYn;
 
     @Column(name = "set_category_yn", nullable = false, columnDefinition = "CHAR(1)")
-    private Character setCategoryYn;
+    @JdbcTypeCode(Types.CHAR)
+    private String setCategoryYn;
 
     @Column(name = "set_flag_yn", nullable = false, columnDefinition = "CHAR(1)")
-    private Character setFlagYn;
+    @JdbcTypeCode(Types.CHAR)
+    private String setFlagYn;
 
     @CreatedDate
     @Column(name = "register_datetime", nullable = false, columnDefinition = "DATETIME DEFAULT (now())")

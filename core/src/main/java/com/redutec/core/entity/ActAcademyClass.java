@@ -2,11 +2,12 @@ package com.redutec.core.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.Comment;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.sql.Types;
 import java.time.LocalDateTime;
 
 /**
@@ -38,10 +39,12 @@ public class ActAcademyClass {
     private Integer teacherAccountNo;
 
     @Column(name = "teacher_enable_yn", nullable = false, columnDefinition = "CHAR(1) DEFAULT 'N'")
-    private Character teacherEnableYn;
+    @JdbcTypeCode(Types.CHAR)
+    private String teacherEnableYn;
 
     @Column(name = "use_yn", nullable = false, columnDefinition = "CHAR(1) DEFAULT 'Y'")
-    private Character useYn;
+    @JdbcTypeCode(Types.CHAR)
+    private String useYn;
 
     @CreatedDate
     @Column(name = "register_datetime", nullable = false, columnDefinition = "DATETIME DEFAULT (now())")

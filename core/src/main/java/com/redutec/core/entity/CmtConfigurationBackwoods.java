@@ -2,10 +2,12 @@ package com.redutec.core.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.sql.Types;
 import java.time.LocalDateTime;
 
 /**
@@ -28,9 +30,11 @@ public class CmtConfigurationBackwoods {
     private Integer backwoodsNo;
 
     @Column(name = "begin_zipcode", nullable = false, length = 5, columnDefinition = "char(5)")
+    @JdbcTypeCode(Types.CHAR)
     private String beginZipcode;
 
     @Column(name = "end_zipcode", nullable = false, length = 5, columnDefinition = "char(5)")
+    @JdbcTypeCode(Types.CHAR)
     private String endZipcode;
 
     @Column(name = "backwoods_region_name", nullable = false, length = 45)
@@ -40,7 +44,8 @@ public class CmtConfigurationBackwoods {
     private Integer additionalDeliveryFee;
 
     @Column(name = "use_yn", nullable = false, columnDefinition = "char(1) default 'Y'")
-    private Character useYn;
+    @JdbcTypeCode(Types.CHAR)
+    private String useYn;
 
     @CreatedDate
     @Column(name = "register_datetime", nullable = false, columnDefinition = "DATETIME DEFAULT (now())")

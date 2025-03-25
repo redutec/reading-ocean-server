@@ -2,10 +2,12 @@ package com.redutec.core.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.sql.Types;
 import java.time.LocalDateTime;
 
 /**
@@ -33,10 +35,12 @@ public class CttMissionMatchingGame {
     private Integer bookNo;
 
     @Column(name = "matching_game_type", nullable = false, length = 6, columnDefinition = "char(6)")
+    @JdbcTypeCode(Types.CHAR)
     private String matchingGameType;
 
     @Column(name = "use_yn", nullable = false, columnDefinition = "char(1)")
-    private Character useYn;
+    @JdbcTypeCode(Types.CHAR)
+    private String useYn;
 
     @Column(name = "matching_game_group_name", nullable = false, length = 30)
     private String matchingGameGroupName;

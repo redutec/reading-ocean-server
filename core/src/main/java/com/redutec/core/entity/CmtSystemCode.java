@@ -2,10 +2,12 @@ package com.redutec.core.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.sql.Types;
 import java.time.LocalDateTime;
 
 /**
@@ -24,6 +26,7 @@ import java.time.LocalDateTime;
 public class CmtSystemCode {
     @Id
     @Column(name = "system_code", nullable = false, length = 6, columnDefinition = "char(6)")
+    @JdbcTypeCode(Types.CHAR)
     private String systemCode;
 
     @Column(name = "category_name", nullable = false, length = 30)
@@ -45,7 +48,8 @@ public class CmtSystemCode {
     private String propertyValue;
 
     @Column(name = "use_yn", nullable = false, columnDefinition = "char(1)")
-    private Character useYn;
+    @JdbcTypeCode(Types.CHAR)
+    private String useYn;
 
     @CreatedDate
     @Column(name = "register_datetime", nullable = false, columnDefinition = "DATETIME DEFAULT (now())")

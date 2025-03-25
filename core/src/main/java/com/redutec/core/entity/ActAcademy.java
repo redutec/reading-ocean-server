@@ -5,11 +5,12 @@ import com.redutec.core.meta.AcademyOperationStatus;
 import com.redutec.core.meta.AcademyStatus;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.Comment;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.sql.Types;
 import java.time.LocalDateTime;
 
 /**
@@ -35,6 +36,7 @@ public class ActAcademy {
     private String academyName;
 
     @Column(name = "zipcode", length = 5, nullable = false, columnDefinition = "char(5)")
+    @JdbcTypeCode(Types.CHAR)
     private String zipcode;
 
     @Column(name = "academy_address", length = 100, nullable = false)
@@ -48,6 +50,7 @@ public class ActAcademy {
 
     @Column(name = "academy_manage_type", length = 6, nullable = false, columnDefinition = "char(6)")
     @Enumerated(EnumType.STRING)
+    @JdbcTypeCode(Types.CHAR)
     private AcademyManageType academyManageType;
 
     @Column(name = "academy_url", length = 100)
@@ -77,6 +80,7 @@ public class ActAcademy {
 
     @Column(name = "academy_operation_status", nullable = false, columnDefinition = "enum('OPERATING','CLOSED','PREPARING','RESERVED') default 'OPERATING'")
     @Enumerated(EnumType.STRING)
+    @JdbcTypeCode(Types.CHAR)
     private AcademyOperationStatus academyOperationStatus;
 
     @Column(name = "branch_no")

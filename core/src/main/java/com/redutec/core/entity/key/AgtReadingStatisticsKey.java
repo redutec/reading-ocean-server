@@ -3,8 +3,10 @@ package com.redutec.core.entity.key;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import lombok.*;
+import org.hibernate.annotations.JdbcTypeCode;
 
 import java.io.Serializable;
+import java.sql.Types;
 import java.time.LocalDate;
 
 @Embeddable
@@ -21,8 +23,10 @@ public class AgtReadingStatisticsKey implements Serializable {
     private LocalDate aggregationDate;
 
     @Column(name = "daily_yn", nullable = false, columnDefinition = "CHAR(1)")
-    private Character dailyYn;
+    @JdbcTypeCode(Types.CHAR)
+    private String dailyYn;
 
     @Column(name = "book_section_type", nullable = false, length = 6, columnDefinition = "char(6)")
+    @JdbcTypeCode(Types.CHAR)
     private String bookSectionType;
 }

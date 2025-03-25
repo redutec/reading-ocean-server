@@ -2,10 +2,12 @@ package com.redutec.core.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.sql.Types;
 import java.time.LocalDateTime;
 
 /**
@@ -33,19 +35,24 @@ public class CttMissionQuiz {
     private Integer bookNo;
 
     @Column(name = "subjective_yn", nullable = false, columnDefinition = "char(1)")
-    private Character subjectiveYn;
+    @JdbcTypeCode(Types.CHAR)
+    private String subjectiveYn;
 
     @Column(name = "necessary_display_yn", nullable = false, columnDefinition = "char(1)")
-    private Character necessaryDisplayYn;
+    @JdbcTypeCode(Types.CHAR)
+    private String necessaryDisplayYn;
 
     @Column(name = "use_yn", nullable = false, columnDefinition = "char(1)")
-    private Character useYn;
+    @JdbcTypeCode(Types.CHAR)
+    private String useYn;
 
     @Column(name = "mission_quiz_type", nullable = false, length = 6, columnDefinition = "char(6)")
+    @JdbcTypeCode(Types.CHAR)
     private String missionQuizType;
 
     @Lob
     @Column(name = "quiz_text", columnDefinition = "text")
+    @JdbcTypeCode(Types.LONGVARCHAR)
     private String quizText;
 
     @Column(name = "quiz_question", length = 300, nullable = false)
@@ -60,7 +67,7 @@ public class CttMissionQuiz {
     @Column(name = "quiz_answer", length = 200, nullable = false)
     private String quizAnswer;
 
-    @Column(name = "show_choice_text", nullable = true, columnDefinition = "tinyint(1) default 1")
+    @Column(name = "show_choice_text", columnDefinition = "tinyint(1) default 1")
     private Boolean showChoiceText;
 
     @Column(name = "quiz_choice_1", length = 200)
@@ -103,5 +110,6 @@ public class CttMissionQuiz {
 
     @Lob
     @Column(name = "comment", columnDefinition = "text")
+    @JdbcTypeCode(Types.LONGVARCHAR)
     private String comment;
 }

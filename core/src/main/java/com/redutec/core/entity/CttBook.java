@@ -2,10 +2,12 @@ package com.redutec.core.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.sql.Types;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -55,13 +57,16 @@ public class CttBook {
     private String bookImagePath;
 
     @Column(name = "recommend_book_yn", columnDefinition = "char(1)")
-    private Character recommendBookYn;
+    @JdbcTypeCode(Types.CHAR)
+    private String recommendBookYn;
 
     @Column(name = "include_ebook_yn", nullable = false, columnDefinition = "char(1)")
-    private Character includeEbookYn;
+    @JdbcTypeCode(Types.CHAR)
+    private String includeEbookYn;
 
     @Column(name = "include_audiobook_yn", nullable = false, columnDefinition = "char(1)")
-    private Character includeAudiobookYn;
+    @JdbcTypeCode(Types.CHAR)
+    private String includeAudiobookYn;
 
     @Column(name = "total_page_count", columnDefinition = "SMALLINT DEFAULT 0")
     private Short totalPageCount;
@@ -70,9 +75,11 @@ public class CttBook {
     private String schoolGrade;
 
     @Column(name = "book_section_type", nullable = false, length = 6, columnDefinition = "char(6)")
+    @JdbcTypeCode(Types.CHAR)
     private String bookSectionType;
 
     @Column(name = "book_sub_section_type", nullable = false, length = 6, columnDefinition = "char(6)")
+    @JdbcTypeCode(Types.CHAR)
     private String bookSubSectionType;
 
     @Column(name = "book_point", nullable = false)
@@ -85,13 +92,15 @@ public class CttBook {
     private String readingLevel;
 
     @Column(name = "personality_type_value", nullable = false, columnDefinition = "char(1)")
-    private Character personalityTypeValue;
+    @JdbcTypeCode(Types.CHAR)
+    private String personalityTypeValue;
 
     @Column(name = "book_subject", length = 200, nullable = false)
     private String bookSubject;
 
     @Lob
     @Column(name = "book_content", nullable = false, columnDefinition = "text")
+    @JdbcTypeCode(Types.LONGVARCHAR)
     private String bookContent;
 
     @Column(name = "prize_piece", length = 200)
@@ -110,25 +119,32 @@ public class CttBook {
     private String keywordConfiguration;
 
     @Column(name = "display_yn", nullable = false, columnDefinition = "char(1)")
-    private Character displayYn;
+    @JdbcTypeCode(Types.CHAR)
+    private String displayYn;
 
     @Column(name = "use_yn", nullable = false, columnDefinition = "char(1) default 'Y'")
-    private Character useYn;
+    @JdbcTypeCode(Types.CHAR)
+    private String useYn;
 
     @Column(name = "register_reading_quiz_yn", nullable = false, columnDefinition = "char(1) default 'N'")
-    private Character registerReadingQuizYn;
+    @JdbcTypeCode(Types.CHAR)
+    private String registerReadingQuizYn;
 
     @Column(name = "register_word_puzzle_yn", nullable = false, columnDefinition = "char(1) default 'N'")
-    private Character registerWordPuzzleYn;
+    @JdbcTypeCode(Types.CHAR)
+    private String registerWordPuzzleYn;
 
     @Column(name = "register_OX_quiz_yn", nullable = false, columnDefinition = "char(1) default 'N'")
-    private Character registerOXQuizYn;
+    @JdbcTypeCode(Types.CHAR)
+    private String registerOXQuizYn;
 
     @Column(name = "register_matching_game_yn", nullable = false, columnDefinition = "char(1) default 'N'")
-    private Character registerMatchingGameYn;
+    @JdbcTypeCode(Types.CHAR)
+    private String registerMatchingGameYn;
 
     @Column(name = "register_opinion_yn", nullable = false, columnDefinition = "char(1) default 'N'")
-    private Character registerOpinionYn;
+    @JdbcTypeCode(Types.CHAR)
+    private String registerOpinionYn;
 
     @CreatedDate
     @Column(name = "register_datetime", nullable = false, columnDefinition = "DATETIME DEFAULT (now())")

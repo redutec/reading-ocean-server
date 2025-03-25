@@ -2,10 +2,12 @@ package com.redutec.core.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.sql.Types;
 import java.time.LocalDateTime;
 
 /**
@@ -31,9 +33,11 @@ public class CmtConfigurationDiagnosisQuestion {
     private String schoolGrade;
 
     @Column(name = "diagnosis_category_value", length = 6, columnDefinition = "char(6)")
+    @JdbcTypeCode(Types.CHAR)
     private String diagnosisCategoryValue;
 
     @Column(name = "diagnosis_subcategory_value", length = 6, nullable = false, columnDefinition = "char(6)")
+    @JdbcTypeCode(Types.CHAR)
     private String diagnosisSubcategoryValue;
 
     @Column(name = "diagnosis_question_count", nullable = false, columnDefinition = "SMALLINT DEFAULT 0")

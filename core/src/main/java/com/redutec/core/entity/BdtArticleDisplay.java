@@ -2,10 +2,12 @@ package com.redutec.core.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.sql.Types;
 import java.time.LocalDateTime;
 
 /**
@@ -32,7 +34,8 @@ public class BdtArticleDisplay {
     private BdtArticle article;
 
     @Column(name = "check_no_show_more_yn", columnDefinition = "CHAR(1)")
-    private Character checkNoShowMoreYn;
+    @JdbcTypeCode(Types.CHAR)
+    private String checkNoShowMoreYn;
 
     @Column(name = "display_begin_datetime", nullable = false)
     private LocalDateTime displayBeginDatetime;
@@ -41,7 +44,8 @@ public class BdtArticleDisplay {
     private LocalDateTime displayEndDatetime;
 
     @Column(name = "display_new_window_yn", nullable = false, columnDefinition = "CHAR(1)")
-    private Character displayNewWindowYn;
+    @JdbcTypeCode(Types.CHAR)
+    private String displayNewWindowYn;
 
     @Column(name = "link_URL", length = 300, nullable = false)
     private String linkURL;
@@ -56,13 +60,16 @@ public class BdtArticleDisplay {
     private String backgroundColor;
 
     @Column(name = "banner_type", length = 6, columnDefinition = "char(6)")
+    @JdbcTypeCode(Types.CHAR)
     private String bannerType;
 
     @Column(name = "popup_position_type", length = 6, columnDefinition = "char(6)")
+    @JdbcTypeCode(Types.CHAR)
     private String popupPositionType;
 
     @Column(name = "use_yn", nullable = false, columnDefinition = "CHAR(1)")
-    private Character useYn;
+    @JdbcTypeCode(Types.CHAR)
+    private String useYn;
 
     @CreatedDate
     @Column(name = "register_datetime", nullable = false, columnDefinition = "DATETIME DEFAULT (now())")

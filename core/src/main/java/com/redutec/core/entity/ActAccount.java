@@ -2,10 +2,12 @@ package com.redutec.core.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.sql.Types;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -72,11 +74,13 @@ public class ActAccount {
 
     @Column(name = "allow_sms_yn", nullable = false, columnDefinition = "CHAR(1) DEFAULT 'N'")
     @Builder.Default
-    private Character allowSmsYn = 'N';
+    @JdbcTypeCode(Types.CHAR)
+    private String allowSmsYn = "N";
 
     @Column(name = "allow_email_yn", nullable = false, columnDefinition = "CHAR(1) DEFAULT 'N'")
     @Builder.Default
-    private Character allowEmailYn = 'N';
+    @JdbcTypeCode(Types.CHAR)
+    private String allowEmailYn = "N";
 
     @Column(name = "profile_image_path", length = 200)
     private String profileImagePath;

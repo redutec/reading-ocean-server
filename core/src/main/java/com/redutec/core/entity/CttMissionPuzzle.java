@@ -2,10 +2,12 @@ package com.redutec.core.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.sql.Types;
 import java.time.LocalDateTime;
 
 /**
@@ -39,10 +41,12 @@ public class CttMissionPuzzle {
     private Byte beginHeightPosition;
 
     @Column(name = "width_yn", nullable = false, columnDefinition = "char(1)")
-    private Character widthYn;
+    @JdbcTypeCode(Types.CHAR)
+    private String widthYn;
 
     @Column(name = "use_yn", nullable = false, columnDefinition = "char(1)")
-    private Character useYn;
+    @JdbcTypeCode(Types.CHAR)
+    private String useYn;
 
     @Column(name = "word_count", nullable = false)
     private Byte wordCount;
