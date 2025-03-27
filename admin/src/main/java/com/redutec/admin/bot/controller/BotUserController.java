@@ -29,8 +29,8 @@ public class BotUserController {
 
     @Operation(summary = "관리자 계정 등록", description = "관리자 계정을 등록하는 API")
     @PostMapping
-    public ResponseEntity<ApiResponseDto> create(@Valid @RequestBody BotUserDto.CreateBotUser createBotUserDto) throws NoSuchAlgorithmException {
-        return apiResponseManager.success(botUserService.create(createBotUserDto));
+    public ResponseEntity<ApiResponseDto> create(@Valid @RequestBody BotUserDto.CreateBotUserRequest createBotUserRequest) throws NoSuchAlgorithmException {
+        return apiResponseManager.success(botUserService.create(createBotUserRequest));
     }
 
     @Operation(summary = "조건에 맞는 관리자 계정 조회", description = "조건에 맞는 관리자 계정 조회 API")
@@ -43,7 +43,7 @@ public class BotUserController {
             @Parameter(description = "페이지 당 데이터 개수", example = "30") @RequestParam(required = false) Integer size
     ) {
         return apiResponseManager.success(botUserService.find(
-                BotUserDto.FindBotUser.builder()
+                BotUserDto.FindBotUserRequest.builder()
                         .userNoList(userNoList)
                         .userId(userId)
                         .userName(userName)

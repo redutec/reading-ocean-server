@@ -69,4 +69,28 @@ public class BotUser {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<BotUserGroup> userGroups;
+
+    public void updateBotUser(
+            String userId,
+            String userName,
+            String password,
+            String passwordSaltValue,
+            String useYn,
+            String lastAccessIp,
+            LocalDateTime lastAccessDatetime,
+            String adminId,
+            String description,
+            List<BotUserGroup> userGroups
+    ) {
+        this.userId = userId != null ? userId : this.userId;
+        this.userName = userName != null ? userName : this.userName;
+        this.password = password != null ? password : this.password;
+        this.passwordSaltValue = passwordSaltValue != null ? passwordSaltValue : this.passwordSaltValue;
+        this.useYn = useYn != null ? useYn : this.useYn;
+        this.lastAccessIp = lastAccessIp != null ? lastAccessIp : this.lastAccessIp;
+        this.lastAccessDatetime = lastAccessDatetime != null ? lastAccessDatetime : this.lastAccessDatetime;
+        this.adminId = adminId != null ? adminId : this.adminId;
+        this.description = description != null ? description : this.description;
+        this.userGroups = userGroups != null ? userGroups : this.userGroups;
+    }
 }

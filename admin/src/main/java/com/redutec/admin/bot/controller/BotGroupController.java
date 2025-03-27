@@ -28,8 +28,8 @@ public class BotGroupController {
 
     @Operation(summary = "관리자 그룹 등록", description = "관리자 그룹을 등록하는 API")
     @PostMapping
-    public ResponseEntity<ApiResponseDto> create(@Valid @RequestBody BotGroupDto.CreateBotGroup createBotGroupDto) {
-        return apiResponseManager.success(botGroupService.create(createBotGroupDto));
+    public ResponseEntity<ApiResponseDto> create(@Valid @RequestBody BotGroupDto.CreateBotGroupRequest createBotGroupRequest) {
+        return apiResponseManager.success(botGroupService.create(createBotGroupRequest));
     }
 
     @Operation(summary = "조건에 맞는 관리자 그룹 조회", description = "조건에 맞는 관리자 그룹 조회 API")
@@ -41,7 +41,7 @@ public class BotGroupController {
             @Parameter(description = "페이지 당 데이터 개수", example = "30") @RequestParam(required = false) Integer size
     ) {
         return apiResponseManager.success(botGroupService.find(
-                BotGroupDto.FindBotGroup.builder()
+                BotGroupDto.FindBotGroupRequest.builder()
                         .groupNoList(groupNoList)
                         .groupName(groupName)
                         .page(page)

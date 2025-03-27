@@ -22,7 +22,7 @@ public class BotGroupDto {
     @Getter
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class CreateBotGroup {
+    public static class CreateBotGroupRequest {
         @Schema(description = "관리자 그룹 이름")
         @NotBlank
         @Size(max = 100)
@@ -41,7 +41,7 @@ public class BotGroupDto {
     @Getter
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class FindBotGroup {
+    public static class FindBotGroupRequest {
         @Schema(description = "관리자 그룹 고유번호 목록")
         private List<Long> groupNoList;
 
@@ -72,7 +72,7 @@ public class BotGroupDto {
     @Getter
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class UpdateBotGroup {
+    public static class UpdateBotGroupRequest {
         @Schema(description = "관리자 그룹 이름")
         @NotBlank
         @Size(max = 100)

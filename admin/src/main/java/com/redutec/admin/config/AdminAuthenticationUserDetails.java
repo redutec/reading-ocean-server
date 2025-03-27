@@ -4,6 +4,7 @@ import com.redutec.core.entity.BotGroup;
 import com.redutec.core.entity.BotGroupPermission;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
@@ -14,6 +15,7 @@ import java.util.List;
 
 @Getter
 @Setter
+@Builder
 public class AdminAuthenticationUserDetails implements UserDetails {
     private Long userNo;
     private String userId;

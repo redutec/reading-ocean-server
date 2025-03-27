@@ -56,4 +56,10 @@ public class BotGroup {
 
     @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<BotUserGroup> userGroups;
+
+    public void updateBotGroup(String groupName, String description, String useYn) {
+        this.groupName = groupName;
+        this.description = description;
+        this.useYn = useYn;
+    }
 }

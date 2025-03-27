@@ -11,7 +11,7 @@ public class AccountDto {
     @Builder
     @Getter
     @AllArgsConstructor
-    public static class FindAccount {
+    public static class FindAccountRequest {
     }
 
     @Schema(defaultValue = "계정 조회 응답 객체")

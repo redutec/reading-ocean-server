@@ -34,7 +34,7 @@ public class AccountController {
     @GetMapping
     public ResponseEntity<ApiResponseDto> find() {
         return apiResponseManager.success(accountService.find(
-                AccountDto.FindAccount.builder()
+                AccountDto.FindAccountRequest.builder()
                         .build()));
     }
 }

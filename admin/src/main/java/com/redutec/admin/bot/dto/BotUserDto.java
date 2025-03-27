@@ -18,7 +18,7 @@ public class BotUserDto {
     @Builder
     @Getter
     @AllArgsConstructor
-    public static class CreateBotUser {
+    public static class CreateBotUserRequest {
         @Schema(description = "관리자 계정 아이디")
         @Size(min = 4, max = 100)
         private String userId;
@@ -47,7 +47,7 @@ public class BotUserDto {
     @Builder
     @Getter
     @AllArgsConstructor
-    public static class FindBotUser {
+    public static class FindBotUserRequest {
         @Schema(description = "관리자 계정 고유번호")
         @Positive
         private List<Long> userNoList;
@@ -80,7 +80,7 @@ public class BotUserDto {
     @Builder
     @Getter
     @AllArgsConstructor
-    public static class UpdateBotUser {
+    public static class UpdateBotUserRequest {
         @Schema(description = "관리자 계정 아이디")
         @Size(min = 4, max = 100)
         private String userId;

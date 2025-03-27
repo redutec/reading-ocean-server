@@ -13,7 +13,7 @@ public class AccountServiceImpl implements AccountService {
     private final ActAccountRepository actAccountRepository;
 
     @Override
-    public List<AccountDto.AccountResponse> find(AccountDto.FindAccount findAccountDto) {
+    public List<AccountDto.AccountResponse> find(AccountDto.FindAccountRequest findAccountDto) {
         var actAccountEntityList = actAccountRepository.findAll();
         return actAccountEntityList.stream()
                 .map(account -> AccountDto.AccountResponse.builder()
