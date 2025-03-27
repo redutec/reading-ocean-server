@@ -9,6 +9,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.sql.Types;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -68,7 +69,8 @@ public class BotUser {
     private String description;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<BotUserGroup> userGroups;
+    @Builder.Default
+    private List<BotUserGroup> userGroups = new ArrayList<>();
 
     public void updateBotUser(
             String userId,

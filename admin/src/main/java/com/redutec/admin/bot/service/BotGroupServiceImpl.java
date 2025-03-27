@@ -30,9 +30,10 @@ public class BotGroupServiceImpl implements BotGroupService {
     public BotGroupDto.BotGroupResponse create(BotGroupDto.CreateBotGroupRequest createBotGroupRequest) {
         // 관리자 그룹 정보를 Insert 후 응답 객체에 담아 리턴
         return BotGroupDto.BotGroupResponse.fromEntity(botGroupRepository.save(BotGroup.builder()
-                .groupName(createBotGroupRequest.getGroupName())
-                .description(createBotGroupRequest.getDescription())
-                .build()));
+                        .groupName(createBotGroupRequest.getGroupName())
+                        .description(createBotGroupRequest.getDescription())
+                        .useYn(createBotGroupRequest.getUseYn())
+                        .build()));
     }
 
     /**

@@ -53,7 +53,7 @@ public class CustomLogoutHandler implements LogoutHandler {
             String userId = jwtUtil.extractUserIdFromToken(token);
             if (userId != null) {
                 // BotUser 엔티티를 어드민 사용자의 로그인 아이디로 조회
-                Optional<BotUser> botUser = botUserRepository.findByUserId(userId);
+                Optional<BotUser> botUser = botUserRepository.findByUserIdAndUseYn(userId, "Y");
                 // 해당 근로자의 리프레시 토큰 삭제
                 //botUser.ifPresent(refreshTokenRepository::deleteByEmployee);
             }

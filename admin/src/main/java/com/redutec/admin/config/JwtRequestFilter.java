@@ -2,6 +2,9 @@ package com.redutec.admin.config;
 
 import com.redutec.admin.bot.dto.BotUserDto;
 import com.redutec.admin.bot.service.BotUserService;
+import com.redutec.core.entity.BotUser;
+import com.redutec.core.repository.BotUserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -12,15 +15,12 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -33,6 +33,7 @@ import java.util.List;
 public class JwtRequestFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
     private final BotUserService botUserService;
+    private final BotUserRepository botUserRepository;
 
     @Setter
     private UserDetailsService userDetailsService;
@@ -66,40 +67,34 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         // 로컬 프로파일인 경우, 토큰이 없으면 샘플 데이터를 사용하여 토큰 생성
         if ("local".equals(activeProfile) && accessToken == null) {
             log.info("Local profile detected with no token. Generating test token.");
-            // 로컬용 임시 어드민 사용자 데이터
-            BotUserDto.BotUserResponse botUserResponse = BotUserDto.BotUserResponse.builder()
-                    .userNo(0)
-                    .userId("master")
-                    .userName("로컬 테스트")
+            // 로컬용 임시 어드민 사용자 데이터로 accessToken 발급
+            BotUser localBotUser = botUserService.findByUserNo(1);
+            BotUserDto.BotUserResponse localBotUserResponse = BotUserDto.BotUserResponse.fromEntity(localBotUser);
+            /*BotUserDto.BotUserResponse localBotUserResponse = BotUserDto.BotUserResponse.builder()
+                    .userNo(1)
+                    .userId("admin")
+                    .userName("리딩오션 본사")
                     .groupNames(List.of("슈퍼관리자"))
                     .groupNos(List.of(1))
                     .registerDatetime(LocalDateTime.now())
                     .modifyDatetime(LocalDateTime.now())
-                    .build();
+                    .build();*/
             // BotUserResponse를 클레임으로 전달하여 Access Token 생성
-            accessToken = jwtUtil.generateAccessToken(botUserResponse);
+            accessToken = jwtUtil.generateAccessToken(localBotUserResponse);
         }
         if (accessToken != null) {
             // 토큰을 검증
             if (jwtUtil.validateToken(accessToken)) {
                 // 검증된 토큰에서 어드민 사용자 아이디 추출
                 var userId = jwtUtil.extractUserIdFromToken(accessToken);
+                log.info("userId: {}", userId);
                 // 어드민 사용자 아이디가 유효하고, 현재 인증이 없다면 사용자 인증 수행
                 if (userId != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                    // TODO 어드민 사용자 정보 조회
-                    // TODO 계정 상태 검증(USE_YN = Y인지)
-                    // TODO 권한 부여 및 인증 객체 생성
-                    //var authorities = botUser.getAuthorities().stream()
-                    //        .map(authority -> new SimpleGrantedAuthority(authority.getAuthority()))
-                    //        .toList();
-                    //var authenticationToken = new UsernamePasswordAuthenticationToken(userId, accessToken, authorities);
-                    // TODO SecurityContext에 인증 객체 설정
-
-
-                    // 여기는 일단 임시임
-                    var authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_ADMIN"));
-                    // 임시 인증 객체 생성 (비밀번호 null, 권한 부여)
-                    var authenticationToken = new UsernamePasswordAuthenticationToken(userId, null, authorities);
+                    // 로그인한 어드민 사용자 정보 조회
+                    BotUser botUser = botUserRepository.findByUserIdAndUseYn(userId, "Y").orElseThrow(() -> new EntityNotFoundException("No such BotUser"));
+                    // 권한 부여 및 인증 객체 생성
+                    var authorities = userDetailsService.loadUserByUsername(botUser.getUserId());
+                    var authenticationToken = new UsernamePasswordAuthenticationToken(userId, accessToken, authorities.getAuthorities());
                     // SecurityContext에 인증 객체 설정
                     SecurityContextHolder.getContext().setAuthentication(authenticationToken);
                 }

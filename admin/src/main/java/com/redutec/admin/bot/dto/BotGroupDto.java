@@ -31,6 +31,10 @@ public class BotGroupDto {
         @Schema(description = "비고")
         @Size(max = 300)
         private String description;
+
+        @Schema(description = "사용 여부")
+        @Size(min = 1, max = 1)
+        private String useYn;
     }
 
     /**
