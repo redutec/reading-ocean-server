@@ -12,5 +12,5 @@ public interface BotUserRepository extends JpaRepository<BotUser, Integer>, JpaS
     @Query("SELECT bu FROM BotUser bu LEFT JOIN FETCH bu.userGroups ug LEFT JOIN FETCH ug.group WHERE bu.userNo = :userNo")
     Optional<BotUser> findByUserNoWithGroups(@Param("userNo") Integer userNo);
 
-    Optional<BotUser> findByUserIdAndUseYn(String userId, String useYn);
+    Optional<BotUser> findByUserId(String userId);
 }

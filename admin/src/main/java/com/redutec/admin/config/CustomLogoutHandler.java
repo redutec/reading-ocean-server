@@ -4,6 +4,8 @@ import com.redutec.core.entity.BlacklistedToken;
 import com.redutec.core.entity.BotUser;
 import com.redutec.core.repository.BlacklistedTokenRepository;
 import com.redutec.core.repository.BotUserRepository;
+import com.redutec.core.repository.RefreshTokenRepository;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -12,8 +14,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 /**
  * 로그아웃 처리를 담당하는 컴포넌트입니다.
@@ -25,6 +25,7 @@ import java.util.Optional;
 public class CustomLogoutHandler implements LogoutHandler {
     private final JwtUtil jwtUtil;
     private final BlacklistedTokenRepository blacklistedTokenRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
     private final BotUserRepository botUserRepository;
 
     /**
@@ -53,9 +54,9 @@ public class CustomLogoutHandler implements LogoutHandler {
             String userId = jwtUtil.extractUserIdFromToken(token);
             if (userId != null) {
                 // BotUser 엔티티를 어드민 사용자의 로그인 아이디로 조회
-                Optional<BotUser> botUser = botUserRepository.findByUserIdAndUseYn(userId, "Y");
+                BotUser botUser = botUserRepository.findByUserId(userId).orElseThrow(() -> new EntityNotFoundException("No such BotUser"));
                 // 해당 근로자의 리프레시 토큰 삭제
-                //botUser.ifPresent(refreshTokenRepository::deleteByEmployee);
+                refreshTokenRepository.deleteById(Long.valueOf(botUser.getUserNo()));
             }
         }
     }

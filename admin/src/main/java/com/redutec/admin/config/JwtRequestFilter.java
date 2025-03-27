@@ -70,15 +70,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             // 로컬용 임시 어드민 사용자 데이터로 accessToken 발급
             BotUser localBotUser = botUserService.findByUserNo(1);
             BotUserDto.BotUserResponse localBotUserResponse = BotUserDto.BotUserResponse.fromEntity(localBotUser);
-            /*BotUserDto.BotUserResponse localBotUserResponse = BotUserDto.BotUserResponse.builder()
-                    .userNo(1)
-                    .userId("admin")
-                    .userName("리딩오션 본사")
-                    .groupNames(List.of("슈퍼관리자"))
-                    .groupNos(List.of(1))
-                    .registerDatetime(LocalDateTime.now())
-                    .modifyDatetime(LocalDateTime.now())
-                    .build();*/
             // BotUserResponse를 클레임으로 전달하여 Access Token 생성
             accessToken = jwtUtil.generateAccessToken(localBotUserResponse);
         }
@@ -91,7 +82,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                 // 어드민 사용자 아이디가 유효하고, 현재 인증이 없다면 사용자 인증 수행
                 if (userId != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                     // 로그인한 어드민 사용자 정보 조회
-                    BotUser botUser = botUserRepository.findByUserIdAndUseYn(userId, "Y").orElseThrow(() -> new EntityNotFoundException("No such BotUser"));
+                    BotUser botUser = botUserRepository.findByUserId(userId).orElseThrow(() -> new EntityNotFoundException("No such BotUser"));
                     // 권한 부여 및 인증 객체 생성
                     var authorities = userDetailsService.loadUserByUsername(botUser.getUserId());
                     var authenticationToken = new UsernamePasswordAuthenticationToken(userId, accessToken, authorities.getAuthorities());

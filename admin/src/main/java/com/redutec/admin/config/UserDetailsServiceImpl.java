@@ -30,7 +30,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
         // 암호화된 이메일로 어드민 사용자 정보 조회
-        var botUser = botUserRepository.findByUserIdAndUseYn(userId, "Y")
+        var botUser = botUserRepository.findByUserId(userId)
                 .orElseThrow(() -> new UsernameNotFoundException("BotUser not found with userId: " + userId));
         // 근로자의 역할을 GrantedAuthority로 변환하여 UserDetails 객체 생성
         Set<GrantedAuthority> authorities = new HashSet<>();
