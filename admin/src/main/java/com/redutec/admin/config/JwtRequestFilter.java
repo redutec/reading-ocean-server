@@ -66,12 +66,13 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         var accessToken = jwtUtil.extractTokenFromRequest(request);
         // 로컬 프로파일인 경우, 토큰이 없으면 샘플 데이터를 사용하여 토큰 생성
         if ("local".equals(activeProfile) && accessToken == null) {
-            log.info("Local profile detected with no token. Generating test token.");
+            log.info("**** Local profile detected with no token. Generating accessToken for test.");
             // 로컬용 임시 어드민 사용자 데이터로 accessToken 발급
             BotUser localBotUser = botUserService.findByUserNo(1);
             BotUserDto.BotUserResponse localBotUserResponse = BotUserDto.BotUserResponse.fromEntity(localBotUser);
             // BotUserResponse를 클레임으로 전달하여 Access Token 생성
             accessToken = jwtUtil.generateAccessToken(localBotUserResponse);
+            log.info("**** Generated accessToken for test: {}", accessToken);
         }
         if (accessToken != null) {
             // 토큰을 검증
