@@ -1,6 +1,7 @@
 package com.redutec.admin.config;
 
 import com.redutec.admin.bot.dto.BotUserDto;
+import com.redutec.admin.bot.service.BotUserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
@@ -30,6 +32,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class JwtRequestFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
+    private final BotUserService botUserService;
 
     @Setter
     private UserDetailsService userDetailsService;
@@ -68,10 +71,10 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                     .userNo(0)
                     .userId("master")
                     .userName("로컬 테스트")
-                    .groupNames(null)
-                    .groupNos(null)
-                    .registerDatetime(null)
-                    .modifyDatetime(null)
+                    .groupNames(List.of("슈퍼관리자"))
+                    .groupNos(List.of(1))
+                    .registerDatetime(LocalDateTime.now())
+                    .modifyDatetime(LocalDateTime.now())
                     .build();
             // BotUserResponse를 클레임으로 전달하여 Access Token 생성
             accessToken = jwtUtil.generateAccessToken(botUserResponse);

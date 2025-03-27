@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,6 +26,7 @@ public class BotGroupServiceImpl implements BotGroupService {
      * @return 등록된 관리자 그룹 정보
      */
     @Override
+    @Transactional
     public BotGroupDto.BotGroupResponse create(BotGroupDto.CreateBotGroupRequest createBotGroupRequest) {
         // 관리자 그룹 정보를 Insert 후 응답 객체에 담아 리턴
         return BotGroupDto.BotGroupResponse.fromEntity(botGroupRepository.save(BotGroup.builder()
@@ -39,6 +41,7 @@ public class BotGroupServiceImpl implements BotGroupService {
      * @return 조건에 맞는 관리자 그룹 목록
      */
     @Override
+    @Transactional(readOnly = true)
     public BotGroupDto.BotGroupPageResponse find(BotGroupDto.FindBotGroupRequest findBotGroupRequest) {
         // 조건에 맞는 관리자 그룹 조회
         Page<BotGroup> botGroupPage = botGroupRepository.findAll(
@@ -63,6 +66,7 @@ public class BotGroupServiceImpl implements BotGroupService {
      * @return 특정 관리자 그룹 엔티티 객체
      */
     @Override
+    @Transactional(readOnly = true)
     public BotGroup findByGroupNo(Long groupNo) {
         return botGroupRepository.findById(groupNo).orElseThrow(() -> new EntityNotFoundException("No such BotGroup"));
     }
@@ -73,6 +77,7 @@ public class BotGroupServiceImpl implements BotGroupService {
      * @param updateBotGroupRequest 수정할 정보를 담은 DTO
      */
     @Override
+    @Transactional
     public void update(Long groupNo, BotGroupDto.UpdateBotGroupRequest updateBotGroupRequest) {
         // 수정할 관리자 그룹이 존재하는지 확인
         BotGroup botGroup = findByGroupNo(groupNo);
@@ -90,6 +95,7 @@ public class BotGroupServiceImpl implements BotGroupService {
      * @param groupNo 삭제할 관리자 그룹의 고유번호
      */
     @Override
+    @Transactional
     public void delete(Long groupNo) {
         botGroupRepository.delete(findByGroupNo(groupNo));
     }

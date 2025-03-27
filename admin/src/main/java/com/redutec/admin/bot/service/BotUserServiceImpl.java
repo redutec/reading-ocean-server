@@ -84,6 +84,7 @@ public class BotUserServiceImpl implements BotUserService {
      * @return 조건에 맞는 관리자 계정 목록
      */
     @Override
+    @Transactional(readOnly = true)
     public BotUserDto.BotUserPageResponse find(BotUserDto.FindBotUserRequest findBotUserRequest) {
         // 조건에 맞는 관리자 계정 조회
         Page<BotUser> botUserPage = botUserRepository.findAll(
@@ -103,6 +104,7 @@ public class BotUserServiceImpl implements BotUserService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public BotUser findByUserNo(Integer userNo) {
         return botUserRepository.findById(userNo).orElseThrow(() -> new EntityNotFoundException("No such BotUser"));
     }
@@ -113,6 +115,7 @@ public class BotUserServiceImpl implements BotUserService {
      * @param updateBotUserRequest 수정할 정보를 담은 DTO
      */
     @Override
+    @Transactional
     public void update(Integer userNo, BotUserDto.UpdateBotUserRequest updateBotUserRequest) {
 
     }
@@ -122,6 +125,7 @@ public class BotUserServiceImpl implements BotUserService {
      * @param userNo 삭제할 관리자 계정의 고유번호
      */
     @Override
+    @Transactional
     public void delete(Integer userNo) {
         botUserRepository.delete(findByUserNo(userNo));
     }
