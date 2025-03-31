@@ -12,6 +12,7 @@ import com.redutec.core.specification.BotUserSpecification;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.Hibernate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -21,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -59,7 +61,7 @@ public class BotUserServiceImpl implements BotUserService {
         // 요청에 groupNo가 있다면 BotUserGroup 엔티티 생성
         if (createBotUserRequest.getGroupNo() != null) {
             // BotGroup 조회
-            BotGroup botGroup = botGroupService.findByGroupNo(createBotUserRequest.getGroupNo());
+            BotGroup botGroup = botGroupService.getBotGroup(Long.valueOf(createBotUserRequest.getGroupNo()));
             // 복합키 생성 : savedUser의 userNo와 botGroup의 groupNo 사용
             BotUserGroupKey key = new BotUserGroupKey(savedUser.getUserNo(), botGroup.getGroupNo());
             // BotUserGroup 생성
@@ -93,6 +95,12 @@ public class BotUserServiceImpl implements BotUserService {
                 (findBotUserRequest.getPage() != null && findBotUserRequest.getSize() != null)
                         ? PageRequest.of(findBotUserRequest.getPage(), findBotUserRequest.getSize())
                         : Pageable.unpaged());
+        // 각 BotUser의 userGroups와, 그 안의 BotGroup.userGroups를 강제로 초기화
+        botUserPage.getContent().forEach(botUser ->
+                botUser.getUserGroups().forEach(botUserGroup ->
+                        Hibernate.initialize(botUserGroup.getGroup().getUserGroups())
+                )
+        );
         // 조회한 관리자 계정들을 fromEntity 메서드를 사용해 응답 객체로 변환 후 리턴
         List<BotUserDto.BotUserResponse> botUserResponseList = botUserPage.getContent().stream()
                 .map(BotUserDto.BotUserResponse::fromEntity)
@@ -106,9 +114,8 @@ public class BotUserServiceImpl implements BotUserService {
 
     @Override
     @Transactional(readOnly = true)
-    public BotUser findByUserNo(Integer userNo) {
-        return botUserRepository.findByUserNoWithGroups(userNo)
-                .orElseThrow(() -> new EntityNotFoundException("No such BotUser"));
+    public BotUser getBotUser(Integer userNo) {
+        return botUserRepository.findByUserNoWithGroups(userNo).orElseThrow(() -> new EntityNotFoundException("No such BotUser"));
     }
 
     /**
@@ -119,7 +126,57 @@ public class BotUserServiceImpl implements BotUserService {
     @Override
     @Transactional
     public void update(Integer userNo, BotUserDto.UpdateBotUserRequest updateBotUserRequest) {
-
+        // 수정할 관리자 계정 조회
+        BotUser botUser = getBotUser(userNo);
+        // 비밀번호 변경 처리: Optional을 사용하여 newPassword가 존재할 경우 암호화 및 솔트 생성
+        Optional<String> newPwdOptional = Optional.ofNullable(updateBotUserRequest.getNewPassword());
+        String passwordSaltValue = newPwdOptional.map(pwd -> EncryptionUtil.getSalt()).orElse(null);
+        String newPassword = newPwdOptional.map(pwd -> {
+            try {
+                return EncryptionUtil.password(pwd, passwordSaltValue);
+            } catch (NoSuchAlgorithmException e) {
+                throw new RuntimeException(e);
+            }
+        }).orElse(null);
+        // DTO에 전달된 userGroups 정보를 Optional로 처리하여 엔티티로 변환
+        List<BotUserGroup> newBotUserGroupList = Optional.ofNullable(updateBotUserRequest.getUserGroups())
+                .map(list -> list.stream()
+                        .map(dtoGroup -> {
+                            // BotGroup 정보에서 그룹 번호 추출 (없으면 예외 발생)
+                            Integer groupNo = Optional.ofNullable(dtoGroup.getGroup())
+                                    .map(BotGroup::getGroupNo)
+                                    .orElseThrow(() -> new IllegalArgumentException("BotGroup 정보가 올바르지 않습니다."));
+                            // BotGroup 엔티티 조회
+                            BotGroup botGroup = botGroupService.getBotGroup(Long.valueOf(groupNo));
+                            // BotUserGroup 엔티티 생성
+                            return BotUserGroup.builder()
+                                    .id(new BotUserGroupKey(botUser.getUserNo(), botGroup.getGroupNo()))
+                                    .user(botUser)
+                                    .group(botGroup)
+                                    .useYn(Optional.ofNullable(dtoGroup.getUseYn()).orElse("Y"))
+                                    .description(dtoGroup.getDescription())
+                                    .adminId(jwtUtil.extractUserIdFromToken(
+                                            (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal()))
+                                    .build();
+                        })
+                        .collect(Collectors.toList())
+                )
+                .orElse(null);
+        // 엔티티 업데이트: 각 필드는 null이면 기존 값 유지
+        botUser.updateBotUser(
+                updateBotUserRequest.getUserId(),
+                updateBotUserRequest.getUserName(),
+                newPassword,
+                passwordSaltValue,
+                updateBotUserRequest.getUseYn(),
+                updateBotUserRequest.getLastAccessIp(),
+                updateBotUserRequest.getLastAccessDatetime(),
+                jwtUtil.extractUserIdFromToken((String) SecurityContextHolder.getContext().getAuthentication().getPrincipal()),
+                updateBotUserRequest.getDescription(),
+                newBotUserGroupList
+        );
+        // 변경된 엔티티 저장
+        botUserRepository.save(botUser);
     }
 
     /**
@@ -129,6 +186,6 @@ public class BotUserServiceImpl implements BotUserService {
     @Override
     @Transactional
     public void delete(Integer userNo) {
-        botUserRepository.delete(findByUserNo(userNo));
+        botUserRepository.delete(getBotUser(userNo));
     }
 }

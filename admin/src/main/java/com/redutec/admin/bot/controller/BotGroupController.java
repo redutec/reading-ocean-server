@@ -48,4 +48,26 @@ public class BotGroupController {
                         .size(size)
                         .build()));
     }
+
+    @Operation(summary = "관리자 그룹 상세 조회", description = "관리자 그룹 상세 조회 API")
+    @GetMapping("/{groupNo}")
+    public ResponseEntity<ApiResponseDto> findByGroupNo(@PathVariable Long groupNo) {
+        return apiResponseManager.success(botGroupService.findByGroupNo(groupNo));
+    }
+
+    @Operation(summary = "관리자 그룹 수정", description = "관리자 그룹의 정보를 수정하는 API")
+    @PutMapping("/{groupNo}")
+    public ResponseEntity<ApiResponseDto> update(
+            @PathVariable Long groupNo,
+            @Valid @RequestBody BotGroupDto.UpdateBotGroupRequest updateRequest) {
+        botGroupService.update(groupNo, updateRequest);
+        return apiResponseManager.success(null);
+    }
+
+    @Operation(summary = "관리자 그룹 삭제", description = "관리자 그룹 삭제 API")
+    @DeleteMapping("/{groupNo}")
+    public ResponseEntity<ApiResponseDto> delete(@PathVariable Long groupNo) {
+        botGroupService.delete(groupNo);
+        return apiResponseManager.success(null);
+    }
 }

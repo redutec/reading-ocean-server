@@ -1,6 +1,7 @@
 package com.redutec.core.entity;
 
 import com.redutec.core.entity.key.BotGroupPermissionKey;
+import com.redutec.core.meta.PermissionType;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
@@ -40,7 +41,8 @@ public class BotGroupPermission {
 
     @Column(name = "permission_type", nullable = false, length = 6, columnDefinition = "char(6)")
     @JdbcTypeCode(Types.CHAR)
-    private String permissionType;
+    @Enumerated(EnumType.STRING)
+    private PermissionType permissionType;
 
     @Column(name = "use_yn", nullable = false, columnDefinition = "char(1)")
     @JdbcTypeCode(Types.CHAR)

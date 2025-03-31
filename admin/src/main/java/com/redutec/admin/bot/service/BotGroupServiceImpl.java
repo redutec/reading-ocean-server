@@ -2,10 +2,15 @@ package com.redutec.admin.bot.service;
 
 import com.redutec.admin.bot.dto.BotGroupDto;
 import com.redutec.core.entity.BotGroup;
+import com.redutec.core.entity.BotGroupPermission;
+import com.redutec.core.entity.BotMenu;
+import com.redutec.core.entity.key.BotGroupPermissionKey;
 import com.redutec.core.repository.BotGroupRepository;
+import com.redutec.core.repository.BotMenuRepository;
 import com.redutec.core.specification.BotGroupSpecification;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.Hibernate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -19,6 +24,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class BotGroupServiceImpl implements BotGroupService {
     private final BotGroupRepository botGroupRepository;
+    private final BotMenuRepository botMenuRepository;
 
     /**
      * 관리자 그룹 등록
@@ -50,6 +56,8 @@ public class BotGroupServiceImpl implements BotGroupService {
                 (findBotGroupRequest.getPage() != null && findBotGroupRequest.getSize() != null)
                         ? PageRequest.of(findBotGroupRequest.getPage(), findBotGroupRequest.getSize())
                         : Pageable.unpaged());
+        // 각 BotGroup의 userGroups와 groupPermissions 컬렉션 강제 초기화
+        botGroupPage.getContent().forEach(group -> Hibernate.initialize(group.getUserGroups()));
         // 조회한 관리자 그룹들을 fromEntity 메서드를 사용해 응답 객체로 변환 후 리턴
         List<BotGroupDto.BotGroupResponse> botGroupResponseList = botGroupPage.getContent().stream()
                 .map(BotGroupDto.BotGroupResponse::fromEntity)
@@ -61,6 +69,17 @@ public class BotGroupServiceImpl implements BotGroupService {
                 .build();
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public BotGroupDto.BotGroupWithPermissionResponse findByGroupNo(Long groupNo) {
+        BotGroup botGroup = getBotGroup(groupNo);
+        // 지연 로딩된 컬렉션 초기화
+        Hibernate.initialize(botGroup.getUserGroups());
+        Hibernate.initialize(botGroup.getGroupPermissions());
+        // 특정 관리자 그룹 리턴
+        return BotGroupDto.BotGroupWithPermissionResponse.fromEntity(botGroup);
+    }
+
     /**
      * 특정 관리자 그룹 조회
      * @param groupNo 관리자 그룹 고유번호
@@ -68,7 +87,7 @@ public class BotGroupServiceImpl implements BotGroupService {
      */
     @Override
     @Transactional(readOnly = true)
-    public BotGroup findByGroupNo(Long groupNo) {
+    public BotGroup getBotGroup(Long groupNo) {
         return botGroupRepository.findById(groupNo).orElseThrow(() -> new EntityNotFoundException("No such BotGroup"));
     }
 
@@ -80,14 +99,37 @@ public class BotGroupServiceImpl implements BotGroupService {
     @Override
     @Transactional
     public void update(Long groupNo, BotGroupDto.UpdateBotGroupRequest updateBotGroupRequest) {
-        // 수정할 관리자 그룹이 존재하는지 확인
-        BotGroup botGroup = findByGroupNo(groupNo);
-        // 도메인 메서드를 통해 필요한 필드만 업데이트 (비즈니스 로직을 캡슐화)
+        // 수정할 관리자 그룹 조회
+        BotGroup botGroup = getBotGroup(groupNo);
+        // 기본 필드 업데이트
         botGroup.updateBotGroup(
                 updateBotGroupRequest.getGroupName(),
                 updateBotGroupRequest.getDescription(),
                 updateBotGroupRequest.getUseYn());
-        // 변경된 엔티티를 저장 (영속성 컨텍스트의 변경 감지를 통한 업데이트)
+        // 그룹 권한 요청 목록이 전달되었다면 기존 권한을 대체합니다.
+        if (updateBotGroupRequest.getGroupPermissions() != null) {
+            // 기존 권한 모두 삭제 (orphanRemoval=true이므로 자동 삭제)
+            botGroup.getGroupPermissions().clear();
+            // 전달받은 요청 목록을 순회하며 새 권한 생성 후 추가
+            updateBotGroupRequest.getGroupPermissions().forEach(permissionRequest -> {
+                // BotGroupPermissionKey 생성
+                BotGroupPermissionKey key = new BotGroupPermissionKey(botGroup.getGroupNo(), Math.toIntExact(permissionRequest.getMenuNo()));
+                // BotMenu 엔티티 조회 (menuNo로 조회)
+                BotMenu botMenu = botMenuRepository.findById(Math.toIntExact(permissionRequest.getMenuNo()))
+                        .orElseThrow(() -> new EntityNotFoundException("No such BotMenu"));
+                // 새 BotGroupPermission 엔티티 생성 (BotMenu 엔티티 조회는 필요한 경우 추가)
+                BotGroupPermission newPermission = BotGroupPermission.builder()
+                        .id(key)
+                        .group(botGroup)
+                        .menu(botMenu)
+                        .permissionType(permissionRequest.getPermissionType())
+                        .useYn(permissionRequest.getUseYn())
+                        .build();
+                // 생성된 권한 엔티티를 그룹의 권한 리스트에 추가
+                botGroup.getGroupPermissions().add(newPermission);
+            });
+        }
+        // 변경된 엔티티 저장 (cascade 옵션에 따라 권한 엔티티도 저장됩니다)
         botGroupRepository.save(botGroup);
     }
 
@@ -98,6 +140,6 @@ public class BotGroupServiceImpl implements BotGroupService {
     @Override
     @Transactional
     public void delete(Long groupNo) {
-        botGroupRepository.delete(findByGroupNo(groupNo));
+        botGroupRepository.delete(getBotGroup(groupNo));
     }
 }

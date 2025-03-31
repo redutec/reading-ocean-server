@@ -19,17 +19,17 @@ public interface BotUserService {
      */
     BotUserDto.BotUserPageResponse find(BotUserDto.FindBotUserRequest findBotUserRequest);
     /**
-     * 특정 관리자 계정 조회
+     * 특정 관리자 계정 엔티티 조회
      * @param userNo 관리자 계정 고유번호
      * @return 특정 관리자 계정 엔티티 객체
      */
-    BotUser findByUserNo(Integer userNo);
+    BotUser getBotUser(Integer userNo);
     /**
      * 관리자 계정 수정
      * @param userNo 수정할 관리자 계정의 고유번호
      * @param updateBotUserRequest 수정할 정보를 담은 DTO
      */
-    void update(Integer userNo, BotUserDto.UpdateBotUserRequest updateBotUserRequest);
+    void update(Integer userNo, BotUserDto.UpdateBotUserRequest updateBotUserRequest) throws NoSuchAlgorithmException;
     /**
      * 관리자 계정 삭제
      * @param userNo 삭제할 관리자 계정의 고유번호
