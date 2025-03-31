@@ -49,7 +49,7 @@ public class BackOfficeGroupController {
                         .build()));
     }
 
-    @Operation(summary = "관리자 그룹 상세 조회", description = "관리자 그룹 상세 조회 API")
+    @Operation(summary = "특정 관리자 그룹 조회", description = "특정 관리자 그룹 조회 API")
     @GetMapping("/{groupNo}")
     public ResponseEntity<ApiResponseDto> findByGroupNo(@PathVariable Long groupNo) {
         return apiResponseManager.success(backOfficeGroupService.findByGroupNo(groupNo));
