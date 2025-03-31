@@ -59,4 +59,22 @@ public class CmtConfigurationGeneral {
 
     @Column(name = "description", length = 300)
     private String description;
+
+    public void updateCmtConfigurationGeneral(
+            String configurationKey,
+            String configurationCategoryKey,
+            String configurationCategoryName,
+            String configurationName,
+            String configurationContent,
+            String useYn,
+            String description
+    ) {
+        this.configurationKey = configurationKey != null ? configurationKey : this.configurationKey;
+        this.configurationCategoryKey = configurationCategoryKey != null ? configurationCategoryKey : this.configurationCategoryKey;
+        this.configurationCategoryName = configurationCategoryName != null ? configurationCategoryName : this.configurationCategoryName;
+        this.configurationName = configurationName != null ? configurationName : this.configurationName;
+        this.configurationContent = configurationContent != null ? configurationContent : this.configurationContent;
+        this.useYn = useYn != null ? useYn : this.useYn;
+        this.description = description != null ? description : this.description;
+    }
 }

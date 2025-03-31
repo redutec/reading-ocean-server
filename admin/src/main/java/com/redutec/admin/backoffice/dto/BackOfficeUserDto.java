@@ -1,4 +1,4 @@
-package com.redutec.admin.bot.dto;
+package com.redutec.admin.backoffice.dto;
 
 import com.redutec.core.criteria.BotUserCriteria;
 import com.redutec.core.entity.BotUser;
@@ -14,12 +14,12 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-public class BotUserDto {
+public class BackOfficeUserDto {
     @Schema(description = "관리자 계정 등록 요청 객체")
     @Builder
     @Getter
     @AllArgsConstructor
-    public static class CreateBotUserRequest {
+    public static class CreateBackOfficeUserRequest {
         @Schema(description = "관리자 계정 아이디")
         @Size(min = 4, max = 100)
         private String userId;
@@ -48,7 +48,7 @@ public class BotUserDto {
     @Builder
     @Getter
     @AllArgsConstructor
-    public static class FindBotUserRequest {
+    public static class FindBackOfficeUserRequest {
         @Schema(description = "관리자 계정 고유번호")
         @Positive
         private List<Long> userNoList;
@@ -82,7 +82,7 @@ public class BotUserDto {
     @Getter
     @Setter
     @AllArgsConstructor
-    public static class UpdateBotUserRequest {
+    public static class UpdateBackOfficeUserRequest {
         @Schema(description = "관리자 계정 아이디")
         @Size(min = 4, max = 100)
         private String userId;
@@ -122,20 +122,20 @@ public class BotUserDto {
     @AllArgsConstructor
     @Builder
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
-    public static class BotUserResponse {
+    public static class BackOfficeUserResponse {
         private Integer userNo;
         private String userId;
         private String userName;
-        private BotGroupDto.BotGroupResponse botGroup;
+        private BackOfficeGroupDto.BackOfficeGroupResponse botGroup;
         private LocalDateTime registerDatetime;
         private LocalDateTime modifyDatetime;
 
-        public static BotUserResponse fromEntity(BotUser botUser) {
-            BotGroupDto.BotGroupResponse botGroupResponse = Optional.ofNullable(botUser.getUserGroups())
+        public static BackOfficeUserResponse fromEntity(BotUser botUser) {
+            BackOfficeGroupDto.BackOfficeGroupResponse botGroupResponse = Optional.ofNullable(botUser.getUserGroups())
                     .filter(list -> !list.isEmpty())
-                    .map(list -> BotGroupDto.BotGroupResponse.fromEntity(list.getFirst().getGroup()))
+                    .map(list -> BackOfficeGroupDto.BackOfficeGroupResponse.fromEntity(list.getFirst().getGroup()))
                     .orElse(null);
-            return BotUserResponse.builder()
+            return BackOfficeUserResponse.builder()
                     .userNo(botUser.getUserNo())
                     .userId(botUser.getUserId())
                     .userName(botUser.getUserName())
@@ -150,8 +150,8 @@ public class BotUserDto {
     @Getter
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class BotUserPageResponse {
-        private List<BotUserDto.BotUserResponse> botUserList;
+    public static class BackOfficeUserPageResponse {
+        private List<BackOfficeUserDto.BackOfficeUserResponse> botUserList;
         private long totalElements;
         private int totalPages;
     }

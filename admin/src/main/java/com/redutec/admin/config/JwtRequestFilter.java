@@ -1,7 +1,7 @@
 package com.redutec.admin.config;
 
-import com.redutec.admin.bot.dto.BotUserDto;
-import com.redutec.admin.bot.service.BotUserService;
+import com.redutec.admin.backoffice.dto.BackOfficeUserDto;
+import com.redutec.admin.backoffice.service.BackOfficeUserService;
 import com.redutec.core.entity.BotUser;
 import com.redutec.core.repository.BotUserRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -32,7 +32,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class JwtRequestFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
-    private final BotUserService botUserService;
+    private final BackOfficeUserService backOfficeUserService;
     private final BotUserRepository botUserRepository;
 
     @Setter
@@ -67,8 +67,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         // 로컬 프로파일인 경우, 토큰이 없으면 샘플 데이터를 사용하여 토큰 생성
         if ("local".equals(activeProfile) && accessToken == null) {
             // 로컬용 임시 어드민 사용자 데이터로 accessToken 발급
-            BotUser localBotUser = botUserService.getBotUser(1);
-            BotUserDto.BotUserResponse localBotUserResponse = BotUserDto.BotUserResponse.fromEntity(localBotUser);
+            BotUser localBotUser = backOfficeUserService.getBackOfficeUser(1);
+            BackOfficeUserDto.BackOfficeUserResponse localBotUserResponse = BackOfficeUserDto.BackOfficeUserResponse.fromEntity(localBotUser);
             // BotUserResponse를 클레임으로 전달하여 Access Token 생성
             accessToken = jwtUtil.generateAccessToken(localBotUserResponse);
             log.info("**** Local profile detected with no token. Generated accessToken for test: {}", accessToken);

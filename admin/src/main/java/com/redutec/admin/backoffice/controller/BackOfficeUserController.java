@@ -1,7 +1,7 @@
-package com.redutec.admin.bot.controller;
+package com.redutec.admin.backoffice.controller;
 
-import com.redutec.admin.bot.dto.BotUserDto;
-import com.redutec.admin.bot.service.BotUserService;
+import com.redutec.admin.backoffice.dto.BackOfficeUserDto;
+import com.redutec.admin.backoffice.service.BackOfficeUserService;
 import com.redutec.core.config.ApiResponseManager;
 import com.redutec.core.dto.ApiResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
@@ -21,16 +21,16 @@ import java.util.List;
  */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/bot/user")
+@RequestMapping("/back-office/user")
 @Tag(name = "관리자 계정 관리", description = "관리자 계정 API 모음")
-public class BotUserController {
+public class BackOfficeUserController {
     private final ApiResponseManager apiResponseManager;
-    private final BotUserService botUserService;
+    private final BackOfficeUserService backOfficeUserService;
 
     @Operation(summary = "관리자 계정 등록", description = "관리자 계정을 등록하는 API")
     @PostMapping
-    public ResponseEntity<ApiResponseDto> create(@Valid @RequestBody BotUserDto.CreateBotUserRequest createBotUserRequest) throws NoSuchAlgorithmException {
-        return apiResponseManager.success(botUserService.create(createBotUserRequest));
+    public ResponseEntity<ApiResponseDto> create(@Valid @RequestBody BackOfficeUserDto.CreateBackOfficeUserRequest createBackOfficeUserRequest) throws NoSuchAlgorithmException {
+        return apiResponseManager.success(backOfficeUserService.create(createBackOfficeUserRequest));
     }
 
     @Operation(summary = "조건에 맞는 관리자 계정 조회", description = "조건에 맞는 관리자 계정 조회 API")
@@ -42,8 +42,8 @@ public class BotUserController {
             @Parameter(description = "페이지 번호", example = "0") @RequestParam(required = false) Integer page,
             @Parameter(description = "페이지 당 데이터 개수", example = "30") @RequestParam(required = false) Integer size
     ) {
-        return apiResponseManager.success(botUserService.find(
-                BotUserDto.FindBotUserRequest.builder()
+        return apiResponseManager.success(backOfficeUserService.find(
+                BackOfficeUserDto.FindBackOfficeUserRequest.builder()
                         .userNoList(userNoList)
                         .userId(userId)
                         .userName(userName)
