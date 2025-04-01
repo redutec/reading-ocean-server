@@ -1,4 +1,4 @@
-package com.redutec.core.dto;
+package com.redutec.core.config;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,7 +10,7 @@ import lombok.Getter;
 @Builder
 @Getter
 @AllArgsConstructor
-public class ApiResponseDto {
+public class ApiResponseBody {
     private Integer status;
     private String message;
     private Object data;

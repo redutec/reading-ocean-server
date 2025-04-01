@@ -2,8 +2,8 @@ package com.redutec.admin.account.controller;
 
 import com.redutec.admin.account.dto.AccountDto;
 import com.redutec.admin.account.service.AccountService;
+import com.redutec.core.config.ApiResponseBody;
 import com.redutec.core.config.ApiResponseManager;
-import com.redutec.core.dto.ApiResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +32,7 @@ public class AccountController {
      */
     @Operation(summary = "조건에 맞는 회원 조회", description = "조건에 맞는 회원 조회 API")
     @GetMapping
-    public ResponseEntity<ApiResponseDto> find() {
+    public ResponseEntity<ApiResponseBody> find() {
         return apiResponseManager.success(accountService.find(
                 AccountDto.FindAccountRequest.builder()
                         .build()));

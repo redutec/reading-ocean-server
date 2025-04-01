@@ -2,7 +2,6 @@ package com.redutec.core.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.redutec.core.dto.ApiResponseDto;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletRequestWrapper;
@@ -32,7 +31,6 @@ public class XSSFilter implements Filter {
      *
      * @param filterConfig 필터 구성 정보
      */
-    @Override
     public void init(FilterConfig filterConfig) {
         // 필터 초기화 (필요시)
     }
@@ -58,7 +56,7 @@ public class XSSFilter implements Filter {
             String originalBody = wrappedRequest.getCachedBody();
             boolean isSame = objectMapper.readTree(originalBody).equals(objectMapper.readTree(sanitizedJson));
             if (!isSame) {
-                ResponseEntity<ApiResponseDto> errorResponse = apiResponseManager.error(
+                ResponseEntity<ApiResponseBody> errorResponse = apiResponseManager.error(
                         HttpStatus.BAD_REQUEST, "XSS attack detected."
                 );
                 String jsonResponse = objectMapper.writeValueAsString(errorResponse.getBody());

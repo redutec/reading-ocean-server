@@ -2,8 +2,8 @@ package com.redutec.admin.backoffice.controller;
 
 import com.redutec.admin.backoffice.dto.BackOfficeUserDto;
 import com.redutec.admin.backoffice.service.BackOfficeUserService;
+import com.redutec.core.config.ApiResponseBody;
 import com.redutec.core.config.ApiResponseManager;
-import com.redutec.core.dto.ApiResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -29,13 +29,13 @@ public class BackOfficeUserController {
 
     @Operation(summary = "관리자 계정 등록", description = "관리자 계정을 등록하는 API")
     @PostMapping
-    public ResponseEntity<ApiResponseDto> create(@Valid @RequestBody BackOfficeUserDto.CreateBackOfficeUserRequest createBackOfficeUserRequest) throws NoSuchAlgorithmException {
+    public ResponseEntity<ApiResponseBody> create(@Valid @RequestBody BackOfficeUserDto.CreateBackOfficeUserRequest createBackOfficeUserRequest) throws NoSuchAlgorithmException {
         return apiResponseManager.success(backOfficeUserService.create(createBackOfficeUserRequest));
     }
 
     @Operation(summary = "조건에 맞는 관리자 계정 조회", description = "조건에 맞는 관리자 계정 조회 API")
     @GetMapping
-    public ResponseEntity<ApiResponseDto> find(
+    public ResponseEntity<ApiResponseBody> find(
             @Parameter(description = "관리자 계정 고유번호") @RequestParam(required = false) List<Long> userNoList,
             @Parameter(description = "관리자 계정 아이디") @RequestParam(required = false) String userId,
             @Parameter(description = "관리자 이름") @RequestParam(required = false) String userName,
