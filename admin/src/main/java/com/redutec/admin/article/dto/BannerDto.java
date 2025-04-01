@@ -1,4 +1,4 @@
-package com.redutec.admin.configuration.dto;
+package com.redutec.admin.article.dto;
 
 import com.redutec.core.criteria.CmtConfigurationGeneralCriteria;
 import com.redutec.core.entity.CmtConfigurationGeneral;
@@ -12,51 +12,24 @@ import lombok.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class ConfigurationGeneralDto {
-    @Schema(description = "사이트 설정 등록 요청 객체")
+public class BannerDto {
+    @Schema(description = "배너 등록 요청 객체")
     @Builder
     @Getter
     @AllArgsConstructor
-    public static class CreateConfigurationGeneralRequest {
-        @Schema(description = "설정 키", example = "DELIVERY_FEE")
-        @NotBlank
-        @Size(max = 50)
-        private String configurationKey;
-
-        @Schema(description = "설정 카테고리 키", example = "DELIVERY")
-        @NotBlank
-        @Size(max = 50)
-        private String configurationCategoryKey;
-
-        @Schema(description = "설정 카테고리 명", example = "배송정보")
+    public static class CreateBannerRequest {
+        @Schema(description = "배너 제목", example = "테스트 배너 제목")
         @NotBlank
         @Size(max = 100)
-        private String configurationCategoryName;
+        private String articleTitle;
 
-        @Schema(description = "설정 명", example = "배송비 적용정책")
-        @NotBlank
-        @Size(max = 200)
-        private String configurationName;
-
-        @Schema(description = "설정 내용", example = "DFP003")
-        @NotBlank
-        private String configurationContent;
-
-        @Schema(description = "사용 여부", example = "Y")
-        @NotBlank
-        @Pattern(regexp = "^[YN]$", message = "사용 여부는 'Y' 또는 'N'이어야 합니다.")
-        private String useYn;
-
-        @Schema(description = "설명", example = "조건부 무료 정책")
-        @Size(max = 300)
-        private String description;
     }
 
-    @Schema(description = "사이트 설정 조회 요청 객체")
+    @Schema(description = "배너 조회 요청 객체")
     @Builder
     @Getter
     @AllArgsConstructor
-    public static class FindConfigurationGeneralRequest {
+    public static class FindBannerRequest {
         @Schema(description = "설정 키 목록")
         private List<String> configurationKeyList;
 
@@ -100,11 +73,11 @@ public class ConfigurationGeneralDto {
         }
     }
 
-    @Schema(description = "사이트 설정 수정 요청 객체")
+    @Schema(description = "배너 수정 요청 객체")
     @Builder
     @Getter
     @AllArgsConstructor
-    public static class UpdateConfigurationGeneralRequest {
+    public static class UpdateBannerRequest {
         @Schema(description = "설정 항목 Key", example = "REFUND_COST")
         @Size(max = 50)
         private String configurationKey;
@@ -133,12 +106,12 @@ public class ConfigurationGeneralDto {
         private String description;
     }
 
-    @Schema(description = "사이트 설정 응답 객체")
+    @Schema(description = "배너 응답 객체")
     @Builder
     @Getter
     @AllArgsConstructor
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
-    public static class ConfigurationGeneralResponse {
+    public static class BannerResponse {
         @Schema(description = "설정 키")
         private String configurationKey;
 
@@ -166,8 +139,8 @@ public class ConfigurationGeneralDto {
         @Schema(description = "설명")
         private String description;
 
-        public static ConfigurationGeneralResponse fromEntity(CmtConfigurationGeneral cmtConfigurationGeneral) {
-            return ConfigurationGeneralResponse.builder()
+        public static BannerResponse fromEntity(CmtConfigurationGeneral cmtConfigurationGeneral) {
+            return BannerResponse.builder()
                     .configurationKey(cmtConfigurationGeneral.getConfigurationKey())
                     .configurationCategoryKey(cmtConfigurationGeneral.getConfigurationCategoryKey())
                     .configurationCategoryName(cmtConfigurationGeneral.getConfigurationCategoryName())
@@ -181,14 +154,14 @@ public class ConfigurationGeneralDto {
         }
     }
 
-    @Schema(description = "사이트 설정 목록 및 페이징 정보 응답 객체")
+    @Schema(description = "배너 목록 및 페이징 정보 응답 객체")
     @Builder
     @Getter
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class ConfigurationGeneralPageResponse {
-        @Schema(description = "사이트 설정 목록")
-        private List<ConfigurationGeneralResponse> configurationGeneralList;
+    public static class BannerPageResponse {
+        @Schema(description = "배너 목록")
+        private List<BannerResponse> siteInfoList;
 
         @Schema(description = "전체 요소 수")
         private long totalElements;
