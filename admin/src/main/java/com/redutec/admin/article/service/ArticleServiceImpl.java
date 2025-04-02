@@ -67,7 +67,7 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     /**
-     * 특정 게시물 노출 설정(배너, FAQ, 팝업 등을 포함) 엔티티 조회
+     * 특정 게시물 노출 설정(배너, FAQ, 팝업 등) 엔티티 조회
      * @param articleNo 게시물 노출 설정 고유번호
      * @return 특정 게시물 노출 설정 엔티티 객체
      */
@@ -78,7 +78,7 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     /**
-     * 특정 게시물 첨부파일(배너, FAQ, 팝업 등을 포함) 엔티티 조회
+     * 특정 게시물 첨부파일(배너, FAQ, 팝업 등) 엔티티 조회
      * @param article 게시물 엔티티
      * @param attachFileValue 사용하는 기기
      * @return 특정 게시물 첨부파일 엔티티 객체
@@ -93,7 +93,7 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     /**
-     * 특정 게시물(배너, FAQ, 팝업 등을 포함) 수정
+     * 특정 게시물(배너, FAQ, 팝업 등) 수정
      * @param article 게시물(배너, FAQ, 팝업 등) 수정 정보를 담은 엔티티
      * @param articleDisplay 게시물 노출 관련 수정 정보를 담은 엔티티
      * @param articleAttachFile 게시물 첨부 파일 수정 정보를 담은 엔티티
