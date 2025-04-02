@@ -8,7 +8,7 @@ import java.util.List;
 @Getter
 @Builder
 public class BotUserCriteria {
-    private List<Long> userNoList;
+    private List<Integer> userNoList;
     private String userId;
     private String userName;
 }

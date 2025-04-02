@@ -51,14 +51,14 @@ public class BackOfficeGroupController {
 
     @Operation(summary = "특정 관리자 그룹 조회", description = "특정 관리자 그룹 조회 API")
     @GetMapping("/{groupNo}")
-    public ResponseEntity<ApiResponseBody> findByGroupNo(@PathVariable Long groupNo) {
+    public ResponseEntity<ApiResponseBody> findByGroupNo(@PathVariable Integer groupNo) {
         return apiResponseManager.success(backOfficeGroupService.findByGroupNo(groupNo));
     }
 
     @Operation(summary = "관리자 그룹 수정", description = "관리자 그룹의 정보를 수정하는 API")
     @PutMapping("/{groupNo}")
     public ResponseEntity<ApiResponseBody> update(
-            @PathVariable Long groupNo,
+            @PathVariable Integer groupNo,
             @Valid @RequestBody BackOfficeGroupDto.UpdateBackOfficeGroupRequest updateBackOfficeGroupRequest) {
         backOfficeGroupService.update(groupNo, updateBackOfficeGroupRequest);
         return apiResponseManager.success(null);
@@ -66,7 +66,7 @@ public class BackOfficeGroupController {
 
     @Operation(summary = "관리자 그룹 삭제", description = "관리자 그룹 삭제 API")
     @DeleteMapping("/{groupNo}")
-    public ResponseEntity<ApiResponseBody> delete(@PathVariable Long groupNo) {
+    public ResponseEntity<ApiResponseBody> delete(@PathVariable Integer groupNo) {
         backOfficeGroupService.delete(groupNo);
         return apiResponseManager.success(null);
     }

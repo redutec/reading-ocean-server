@@ -61,7 +61,7 @@ public class BackOfficeUserServiceImpl implements BackOfficeUserService {
         // 요청에 groupNo가 있다면 BotUserGroup 엔티티 생성
         if (createBackOfficeUserRequest.getGroupNo() != null) {
             // BotGroup 조회
-            BotGroup botGroup = backOfficeGroupService.getBackOfficeGroup(Long.valueOf(createBackOfficeUserRequest.getGroupNo()));
+            BotGroup botGroup = backOfficeGroupService.getBackOfficeGroup(createBackOfficeUserRequest.getGroupNo());
             // 복합키 생성 : savedUser의 userNo와 botGroup의 groupNo 사용
             BotUserGroupKey key = new BotUserGroupKey(savedUser.getUserNo(), botGroup.getGroupNo());
             // BotUserGroup 생성
@@ -89,25 +89,26 @@ public class BackOfficeUserServiceImpl implements BackOfficeUserService {
     @Transactional(readOnly = true)
     public BackOfficeUserDto.BackOfficeUserPageResponse find(BackOfficeUserDto.FindBackOfficeUserRequest findBackOfficeUserRequest) {
         // 조건에 맞는 관리자 계정 조회
-        Page<BotUser> botUserPage = botUserRepository.findAll(
+        Page<BotUser> backOfficeUserPage = botUserRepository.findAll(
                 BotUserSpecification.findWith(findBackOfficeUserRequest.toCriteria()),
                 (findBackOfficeUserRequest.getPage() != null && findBackOfficeUserRequest.getSize() != null)
                         ? PageRequest.of(findBackOfficeUserRequest.getPage(), findBackOfficeUserRequest.getSize())
-                        : Pageable.unpaged());
+                        : Pageable.unpaged()
+        );
         // 각 BotUser의 userGroups와, 그 안의 BotGroup.userGroups를 강제로 초기화
-        botUserPage.getContent().forEach(botUser ->
+        backOfficeUserPage.getContent().forEach(botUser ->
                 botUser.getUserGroups().forEach(botUserGroup ->
                         Hibernate.initialize(botUserGroup.getGroup().getUserGroups())
                 )
         );
         // 조회한 관리자 계정들을 fromEntity 메서드를 사용해 응답 객체로 변환 후 리턴
-        List<BackOfficeUserDto.BackOfficeUserResponse> botUserResponseList = botUserPage.getContent().stream()
+        List<BackOfficeUserDto.BackOfficeUserResponse> backOfficeUserResponseList = backOfficeUserPage.getContent().stream()
                 .map(BackOfficeUserDto.BackOfficeUserResponse::fromEntity)
                 .collect(Collectors.toList());
         return BackOfficeUserDto.BackOfficeUserPageResponse.builder()
-                .botUserList(botUserResponseList)
-                .totalElements(botUserPage.getTotalElements())
-                .totalPages(botUserPage.getTotalPages())
+                .backOfficeUserList(backOfficeUserResponseList)
+                .totalElements(backOfficeUserPage.getTotalElements())
+                .totalPages(backOfficeUserPage.getTotalPages())
                 .build();
     }
 
@@ -146,7 +147,7 @@ public class BackOfficeUserServiceImpl implements BackOfficeUserService {
                                     .map(BotGroup::getGroupNo)
                                     .orElseThrow(() -> new IllegalArgumentException("BackOfficeGroup 정보가 올바르지 않습니다."));
                             // BotGroup 엔티티 조회
-                            BotGroup botGroup = backOfficeGroupService.getBackOfficeGroup(Long.valueOf(groupNo));
+                            BotGroup botGroup = backOfficeGroupService.getBackOfficeGroup(groupNo);
                             // BotUserGroup 엔티티 생성
                             return BotUserGroup.builder()
                                     .id(new BotUserGroupKey(botUser.getUserNo(), botGroup.getGroupNo()))

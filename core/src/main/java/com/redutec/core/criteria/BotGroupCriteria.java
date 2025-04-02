@@ -8,6 +8,6 @@ import java.util.List;
 @Getter
 @Builder
 public class BotGroupCriteria {
-    List<Long> groupNoList;
+    List<Integer> groupNoList;
     String groupName;
 }

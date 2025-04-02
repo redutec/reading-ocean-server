@@ -5,10 +5,7 @@ import com.redutec.core.entity.BotGroup;
 import com.redutec.core.entity.BotGroupPermission;
 import com.redutec.core.meta.PermissionType;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.PositiveOrZero;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.*;
 import org.hibernate.Hibernate;
 
@@ -47,7 +44,7 @@ public class BackOfficeGroupDto {
     @NoArgsConstructor
     public static class FindBackOfficeGroupRequest {
         @Schema(description = "관리자 그룹 고유번호 목록")
-        private List<Long> groupNoList;
+        private List<@Positive Integer> groupNoList;
 
         @Schema(description = "관리자 그룹 이름")
         private String groupName;

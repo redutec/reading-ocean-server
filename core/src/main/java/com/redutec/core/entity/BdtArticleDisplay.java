@@ -1,5 +1,6 @@
 package com.redutec.core.entity;
 
+import com.redutec.core.meta.BannerType;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
@@ -61,7 +62,8 @@ public class BdtArticleDisplay {
 
     @Column(name = "banner_type", length = 6, columnDefinition = "char(6)")
     @JdbcTypeCode(Types.CHAR)
-    private String bannerType;
+    @Enumerated(EnumType.STRING)
+    private BannerType bannerType;
 
     @Column(name = "popup_position_type", length = 6, columnDefinition = "char(6)")
     @JdbcTypeCode(Types.CHAR)

@@ -50,8 +50,7 @@ public class BackOfficeUserDto {
     @AllArgsConstructor
     public static class FindBackOfficeUserRequest {
         @Schema(description = "관리자 계정 고유번호")
-        @Positive
-        private List<Long> userNoList;
+        private List<@Positive Integer> userNoList;
 
         @Schema(description = "관리자 계정 아이디")
         @Size(max = 20)
@@ -151,7 +150,7 @@ public class BackOfficeUserDto {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class BackOfficeUserPageResponse {
-        private List<BackOfficeUserDto.BackOfficeUserResponse> botUserList;
+        private List<BackOfficeUserDto.BackOfficeUserResponse> backOfficeUserList;
         private long totalElements;
         private int totalPages;
     }

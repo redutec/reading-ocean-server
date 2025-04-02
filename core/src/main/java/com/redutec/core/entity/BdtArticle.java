@@ -1,5 +1,6 @@
 package com.redutec.core.entity;
 
+import com.redutec.core.meta.Domain;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
@@ -59,7 +60,8 @@ public class BdtArticle {
     private String displayDomainCode;
 
     @Column(name = "domain", length = 24)
-    private String domain;
+    @Enumerated(EnumType.STRING)
+    private Domain domain;
 
     @Column(name = "display_write_date", nullable = false, columnDefinition = "DATE DEFAULT (curdate())")
     private LocalDate displayWriteDate;

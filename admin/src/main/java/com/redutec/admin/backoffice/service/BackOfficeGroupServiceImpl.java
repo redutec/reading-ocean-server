@@ -71,7 +71,7 @@ public class BackOfficeGroupServiceImpl implements BackOfficeGroupService {
 
     @Override
     @Transactional(readOnly = true)
-    public BackOfficeGroupDto.BackOfficeGroupWithPermissionResponse findByGroupNo(Long groupNo) {
+    public BackOfficeGroupDto.BackOfficeGroupWithPermissionResponse findByGroupNo(Integer groupNo) {
         BotGroup botGroup = getBackOfficeGroup(groupNo);
         // 지연 로딩된 컬렉션 초기화
         Hibernate.initialize(botGroup.getUserGroups());
@@ -87,8 +87,8 @@ public class BackOfficeGroupServiceImpl implements BackOfficeGroupService {
      */
     @Override
     @Transactional(readOnly = true)
-    public BotGroup getBackOfficeGroup(Long groupNo) {
-        return botGroupRepository.findById(groupNo).orElseThrow(() -> new EntityNotFoundException("No such BotGroup"));
+    public BotGroup getBackOfficeGroup(Integer groupNo) {
+        return botGroupRepository.findById(Long.valueOf(groupNo)).orElseThrow(() -> new EntityNotFoundException("No such BotGroup"));
     }
 
     /**
@@ -98,7 +98,7 @@ public class BackOfficeGroupServiceImpl implements BackOfficeGroupService {
      */
     @Override
     @Transactional
-    public void update(Long groupNo, BackOfficeGroupDto.UpdateBackOfficeGroupRequest updateBackOfficeGroupRequest) {
+    public void update(Integer groupNo, BackOfficeGroupDto.UpdateBackOfficeGroupRequest updateBackOfficeGroupRequest) {
         // 수정할 관리자 그룹 조회
         BotGroup botGroup = getBackOfficeGroup(groupNo);
         // 기본 필드 업데이트
@@ -140,7 +140,7 @@ public class BackOfficeGroupServiceImpl implements BackOfficeGroupService {
      */
     @Override
     @Transactional
-    public void delete(Long groupNo) {
+    public void delete(Integer groupNo) {
         botGroupRepository.delete(getBackOfficeGroup(groupNo));
     }
 }

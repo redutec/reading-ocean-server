@@ -23,25 +23,25 @@ public interface BackOfficeGroupService {
      * @param groupNo 관리자 그룹 고유번호
      * @return 특정 관리자 그룹 응답 객체
      */
-    BackOfficeGroupDto.BackOfficeGroupWithPermissionResponse findByGroupNo(Long groupNo);
+    BackOfficeGroupDto.BackOfficeGroupWithPermissionResponse findByGroupNo(Integer groupNo);
 
     /**
      * 특정 관리자 그룹 엔티티 조회
      * @param groupNo 관리자 그룹 고유번호
      * @return 특정 관리자 그룹 엔티티 객체
      */
-    BotGroup getBackOfficeGroup(Long groupNo);
+    BotGroup getBackOfficeGroup(Integer groupNo);
 
     /**
      * 관리자 그룹 수정
      * @param groupNo 수정할 관리자 그룹의 고유번호
      * @param updateBackOfficeGroupRequest 수정할 정보를 담은 DTO
      */
-    void update(Long groupNo, BackOfficeGroupDto.UpdateBackOfficeGroupRequest updateBackOfficeGroupRequest);
+    void update(Integer groupNo, BackOfficeGroupDto.UpdateBackOfficeGroupRequest updateBackOfficeGroupRequest);
 
     /**
      * 관리자 그룹 삭제
      * @param groupNo 삭제할 관리자 그룹의 고유번호
      */
-    void delete(Long groupNo);
+    void delete(Integer groupNo);
 }
