@@ -10,15 +10,18 @@ import com.redutec.core.entity.BdtArticleAttachFile;
 import com.redutec.core.entity.BdtArticleDisplay;
 import com.redutec.core.meta.AttachFileValue;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class BannerServiceImpl implements BannerService {
@@ -26,51 +29,63 @@ public class BannerServiceImpl implements BannerService {
     private final FileUtil fileUtil;
     private final JwtUtil jwtUtil;
 
-    /**
-     * 배너 등록
-     * @param createBannerRequest 배너 등록 정보를 담은 DTO
-     */
+    // 업로드 가능한 최대 이미지 파일 크기
+    private final long MAX_FILE_SIZE = 10 * 1024 * 1024;
+    // 이미지 파일 허용 확장자
+    private final String[] ALLOWED_EXTENSIONS = {"jpg", "jpeg", "png", "gif"};
+
     @Override
+    @Transactional
     public void create(
             ArticleDto.CreateBannerRequest createBannerRequest,
-            MultipartFile pcAttachFile,
-            MultipartFile mobileAttachFile
+            MultipartFile pcBannerImageFile,
+            MultipartFile mobileBannerImageFile
     ) {
-        // 파일 검증: 최대 10MB, 허용 확장자: jpg, jpeg, png, gif
-        long maxFileSize = 10 * 1024 * 1024; // 10MB
-        String[] allowedExtensions = {"jpg", "jpeg", "png", "gif"};
-        if (pcAttachFile != null && !pcAttachFile.isEmpty()) {
-            fileUtil.validateFile(pcAttachFile, maxFileSize, allowedExtensions);
-        }
-        if (mobileAttachFile != null && !mobileAttachFile.isEmpty()) {
-            fileUtil.validateFile(mobileAttachFile, maxFileSize, allowedExtensions);
-        }
-        // DTO → 엔티티 변환 (각각 BdtArticle와 BdtArticleDisplay)
-        BdtArticle article = createBannerRequest.toBdtArticleEntity();
+        // 현재 로그인한 어드민의 아이디 조회
+        String adminId = Optional.ofNullable(jwtUtil.extractUserIdFromToken((String) SecurityContextHolder.getContext().getAuthentication().getPrincipal()))
+                .orElse("admin");
+        log.info("adminId: {}", adminId);
+        // pc 배너 이미지 파일 검증
+        Optional.ofNullable(pcBannerImageFile)
+                .filter(file -> !file.isEmpty())
+                .ifPresent(file -> fileUtil.validateFile(file, MAX_FILE_SIZE, ALLOWED_EXTENSIONS));
+        // mobile 배너 이미지 파일 검증
+        Optional.ofNullable(mobileBannerImageFile)
+                .filter(file -> !file.isEmpty())
+                .ifPresent(file -> fileUtil.validateFile(file, MAX_FILE_SIZE, ALLOWED_EXTENSIONS));
+        // DTO → 엔티티 변환 (각각 BdtArticle과 BdtArticleDisplay)
+        BdtArticle article = createBannerRequest.toBdtArticleEntity(adminId);
         BdtArticleDisplay articleDisplay = createBannerRequest.toBdtArticleDisplayEntity(article);
-        // 게시물(배너) 및 노출정보 저장
+        log.info("article: {}", article.getAdminId());
+        log.info("articleDisplay: {}", articleDisplay.getBannerType());
+        // 게시물(배너) 및 노출정보 INSERT
         articleService.saveArticleAndDisplay(article, articleDisplay);
-        // 첨부파일 업로드 및 첨부파일 엔티티 저장
-        if (pcAttachFile != null && !pcAttachFile.isEmpty()) {
-            FileUploadResult pcFileUploadResult = fileUtil.uploadFile(pcAttachFile, "/banner/pc");
-            BdtArticleAttachFile pcArticleAttachFile = createAttachFileEntity(
-                    article,
-                    pcFileUploadResult.getFileUrl(),
-                    pcAttachFile.getOriginalFilename(),
-                    AttachFileValue.AFV002
-            );
-            articleService.saveArticleAttachFile(pcArticleAttachFile);
-        }
-        if (mobileAttachFile != null && !mobileAttachFile.isEmpty()) {
-            FileUploadResult mobileFileUploadResult = fileUtil.uploadFile(mobileAttachFile, "/banner/mobile");
-            BdtArticleAttachFile mobileArticleAttachFile = createAttachFileEntity(
-                    article,
-                    mobileFileUploadResult.getFileUrl(),
-                    mobileAttachFile.getOriginalFilename(),
-                    AttachFileValue.AFV001
-            );
-            articleService.saveArticleAttachFile(mobileArticleAttachFile);
-        }
+        // pcBannerImageFile 업로드 및 첨부파일 엔티티 변환 후 INSERT
+        Optional.ofNullable(pcBannerImageFile)
+                .filter(file -> !file.isEmpty())
+                .ifPresent(file -> {
+                    FileUploadResult pcFileUploadResult = fileUtil.uploadFile(file, "/banner/pc");
+                    BdtArticleAttachFile pcArticleAttachFile = createBannerRequest.toBdtArticleAttachFileEntity(
+                            article,
+                            AttachFileValue.AFV002,
+                            file.getOriginalFilename(),
+                            pcFileUploadResult.getFileUrl()
+                    );
+                    articleService.saveArticleAttachFile(pcArticleAttachFile);
+                });
+        // mobileBannerImageFile 업로드 및 첨부파일 엔티티 변환 후 INSERT
+        Optional.ofNullable(mobileBannerImageFile)
+                .filter(file -> !file.isEmpty())
+                .ifPresent(file -> {
+                    FileUploadResult mobileFileUploadResult = fileUtil.uploadFile(file, "/banner/mobile");
+                    BdtArticleAttachFile mobileArticleAttachFile = createBannerRequest.toBdtArticleAttachFileEntity(
+                            article,
+                            AttachFileValue.AFV001,
+                            file.getOriginalFilename(),
+                            mobileFileUploadResult.getFileUrl()
+                    );
+                    articleService.saveArticleAttachFile(mobileArticleAttachFile);
+                });
     }
 
     /**
@@ -79,6 +94,7 @@ public class BannerServiceImpl implements BannerService {
      * @return 조건에 맞는 배너 목록 응답 객체
      */
     @Override
+    @Transactional(readOnly = true)
     public ArticleDto.BannerPageResponse find(ArticleDto.FindArticleRequest findBannerRequest) {
         // 조건에 맞는 배너 조회(페이징)
         Page<BdtArticle> bannerPage = articleService.find(findBannerRequest);
@@ -89,8 +105,8 @@ public class BannerServiceImpl implements BannerService {
                     BdtArticleDisplay articleDisplay = articleService.findBdtArticleDisplay(banner.getArticleNo());
                     // PC용 첨부파일 조회 및 응답 객체 변환 (파일이 없으면 null)
                     ArticleDto.ArticleAttachFileResponse pcImageFile =
-                            java.util.Optional.ofNullable(
-                                            articleService.findBdtArticleAttachFileByArticleAndAttachFileValue(banner, AttachFileValue.AFV002)
+                            Optional.ofNullable(
+                                        articleService.findBdtArticleAttachFileByArticleAndAttachFileValue(banner, AttachFileValue.AFV002)
                                     ).map(pc -> ArticleDto.ArticleAttachFileResponse.builder()
                                             .articleAttachFileNo(pc.getArticleAttachFileNo())
                                             .articleNo(pc.getArticle().getArticleNo())
@@ -103,8 +119,8 @@ public class BannerServiceImpl implements BannerService {
                                     .orElse(null);
                     // 모바일용 첨부파일 조회 및 응답 객체 변환 (파일이 없으면 null)
                     ArticleDto.ArticleAttachFileResponse mobileImageFile =
-                            java.util.Optional.ofNullable(
-                                            articleService.findBdtArticleAttachFileByArticleAndAttachFileValue(banner, AttachFileValue.AFV001)
+                            Optional.ofNullable(
+                                        articleService.findBdtArticleAttachFileByArticleAndAttachFileValue(banner, AttachFileValue.AFV001)
                                     ).map(mobile -> ArticleDto.ArticleAttachFileResponse.builder()
                                             .articleAttachFileNo(mobile.getArticleAttachFileNo())
                                             .articleNo(mobile.getArticle().getArticleNo())
@@ -132,6 +148,7 @@ public class BannerServiceImpl implements BannerService {
      * @return 특정 배너 응답 객체
      */
     @Override
+    @Transactional(readOnly = true)
     public ArticleDto.BannerResponse findByBannerNo(Integer bannerNo) {
         // 배너 엔티티 조회
         BdtArticle article = articleService.getBdtArticle(bannerNo);
@@ -172,37 +189,64 @@ public class BannerServiceImpl implements BannerService {
         );
     }
 
+    /**
+     * 특정 배너 수정
+     * @param bannerNo 수정할 배너 고유번호
+     * @param updateBannerRequest 수정할 정보를 담은 DTO
+     */
     @Override
-    public void update(Integer bannerNo, ArticleDto.UpdateBannerRequest updateBannerRequest) {
-        // 받아온 수정 요청 객체를 엔티티로 변환하여 articleService.update로 UPDATE
+    @Transactional
+    public void update(
+            Integer bannerNo,
+            ArticleDto.UpdateBannerRequest updateBannerRequest,
+            MultipartFile pcBannerImageFile,
+            MultipartFile mobileBannerImageFile
+    ) {
+        // 현재 로그인한 어드민의 아이디 조회
+        String adminId = Optional.ofNullable(jwtUtil.extractUserIdFromToken((String) SecurityContextHolder.getContext().getAuthentication().getPrincipal()))
+                .orElse("admin");
+        // 수정할 배너가 존재하는지 확인
+        BdtArticle article = articleService.getBdtArticle(bannerNo);
+        BdtArticleDisplay articleDisplay = articleService.findBdtArticleDisplay(bannerNo);
+        BdtArticleAttachFile pcArticleAttachFile = articleService.findBdtArticleAttachFileByArticleAndAttachFileValue(article, AttachFileValue.AFV002);
+        BdtArticleAttachFile mobileArticleAttachFile = articleService.findBdtArticleAttachFileByArticleAndAttachFileValue(article, AttachFileValue.AFV001);
+        // PC용 배너 이미지 파일 검증
+        Optional.ofNullable(pcBannerImageFile)
+                .filter(file -> !file.isEmpty())
+                .ifPresent(file -> fileUtil.validateFile(file, MAX_FILE_SIZE, ALLOWED_EXTENSIONS));
+        // 모바일용 배너 이미지 파일 검증
+        Optional.ofNullable(mobileBannerImageFile)
+                .filter(file -> !file.isEmpty())
+                .ifPresent(file -> fileUtil.validateFile(file, MAX_FILE_SIZE, ALLOWED_EXTENSIONS));
+        // 수정할 정보를 각 엔티티에 더티 체킹 방식으로 세팅 (각각 BdtArticle, BdtArticleDisplay)
+        article.updateBdtArticle(
+                updateBannerRequest.getCategoryValue(),
+                updateBannerRequest.getArticleTitle(),
+                updateBannerRequest.getArticleContent(),
+                updateBannerRequest.getArticleContentDetail(),
+                updateBannerRequest.getDisplayYn(),
+                updateBannerRequest.getDomain(),
+                adminId
+        );
+        articleDisplay.updateBdtArticleDisplay(
+                updateBannerRequest.getDisplayBeginDatetime(),
+                updateBannerRequest.getDisplayEndDatetime(),
+                updateBannerRequest.getDisplayNewWindowYn(),
+                updateBannerRequest.getLinkUrl(),
+                updateBannerRequest.getDisplayOrder(),
+                updateBannerRequest.getTextColor(),
+                updateBannerRequest.getBackgroundColor(),
+                updateBannerRequest.getBannerType(),
+                "Y",
+                adminId
+        );
+        // 게시물(배너) 및 노출정보 UPDATE
+
+        // PC&모바일용 배너 이미지 업로드 및 수정할 파일 정보를 BdtArticleAttachFile 엔티티에 더티 체킹 방식으로 세팅 후 UPDATE
     }
 
     @Override
     public void delete(Integer bannerNo) {
         // 받아온 삭제할 배너 고유번호에 해당하는 엔티티 조회 후 해당 엔티티를 articleService.delete로 DELETE
-    }
-
-    /**
-     * 첨부파일 엔티티 생성 헬퍼 메서드
-     *
-     * @param article   게시물 엔티티
-     * @param attachmentFilePath   업로드된 파일의 접근 URL
-     * @param attachFileName    업로드한 파일의 이름
-     * @param attachFileValue 사용하는 기기를 나타내는 첨부파일 값 (예: PC, MOBILE)
-     * @return 생성된 BdtArticleAttachFile 엔티티
-     */
-    private BdtArticleAttachFile createAttachFileEntity(BdtArticle article,
-                                                        String attachmentFilePath,
-                                                        String attachFileName,
-                                                        AttachFileValue attachFileValue
-    ) {
-        return BdtArticleAttachFile.builder()
-                .article(article)
-                .attachFileValue(attachFileValue)
-                .attachFileName(attachFileName)
-                .attachmentFilePath(attachmentFilePath)
-                .useYn("Y")
-                .adminId(jwtUtil.extractUserIdFromToken((String) SecurityContextHolder.getContext().getAuthentication().getPrincipal()))
-                .build();
     }
 }

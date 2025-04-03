@@ -36,6 +36,7 @@ public class BdtArticleAttachFile {
 
     @Column(name = "attach_file_value", nullable = false, length = 6, columnDefinition = "CHAR(6) DEFAULT 'AFV003'")
     @JdbcTypeCode(Types.CHAR)
+    @Enumerated(EnumType.STRING)
     private AttachFileValue attachFileValue;
 
     @Column(name = "attach_file_name", length = 100)
@@ -61,4 +62,32 @@ public class BdtArticleAttachFile {
 
     @Column(name = "description", length = 300)
     private String description;
+
+    /**
+     * BdtArticleAttachFile 엔티티의 첨부파일 정보를 업데이트하는 도메인 메서드입니다.
+     * 각 파라미터가 null이 아닌 경우 해당 필드를 업데이트하며, null인 경우 기존 값이 유지됩니다.
+     * 이 메서드는 JPA의 더티 체킹 메커니즘을 통해 변경된 상태가 데이터베이스에 반영되도록 합니다.
+     *
+     * @param attachFileValue     null이 아닌 경우 attachFileValue 필드를 업데이트합니다.
+     * @param attachFileName      null이 아닌 경우 attachFileName 필드를 업데이트합니다.
+     * @param attachmentFilePath  null이 아닌 경우 attachmentFilePath 필드를 업데이트합니다.
+     * @param useYn               null이 아닌 경우 useYn 필드를 업데이트합니다.
+     * @param adminId             null이 아닌 경우 adminId 필드를 업데이트합니다.
+     * @param description         null이 아닌 경우 description 필드를 업데이트합니다.
+     */
+    public void updateBdtArticleAttachFile(
+            AttachFileValue attachFileValue,
+            String attachFileName,
+            String attachmentFilePath,
+            String useYn,
+            String adminId,
+            String description
+    ) {
+        this.attachFileValue = attachFileValue != null ? attachFileValue : this.attachFileValue;
+        this.attachFileName = attachFileName != null ? attachFileName : this.attachFileName;
+        this.attachmentFilePath = attachmentFilePath != null ? attachmentFilePath : this.attachmentFilePath;
+        this.useYn = useYn != null ? useYn : this.useYn;
+        this.adminId = adminId != null ? adminId : this.adminId;
+        this.description = description != null ? description : this.description;
+    }
 }

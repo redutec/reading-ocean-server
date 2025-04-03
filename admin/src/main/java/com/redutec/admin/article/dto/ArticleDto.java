@@ -2,6 +2,7 @@ package com.redutec.admin.article.dto;
 
 import com.redutec.core.criteria.BdtArticleCriteria;
 import com.redutec.core.entity.BdtArticle;
+import com.redutec.core.entity.BdtArticleAttachFile;
 import com.redutec.core.entity.BdtArticleDisplay;
 import com.redutec.core.meta.*;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -110,9 +111,6 @@ public class ArticleDto {
         private Domain domain;
 
         // bdt_article_display
-        @Schema(description = "팝업 위치", example = "PPT000")
-        private PopupPositionType popupPositionType;
-
         @Schema(description = "문자열 색상")
         @Pattern(regexp = "^(Black|White)$", message = "textColor는 'Black' 또는 'White'만 가능합니다.")
         private String textColor;
@@ -150,21 +148,23 @@ public class ArticleDto {
         @NotNull
         private LocalDateTime displayEndDatetime;
 
-        public BdtArticle toBdtArticleEntity() {
+        public BdtArticle toBdtArticleEntity(String adminId) {
             return BdtArticle.builder()
                     .articleBoardNo(5)
                     .articleTitle(this.bannerTitle)
                     .articleContent(this.bannerContent)
                     .articleContentDetail(this.bannerContentDetail)
                     .displayYn(this.displayYn)
+                    .displayDomainCode("DMC002")
                     .domain(this.domain)
+                    .displayConfigurationYn("Y")
+                    .adminId(adminId)
                     .build();
         }
 
         public BdtArticleDisplay toBdtArticleDisplayEntity(BdtArticle article) {
             return BdtArticleDisplay.builder()
                     .article(article)
-                    .popupPositionType(this.popupPositionType)
                     .textColor(this.textColor)
                     .backgroundColor(this.backgroundColor)
                     .displayOrder(this.displayOrder)
@@ -173,6 +173,24 @@ public class ArticleDto {
                     .displayNewWindowYn(this.displayNewWindowYn)
                     .displayBeginDatetime(this.displayBeginDatetime)
                     .displayEndDatetime(this.displayEndDatetime)
+                    .useYn(article.getUseYn())
+                    .adminId(article.getAdminId())
+                    .build();
+        }
+
+        public BdtArticleAttachFile toBdtArticleAttachFileEntity(
+                BdtArticle article,
+                AttachFileValue attachFileValue,
+                String attachFileName,
+                String attachmentFilePath
+        ) {
+            return BdtArticleAttachFile.builder()
+                    .article(article)
+                    .attachFileValue(attachFileValue)
+                    .attachFileName(attachFileName)
+                    .attachmentFilePath(attachmentFilePath)
+                    .useYn("Y")
+                    .adminId(article.getAdminId())
                     .build();
         }
     }
@@ -225,7 +243,7 @@ public class ArticleDto {
         @Schema(description = "노출 순서", example = "10")
         @Min(value = 0, message = "displayOrder는 0 이상이어야 합니다.")
         @Max(value = 255, message = "displayOrder는 255 이하이어야 합니다.")
-        private Integer displayOrder;
+        private Byte displayOrder;
 
         @Schema(description = "배너 유형(BNT001: 캐러셀)", example = "BNT001")
         @Enumerated(EnumType.STRING)

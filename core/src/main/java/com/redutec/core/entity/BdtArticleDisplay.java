@@ -88,4 +88,44 @@ public class BdtArticleDisplay {
 
     @Column(name = "description", length = 300)
     private String description;
+
+    /**
+     * 이 메서드는 BdtArticleDisplay 엔티티의 노출 설정 정보를 업데이트합니다.
+     * JPA의 더티 체킹 메커니즘을 활용하여 엔티티 상태의 변경을 감지하고 업데이트를 수행합니다.
+     * 각 파라미터가 null이 아닌 경우 해당 필드를 업데이트하며, null인 경우 기존 값이 유지됩니다.
+     *
+     * @param displayBeginDatetime null이 아닌 경우 displayBeginDatetime 필드를 업데이트합니다.
+     * @param displayEndDatetime   null이 아닌 경우 displayEndDatetime 필드를 업데이트합니다.
+     * @param displayNewWindowYn   null이 아닌 경우 displayNewWindowYn 필드를 업데이트합니다.
+     * @param linkURL              null이 아닌 경우 linkURL 필드를 업데이트합니다.
+     * @param displayOrder         null이 아닌 경우 displayOrder 필드를 업데이트합니다.
+     * @param textColor            null이 아닌 경우 textColor 필드를 업데이트합니다.
+     * @param backgroundColor      null이 아닌 경우 backgroundColor 필드를 업데이트합니다.
+     * @param bannerType           null이 아닌 경우 bannerType 필드를 업데이트합니다.
+     * @param useYn                null이 아닌 경우 useYn 필드를 업데이트합니다.
+     * @param adminId              null이 아닌 경우 adminId 필드를 업데이트합니다.
+     */
+    public void updateBdtArticleDisplay(
+            LocalDateTime displayBeginDatetime,
+            LocalDateTime displayEndDatetime,
+            String displayNewWindowYn,
+            String linkURL,
+            Byte displayOrder,
+            String textColor,
+            String backgroundColor,
+            BannerType bannerType,
+            String useYn,
+            String adminId
+    ) {
+        this.displayBeginDatetime = displayBeginDatetime != null ? displayBeginDatetime : this.displayBeginDatetime;
+        this.displayEndDatetime = displayEndDatetime != null ? displayEndDatetime : this.displayEndDatetime;
+        this.displayNewWindowYn = displayNewWindowYn != null ? displayNewWindowYn : this.displayNewWindowYn;
+        this.linkURL = linkURL != null ? linkURL : this.linkURL;
+        this.displayOrder = displayOrder != null ? displayOrder : this.displayOrder;
+        this.textColor = textColor != null ? textColor : this.textColor;
+        this.backgroundColor = backgroundColor != null ? backgroundColor : this.backgroundColor;
+        this.bannerType = bannerType != null ? bannerType : this.bannerType;
+        this.useYn = useYn != null ? useYn : this.useYn;
+        this.adminId = adminId != null ? adminId : this.adminId;
+    }
 }

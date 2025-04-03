@@ -14,9 +14,11 @@ import java.util.UUID;
 @Slf4j
 @Component
 public class FileUtil {
+    // application.yml에 설정된 file.prefix (예: "./upload")
     @Value("${file.prefix}")
     private String PATH_PREFIX;
 
+    // 파일 접근 URL의 base URL (예: http://localhost:28080)
     @Value("${file.baseUrl}")
     private String BASE_URL;
 
@@ -45,8 +47,9 @@ public class FileUtil {
         }
         // 새로운 파일 이름 생성 (UUID 기반)
         String newFileName = UUID.randomUUID() + (extension.isEmpty() ? "" : "." + extension);
-        // 저장 경로 생성 (PATH_PREFIX와 addPath 결합)
-        Path destDirectory = Paths.get(PATH_PREFIX, addPath);
+        // 저장 경로 생성
+        // 프로젝트 루트(System.getProperty("user.dir"))를 기준으로 PATH_PREFIX와 addPath를 결합
+        Path destDirectory = Paths.get(System.getProperty("user.dir"), PATH_PREFIX, addPath);
         try {
             Files.createDirectories(destDirectory);
         } catch (IOException e) {

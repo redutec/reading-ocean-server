@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -29,13 +30,13 @@ public class BannerController {
     private final BannerService bannerService;
 
     @Operation(summary = "배너 등록", description = "새로운 배너 정보를 등록하는 API")
-    @PostMapping
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponseBody> create(
             @Valid @RequestPart ArticleDto.CreateBannerRequest createBannerRequest,
-            @RequestPart(value = "pcBannerImageFile") MultipartFile pcBanneImageFile,
+            @RequestPart(value = "pcBannerImageFile") MultipartFile pcBannerImageFile,
             @RequestPart(value = "mobileBannerImageFile") MultipartFile mobileBannerImageFile
     ) {
-        bannerService.create(createBannerRequest, pcBanneImageFile, mobileBannerImageFile);
+        bannerService.create(createBannerRequest, pcBannerImageFile, mobileBannerImageFile);
         return apiResponseManager.success(null);
     }
 
@@ -71,11 +72,19 @@ public class BannerController {
     }
 
     @Operation(summary = "배너 수정", description = "특정 배너 정보를 수정하는 API")
-    @PutMapping("/{bannerNo}")
+    @PutMapping(value = "/{bannerNo}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponseBody> update(
             @PathVariable Integer bannerNo,
-            @Valid @RequestBody ArticleDto.UpdateBannerRequest updateArticleRequest) {
-        bannerService.update(bannerNo, updateArticleRequest);
+            @Valid @RequestPart("updateBannerRequest") ArticleDto.UpdateBannerRequest updateBannerRequest,
+            @RequestPart(value = "pcBannerImageFile") MultipartFile pcBannerImageFile,
+            @RequestPart(value = "mobileBannerImageFile") MultipartFile mobileBannerImageFile
+    ) {
+        bannerService.update(
+                bannerNo,
+                updateBannerRequest,
+                pcBannerImageFile,
+                mobileBannerImageFile
+        );
         return apiResponseManager.success(null);
     }
 

@@ -40,3 +40,4 @@ out/
 .DS_Store
 admin/.DS_Store
 *.log
+/upload/

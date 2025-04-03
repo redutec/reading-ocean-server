@@ -72,6 +72,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             // BotUserResponse를 클레임으로 전달하여 Access Token 생성
             accessToken = jwtUtil.generateAccessToken(localBotUserResponse);
             log.info("**** Local profile detected with no token. Generated accessToken for test: {}", accessToken);
+
         }
         if (accessToken != null) {
             // 토큰을 검증
