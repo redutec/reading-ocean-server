@@ -6,10 +6,10 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum AttachFileValue {
-    MOBILE("AFV001", "모바일"),
-    PC("AFV002", "PC"),
-    ETC("AFV003", "기타");
+    AFV001("MOBILE", "모바일"),
+    AFV002("PC", "PC"),
+    AFV003("ETC", "기타");
 
-    private final String code;
+    private final String name;
     private final String description;
 }

@@ -72,6 +72,10 @@ spring:
     password: "readingocean2022"
 # Custom
 front-end-server: 127.0.0.1
+file:
+  baseUrl: http://localhost:28080
+  prefix: ./upload
+
 ---
 # dev
 spring:

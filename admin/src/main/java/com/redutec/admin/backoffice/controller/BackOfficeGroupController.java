@@ -35,7 +35,7 @@ public class BackOfficeGroupController {
     @Operation(summary = "조건에 맞는 관리자 그룹 조회", description = "조건에 맞는 관리자 그룹 조회 API")
     @GetMapping
     public ResponseEntity<ApiResponseBody> find(
-            @Parameter(description = "관리자 그룹 고유번호") @RequestParam(required = false) List<Long> groupNoList,
+            @Parameter(description = "관리자 그룹 고유번호") @RequestParam(required = false) List<Integer> groupNoList,
             @Parameter(description = "관리자 그룹 아이디") @RequestParam(required = false) String groupName,
             @Parameter(description = "페이지 번호", example = "0") @RequestParam(required = false) Integer page,
             @Parameter(description = "페이지 당 데이터 개수", example = "30") @RequestParam(required = false) Integer size

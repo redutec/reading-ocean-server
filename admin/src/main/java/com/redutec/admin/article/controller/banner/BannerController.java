@@ -31,7 +31,7 @@ public class BannerController {
     @Operation(summary = "배너 등록", description = "새로운 배너 정보를 등록하는 API")
     @PostMapping
     public ResponseEntity<ApiResponseBody> create(
-            @Valid @RequestPart ArticleDto.CreateArticleRequest createBannerRequest,
+            @Valid @RequestPart ArticleDto.CreateBannerRequest createBannerRequest,
             @RequestPart(value = "pcBannerImageFile") MultipartFile pcBanneImageFile,
             @RequestPart(value = "mobileBannerImageFile") MultipartFile mobileBannerImageFile
     ) {
@@ -74,7 +74,7 @@ public class BannerController {
     @PutMapping("/{bannerNo}")
     public ResponseEntity<ApiResponseBody> update(
             @PathVariable Integer bannerNo,
-            @Valid @RequestBody ArticleDto.UpdateArticleRequest updateArticleRequest) {
+            @Valid @RequestBody ArticleDto.UpdateBannerRequest updateArticleRequest) {
         bannerService.update(bannerNo, updateArticleRequest);
         return apiResponseManager.success(null);
     }

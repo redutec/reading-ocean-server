@@ -6,8 +6,8 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum PopupPositionType {
-    CENTER("PPT001", "중앙");
+    PPT001("CENTER", "중앙");
 
-    private final String code;
+    private final String name;
     private final String description;
 }

@@ -34,12 +34,12 @@ public class BdtArticle {
     @Column(name = "article_board_no", nullable = false)
     private Integer articleBoardNo;
 
-    @Column(name = "article_title", length = 100, nullable = false)
-    private String articleTitle;
-
     @Column(name = "category_value", length = 6, columnDefinition = "char(6)")
     @JdbcTypeCode(Types.CHAR)
     private String categoryValue;
+
+    @Column(name = "article_title", length = 100, nullable = false)
+    private String articleTitle;
 
     @Lob
     @Column(name = "article_content", columnDefinition = "LONGTEXT")

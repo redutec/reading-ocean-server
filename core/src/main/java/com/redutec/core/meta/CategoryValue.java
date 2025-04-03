@@ -6,13 +6,13 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum CategoryValue {
-    EDUCATION("LBV001", "교육자료"),
-    CONSULTING("LBV002", "상담자료"),
-    PROMOTION("LBV003", "홍보자료"),
-    ETC("LBV004", "기타"),
-    READING_NOTE("LBV005", "독서기록장"),
-    READING_LIST("LBV006", "독서목록");
+    LBV001("EDUCATION", "교육자료"),
+    LBV002("CONSULTING", "상담자료"),
+    LBV003("PROMOTION", "홍보자료"),
+    LBV004("ETC", "기타"),
+    LBV005("READING_NOTE", "독서기록장"),
+    LBV006("READING_LIST", "독서목록");
 
-    private final String code;
+    private final String name;
     private final String description;
 }

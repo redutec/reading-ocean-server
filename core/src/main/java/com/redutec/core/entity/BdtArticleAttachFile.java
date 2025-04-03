@@ -1,5 +1,6 @@
 package com.redutec.core.entity;
 
+import com.redutec.core.meta.AttachFileValue;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
@@ -35,7 +36,7 @@ public class BdtArticleAttachFile {
 
     @Column(name = "attach_file_value", nullable = false, length = 6, columnDefinition = "CHAR(6) DEFAULT 'AFV003'")
     @JdbcTypeCode(Types.CHAR)
-    private String attachFileValue;
+    private AttachFileValue attachFileValue;
 
     @Column(name = "attach_file_name", length = 100)
     private String attachFileName;

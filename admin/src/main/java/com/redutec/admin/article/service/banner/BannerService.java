@@ -9,7 +9,7 @@ public interface BannerService {
      * @param createBannerRequest 배너 등록 정보를 담은 DTO
      */
     void create(
-            ArticleDto.CreateArticleRequest createBannerRequest,
+            ArticleDto.CreateBannerRequest createBannerRequest,
             MultipartFile pcArticleAttachFile,
             MultipartFile mobileArticleAttachFile
     );
@@ -33,7 +33,7 @@ public interface BannerService {
      * @param bannerNo 수정할 배너 고유번호
      * @param updateBannerRequest 수정할 정보를 담은 DTO
      */
-    void update(Integer bannerNo, ArticleDto.UpdateArticleRequest updateBannerRequest);
+    void update(Integer bannerNo, ArticleDto.UpdateBannerRequest updateBannerRequest);
 
     /**
      * 특정 배너 삭제

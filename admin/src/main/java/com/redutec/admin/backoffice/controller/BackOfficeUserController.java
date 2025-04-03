@@ -36,7 +36,7 @@ public class BackOfficeUserController {
     @Operation(summary = "조건에 맞는 관리자 계정 조회", description = "조건에 맞는 관리자 계정 조회 API")
     @GetMapping
     public ResponseEntity<ApiResponseBody> find(
-            @Parameter(description = "관리자 계정 고유번호") @RequestParam(required = false) List<Long> userNoList,
+            @Parameter(description = "관리자 계정 고유번호") @RequestParam(required = false) List<Integer> userNoList,
             @Parameter(description = "관리자 계정 아이디") @RequestParam(required = false) String userId,
             @Parameter(description = "관리자 이름") @RequestParam(required = false) String userName,
             @Parameter(description = "페이지 번호", example = "0") @RequestParam(required = false) Integer page,
