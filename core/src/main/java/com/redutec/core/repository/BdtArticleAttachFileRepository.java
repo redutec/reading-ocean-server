@@ -10,4 +10,6 @@ import java.util.Optional;
 
 public interface BdtArticleAttachFileRepository extends JpaRepository<BdtArticleAttachFile, Integer>, JpaSpecificationExecutor<BdtArticleAttachFile> {
     Optional<BdtArticleAttachFile> findByArticleAndAttachFileValue(BdtArticle bdtArticle, AttachFileValue attachFileValue);
+
+    void deleteByArticle(BdtArticle article);
 }

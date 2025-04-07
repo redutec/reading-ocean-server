@@ -1,24 +1,21 @@
 package com.redutec.admin.siteinfo.service;
 
 import com.redutec.admin.siteinfo.dto.SiteInfoDto;
+import com.redutec.admin.siteinfo.mapper.SiteInfoMapper;
 import com.redutec.core.entity.CmtConfigurationGeneral;
 import com.redutec.core.repository.CmtConfigurationGeneralRepository;
 import com.redutec.core.specification.CmtConfigurationGeneralSpecification;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 @Service
 @RequiredArgsConstructor
 public class SiteInfoServiceImpl implements SiteInfoService {
-    private final CmtConfigurationGeneralRepository configurationGeneralRepository;
+    private final SiteInfoMapper siteInfoMapper;
     private final CmtConfigurationGeneralRepository cmtConfigurationGeneralRepository;
 
     /**
@@ -31,61 +28,56 @@ public class SiteInfoServiceImpl implements SiteInfoService {
     public SiteInfoDto.SiteInfoResponse create(
             SiteInfoDto.CreateSiteInfoRequest createSiteInfoRequest
     ) {
-        return SiteInfoDto.SiteInfoResponse.fromEntity(
-                configurationGeneralRepository.save(CmtConfigurationGeneral.builder()
-                        .configurationKey(createSiteInfoRequest.getConfigurationKey())
-                        .configurationCategoryKey(createSiteInfoRequest.getConfigurationCategoryKey())
-                        .configurationCategoryName(createSiteInfoRequest.getConfigurationCategoryName())
-                        .configurationName(createSiteInfoRequest.getConfigurationName())
-                        .configurationContent(createSiteInfoRequest.getConfigurationContent())
-                        .useYn(createSiteInfoRequest.getUseYn())
-                        .description(createSiteInfoRequest.getDescription())
-                        .build()));
+        return siteInfoMapper.toResponseDto(cmtConfigurationGeneralRepository.save(siteInfoMapper.toEntity(createSiteInfoRequest)));
     }
 
     /**
      * 조건에 맞는 사이트 설정 목록 조회
+     * @param findSiteInfoRequest 조회 조건을 담은 DTO
+     * @return 조건에 맞는 사이트 설정 목록 응답 객체
      */
     @Override
     @Transactional(readOnly = true)
     public SiteInfoDto.SiteInfoPageResponse find(
             SiteInfoDto.FindSiteInfoRequest findSiteInfoRequest
     ) {
-        // 조건에 맞는 사이트 설정 페이징 목록 조회
-        Page<CmtConfigurationGeneral> siteInfoPage = configurationGeneralRepository.findAll(
-                CmtConfigurationGeneralSpecification.findWith(findSiteInfoRequest.toCriteria()),
-                (findSiteInfoRequest.getPage() != null && findSiteInfoRequest.getSize() != null)
-                        ? PageRequest.of(findSiteInfoRequest.getPage(), findSiteInfoRequest.getSize())
-                        : Pageable.unpaged()
-        );
-        // 조회된 엔티티들을 응답 DTO로 변환 후 리턴
-        List<SiteInfoDto.SiteInfoResponse> siteInfoList = siteInfoPage.getContent().stream()
-                .map(SiteInfoDto.SiteInfoResponse::fromEntity)
-                .collect(Collectors.toList());
-        return SiteInfoDto.SiteInfoPageResponse.builder()
-                .siteInfoList(siteInfoList)
-                .totalElements(siteInfoPage.getTotalElements())
-                .totalPages(siteInfoPage.getTotalPages())
-                .build();
+        return siteInfoMapper.toPageResponseDto(cmtConfigurationGeneralRepository.findAll(
+                CmtConfigurationGeneralSpecification.findWith(siteInfoMapper.toCriteria(findSiteInfoRequest)),
+                (findSiteInfoRequest.page() != null && findSiteInfoRequest.size() != null)
+                        ? PageRequest.of(findSiteInfoRequest.page(), findSiteInfoRequest.size())
+                        : Pageable.unpaged()));
     }
 
     /**
      * 특정 사이트 설정 상세 조회
+     * @param configurationKey 사이트 설정 고유 키
+     * @return 특정 사이트 설정 응답 객체
      */
     @Override
     @Transactional(readOnly = true)
-    public SiteInfoDto.SiteInfoResponse findByConfigurationKey(String configurationKey) {
-        return SiteInfoDto.SiteInfoResponse.fromEntity(getSiteInfo(configurationKey));
+    public SiteInfoDto.SiteInfoResponse findByConfigurationKey(
+            String configurationKey
+    ) {
+        return siteInfoMapper.toResponseDto(getSiteInfo(configurationKey));
     }
 
+    /**
+     * 특정 사이트 설정 엔티티 조회
+     * @param configurationKey 사이트 설정 고유번호
+     * @return 특정 사이트 설정 엔티티 객체
+     */
     @Override
-    public CmtConfigurationGeneral getSiteInfo(String configurationKey) {
+    public CmtConfigurationGeneral getSiteInfo(
+            String configurationKey
+    ) {
         return cmtConfigurationGeneralRepository.findById(configurationKey)
                 .orElseThrow(() -> new EntityNotFoundException("No such configuration general with key: " + configurationKey));
     }
 
     /**
      * 사이트 설정 수정
+     * @param configurationKey 수정할 사이트 설정 고유 키
+     * @param updateSiteInfoRequest 수정할 정보를 담은 DTO
      */
     @Override
     @Transactional
@@ -95,17 +87,18 @@ public class SiteInfoServiceImpl implements SiteInfoService {
     ) {
         // 수정하려는 사이트 설정이 존재하는지 조회
         CmtConfigurationGeneral siteInfo = getSiteInfo(configurationKey);
-        // 수정할 데이터를 엔티티에 설정 후 저장
+        // UPDATE 도메인 메서드로 변환
         siteInfo.updateCmtConfigurationGeneral(
-                updateSiteInfoRequest.getConfigurationKey(),
-                updateSiteInfoRequest.getConfigurationCategoryKey(),
-                updateSiteInfoRequest.getConfigurationCategoryName(),
-                updateSiteInfoRequest.getConfigurationName(),
-                updateSiteInfoRequest.getConfigurationContent(),
-                updateSiteInfoRequest.getUseYn(),
-                updateSiteInfoRequest.getDescription()
+                updateSiteInfoRequest.configurationKey(),
+                updateSiteInfoRequest.configurationCategoryKey(),
+                updateSiteInfoRequest.configurationCategoryName(),
+                updateSiteInfoRequest.configurationName(),
+                updateSiteInfoRequest.configurationContent(),
+                updateSiteInfoRequest.useYn(),
+                updateSiteInfoRequest.description()
         );
-        configurationGeneralRepository.save(siteInfo);
+        // 사이트 설정 엔티티 UPDATE
+        cmtConfigurationGeneralRepository.save(siteInfo);
     }
 
     /**
@@ -113,7 +106,9 @@ public class SiteInfoServiceImpl implements SiteInfoService {
      */
     @Override
     @Transactional
-    public void delete(String configurationKey) {
-        configurationGeneralRepository.delete(getSiteInfo(configurationKey));
+    public void delete(
+            String configurationKey
+    ) {
+        cmtConfigurationGeneralRepository.delete(getSiteInfo(configurationKey));
     }
 }

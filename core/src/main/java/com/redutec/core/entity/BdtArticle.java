@@ -112,6 +112,7 @@ public class BdtArticle {
      * 이 메서드는 JPA의 더티 체킹 메커니즘을 활용하여 변경된 필드가 데이터베이스에 반영되도록 합니다.
      *
      * @param categoryValue           null이 아닌 경우 categoryValue 필드를 업데이트합니다.
+     * @param displayDomainCode       null이 아닌 경우 displayDomainCode 필드를 업데이트합니다.
      * @param articleTitle            null이 아닌 경우 articleTitle 필드를 업데이트합니다.
      * @param articleContent          null이 아닌 경우 articleContent 필드를 업데이트합니다.
      * @param articleContentDetail    null이 아닌 경우 articleContentDetail 필드를 업데이트합니다.
@@ -121,6 +122,7 @@ public class BdtArticle {
      */
     public void updateBdtArticle(
             CategoryValue categoryValue,
+            String displayDomainCode,
             String articleTitle,
             String articleContent,
             String articleContentDetail,
@@ -129,6 +131,7 @@ public class BdtArticle {
             String adminId
     ) {
         this.categoryValue = categoryValue != null ? categoryValue : this.categoryValue;
+        this.displayDomainCode = displayDomainCode != null ? displayDomainCode : this.displayDomainCode;
         this.articleTitle = articleTitle != null ? articleTitle : this.articleTitle;
         this.articleContent = articleContent != null ? articleContent : this.articleContent;
         this.articleContentDetail = articleContentDetail != null ? articleContentDetail : this.articleContentDetail;
