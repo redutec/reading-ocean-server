@@ -14,7 +14,6 @@ import com.redutec.core.repository.BdtArticleDisplayRepository;
 import com.redutec.core.repository.BdtArticleRepository;
 import com.redutec.core.specification.BdtArticleSpecification;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,7 +23,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Optional;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class BannerServiceImpl implements BannerService {
@@ -51,7 +49,6 @@ public class BannerServiceImpl implements BannerService {
         // 현재 로그인한 어드민의 아이디 조회
         String adminId = Optional.ofNullable(jwtUtil.extractUserIdFromToken((String) SecurityContextHolder.getContext().getAuthentication().getPrincipal()))
                 .orElse("admin");
-        log.info("adminId: {}", adminId);
         // pc 배너 이미지 파일 검증
         Optional.ofNullable(pcBannerImageFile)
                 .filter(file -> !file.isEmpty())
@@ -63,8 +60,6 @@ public class BannerServiceImpl implements BannerService {
         // DTO → 엔티티 변환 (각각 BdtArticle과 BdtArticleDisplay)
         BdtArticle banner = bannerMapper.toBdtArticleEntity(createBannerRequest);
         BdtArticleDisplay bannerDisplay = bannerMapper.toBdtArticleDisplayEntity(createBannerRequest, banner);
-        log.info("banner: {}", banner.getAdminId());
-        log.info("bannerDisplay: {}", bannerDisplay.getBannerType());
         // 게시물(배너) 및 노출정보 INSERT
         bdtArticleRepository.save(banner);
         bdtArticleDisplayRepository.save(bannerDisplay);

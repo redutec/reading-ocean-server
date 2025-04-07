@@ -33,6 +33,7 @@ public class BotGroup {
     @Column(name = "group_name", length = 100, nullable = false)
     private String groupName;
 
+    // 미사용 컬럼
     @Column(name = "group_Key", length = 100)
     private String groupKey;
 
@@ -60,9 +61,15 @@ public class BotGroup {
     @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<BotGroupPermission> groupPermissions;
 
-    public void updateBotGroup(String groupName, String description, String useYn) {
-        this.groupName = groupName;
-        this.description = description;
-        this.useYn = useYn;
+    public void updateBotGroup(
+            String groupName,
+            String useYn,
+            String adminId,
+            String description
+    ) {
+        this.groupName = groupName != null ? groupName : this.groupName;
+        this.useYn = useYn != null ? useYn : this.useYn;
+        this.adminId = adminId != null ? adminId : this.adminId;
+        this.description = description != null ? description : this.description;
     }
 }
