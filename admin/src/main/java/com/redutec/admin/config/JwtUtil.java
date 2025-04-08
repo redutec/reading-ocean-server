@@ -72,7 +72,7 @@ public class JwtUtil {
         Map<String, Object> claims = objectMapper.convertValue(backOfficeUserResponse, new TypeReference<>() {});
         return Jwts.builder()
                 .setClaims(claims)
-                .setSubject(backOfficeUserResponse.getUserId())
+                .setSubject(backOfficeUserResponse.userId())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + accessTokenExpiration))
                 .signWith(key)

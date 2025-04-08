@@ -1,7 +1,7 @@
-package com.redutec.admin.account.controller;
+package com.redutec.admin.student.controller;
 
-import com.redutec.admin.account.dto.AccountDto;
-import com.redutec.admin.account.service.AccountService;
+import com.redutec.admin.student.dto.StudentDto;
+import com.redutec.admin.student.service.StudentService;
 import com.redutec.core.config.ApiResponseBody;
 import com.redutec.core.config.ApiResponseManager;
 import io.swagger.v3.oas.annotations.Operation;
@@ -20,9 +20,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/account")
 @Tag(name = "회원 관리 API", description = "회원 관리 API 모음")
-public class AccountController {
+public class StudentController {
     private final ApiResponseManager apiResponseManager;
-    private final AccountService accountService;
+    private final StudentService studentService;
 
     /**
      * 회원 조회 API
@@ -33,8 +33,8 @@ public class AccountController {
     @Operation(summary = "조건에 맞는 회원 조회", description = "조건에 맞는 회원 조회 API")
     @GetMapping
     public ResponseEntity<ApiResponseBody> find() {
-        return apiResponseManager.success(accountService.find(
-                AccountDto.FindAccountRequest.builder()
+        return apiResponseManager.success(studentService.find(
+                StudentDto.FindAccountRequest.builder()
                         .build()));
     }
 }

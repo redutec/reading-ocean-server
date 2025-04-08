@@ -1,6 +1,7 @@
 package com.redutec.admin.backoffice.service;
 
 import com.redutec.admin.backoffice.dto.BackOfficeUserDto;
+import com.redutec.admin.backoffice.mapper.BackOfficeUserMapper;
 import com.redutec.admin.config.JwtUtil;
 import com.redutec.core.config.EncryptionUtil;
 import com.redutec.core.entity.BotGroup;
@@ -29,6 +30,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class BackOfficeUserServiceImpl implements BackOfficeUserService {
+    private final BackOfficeUserMapper backOfficeUserMapper;
     private final BotUserRepository botUserRepository;
     private final BackOfficeGroupService backOfficeGroupService;
     private final JwtUtil jwtUtil;
@@ -40,44 +42,31 @@ public class BackOfficeUserServiceImpl implements BackOfficeUserService {
      */
     @Override
     @Transactional
-    public BackOfficeUserDto.BackOfficeUserResponse create(BackOfficeUserDto.CreateBackOfficeUserRequest createBackOfficeUserRequest) throws NoSuchAlgorithmException {
-        // 비밀번호 암호화
-        String passwordSaltValue = EncryptionUtil.getSalt();
-        String encryptPassword = EncryptionUtil.password(createBackOfficeUserRequest.getPassword(), passwordSaltValue);
-        // 현재 접속한 관리자 계정 아이디 조회
-        String adminId = jwtUtil.extractUserIdFromToken((String) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-        // BotUser 엔티티 생성 (userGroups는 나중에 설정할 예정)
-        BotUser botUser = BotUser.builder()
-                .userId(createBackOfficeUserRequest.getUserId())
-                .userName(createBackOfficeUserRequest.getUserName())
-                .password(encryptPassword)
-                .passwordSaltValue(passwordSaltValue)
-                .useYn("Y")
-                .adminId(adminId)
-                .description(createBackOfficeUserRequest.getDescription())
-                .build();
-        // BotUser 저장 -> 이 시점에서 userNo가 할당됨
-        BotUser savedUser = botUserRepository.save(botUser);
+    public BackOfficeUserDto.BackOfficeUserResponse create(
+            BackOfficeUserDto.CreateBackOfficeUserRequest createBackOfficeUserRequest
+    ) throws NoSuchAlgorithmException {
+        // Mapper 클래스로 BotUser 엔티티 생성 후 저장 -> 이 시점에서 userNo가 할당됨
+        BotUser botUser = botUserRepository.save(backOfficeUserMapper.toEntity(createBackOfficeUserRequest));
         // 요청에 groupNo가 있다면 BotUserGroup 엔티티 생성
-        if (createBackOfficeUserRequest.getGroupNo() != null) {
+        if (createBackOfficeUserRequest.groupNo() != null) {
             // BotGroup 조회
-            BotGroup botGroup = backOfficeGroupService.getBackOfficeGroup(createBackOfficeUserRequest.getGroupNo());
+            BotGroup botGroup = backOfficeGroupService.getBackOfficeGroup(createBackOfficeUserRequest.groupNo());
             // 복합키 생성 : savedUser의 userNo와 botGroup의 groupNo 사용
-            BotUserGroupKey key = new BotUserGroupKey(savedUser.getUserNo(), botGroup.getGroupNo());
+            BotUserGroupKey key = new BotUserGroupKey(botUser.getUserNo(), botGroup.getGroupNo());
             // BotUserGroup 생성
             BotUserGroup botUserGroup = BotUserGroup.builder()
                     .id(key)
-                    .user(savedUser)
+                    .user(botUser)
                     .group(botGroup)
                     .useYn("Y")
-                    .adminId(adminId != null ? adminId : "")
+                    .adminId(botUser.getAdminId())
                     .build();
             // BotUser의 userGroups 컬렉션에 추가 (cascade 옵션에 의해 함께 persist됨)
-            savedUser.getUserGroups().add(botUserGroup);
+            botUser.getUserGroups().add(botUserGroup);
             // 변경사항 반영 (선택 사항: cascade가 제대로 동작하면 별도 save 호출 없이 persist될 수 있음)
-            savedUser = botUserRepository.save(savedUser);
+            botUser = botUserRepository.save(botUser);
         }
-        return BackOfficeUserDto.BackOfficeUserResponse.fromEntity(savedUser);
+        return backOfficeUserMapper.toResponse(botUser);
     }
 
     /**
@@ -87,34 +76,31 @@ public class BackOfficeUserServiceImpl implements BackOfficeUserService {
      */
     @Override
     @Transactional(readOnly = true)
-    public BackOfficeUserDto.BackOfficeUserPageResponse find(BackOfficeUserDto.FindBackOfficeUserRequest findBackOfficeUserRequest) {
+    public BackOfficeUserDto.BackOfficeUserPageResponse find(
+            BackOfficeUserDto.FindBackOfficeUserRequest findBackOfficeUserRequest
+    ) {
         // 조건에 맞는 관리자 계정 조회
-        Page<BotUser> backOfficeUserPage = botUserRepository.findAll(
-                BotUserSpecification.findWith(findBackOfficeUserRequest.toCriteria()),
-                (findBackOfficeUserRequest.getPage() != null && findBackOfficeUserRequest.getSize() != null)
-                        ? PageRequest.of(findBackOfficeUserRequest.getPage(), findBackOfficeUserRequest.getSize())
+        Page<BotUser> botUserPage = botUserRepository.findAll(
+                BotUserSpecification.findWith(backOfficeUserMapper.toCriteria(findBackOfficeUserRequest)),
+                (findBackOfficeUserRequest.page() != null && findBackOfficeUserRequest.size() != null)
+                        ? PageRequest.of(findBackOfficeUserRequest.page(), findBackOfficeUserRequest.size())
                         : Pageable.unpaged()
         );
-        // 각 BotUser의 userGroups와, 그 안의 BotGroup.userGroups를 강제로 초기화
-        backOfficeUserPage.getContent().forEach(botUser ->
+        // 각 BotUser의 userGroups과 그 안의 BotGroup.userGroups를 강제로 초기화 (필요시)
+        botUserPage.getContent().forEach(botUser ->
                 botUser.getUserGroups().forEach(botUserGroup ->
                         Hibernate.initialize(botUserGroup.getGroup().getUserGroups())
                 )
         );
-        // 조회한 관리자 계정들을 fromEntity 메서드를 사용해 응답 객체로 변환 후 리턴
-        List<BackOfficeUserDto.BackOfficeUserResponse> backOfficeUserResponseList = backOfficeUserPage.getContent().stream()
-                .map(BackOfficeUserDto.BackOfficeUserResponse::fromEntity)
-                .collect(Collectors.toList());
-        return BackOfficeUserDto.BackOfficeUserPageResponse.builder()
-                .backOfficeUserList(backOfficeUserResponseList)
-                .totalElements(backOfficeUserPage.getTotalElements())
-                .totalPages(backOfficeUserPage.getTotalPages())
-                .build();
+        // Mapper 클래스를 이용하여 Page 객체를 응답 DTO로 변환 후 리턴
+        return backOfficeUserMapper.toPageResponseDto(botUserPage);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public BotUser getBackOfficeUser(Integer userNo) {
+    public BotUser getBackOfficeUser(
+            Integer userNo
+    ) {
         return botUserRepository.findByUserNoWithGroups(userNo).orElseThrow(() -> new EntityNotFoundException("No such BotUser"));
     }
 
@@ -125,13 +111,16 @@ public class BackOfficeUserServiceImpl implements BackOfficeUserService {
      */
     @Override
     @Transactional
-    public void update(Integer userNo, BackOfficeUserDto.UpdateBackOfficeUserRequest updateBackOfficeUserRequest) {
+    public void update(
+            Integer userNo,
+            BackOfficeUserDto.UpdateBackOfficeUserRequest updateBackOfficeUserRequest
+    ) {
         // 수정할 관리자 계정 조회
         BotUser botUser = getBackOfficeUser(userNo);
         // 비밀번호 변경 처리: Optional을 사용하여 newPassword가 존재할 경우 암호화 및 솔트 생성
-        Optional<String> newPwdOptional = Optional.ofNullable(updateBackOfficeUserRequest.getNewPassword());
-        String passwordSaltValue = newPwdOptional.map(pwd -> EncryptionUtil.getSalt()).orElse(null);
-        String newPassword = newPwdOptional.map(pwd -> {
+        Optional<String> newPasswordOptional = Optional.ofNullable(updateBackOfficeUserRequest.newPassword());
+        String passwordSaltValue = newPasswordOptional.map(pwd -> EncryptionUtil.getSalt()).orElse(null);
+        String newPassword = newPasswordOptional.map(pwd -> {
             try {
                 return EncryptionUtil.password(pwd, passwordSaltValue);
             } catch (NoSuchAlgorithmException e) {
@@ -139,7 +128,7 @@ public class BackOfficeUserServiceImpl implements BackOfficeUserService {
             }
         }).orElse(null);
         // DTO에 전달된 userGroups 정보를 Optional로 처리하여 엔티티로 변환
-        List<BotUserGroup> newBackOfficeUserGroupList = Optional.ofNullable(updateBackOfficeUserRequest.getUserGroups())
+        List<BotUserGroup> newBackOfficeUserGroupList = Optional.ofNullable(updateBackOfficeUserRequest.userGroups())
                 .map(list -> list.stream()
                         .map(dtoGroup -> {
                             // BotGroup 정보에서 그룹 번호 추출 (없으면 예외 발생)
@@ -164,15 +153,15 @@ public class BackOfficeUserServiceImpl implements BackOfficeUserService {
                 .orElse(null);
         // 엔티티 업데이트: 각 필드는 null이면 기존 값 유지
         botUser.updateBotUser(
-                updateBackOfficeUserRequest.getUserId(),
-                updateBackOfficeUserRequest.getUserName(),
+                updateBackOfficeUserRequest.userId(),
+                updateBackOfficeUserRequest.userName(),
                 newPassword,
                 passwordSaltValue,
-                updateBackOfficeUserRequest.getUseYn(),
-                updateBackOfficeUserRequest.getLastAccessIp(),
-                updateBackOfficeUserRequest.getLastAccessDatetime(),
+                updateBackOfficeUserRequest.useYn(),
+                updateBackOfficeUserRequest.lastAccessIp(),
+                updateBackOfficeUserRequest.lastAccessDatetime(),
                 jwtUtil.extractUserIdFromToken((String) SecurityContextHolder.getContext().getAuthentication().getPrincipal()),
-                updateBackOfficeUserRequest.getDescription(),
+                updateBackOfficeUserRequest.description(),
                 newBackOfficeUserGroupList
         );
         // 변경된 엔티티 저장
@@ -185,7 +174,9 @@ public class BackOfficeUserServiceImpl implements BackOfficeUserService {
      */
     @Override
     @Transactional
-    public void delete(Integer userNo) {
+    public void delete(
+            Integer userNo
+    ) {
         botUserRepository.delete(getBackOfficeUser(userNo));
     }
 }

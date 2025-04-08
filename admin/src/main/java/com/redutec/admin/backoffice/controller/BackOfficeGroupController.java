@@ -7,12 +7,10 @@ import com.redutec.core.config.ApiResponseManager;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
  * 관리자 그룹 API 컨트롤러.
@@ -28,45 +26,42 @@ public class BackOfficeGroupController {
 
     @Operation(summary = "관리자 그룹 등록", description = "관리자 그룹을 등록하는 API")
     @PostMapping
-    public ResponseEntity<ApiResponseBody> create(@Valid @RequestBody BackOfficeGroupDto.CreateBackOfficeGroupRequest createBackOfficeGroupRequest) {
+    public ResponseEntity<ApiResponseBody> create(
+            @ParameterObject BackOfficeGroupDto.CreateBackOfficeGroupRequest createBackOfficeGroupRequest
+    ) {
         return apiResponseManager.success(backOfficeGroupService.create(createBackOfficeGroupRequest));
     }
 
     @Operation(summary = "조건에 맞는 관리자 그룹 조회", description = "조건에 맞는 관리자 그룹 조회 API")
     @GetMapping
     public ResponseEntity<ApiResponseBody> find(
-            @Parameter(description = "관리자 그룹 고유번호") @RequestParam(required = false) List<Integer> groupNoList,
-            @Parameter(description = "관리자 그룹 아이디") @RequestParam(required = false) String groupName,
-            @Parameter(description = "페이지 번호", example = "0") @RequestParam(required = false) Integer page,
-            @Parameter(description = "페이지 당 데이터 개수", example = "30") @RequestParam(required = false) Integer size
+            @ParameterObject BackOfficeGroupDto.FindBackOfficeGroupRequest findBackOfficeGroupRequest
     ) {
-        return apiResponseManager.success(backOfficeGroupService.find(
-                BackOfficeGroupDto.FindBackOfficeGroupRequest.builder()
-                        .groupNoList(groupNoList)
-                        .groupName(groupName)
-                        .page(page)
-                        .size(size)
-                        .build()));
+        return apiResponseManager.success(backOfficeGroupService.find(findBackOfficeGroupRequest));
     }
 
     @Operation(summary = "특정 관리자 그룹 조회", description = "특정 관리자 그룹 조회 API")
     @GetMapping("/{groupNo}")
-    public ResponseEntity<ApiResponseBody> findByGroupNo(@PathVariable Integer groupNo) {
+    public ResponseEntity<ApiResponseBody> findByGroupNo(
+            @Parameter(description = "조회할 관리자 그룹 고유번호") @PathVariable Integer groupNo
+    ) {
         return apiResponseManager.success(backOfficeGroupService.findByGroupNo(groupNo));
     }
 
     @Operation(summary = "관리자 그룹 수정", description = "관리자 그룹의 정보를 수정하는 API")
     @PutMapping("/{groupNo}")
     public ResponseEntity<ApiResponseBody> update(
-            @PathVariable Integer groupNo,
-            @Valid @RequestBody BackOfficeGroupDto.UpdateBackOfficeGroupRequest updateBackOfficeGroupRequest) {
+            @Parameter(description = "수정할 관리자 그룹 고유번호") @PathVariable Integer groupNo,
+            @ParameterObject BackOfficeGroupDto.UpdateBackOfficeGroupRequest updateBackOfficeGroupRequest) {
         backOfficeGroupService.update(groupNo, updateBackOfficeGroupRequest);
         return apiResponseManager.success(null);
     }
 
     @Operation(summary = "관리자 그룹 삭제", description = "관리자 그룹 삭제 API")
     @DeleteMapping("/{groupNo}")
-    public ResponseEntity<ApiResponseBody> delete(@PathVariable Integer groupNo) {
+    public ResponseEntity<ApiResponseBody> delete(
+            @Parameter(description = "삭제할 관리자 그룹 고유번호") @PathVariable Integer groupNo
+    ) {
         backOfficeGroupService.delete(groupNo);
         return apiResponseManager.success(null);
     }

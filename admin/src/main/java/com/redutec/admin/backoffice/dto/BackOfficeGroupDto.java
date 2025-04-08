@@ -75,7 +75,7 @@ public class BackOfficeGroupDto {
 
     @Schema(description = "관리자 그룹 권한 응답 객체")
     public record BackOfficeGroupPermissionResponse(
-        Long menuNo,
+        Integer menuNo,
         Integer groupNo,
         PermissionType permissionType,
         LocalDateTime registerDatetime,
@@ -103,31 +103,6 @@ public class BackOfficeGroupDto {
         String description,
         List<Integer> userGroups,
         List<BackOfficeGroupPermissionResponse> groupPermissions
-
-//        public static BackOfficeGroupWithPermissionResponse fromEntity(BotGroup botGroup) {
-//            List<Integer> userGroups = Optional.ofNullable(botGroup.getUserGroups())
-//                    .filter(Hibernate::isInitialized)
-//                    .map(list -> list.stream()
-//                            .map(botUserGroup -> botUserGroup.getUser().getUserNo())
-//                            .collect(Collectors.toList()))
-//                    .orElse(Collections.emptyList());
-//            List<BackOfficeGroupPermissionResponse> groupPermissions = Optional.ofNullable(botGroup.getGroupPermissions())
-//                    .filter(Hibernate::isInitialized)
-//                    .map(list -> list.stream()
-//                            .map(BackOfficeGroupPermissionResponse::fromEntity)
-//                            .collect(Collectors.toList()))
-//                    .orElse(Collections.emptyList());
-//            return BackOfficeGroupWithPermissionResponse.builder()
-//                    .groupNo(botGroup.getGroupNo())
-//                    .groupName(botGroup.getGroupName())
-//                    .useYn(botGroup.getUseYn())
-//                    .registerDatetime(botGroup.getRegisterDatetime())
-//                    .modifyDatetime(botGroup.getModifyDatetime())
-//                    .description(botGroup.getDescription())
-//                    .userGroups(userGroups)
-//                    .groupPermissions(groupPermissions)
-//                    .build();
-//        }
     ) {}
 
     @Schema(description = "관리자 그룹 목록 및 페이징 정보 응답 객체")

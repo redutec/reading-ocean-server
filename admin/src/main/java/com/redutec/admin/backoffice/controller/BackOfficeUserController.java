@@ -5,15 +5,16 @@ import com.redutec.admin.backoffice.service.BackOfficeUserService;
 import com.redutec.core.config.ApiResponseBody;
 import com.redutec.core.config.ApiResponseManager;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.security.NoSuchAlgorithmException;
-import java.util.List;
 
 /**
  * 관리자 계정 API 컨트롤러.
@@ -29,26 +30,17 @@ public class BackOfficeUserController {
 
     @Operation(summary = "관리자 계정 등록", description = "관리자 계정을 등록하는 API")
     @PostMapping
-    public ResponseEntity<ApiResponseBody> create(@Valid @RequestBody BackOfficeUserDto.CreateBackOfficeUserRequest createBackOfficeUserRequest) throws NoSuchAlgorithmException {
+    public ResponseEntity<ApiResponseBody> create(
+            @ParameterObject BackOfficeUserDto.CreateBackOfficeUserRequest createBackOfficeUserRequest
+    ) throws NoSuchAlgorithmException {
         return apiResponseManager.success(backOfficeUserService.create(createBackOfficeUserRequest));
     }
 
     @Operation(summary = "조건에 맞는 관리자 계정 조회", description = "조건에 맞는 관리자 계정 조회 API")
     @GetMapping
     public ResponseEntity<ApiResponseBody> find(
-            @Parameter(description = "관리자 계정 고유번호") @RequestParam(required = false) List<Integer> userNoList,
-            @Parameter(description = "관리자 계정 아이디") @RequestParam(required = false) String userId,
-            @Parameter(description = "관리자 이름") @RequestParam(required = false) String userName,
-            @Parameter(description = "페이지 번호", example = "0") @RequestParam(required = false) Integer page,
-            @Parameter(description = "페이지 당 데이터 개수", example = "30") @RequestParam(required = false) Integer size
+            @ParameterObject BackOfficeUserDto.FindBackOfficeUserRequest findBackOfficeUserRequest
     ) {
-        return apiResponseManager.success(backOfficeUserService.find(
-                BackOfficeUserDto.FindBackOfficeUserRequest.builder()
-                        .userNoList(userNoList)
-                        .userId(userId)
-                        .userName(userName)
-                        .page(page)
-                        .size(size)
-                        .build()));
+        return apiResponseManager.success(backOfficeUserService.find(findBackOfficeUserRequest));
     }
 }

@@ -1,5 +1,6 @@
 package com.redutec.core.entity;
 
+import com.redutec.core.meta.AccountStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
@@ -43,7 +44,8 @@ public class ActAccount {
     private String passwordSalt;
 
     @Column(name = "account_status", length = 20)
-    private String accountStatus;
+    @Enumerated(EnumType.STRING)
+    private AccountStatus accountStatus;
 
     @Column(name = "address", length = 200)
     private String address;

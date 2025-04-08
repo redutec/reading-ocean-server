@@ -61,7 +61,7 @@ public class BackOfficeGroupMapper {
      * @param botGroup 변환할 엔티티 (null 가능)
      * @return BotGroup 엔티티의 데이터를 담은 BackOfficeGroupResponse DTO, company가 null이면 null 반환
      */
-    public BackOfficeGroupDto.BackOfficeGroupResponse toResponseDto(
+    public BackOfficeGroupDto.BackOfficeGroupResponse toResponse(
             BotGroup botGroup
     ) {
         List<Integer> userGroups = Optional.ofNullable(botGroup.getUserGroups())
@@ -83,6 +83,40 @@ public class BackOfficeGroupMapper {
                 .orElse(null);
     }
 
+    public BackOfficeGroupDto.BackOfficeGroupWithPermissionResponse toResponseWithPermission(
+            BotGroup botGroup
+    ) {
+        List<Integer> userGroups = Optional.ofNullable(botGroup.getUserGroups())
+                .filter(Hibernate::isInitialized)
+                .map(list -> list.stream()
+                        .map(botUserGroup -> botUserGroup.getUser().getUserNo())
+                        .collect(Collectors.toList()))
+                .orElse(Collections.emptyList());
+        List<BackOfficeGroupDto.BackOfficeGroupPermissionResponse> groupPermissions = Optional.ofNullable(botGroup.getGroupPermissions())
+                .filter(Hibernate::isInitialized)
+                .map(list -> list.stream()
+                        .map(bp -> new BackOfficeGroupDto.BackOfficeGroupPermissionResponse(
+                                bp.getMenu().getMenuNo(),
+                                botGroup.getGroupNo(),
+                                bp.getPermissionType(),
+                                bp.getRegisterDatetime(),
+                                bp.getModifyDatetime()
+                        ))
+                        .collect(Collectors.toList()))
+                .orElse(Collections.emptyList());
+        return new BackOfficeGroupDto.BackOfficeGroupWithPermissionResponse(
+                botGroup.getGroupNo(),
+                botGroup.getGroupName(),
+                botGroup.getUseYn(),
+                botGroup.getRegisterDatetime(),
+                botGroup.getModifyDatetime(),
+                botGroup.getDescription(),
+                userGroups,
+                groupPermissions
+        );
+    }
+
+
     /**
      * Page 형식의 엔티티 목록을 BackOfficeGroupPageResponse DTO로 변환합니다.
      * 엔티티 리스트를 응답용 DTO 리스트로 매핑하고 페이지네이션 정보를 포함합니다.
@@ -97,7 +131,7 @@ public class BackOfficeGroupMapper {
         return Optional.ofNullable(botGroupPage)
                 .map(page -> {
                     var responseList = page.getContent().stream()
-                            .map(this::toResponseDto)
+                            .map(this::toResponse)
                             .collect(Collectors.toList());
                     return new BackOfficeGroupDto.BackOfficeGroupPageResponse(
                             responseList,
