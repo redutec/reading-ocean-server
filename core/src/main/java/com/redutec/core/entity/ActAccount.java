@@ -1,6 +1,8 @@
 package com.redutec.core.entity;
 
 import com.redutec.core.meta.AccountStatus;
+import com.redutec.core.meta.Domain;
+import com.redutec.core.meta.SchoolGrade;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
@@ -71,8 +73,9 @@ public class ActAccount {
     @Column(name = "mobile_no", length = 15, nullable = false)
     private String mobileNo;
 
-    @Column(name = "academy_no")
-    private Integer academyNo;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "academy_no")
+    private ActAcademy academy;
 
     @Column(name = "allow_sms_yn", nullable = false, columnDefinition = "CHAR(1) DEFAULT 'N'")
     @Builder.Default
@@ -91,7 +94,8 @@ public class ActAccount {
     private String schoolName;
 
     @Column(name = "school_grade", length = 15, nullable = false)
-    private String schoolGrade;
+    @Enumerated(EnumType.STRING)
+    private SchoolGrade schoolGrade;
 
     @Column(name = "protector_mobile_no", length = 15)
     private String protectorMobileNo;
@@ -139,7 +143,8 @@ public class ActAccount {
 
     @Column(name = "signup_domain_code", length = 20, columnDefinition = "VARCHAR(20) DEFAULT 'READING_OCEAN_EDU'")
     @Builder.Default
-    private String signupDomainCode = "READING_OCEAN_EDU";
+    @Enumerated(EnumType.STRING)
+    private Domain signupDomainCode = Domain.READING_OCEAN_EDU;
 
     @Column(name = "quit_datetime")
     private LocalDateTime quitDatetime;

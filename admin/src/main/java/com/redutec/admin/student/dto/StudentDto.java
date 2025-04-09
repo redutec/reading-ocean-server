@@ -4,15 +4,18 @@ import com.redutec.core.meta.AccountStatus;
 import com.redutec.core.meta.Domain;
 import com.redutec.core.meta.SchoolGrade;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.validation.constraints.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public class StudentDto {
     @Schema(description = "계정 등록 요청 객체")
-    record CreateStudentRequest(
+    public record CreateStudentRequest(
         @Schema(description = "로그인 아이디", requiredMode = Schema.RequiredMode.REQUIRED)
         @NotBlank
         @Pattern(regexp = "^(?=.{6,16}$)(?=.*[a-z])[a-z0-9]+$", message = "accountId는 6자 이상 16자 이하의 영문 소문자와 숫자 조합이어야 하며, 순수 숫자는 허용되지 않습니다.")
@@ -96,7 +99,10 @@ public class StudentDto {
     ) {}
 
     @Schema(description = "학생 계정 조회 요청 리코드")
-    record FindStudentRequest(
+    public record FindStudentRequest(
+        @Schema(description = "학생 계정의 고유번호", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+        List<@Positive Integer> accountNoList,
+
         @Schema(description = "학원명", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
         @Size(max = 30)
         String academyName,
@@ -110,8 +116,9 @@ public class StudentDto {
         String accountId,
 
         @Schema(description = "가입 도메인", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+        @ElementCollection(fetch = FetchType.LAZY)
         @Enumerated(EnumType.STRING)
-        Domain signupDomainCode
+        List<Domain> signupDomainCodeList
     ) {}
 
     @Schema(description = "학생 계정 수정 요청 리코드")
@@ -193,8 +200,8 @@ public class StudentDto {
             Integer academyNo
     ) {}
 
-    @Schema(description = "학생 계정 조회 응답 객체")
-    record StudentResponse(
+    @Schema(description = "학생 계정 응답 객체")
+    public record StudentResponse(
         Integer accountNo,
         String accountId,
         String email,
@@ -205,5 +212,12 @@ public class StudentDto {
         Domain signupDomainCode,
         Integer academyNo,
         String academyName
+    ) {}
+
+    @Schema(description = "학생 계정 페이징 응답 객체")
+    public record StudentPageResponse(
+        List<StudentResponse> studentList,
+        Long totalElements,
+        Integer totalPages
     ) {}
 }

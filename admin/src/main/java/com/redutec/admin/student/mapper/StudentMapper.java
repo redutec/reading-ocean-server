@@ -5,16 +5,12 @@ import com.redutec.admin.student.dto.StudentDto;
 import com.redutec.admin.student.service.StudentService;
 import com.redutec.core.criteria.ActAccountCriteria;
 import com.redutec.core.entity.ActAccount;
-import com.redutec.core.entity.ActAccountAttachFile;
-import com.redutec.core.entity.ActAccountDisplay;
-import com.redutec.core.meta.AttachFileValue;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -52,12 +48,11 @@ public class StudentMapper {
             StudentDto.FindStudentRequest findStudentRequest
     ) {
         return ActAccountCriteria.builder()
-                .articleNoList(findStudentRequest.bannerNoList())
-                .articleTitle(findStudentRequest.bannerTitle())
-                .articleContent(findStudentRequest.bannerContent())
-                .articleContentDetail(findStudentRequest.bannerContentDetail())
-                .displayYn(findStudentRequest.displayYn())
-                .domainList(findStudentRequest.domainList())
+                .accountNoList(findStudentRequest.accountNoList())
+                .academyName(findStudentRequest.academyName())
+                .name(findStudentRequest.name())
+                .accountId(findStudentRequest.accountId())
+                .signupDomainCodeList(findStudentRequest.signupDomainCodeList())
                 .build();
     }
 
@@ -69,30 +64,19 @@ public class StudentMapper {
      * @return Student 엔티티의 데이터를 담은 StudentResponse DTO, company가 null이면 null 반환
      */
     public StudentDto.StudentResponse toResponseDto(
-            ActAccount actAccount,
-            ActAccountDisplay actAccountDisplay,
-            StudentDto.StudentAttachFileResponse pcImageFile,
-            StudentDto.StudentAttachFileResponse mobileImageFile
+            ActAccount actAccount
     ) {
         return new StudentDto.StudentResponse(
-                actAccount.getArticleNo(),
-                actAccount.getArticleTitle(),
-                actAccount.getArticleContent(),
-                actAccount.getArticleContentDetail(),
-                actAccount.getDomain(),
-                actAccount.getDisplayYn(),
-                actAccountDisplay != null ? actAccountDisplay.getDisplayOrder() : null,
-                actAccountDisplay != null ? actAccountDisplay.getStudentType() : null,
-                actAccountDisplay != null ? actAccountDisplay.getBackgroundColor() : null,
-                actAccountDisplay != null ? actAccountDisplay.getTextColor() : null,
-                actAccountDisplay != null ? actAccountDisplay.getDisplayBeginDatetime() : null,
-                actAccountDisplay != null ? actAccountDisplay.getDisplayEndDatetime() : null,
-                actAccountDisplay != null ? actAccountDisplay.getLinkURL() : null,
-                actAccountDisplay != null ? actAccountDisplay.getDisplayNewWindowYn() : null,
-                pcImageFile,
-                mobileImageFile,
-                actAccount.getRegisterDatetime(),
-                actAccount.getModifyDatetime()
+                actAccount.getAccountNo(),
+                actAccount.getAccountId(),
+                actAccount.getEmail(),
+                actAccount.getName(),
+                actAccount.getMobileNo(),
+                actAccount.getSchoolGrade(),
+                actAccount.getAccountStatus(),
+                actAccount.getSignupDomainCode(),
+                actAccount.getAcademy().getAcademyNo(),
+                actAccount.getAcademy().getAcademyName()
                 );
     }
 
@@ -109,48 +93,11 @@ public class StudentMapper {
     ) {
         return Optional.ofNullable(actAccountPage)
                 .map(page -> {
-                    List<StudentDto.StudentResponse> bannerList = page.getContent().stream()
-                            .map(banner -> {
-                                // ActAccountDisplay 조회
-                                ActAccountDisplay articleDisplay = articleService.findActAccountDisplayByArticle(banner);
-                                // PC용 첨부파일 조회 및 응답 객체 변환 (파일이 없으면 null)
-                                StudentDto.StudentAttachFileResponse pcImageFile = Optional.ofNullable(
-                                        articleService.findActAccountAttachFileByArticleAndAttachFileValue(
-                                                banner,
-                                                AttachFileValue.AFV002
-                                        ))
-                                        .map(pcImage -> new StudentDto.StudentAttachFileResponse(
-                                                pcImage.getArticleAttachFileNo(),
-                                                pcImage.getArticle().getArticleNo(),
-                                                pcImage.getAttachFileValue(),
-                                                pcImage.getAttachFileName(),
-                                                pcImage.getAttachmentFilePath(),
-                                                pcImage.getRegisterDatetime(),
-                                                pcImage.getModifyDatetime()
-                                        ))
-                                        .orElse(null);
-                                // 모바일용 첨부파일 조회 및 응답 객체 변환 (파일이 없으면 null)
-                                StudentDto.StudentAttachFileResponse mobileImageFile = Optional.ofNullable(
-                                        articleService.findActAccountAttachFileByArticleAndAttachFileValue(
-                                                banner,
-                                                AttachFileValue.AFV001
-                                        ))
-                                        .map(mobileImage -> new StudentDto.StudentAttachFileResponse(
-                                                mobileImage.getArticleAttachFileNo(),
-                                                mobileImage.getArticle().getArticleNo(),
-                                                mobileImage.getAttachFileValue(),
-                                                mobileImage.getAttachFileName(),
-                                                mobileImage.getAttachmentFilePath(),
-                                                mobileImage.getRegisterDatetime(),
-                                                mobileImage.getModifyDatetime()
-                                        ))
-                                        .orElse(null);
-                                // toResponseDto 메서드를 사용하여 StudentResponse 객체 생성
-                                return toResponseDto(banner, articleDisplay, pcImageFile, mobileImageFile);
-                            })
+                    var responseList = page.getContent().stream()
+                            .map(this::toResponseDto)
                             .collect(Collectors.toList());
                     return new StudentDto.StudentPageResponse(
-                            bannerList,
+                            responseList,
                             page.getTotalElements(),
                             page.getTotalPages()
                     );
