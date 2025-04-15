@@ -1,7 +1,7 @@
 package com.redutec.admin.backoffice.service;
 
 import com.redutec.admin.backoffice.dto.BackOfficeGroupDto;
-import com.redutec.core.entity.BotGroup;
+import com.redutec.core.entity.v1.BotGroup;
 
 public interface BackOfficeGroupService {
     /**

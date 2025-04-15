@@ -2,6 +2,7 @@ package com.redutec.core.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Comment;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -14,7 +15,7 @@ import java.time.LocalDateTime;
  * - 테이블 코멘트: 블랙리스트 토큰
  */
 @Entity
-@Table(name = "blacklisted_token")
+@Comment("블랙리스트 토큰")
 @Getter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -30,8 +31,8 @@ public class BlacklistedToken {
 
     @CreatedDate
     @Column(nullable = false, updatable = false)
-    private LocalDateTime registerDatetime;
+    private LocalDateTime createdAt;
 
     @LastModifiedDate
-    private LocalDateTime modifyDatetime;
+    private LocalDateTime updatedAt;
 }

@@ -1,6 +1,6 @@
 package com.redutec.admin.backoffice.dto;
 
-import com.redutec.core.entity.BotUserGroup;
+import com.redutec.core.entity.v1.BotUserGroup;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
 import lombok.Builder;

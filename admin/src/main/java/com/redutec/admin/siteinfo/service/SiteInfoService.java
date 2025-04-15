@@ -1,7 +1,7 @@
 package com.redutec.admin.siteinfo.service;
 
 import com.redutec.admin.siteinfo.dto.SiteInfoDto;
-import com.redutec.core.entity.CmtConfigurationGeneral;
+import com.redutec.core.entity.v1.CmtConfigurationGeneral;
 
 public interface SiteInfoService {
     /**

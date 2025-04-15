@@ -1,7 +1,7 @@
 package com.redutec.core.specification;
 
 import com.redutec.core.criteria.ActAccountCriteria;
-import com.redutec.core.entity.ActAccount;
+import com.redutec.core.entity.v1.ActAccount;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
 

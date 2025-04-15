@@ -2,7 +2,7 @@ package com.redutec.admin.siteinfo.mapper;
 
 import com.redutec.admin.siteinfo.dto.SiteInfoDto;
 import com.redutec.core.criteria.CmtConfigurationGeneralCriteria;
-import com.redutec.core.entity.CmtConfigurationGeneral;
+import com.redutec.core.entity.v1.CmtConfigurationGeneral;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

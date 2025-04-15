@@ -5,7 +5,7 @@ import com.redutec.admin.backoffice.dto.BackOfficeUserDto;
 import com.redutec.admin.config.JwtUtil;
 import com.redutec.core.config.EncryptionUtil;
 import com.redutec.core.criteria.BotUserCriteria;
-import com.redutec.core.entity.BotUser;
+import com.redutec.core.entity.v1.BotUser;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

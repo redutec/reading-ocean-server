@@ -3,7 +3,7 @@ package com.redutec.admin.backoffice.mapper;
 import com.redutec.admin.backoffice.dto.BackOfficeGroupDto;
 import com.redutec.admin.config.JwtUtil;
 import com.redutec.core.criteria.BotGroupCriteria;
-import com.redutec.core.entity.BotGroup;
+import com.redutec.core.entity.v1.BotGroup;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.Hibernate;

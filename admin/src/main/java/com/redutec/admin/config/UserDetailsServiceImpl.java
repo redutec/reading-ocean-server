@@ -1,6 +1,6 @@
 package com.redutec.admin.config;
 
-import com.redutec.core.repository.BotUserRepository;
+import com.redutec.core.repository.v1.BotUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

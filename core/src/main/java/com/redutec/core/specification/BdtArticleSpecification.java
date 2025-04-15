@@ -1,7 +1,7 @@
 package com.redutec.core.specification;
 
 import com.redutec.core.criteria.BdtArticleCriteria;
-import com.redutec.core.entity.BdtArticle;
+import com.redutec.core.entity.v1.BdtArticle;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
 

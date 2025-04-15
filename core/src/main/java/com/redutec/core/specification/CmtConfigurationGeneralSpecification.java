@@ -1,7 +1,7 @@
 package com.redutec.core.specification;
 
 import com.redutec.core.criteria.CmtConfigurationGeneralCriteria;
-import com.redutec.core.entity.CmtConfigurationGeneral;
+import com.redutec.core.entity.v1.CmtConfigurationGeneral;
 import org.springframework.data.jpa.domain.Specification;
 import jakarta.persistence.criteria.Predicate;
 

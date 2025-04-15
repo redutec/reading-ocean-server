@@ -1,8 +1,8 @@
 package com.redutec.admin.student.service;
 
 import com.redutec.admin.student.dto.StudentDto;
-import com.redutec.core.entity.ActAcademy;
-import com.redutec.core.repository.ActAccountRepository;
+import com.redutec.core.entity.v1.ActAcademy;
+import com.redutec.core.repository.v1.ActAccountRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -1,10 +1,14 @@
 package com.redutec.core.entity;
 
+import com.redutec.core.meta.Domain;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Comment;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
 
@@ -13,6 +17,7 @@ import java.time.LocalDateTime;
  * JWT Refresh Token을 데이터베이스에 저장하고 관리합니다.
  */
 @Entity
+@Comment("JWT Refresh Token")
 @Getter
 @Builder
 @NoArgsConstructor
@@ -25,21 +30,38 @@ public class RefreshToken {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     /**
      * 저장된 Refresh Token.
      */
     @Column(nullable = false, unique = true)
     private String token;
+
     /**
-     * Refresh Token이 발급된 사용자 아이디.
+     * Refresh Token이 발급된 계정의 username.
      */
     @Column(nullable = false)
-    private String userId;
+    private String username;
+
+    /**
+     * Refresh Token이 발급된 서비스 도메인.
+     */
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Domain domain;
+
     /**
      * Refresh Token의 만료 날짜와 시간.
      */
     @Column(nullable = false)
     private LocalDateTime expiresAt;
+
+    @CreatedDate
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
+    @LastModifiedDate
+    private LocalDateTime updatedAt;
 
     /**
      * Refresh Token이 만료되었는지 확인합니다.

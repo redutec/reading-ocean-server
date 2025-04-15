@@ -1,12 +1,12 @@
 package com.redutec.admin.article.service;
 
-import com.redutec.core.entity.BdtArticle;
-import com.redutec.core.entity.BdtArticleAttachFile;
-import com.redutec.core.entity.BdtArticleDisplay;
+import com.redutec.core.entity.v1.BdtArticle;
+import com.redutec.core.entity.v1.BdtArticleAttachFile;
+import com.redutec.core.entity.v1.BdtArticleDisplay;
 import com.redutec.core.meta.AttachFileValue;
-import com.redutec.core.repository.BdtArticleAttachFileRepository;
-import com.redutec.core.repository.BdtArticleDisplayRepository;
-import com.redutec.core.repository.BdtArticleRepository;
+import com.redutec.core.repository.v1.BdtArticleAttachFileRepository;
+import com.redutec.core.repository.v1.BdtArticleDisplayRepository;
+import com.redutec.core.repository.v1.BdtArticleRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

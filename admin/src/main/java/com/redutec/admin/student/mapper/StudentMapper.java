@@ -4,7 +4,7 @@ import com.redutec.admin.config.JwtUtil;
 import com.redutec.admin.student.dto.StudentDto;
 import com.redutec.admin.student.service.StudentService;
 import com.redutec.core.criteria.ActAccountCriteria;
-import com.redutec.core.entity.ActAccount;
+import com.redutec.core.entity.v1.ActAccount;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

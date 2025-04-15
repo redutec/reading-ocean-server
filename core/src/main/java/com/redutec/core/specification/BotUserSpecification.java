@@ -1,7 +1,7 @@
 package com.redutec.core.specification;
 
 import com.redutec.core.criteria.BotUserCriteria;
-import com.redutec.core.entity.BotUser;
+import com.redutec.core.entity.v1.BotUser;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
 

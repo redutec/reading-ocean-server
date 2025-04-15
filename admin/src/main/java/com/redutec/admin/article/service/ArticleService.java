@@ -1,8 +1,8 @@
 package com.redutec.admin.article.service;
 
-import com.redutec.core.entity.BdtArticle;
-import com.redutec.core.entity.BdtArticleAttachFile;
-import com.redutec.core.entity.BdtArticleDisplay;
+import com.redutec.core.entity.v1.BdtArticle;
+import com.redutec.core.entity.v1.BdtArticleAttachFile;
+import com.redutec.core.entity.v1.BdtArticleDisplay;
 import com.redutec.core.meta.AttachFileValue;
 
 public interface ArticleService {

@@ -2,8 +2,8 @@ package com.redutec.admin.siteinfo.service;
 
 import com.redutec.admin.siteinfo.dto.SiteInfoDto;
 import com.redutec.admin.siteinfo.mapper.SiteInfoMapper;
-import com.redutec.core.entity.CmtConfigurationGeneral;
-import com.redutec.core.repository.CmtConfigurationGeneralRepository;
+import com.redutec.core.entity.v1.CmtConfigurationGeneral;
+import com.redutec.core.repository.v1.CmtConfigurationGeneralRepository;
 import com.redutec.core.specification.CmtConfigurationGeneralSpecification;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;

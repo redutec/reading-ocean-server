@@ -21,7 +21,7 @@ public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Long
     /**
      * 특정 사용자의 모든 Refresh Token을 삭제합니다.
      *
-     * @param userId 사용자 아이디
+     * @param username 사용자 아이디
      */
-    void deleteByUserId(String userId);
+    void deleteByUsername(String username);
 }

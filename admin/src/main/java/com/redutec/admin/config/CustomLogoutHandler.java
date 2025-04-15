@@ -1,9 +1,9 @@
 package com.redutec.admin.config;
 
 import com.redutec.core.entity.BlacklistedToken;
-import com.redutec.core.entity.BotUser;
+import com.redutec.core.entity.v1.BotUser;
 import com.redutec.core.repository.BlacklistedTokenRepository;
-import com.redutec.core.repository.BotUserRepository;
+import com.redutec.core.repository.v1.BotUserRepository;
 import com.redutec.core.repository.RefreshTokenRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;

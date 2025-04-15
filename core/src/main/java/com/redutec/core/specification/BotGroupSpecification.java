@@ -1,7 +1,7 @@
 package com.redutec.core.specification;
 
 import com.redutec.core.criteria.BotGroupCriteria;
-import com.redutec.core.entity.BotGroup;
+import com.redutec.core.entity.v1.BotGroup;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
 
