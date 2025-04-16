@@ -1,6 +1,6 @@
 package com.redutec.core.entity.v1;
 
-import com.redutec.core.meta.AccountStatus;
+import com.redutec.core.meta.v1.AccountStatus;
 import com.redutec.core.meta.Domain;
 import com.redutec.core.meta.SchoolGrade;
 import jakarta.persistence.*;

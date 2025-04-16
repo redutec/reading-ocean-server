@@ -23,36 +23,25 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RefreshToken {
-    /**
-     * Refresh Token의 고유 식별자입니다.
-     * - 데이터베이스에서 자동 생성됩니다.
-     */
+    @Comment("Refresh Token 고유번호")
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    /**
-     * 저장된 Refresh Token.
-     */
+    @Comment("토큰값")
     @Column(nullable = false, unique = true)
     private String token;
 
-    /**
-     * Refresh Token이 발급된 계정의 username.
-     */
+    @Comment("토큰 생성 계정")
     @Column(nullable = false)
     private String username;
 
-    /**
-     * Refresh Token이 발급된 서비스 도메인.
-     */
+    @Comment("토큰 생성 도메인")
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Domain domain;
 
-    /**
-     * Refresh Token의 만료 날짜와 시간.
-     */
+    @Comment("만료일")
     @Column(nullable = false)
     private LocalDateTime expiresAt;
 

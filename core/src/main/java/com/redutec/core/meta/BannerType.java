@@ -8,5 +8,5 @@ import lombok.RequiredArgsConstructor;
 public enum BannerType {
     BNT001("캐러셀");
 
-    private final String description;
+    private final String name;
 }

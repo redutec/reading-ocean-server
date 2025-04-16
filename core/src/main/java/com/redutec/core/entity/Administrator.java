@@ -25,97 +25,56 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
 public class Administrator {
-    /**
-     * 시스템 관리자 ID를 나타냅니다.
-     * - 자동 생성되며, 기본 키로 사용됩니다.
-     */
+    @Comment("시스템 관리자 고유번호")
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    /**
-     * 시스템 관리자의 이메일 주소를 나타냅니다.
-     * - Base64로 암호화되어 저장됩니다.
-     * - 이 필드는 null을 허용하지 않으며, 고유(unique)한 값이어야 합니다.
-     * - 로그인 아이디로 사용됩니다.
-     */
+    @Comment("이메일(로그인에도 사용)")
     @Column(nullable = false, unique = true)
     private String email;
 
-    /**
-     * 시스템 관리자의 비밀번호를 나타냅니다.
-     * - 암호화된 값이 저장됩니다.
-     * - 이 필드는 null을 허용하지 않으며, 최대 60자까지 입력 가능합니다.
-     */
+    @Comment("비밀번호")
     @Column(nullable = false, length = 60)
     @Setter
     private String password;
 
-    /**
-     * 시스템 관리자의 권한을 나타냅니다.
-     * - AdministratorRole 열거형으로 관리됩니다.
-     * - 이 필드는 null을 허용하지 않습니다.
-     */
+    @Comment("권한")
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private AdministratorRole role;
 
-    /**
-     * 시스템 관리자 계정의 상태를 나타냅니다.
-     * - AuthenticationStatus 열거형으로 관리됩니다.
-     * - 기본값은 ACTIVE로 설정되며, 이 필드는 null을 허용하지 않습니다.
-     */
+    @Comment("계정 상태")
     @Column(nullable = false, length = 14)
     @Enumerated(EnumType.STRING)
     @Builder.Default
     @Setter
-    private AuthenticationStatus authenticationStatus = AuthenticationStatus.ACTIVE;
+    private AuthenticationStatus authenticationStatus = AuthenticationStatus.INACTIVE;
 
-    /**
-     * 시스템 관리자 사용자의 닉네임을 나타냅니다.
-     * - 개인정보 최소화를 고려하여, 실제 이름 대신 사용됩니다.
-     * - 이 필드는 선택 사항입니다.
-     */
+    @Comment("닉네임")
     @Column(length = 50)
     private String nickname;
 
-    /**
-     * 시스템 관리자의 로그인 실패 횟수를 나타냅니다.
-     * - 보안상의 이유로, 일정 횟수를 초과하면 추가 인증 또는 계정 잠금 등의 조치를 취할 수 있습니다.
-     * - 기본값은 0으로 설정됩니다.
-     */
+    @Comment("비밀번호 틀린 횟수")
     @Column(nullable = false)
     @Builder.Default
     @Setter
     private Integer failedLoginAttempts = 0;
 
-    /**
-     * 시스템 관리자의 최근 로그인 IP 주소를 나타냅니다.
-     * - IPv6까지 고려하여, 최대 45자까지 저장됩니다.
-     */
+    @Comment("최근 접속 IP")
     @Column(length = 45)
     @Setter
     private String lastLoginIp;
 
-    /**
-     * 시스템 관리자의 최근 로그인 일시를 나타냅니다.
-     */
+    @Comment("최근 접속일")
     @Column
     @Setter
     private LocalDateTime lastLoginAt;
 
-    /**
-     * 시스템 관리자 계정이 처음 생성된 날짜와 시간을 나타냅니다.
-     * - 이 값은 데이터베이스에 처음 저장될 때 자동으로 설정되며, 이후 수정할 수 없습니다.
-     */
     @CreatedDate
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    /**
-     * 시스템 관리자 계정 정보가 마지막으로 수정된 날짜와 시간을 나타냅니다.
-     * - 데이터가 변경될 때마다 자동으로 업데이트됩니다.
-     */
     @LastModifiedDate
     @Column(nullable = false)
     private LocalDateTime updatedAt;

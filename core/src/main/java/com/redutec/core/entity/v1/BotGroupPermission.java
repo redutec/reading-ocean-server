@@ -1,7 +1,7 @@
 package com.redutec.core.entity.v1;
 
 import com.redutec.core.entity.v1.key.BotGroupPermissionKey;
-import com.redutec.core.meta.PermissionType;
+import com.redutec.core.meta.v1.PermissionType;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;

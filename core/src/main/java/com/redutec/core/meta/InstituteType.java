@@ -5,10 +5,9 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum AttachFileValue {
-    MOBILE("모바일"),
-    PC("PC"),
-    ETC("기타");
+public enum InstituteType {
+    ACADEMY("학원"),
+    SCHOOL("학교");
 
     private final String name;
 }

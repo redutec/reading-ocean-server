@@ -1,8 +1,8 @@
 package com.redutec.admin.config;
 
-import com.redutec.admin.backoffice.dto.BackOfficeUserDto;
-import com.redutec.admin.backoffice.mapper.BackOfficeUserMapper;
-import com.redutec.admin.backoffice.service.BackOfficeUserService;
+import com.redutec.admin.v1.backoffice.dto.BackOfficeUserDto;
+import com.redutec.admin.v1.backoffice.mapper.BackOfficeUserMapper;
+import com.redutec.admin.v1.backoffice.service.BackOfficeUserService;
 import com.redutec.core.entity.v1.BotUser;
 import com.redutec.core.repository.v1.BotUserRepository;
 import jakarta.persistence.EntityNotFoundException;

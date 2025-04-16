@@ -2,7 +2,7 @@ package com.redutec.admin.config;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.redutec.admin.backoffice.dto.BackOfficeUserDto;
+import com.redutec.admin.v1.backoffice.dto.BackOfficeUserDto;
 import com.redutec.core.repository.BlacklistedTokenRepository;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;

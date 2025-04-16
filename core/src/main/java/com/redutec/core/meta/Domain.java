@@ -13,5 +13,5 @@ public enum Domain {
     TEACHING_OCEAN_SCHOOL("티칭오션 스쿨"),
     ADMIN("어드민");
 
-    private final String description;
+    private final String name;
 }

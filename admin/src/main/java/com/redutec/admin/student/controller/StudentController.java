@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/account")
+@RequestMapping("/student")
 @Tag(name = "학생 계정 관리 API", description = "학생 계정 관리 API 모음")
 public class StudentController {
     private final ApiResponseManager apiResponseManager;

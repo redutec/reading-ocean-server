@@ -22,5 +22,5 @@ public enum SchoolGrade {
     HIGH_3(14, "고등3");
 
     private final Integer order;
-    private final String description;
+    private final String name;
 }

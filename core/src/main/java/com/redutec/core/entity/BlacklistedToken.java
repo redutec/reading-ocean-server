@@ -22,10 +22,12 @@ import java.time.LocalDateTime;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @EntityListeners(AuditingEntityListener.class)
 public class BlacklistedToken {
+    @Comment("블랙리스트 토큰 고유번호")
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Comment("토큰값")
     @Column(length = 1024, unique = true, nullable = false)
     private String token;
 

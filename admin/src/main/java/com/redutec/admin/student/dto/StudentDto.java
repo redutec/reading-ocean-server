@@ -1,6 +1,6 @@
 package com.redutec.admin.student.dto;
 
-import com.redutec.core.meta.AccountStatus;
+import com.redutec.core.meta.v1.AccountStatus;
 import com.redutec.core.meta.Domain;
 import com.redutec.core.meta.SchoolGrade;
 import io.swagger.v3.oas.annotations.media.Schema;

@@ -1,8 +1,8 @@
 package com.redutec.core.entity.v1;
 
-import com.redutec.core.meta.AcademyManageType;
-import com.redutec.core.meta.AcademyOperationStatus;
-import com.redutec.core.meta.AcademyStatus;
+import com.redutec.core.meta.v1.AcademyManageType;
+import com.redutec.core.meta.v1.AcademyOperationStatus;
+import com.redutec.core.meta.v1.AcademyStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
