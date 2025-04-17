@@ -1,4 +1,4 @@
-package com.redutec.core.criteria;
+package com.redutec.core.criteria.v1;
 
 import com.redutec.core.meta.Domain;
 import lombok.Builder;

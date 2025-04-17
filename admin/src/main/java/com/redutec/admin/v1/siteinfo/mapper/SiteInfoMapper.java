@@ -1,7 +1,7 @@
 package com.redutec.admin.v1.siteinfo.mapper;
 
 import com.redutec.admin.v1.siteinfo.dto.SiteInfoDto;
-import com.redutec.core.criteria.CmtConfigurationGeneralCriteria;
+import com.redutec.core.criteria.v1.CmtConfigurationGeneralCriteria;
 import com.redutec.core.entity.v1.CmtConfigurationGeneral;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

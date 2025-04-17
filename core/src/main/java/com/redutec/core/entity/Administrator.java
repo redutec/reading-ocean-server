@@ -1,5 +1,6 @@
 package com.redutec.core.entity;
 
+import com.redutec.core.config.AesAttributeConverter;
 import com.redutec.core.meta.AdministratorRole;
 import com.redutec.core.meta.AuthenticationStatus;
 import jakarta.persistence.*;
@@ -30,9 +31,9 @@ public class Administrator {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Comment("이메일(로그인에도 사용)")
-    @Column(nullable = false, unique = true)
-    private String email;
+    @Comment("닉네임(로그인에 사용)")
+    @Column(length = 20)
+    private String nickname;
 
     @Comment("비밀번호")
     @Column(nullable = false, length = 60)
@@ -51,9 +52,10 @@ public class Administrator {
     @Setter
     private AuthenticationStatus authenticationStatus = AuthenticationStatus.INACTIVE;
 
-    @Comment("닉네임")
-    @Column(length = 50)
-    private String nickname;
+    @Comment("이메일")
+    @Convert(converter = AesAttributeConverter.class)
+    @Column(nullable = false, unique = true)
+    private String email;
 
     @Comment("비밀번호 틀린 횟수")
     @Column(nullable = false)
@@ -80,20 +82,20 @@ public class Administrator {
     private LocalDateTime updatedAt;
 
     public void updateAdministrator(
-            String email,
+            String nickname,
             String password,
             AdministratorRole role,
             AuthenticationStatus authenticationStatus,
-            String nickname,
+            String email,
             Integer failedLoginAttempts,
             String lastLoginIp,
             LocalDateTime lastLoginAt
     ) {
-        this.email = email != null ? email : this.email;
+        this.nickname = nickname != null ? nickname : this.nickname;
         this.password = password != null ? password : this.password;
         this.role = role != null ? role : this.role;
         this.authenticationStatus = authenticationStatus != null ? authenticationStatus : this.authenticationStatus;
-        this.nickname = nickname != null ? nickname : this.nickname;
+        this.email = email != null ? email : this.email;
         this.failedLoginAttempts = failedLoginAttempts != null ? failedLoginAttempts : this.failedLoginAttempts;
         this.lastLoginIp = lastLoginIp != null ? lastLoginIp : this.lastLoginIp;
         this.lastLoginAt = lastLoginAt != null ? lastLoginAt : this.lastLoginAt;

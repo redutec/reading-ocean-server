@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum InstituteManageType {
+public enum InstituteManagementType {
     BASIC("베이직"),
     STANDARD("스탠다드");
 

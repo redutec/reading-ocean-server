@@ -1,5 +1,7 @@
 package com.redutec.core.entity;
 
+import com.redutec.core.config.AesAttributeConverter;
+import com.redutec.core.meta.AuthenticationStatus;
 import com.redutec.core.meta.ReadingLevel;
 import com.redutec.core.meta.SchoolGrade;
 import com.redutec.core.meta.StudentStatus;
@@ -13,7 +15,6 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -38,28 +39,37 @@ public class Student {
     @Column(nullable = false)
     private String password;
 
-    @Comment("학생명(Base64 암호화)")
+    @Comment("학생명(AES256 암호화)")
+    @Convert(converter = AesAttributeConverter.class)
     @Column(nullable = false)
     private String name;
 
-    @Comment("연락처(Base64 암호화)")
+    @Comment("연락처(AES256 암호화)")
+    @Convert(converter = AesAttributeConverter.class)
     @Column
     private String phoneNumber;
 
-    @Comment("이메일(Base64 암호화)")
+    @Comment("이메일(AES256 암호화)")
+    @Convert(converter = AesAttributeConverter.class)
     @Column
     private String email;
 
     @Comment("생년월일")
     @Column(length = 8)
     @Pattern(regexp = "^[0-9]{8}$", message = "생년월일은 8자리의 숫자로만 구성되어야 합니다.")
-    private LocalDate birthday;
+    private String birthday;
 
     @Comment("상태")
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     @Builder.Default
     private StudentStatus status = StudentStatus.WAIT;
+
+    @Comment("계정 상태")
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    @Builder.Default
+    private AuthenticationStatus authenticationStatus = AuthenticationStatus.INACTIVE;
 
     @Comment("독서레벨")
     @Column

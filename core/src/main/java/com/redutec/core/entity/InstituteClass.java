@@ -12,6 +12,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Comment("학급")
@@ -39,6 +40,14 @@ public class InstituteClass {
     @Comment("비고")
     @Column
     private String description;
+
+    @Comment("이 학급에 소속된 학생")
+    @OneToMany(mappedBy = "instituteClass", fetch = FetchType.LAZY)
+    private List<Student> students;
+
+    @Comment("이 학급에 소속된 교사")
+    @OneToMany(mappedBy = "instituteClass", fetch = FetchType.LAZY)
+    private List<Teacher> teachers;
 
     @CreatedDate
     @Column(nullable = false, updatable = false)

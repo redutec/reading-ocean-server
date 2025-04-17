@@ -1,6 +1,6 @@
 package com.redutec.core.entity;
 
-import com.redutec.core.meta.InstituteManageType;
+import com.redutec.core.meta.InstituteManagementType;
 import com.redutec.core.meta.InstituteOperationStatus;
 import com.redutec.core.meta.InstituteStatus;
 import com.redutec.core.meta.InstituteType;
@@ -69,7 +69,7 @@ public class Institute {
     @Comment("운영 유형")
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private InstituteManageType manageType;
+    private InstituteManagementType managementType;
 
     @Comment("상태")
     @Column(nullable = false)
@@ -105,7 +105,7 @@ public class Institute {
             String url,
             String naverPlaceUrl,
             InstituteType type,
-            InstituteManageType manageType,
+            InstituteManagementType managementType,
             InstituteStatus status,
             InstituteOperationStatus instituteOperationStatus,
             Branch branch
@@ -118,7 +118,7 @@ public class Institute {
         this.url = url != null ? url : this.url;
         this.naverPlaceUrl = naverPlaceUrl != null ? naverPlaceUrl : this.naverPlaceUrl;
         this.type = type != null ? type : this.type;
-        this.manageType = manageType != null ? manageType : this.manageType;
+        this.managementType = managementType != null ? managementType : this.managementType;
         this.status = status != null ? status : this.status;
         this.operationStatus = instituteOperationStatus != null ? instituteOperationStatus : this.operationStatus;
         this.branch = branch != null ? branch : this.branch;

@@ -4,7 +4,7 @@ import com.redutec.admin.v1.siteinfo.dto.SiteInfoDto;
 import com.redutec.admin.v1.siteinfo.mapper.SiteInfoMapper;
 import com.redutec.core.entity.v1.CmtConfigurationGeneral;
 import com.redutec.core.repository.v1.CmtConfigurationGeneralRepository;
-import com.redutec.core.specification.CmtConfigurationGeneralSpecification;
+import com.redutec.core.specification.v1.CmtConfigurationGeneralSpecification;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;

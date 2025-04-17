@@ -5,3 +5,5 @@ spring:
     properties:
       hibernate:
         globally_quoted_identifiers: true
+# Security
+aes-256-key: "wI9a1XcwVlxiZklgK+P73P7msAVd4eHro3+cdk8pKxU="

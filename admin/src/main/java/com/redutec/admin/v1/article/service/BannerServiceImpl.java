@@ -12,7 +12,7 @@ import com.redutec.core.meta.AttachFileValue;
 import com.redutec.core.repository.v1.BdtArticleAttachFileRepository;
 import com.redutec.core.repository.v1.BdtArticleDisplayRepository;
 import com.redutec.core.repository.v1.BdtArticleRepository;
-import com.redutec.core.specification.BdtArticleSpecification;
+import com.redutec.core.specification.v1.BdtArticleSpecification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -47,7 +47,7 @@ public class BannerServiceImpl implements BannerService {
             MultipartFile mobileBannerImageFile
     ) {
         // 현재 로그인한 어드민의 아이디 조회
-        String adminId = Optional.ofNullable(jwtUtil.extractUserIdFromToken((String) SecurityContextHolder.getContext().getAuthentication().getPrincipal()))
+        String adminId = Optional.ofNullable(jwtUtil.extractUsername((String) SecurityContextHolder.getContext().getAuthentication().getPrincipal()))
                 .orElse("admin");
         // pc 배너 이미지 파일 검증
         Optional.ofNullable(pcBannerImageFile)
@@ -164,7 +164,7 @@ public class BannerServiceImpl implements BannerService {
             MultipartFile mobileBannerImageFile
     ) {
         // 현재 로그인한 어드민의 아이디 조회
-        String adminId = Optional.ofNullable(jwtUtil.extractUserIdFromToken((String) SecurityContextHolder.getContext().getAuthentication().getPrincipal()))
+        String adminId = Optional.ofNullable(jwtUtil.extractUsername((String) SecurityContextHolder.getContext().getAuthentication().getPrincipal()))
                 .orElse("admin");
         // 수정할 배너가 존재하는지 확인
         BdtArticle banner = articleService.getBdtArticleByArticleNo(bannerNo);

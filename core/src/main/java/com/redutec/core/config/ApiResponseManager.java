@@ -44,10 +44,11 @@ public class ApiResponseManager {
      */
     private ResponseEntity<ApiResponseBody> buildResponse(HttpStatus status, String message, Object data) {
         return ResponseEntity.status(status)
-                .body(ApiResponseBody.builder()
-                        .status(status.value())
-                        .message(message)
-                        .data(data)
-                        .build());
+                .body(new ApiResponseBody(
+                        status.value(),
+                        message,
+                        data
+                     )
+                );
     }
 }

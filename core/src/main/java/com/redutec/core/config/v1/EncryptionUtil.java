@@ -1,4 +1,4 @@
-package com.redutec.core.config;
+package com.redutec.core.config.v1;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;

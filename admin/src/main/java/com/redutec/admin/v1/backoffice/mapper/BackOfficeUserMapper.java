@@ -3,8 +3,8 @@ package com.redutec.admin.v1.backoffice.mapper;
 import com.redutec.admin.v1.backoffice.dto.BackOfficeGroupDto;
 import com.redutec.admin.v1.backoffice.dto.BackOfficeUserDto;
 import com.redutec.admin.config.JwtUtil;
-import com.redutec.core.config.EncryptionUtil;
-import com.redutec.core.criteria.BotUserCriteria;
+import com.redutec.core.config.v1.EncryptionUtil;
+import com.redutec.core.criteria.v1.BotUserCriteria;
 import com.redutec.core.entity.v1.BotUser;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +32,7 @@ public class BackOfficeUserMapper {
             BackOfficeUserDto.CreateBackOfficeUserRequest createBackOfficeUserRequest
     ) throws NoSuchAlgorithmException {
         // 현재 접속 중인 관리자 아이디 조회(Null이면 "admin"으로 설정)
-        String adminId = Optional.ofNullable(jwtUtil.extractUserIdFromToken((String) SecurityContextHolder.getContext().getAuthentication().getPrincipal()))
+        String adminId = Optional.ofNullable(jwtUtil.extractUsername((String) SecurityContextHolder.getContext().getAuthentication().getPrincipal()))
                 .orElse("admin");
         // 비밀번호 솔트값 지정 및 비밀번호 암호화
         String passwordSaltValue = EncryptionUtil.getSalt();

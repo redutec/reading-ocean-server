@@ -1,9 +1,9 @@
 package com.redutec.admin.config;
 
+import com.redutec.core.entity.Administrator;
 import com.redutec.core.entity.BlacklistedToken;
-import com.redutec.core.entity.v1.BotUser;
+import com.redutec.core.repository.AdministratorRepository;
 import com.redutec.core.repository.BlacklistedTokenRepository;
-import com.redutec.core.repository.v1.BotUserRepository;
 import com.redutec.core.repository.RefreshTokenRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,7 +26,7 @@ public class CustomLogoutHandler implements LogoutHandler {
     private final JwtUtil jwtUtil;
     private final BlacklistedTokenRepository blacklistedTokenRepository;
     private final RefreshTokenRepository refreshTokenRepository;
-    private final BotUserRepository botUserRepository;
+    private final AdministratorRepository administratorRepository;
 
     /**
      * 로그아웃 처리를 수행합니다. 요청에서 JWT 토큰을 추출하고, 해당 토큰을 블랙리스트에 추가합니다.
@@ -50,13 +50,14 @@ public class CustomLogoutHandler implements LogoutHandler {
                                 .token(token)
                                 .build());
             }
-            // JWT 토큰에서 어드민 사용자의 로그인 아이디를을 추출
-            String userId = jwtUtil.extractUserIdFromToken(token);
-            if (userId != null) {
-                // BotUser 엔티티를 어드민 사용자의 로그인 아이디로 조회
-                BotUser botUser = botUserRepository.findByUserId(userId).orElseThrow(() -> new EntityNotFoundException("No such BotUser"));
-                // 해당 근로자의 리프레시 토큰 삭제
-                refreshTokenRepository.deleteById(Long.valueOf(botUser.getUserNo()));
+            // JWT 토큰에서 시스템 사용자의 로그인 아이디를 추출
+            String nickname = jwtUtil.extractUsername(token);
+            if (nickname != null) {
+                // Administrator 엔티티를 시스템 사용자의 로그인 아이디로 조회
+                Administrator administrator = administratorRepository.findByNickname(nickname)
+                        .orElseThrow(() -> new EntityNotFoundException("No such Administrator"));
+                // 해당 시스템 사용자의 리프레시 토큰 삭제
+                refreshTokenRepository.deleteById(administrator.getId());
             }
         }
     }

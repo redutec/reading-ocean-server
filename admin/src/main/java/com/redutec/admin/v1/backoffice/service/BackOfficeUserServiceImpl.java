@@ -3,13 +3,13 @@ package com.redutec.admin.v1.backoffice.service;
 import com.redutec.admin.v1.backoffice.dto.BackOfficeUserDto;
 import com.redutec.admin.v1.backoffice.mapper.BackOfficeUserMapper;
 import com.redutec.admin.config.JwtUtil;
-import com.redutec.core.config.EncryptionUtil;
+import com.redutec.core.config.v1.EncryptionUtil;
 import com.redutec.core.entity.v1.BotGroup;
 import com.redutec.core.entity.v1.BotUser;
 import com.redutec.core.entity.v1.BotUserGroup;
 import com.redutec.core.entity.v1.key.BotUserGroupKey;
 import com.redutec.core.repository.v1.BotUserRepository;
-import com.redutec.core.specification.BotUserSpecification;
+import com.redutec.core.specification.v1.BotUserSpecification;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -144,7 +144,7 @@ public class BackOfficeUserServiceImpl implements BackOfficeUserService {
                                     .group(botGroup)
                                     .useYn(Optional.ofNullable(dtoGroup.getUseYn()).orElse("Y"))
                                     .description(dtoGroup.getDescription())
-                                    .adminId(jwtUtil.extractUserIdFromToken(
+                                    .adminId(jwtUtil.extractUsername(
                                             (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal()))
                                     .build();
                         })
@@ -160,7 +160,7 @@ public class BackOfficeUserServiceImpl implements BackOfficeUserService {
                 updateBackOfficeUserRequest.useYn(),
                 updateBackOfficeUserRequest.lastAccessIp(),
                 updateBackOfficeUserRequest.lastAccessDatetime(),
-                jwtUtil.extractUserIdFromToken((String) SecurityContextHolder.getContext().getAuthentication().getPrincipal()),
+                jwtUtil.extractUsername((String) SecurityContextHolder.getContext().getAuthentication().getPrincipal()),
                 updateBackOfficeUserRequest.description(),
                 newBackOfficeUserGroupList
         );

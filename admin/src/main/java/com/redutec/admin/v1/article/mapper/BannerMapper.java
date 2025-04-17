@@ -3,7 +3,7 @@ package com.redutec.admin.v1.article.mapper;
 import com.redutec.admin.v1.article.dto.BannerDto;
 import com.redutec.admin.v1.article.service.ArticleService;
 import com.redutec.admin.config.JwtUtil;
-import com.redutec.core.criteria.BdtArticleCriteria;
+import com.redutec.core.criteria.v1.BdtArticleCriteria;
 import com.redutec.core.entity.v1.BdtArticle;
 import com.redutec.core.entity.v1.BdtArticleAttachFile;
 import com.redutec.core.entity.v1.BdtArticleDisplay;
@@ -34,7 +34,7 @@ public class BannerMapper {
     public BdtArticle toBdtArticleEntity(
             BannerDto.CreateBannerRequest createBannerRequest
     ) {
-        String adminId = Optional.ofNullable(jwtUtil.extractUserIdFromToken((String) SecurityContextHolder.getContext().getAuthentication().getPrincipal()))
+        String adminId = Optional.ofNullable(jwtUtil.extractUsername((String) SecurityContextHolder.getContext().getAuthentication().getPrincipal()))
                 .orElse("admin");
         return BdtArticle.builder()
                 .categoryValue(null)

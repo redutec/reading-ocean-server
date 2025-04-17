@@ -3,7 +3,7 @@ package com.redutec.admin.student.mapper;
 import com.redutec.admin.config.JwtUtil;
 import com.redutec.admin.student.dto.StudentDto;
 import com.redutec.admin.student.service.StudentService;
-import com.redutec.core.criteria.ActAccountCriteria;
+import com.redutec.core.criteria.v1.ActAccountCriteria;
 import com.redutec.core.entity.v1.ActAccount;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +30,7 @@ public class StudentMapper {
     public ActAccount toEntity(
             StudentDto.CreateStudentRequest createStudentRequest
     ) {
-        String adminId = Optional.ofNullable(jwtUtil.extractUserIdFromToken((String) SecurityContextHolder.getContext().getAuthentication().getPrincipal()))
+        String adminId = Optional.ofNullable(jwtUtil.extractUsername((String) SecurityContextHolder.getContext().getAuthentication().getPrincipal()))
                 .orElse("admin");
         return ActAccount.builder()
                 .build();

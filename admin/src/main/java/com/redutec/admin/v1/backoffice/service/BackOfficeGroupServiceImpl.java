@@ -9,7 +9,7 @@ import com.redutec.core.entity.v1.BotMenu;
 import com.redutec.core.entity.v1.key.BotGroupPermissionKey;
 import com.redutec.core.repository.v1.BotGroupRepository;
 import com.redutec.core.repository.v1.BotMenuRepository;
-import com.redutec.core.specification.BotGroupSpecification;
+import com.redutec.core.specification.v1.BotGroupSpecification;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.Hibernate;
@@ -111,7 +111,7 @@ public class BackOfficeGroupServiceImpl implements BackOfficeGroupService {
         botGroup.updateBotGroup(
                 updateBackOfficeGroupRequest.groupName(),
                 updateBackOfficeGroupRequest.useYn(),
-                Optional.ofNullable(jwtUtil.extractUserIdFromToken((String) SecurityContextHolder.getContext().getAuthentication().getPrincipal()))
+                Optional.ofNullable(jwtUtil.extractUsername((String) SecurityContextHolder.getContext().getAuthentication().getPrincipal()))
                         .orElse("admin"),
                 updateBackOfficeGroupRequest.description()
         );

@@ -2,25 +2,36 @@ package com.redutec.admin.config;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.redutec.admin.v1.backoffice.dto.BackOfficeUserDto;
-import com.redutec.core.repository.BlacklistedTokenRepository;
-import io.jsonwebtoken.ExpiredJwtException;
+import com.redutec.admin.authentication.dto.AuthenticationDto;
+import com.redutec.core.entity.Administrator;
+import com.redutec.core.entity.AdministratorMenu;
+import com.redutec.core.entity.RefreshToken;
+import com.redutec.core.meta.Domain;
+import com.redutec.core.repository.AdministratorMenuRepository;
+import com.redutec.core.repository.AdministratorRepository;
+import com.redutec.core.repository.RefreshTokenRepository;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
-import jakarta.servlet.http.Cookie;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -29,29 +40,40 @@ import java.util.Map;
  */
 @Slf4j
 @Component
-@RequiredArgsConstructor
 public class JwtUtil {
-    private final BlacklistedTokenRepository blacklistedTokenRepository;
-    private final ObjectMapper objectMapper;
+    private final AdministratorRepository administratorRepository;
+    private final AdministratorMenuRepository administratorMenuRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
 
     @Value("${jwt.secret}")
-    private String secret;
+    private String jwtSecret;
+
     @Value("${jwt.access-token-expiration}")
     private long accessTokenExpiration;
+
     @Value("${jwt.refresh-token-expiration}")
     private long refreshTokenExpiration;
 
     private Key key;
+
     /**
+     * JwtUtil 생성자.
      * Secret Key를 생성하고 HMAC-SHA256 알고리즘을 사용합니다.
      */
+    public JwtUtil(
+            AdministratorRepository administratorRepository,
+            AdministratorMenuRepository administratorMenuRepository,
+            RefreshTokenRepository refreshTokenRepository
+    ) {
+        this.administratorRepository = administratorRepository;
+        this.administratorMenuRepository = administratorMenuRepository;
+        this.refreshTokenRepository = refreshTokenRepository;
+        this.key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+    }
+
     @PostConstruct
-    public void initJwtUtil() {
-        // secret이 null이거나 길이가 충분하지 않은지 확인
-        if (secret == null || secret.length() < 32) { // 32 bytes = 256 bits
-            throw new IllegalArgumentException("JWT secret must be at least 32 characters long");
-        }
-        this.key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
+    public void init() {
+        this.key = Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
     }
 
     /**
@@ -64,33 +86,127 @@ public class JwtUtil {
     }
 
     /**
-     * 현재 로그인한 어드민 사용자의 Access Token 생성
-     * @param backOfficeUserResponse 토큰에 포함할 어드민 사용자 정보
+     * 시스템 관리자 정보를 JWT Claims로 변환
+     *
+     * @param administrator 시스템 관리자 객체
+     * @return JWT Claims 맵 객체
+     */
+    @Transactional(readOnly = true)
+    protected AuthenticationDto.AuthenticatedAdministrator buildJwtClaims(
+            Administrator administrator
+    ) {
+        // 현재 접속한 시스템 관리자가 접근할 수 있는 메뉴 목록 조회
+        List<Long> accessibleMenus = administratorMenuRepository.findAllByAccessibleRolesContains(administrator.getRole()).stream()
+                .map(AdministratorMenu::getId)
+                .toList();
+        // 현재 로그인한 시스템 관리자의 정보를 JWT Claims 응답 객체로 변환하여 리턴
+        return new AuthenticationDto.AuthenticatedAdministrator(
+                administrator.getId(),
+                administrator.getEmail(),
+                administrator.getNickname(),
+                accessibleMenus,
+                administrator.getRole()
+        );
+    }
+
+    /**
+     * Access Token을 생성합니다.
+     *
+     * @param administrator Access Token을 발급할 시스템 관리자 객체
      * @return 생성된 Access Token
      */
-    public String generateAccessToken(BackOfficeUserDto.BackOfficeUserResponse backOfficeUserResponse) {
-        Map<String, Object> claims = objectMapper.convertValue(backOfficeUserResponse, new TypeReference<>() {});
+    @Transactional(readOnly = true)
+    public String generateAccessToken(
+            Administrator administrator
+    ) {
+        // 시스템 관리자 엔티티를 JWT Claims Map으로 변환
+        Map<String, Object> claims = new ObjectMapper().convertValue(buildJwtClaims(administrator), new TypeReference<>() {});
         return Jwts.builder()
                 .setClaims(claims)
-                .setSubject(backOfficeUserResponse.userId())
-                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setSubject(claims.get("email").toString())
+                .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + accessTokenExpiration))
                 .signWith(key)
                 .compact();
     }
 
     /**
-     * Refresh Token 생성
-     * @param userId 토큰을 생성한 어드민 사용자의 로그인 아이디
+     * Refresh Token을 생성합니다.
+     *
+     * @param administrator Refresh Token을 발급할 시스템 관리자 객체
      * @return 생성된 Refresh Token
      */
-    public String generateRefreshToken(String userId) {
+    @Transactional(readOnly = true)
+    public String generateRefreshToken(
+            Administrator administrator
+    ) {
+        Map<String, Object> claims = new ObjectMapper().convertValue(buildJwtClaims(administrator), new TypeReference<>() {});
         return Jwts.builder()
-                .setSubject(userId)
+                .setSubject(claims.get("email").toString())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + refreshTokenExpiration))
                 .signWith(key)
                 .compact();
+    }
+
+    /**
+     * Refresh Token을 저장합니다.
+     *
+     * @param refreshToken Refresh Token
+     * @param username 계정 로그인 아이디
+     */
+    public void saveRefreshToken(
+            String refreshToken,
+            String username,
+            Domain domain
+    ) {
+        RefreshToken refreshTokenEntity = RefreshToken.builder()
+                .token(refreshToken)
+                .username(username)
+                .domain(domain)
+                .expiresAt(LocalDateTime.now().plus(Duration.ofMillis(getRefreshTokenExpirationInMillis())))
+                .build();
+        refreshTokenRepository.save(refreshTokenEntity);
+    }
+
+    /**
+     * 토큰에서 현재 로그인한 사용자의 로그인 계정을 추출합니다.
+     *
+     * @param token JWT 토큰
+     * @return 토큰에서 추출된 시스템 관리자 로그인 계정
+     */
+    public String extractUsername(
+            String token
+    ) {
+        return Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .getSubject();
+    }
+
+    /**
+     * Access Token 또는 Refresh Token의 유효성을 검증합니다.
+     *
+     * @param token JWT 토큰
+     * @return 토큰이 유효하면 true, 그렇지 않으면 false
+     */
+    public boolean validateToken(
+            String token
+    ) {
+        try {
+            var claims = Jwts.parserBuilder()
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+            // 토큰이 만료되지 않았는지 확인
+            return !claims.getExpiration().before(new Date());
+        } catch (JwtException e) {
+            log.warn("Invalid JWT token: {}", e.getMessage());
+            return false;
+        }
     }
 
     /**
@@ -99,92 +215,30 @@ public class JwtUtil {
      * @param request HttpServletRequest 정보
      * @return JWT 토큰
      */
-    public String extractTokenFromRequest(HttpServletRequest request) {
-        // 헤더에서 토큰 추출
+    public String extractTokenFromRequest(
+            HttpServletRequest request
+    ) {
         var authorizationHeader = request.getHeader("Authorization");
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            return authorizationHeader.substring(7);
-        }
-        // 쿠키에서 토큰 추출
-        if (request.getCookies() != null) {
-            for (Cookie cookie : request.getCookies()) {
-                if ("accessToken".equals(cookie.getName())) {
-                    return cookie.getValue();
-                }
-            }
+            return authorizationHeader.substring(7); // "Bearer " 부분을 제거하고 실제 토큰을 반환
         }
         return null;
     }
 
-    /**
-     * Access Token 또는 Refresh Token의 유효성을 검증합니다.
-     * 유효성 검증을 수행하고, 토큰이 유효하면 true를 반환하고 그렇지 않으면 false를 반환합니다.
-     *
-     * @param token JWT 토큰
-     * @return 토큰이 유효하면 true, 그렇지 않으면 false
-     */
-    public Boolean validateToken(String token) {
-        // 블랙리스트 토큰에 있는지 확인 후 유효하지 않으면 바로 false 반환
-        if (blacklistedTokenRepository.existsByToken(token)) {
-            log.warn("This token is blacklisted: {}", token);
-            return false;
+    public Administrator getCurrentAdministrator() {
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Unauthorized");
         }
-        // 토큰 검증 및 파싱
-        try {
-            Jwts.parserBuilder()
-                    .setSigningKey(key)
-                    .build()
-                    .parseClaimsJws(token);
-            return true; // 유효한 토큰
-        } catch (JwtException e) {
-            // 토큰이 만료되었거나 유효하지 않을 경우 false 반환
-            log.warn("JWT token validation failed: {}", e.getMessage());
-        } catch (Exception e) {
-            // 기타 예외 발생 시 false 반환
-            log.error("Unexpected error during token validation: {}", e.getMessage());
+        Object principal = authentication.getPrincipal();
+        if (principal instanceof Administrator administrator) {
+            return administrator;
         }
-        return false; // 검증 실패 시 false 반환
-    }
-
-    /**
-     * 검증된 토큰에서 어드민 사용자 계정 아이디를 추출합니다.
-     * 만료된 토큰이라도 어드민 사용자 계정 아이디를 추출할 수 있도록 처리합니다.
-     *
-     * @param token JWT 토큰
-     * @return 토큰에서 추출된 어드민 사용자 계정 아이디 또는 null
-     */
-    public String extractUserIdFromToken(String token) {
-        try {
-            return Jwts.parserBuilder()
-                    .setSigningKey(key)
-                    .build()
-                    .parseClaimsJws(token)
-                    .getBody()
-                    .getSubject();
-        } catch (ExpiredJwtException e) {
-            // 만료된 토큰의 경우에도 클레임에서 어드민 사용자 아이디 추출
-            return e.getClaims().getSubject();
-        } catch (JwtException e) {
-            log.warn("Invalid JWT token: {}", e.getMessage());
-            return null;
-        }
-    }
-
-    /**
-     * JWT 토큰에서 클레임 정보를 추출합니다.
-     * @param token JWT 토큰
-     * @return 클레임 정보가 담긴 Map
-     */
-    public Map<String, Object> extractClaimsFromToken(String token) {
-        try {
-            return Jwts.parserBuilder()
-                    .setSigningKey(key)
-                    .build()
-                    .parseClaimsJws(token)
-                    .getBody();
-        } catch (JwtException e) {
-            log.warn("Invalid JWT token: {}", e.getMessage());
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "유효하지 않은 JWT 토큰입니다.");
-        }
+        // User나 String 타입 모두에서 닉네임 문자열 추출
+        String nickname = principal instanceof User user
+                ? user.getUsername()
+                : principal.toString();
+        return administratorRepository.findByNickname(nickname)
+                .orElseThrow(() -> new EntityNotFoundException("Administrator not found with nickname: " + nickname));
     }
 }

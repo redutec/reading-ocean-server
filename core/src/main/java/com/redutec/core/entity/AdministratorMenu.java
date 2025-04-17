@@ -52,7 +52,7 @@ public class AdministratorMenu {
     @Enumerated(EnumType.STRING)
     private List<AdministratorRole> accessibleRoles;
 
-    @Comment("깊이")
+    @Comment("메뉴의 깊이")
     @Column(nullable = false)
     private Integer depth;
 

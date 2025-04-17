@@ -10,6 +10,7 @@ import io.swagger.v3.oas.models.responses.ApiResponses;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.servers.Server;
 import org.springdoc.core.customizers.OpenApiCustomizer;
+import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -45,6 +46,15 @@ public class SwaggerConfig {
 								.bearerFormat("JWT")))
 				.info(info)
 				.addSecurityItem(new SecurityRequirement().addList("bearerAuth"));
+	}
+
+	@Bean
+	public GroupedOpenApi adminApi() {
+		return GroupedOpenApi.builder()
+				.group("admin")                     // 스웨거 UI 상의 그룹 이름
+				.pathsToMatch("/**")                // 포함할 전체 경로 패턴
+				.pathsToExclude("/v1/**")           // 제외할 경로 패턴
+				.build();
 	}
 
 	/**

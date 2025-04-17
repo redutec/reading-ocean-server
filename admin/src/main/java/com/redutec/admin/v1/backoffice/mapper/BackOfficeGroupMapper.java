@@ -2,7 +2,7 @@ package com.redutec.admin.v1.backoffice.mapper;
 
 import com.redutec.admin.v1.backoffice.dto.BackOfficeGroupDto;
 import com.redutec.admin.config.JwtUtil;
-import com.redutec.core.criteria.BotGroupCriteria;
+import com.redutec.core.criteria.v1.BotGroupCriteria;
 import com.redutec.core.entity.v1.BotGroup;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +30,7 @@ public class BackOfficeGroupMapper {
     public BotGroup toEntity(
             BackOfficeGroupDto.CreateBackOfficeGroupRequest createBackOfficeGroupRequest
     ) {
-        String adminId = Optional.ofNullable(jwtUtil.extractUserIdFromToken((String) SecurityContextHolder.getContext().getAuthentication().getPrincipal()))
+        String adminId = Optional.ofNullable(jwtUtil.extractUsername((String) SecurityContextHolder.getContext().getAuthentication().getPrincipal()))
                 .orElse("admin");
         return BotGroup.builder()
                 .groupName(createBackOfficeGroupRequest.groupName())

@@ -1,5 +1,6 @@
 package com.redutec.core.entity;
 
+import com.redutec.core.config.AesAttributeConverter;
 import com.redutec.core.meta.BranchStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -54,15 +55,18 @@ public class Branch {
     @Column
     private String businessArea;
 
-    @Comment("지사장 이름(Base64 암호화)")
+    @Comment("지사장 이름(AES256 암호화)")
+    @Convert(converter = AesAttributeConverter.class)
     @Column
     private String managerName;
 
-    @Comment("지사장 연락처(Base64 암호화)")
+    @Comment("지사장 연락처(AES256 암호화)")
+    @Convert(converter = AesAttributeConverter.class)
     @Column
     private String managerPhoneNumber;
 
-    @Comment("지사장 이메일(Base64 암호화)")
+    @Comment("지사장 이메일(AES256 암호화)")
+    @Convert(converter = AesAttributeConverter.class)
     @Column
     private String managerEmail;
 

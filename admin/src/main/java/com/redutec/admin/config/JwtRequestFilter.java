@@ -1,10 +1,8 @@
 package com.redutec.admin.config;
 
-import com.redutec.admin.v1.backoffice.dto.BackOfficeUserDto;
-import com.redutec.admin.v1.backoffice.mapper.BackOfficeUserMapper;
-import com.redutec.admin.v1.backoffice.service.BackOfficeUserService;
-import com.redutec.core.entity.v1.BotUser;
-import com.redutec.core.repository.v1.BotUserRepository;
+import com.redutec.admin.administrator.service.AdministratorService;
+import com.redutec.core.entity.Administrator;
+import com.redutec.core.repository.AdministratorRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -33,9 +31,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class JwtRequestFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
-    private final BackOfficeUserService backOfficeUserService;
-    private final BotUserRepository botUserRepository;
-    private final BackOfficeUserMapper backOfficeUserMapper;
+    private final AdministratorService administratorService;
+    private final AdministratorRepository administratorRepository;
 
     @Setter
     private UserDetailsService userDetailsService;
@@ -45,8 +42,13 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
     // Swagger UI와 같은 특정 경로는 필터링에서 제외
     private static final List<String> EXCLUDED_PATHS = List.of(
-            "/api/swagger-ui/**", "/api/v3/api-docs/**", "/api/swagger-resources/**", "/api/webjars/**",
-            "/api/configuration/**", "/api/auth/**", "/api/academy/list", "/api/branch/list");
+            "/swagger-ui/**",
+            "/v3/api-docs/**",
+            "/swagger-resources/**",
+            "/webjars/**",
+            "/configuration/**",
+            "/auth/**"
+    );
 
     /**
      * HTTP 요청을 필터링하여 JWT 토큰을 검증하고, 인증 정보를 설정합니다.
@@ -57,8 +59,11 @@ public class JwtRequestFilter extends OncePerRequestFilter {
      * @throws IOException 입출력 예외
      */
     @Override
-    protected void doFilterInternal(HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain chain)
-            throws ServletException, IOException {
+    protected void doFilterInternal(
+            HttpServletRequest request,
+            @NonNull HttpServletResponse response,
+            @NonNull FilterChain chain
+    ) throws ServletException, IOException {
         // 예외 처리할 URI는 필터링을 하지 않고 체인으로 넘어감
         if (EXCLUDED_PATHS.stream().anyMatch(request.getRequestURI()::startsWith)) {
             chain.doFilter(request, response);
@@ -69,25 +74,22 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         // 로컬 프로파일인 경우, 토큰이 없으면 샘플 데이터를 사용하여 토큰 생성
         if ("local".equals(activeProfile) && accessToken == null) {
             // 로컬용 임시 어드민 사용자 데이터로 accessToken 발급
-            BotUser localBotUser = backOfficeUserService.getBackOfficeUser(1);
-            BackOfficeUserDto.BackOfficeUserResponse localBotUserResponse = backOfficeUserMapper.toResponse(localBotUser);
-            // BotUserResponse를 클레임으로 전달하여 Access Token 생성
-            accessToken = jwtUtil.generateAccessToken(localBotUserResponse);
+            Administrator localAdministrator = administratorService.getAdministrator(1L);
+            accessToken = jwtUtil.generateAccessToken(localAdministrator);
             log.info("**** Local profile detected with no token. Generated accessToken for test: {}", accessToken);
-
         }
         if (accessToken != null) {
             // 토큰을 검증
             if (jwtUtil.validateToken(accessToken)) {
-                // 검증된 토큰에서 어드민 사용자 아이디 추출
-                var userId = jwtUtil.extractUserIdFromToken(accessToken);
-                // 어드민 사용자 아이디가 유효하고, 현재 인증이 없다면 사용자 인증 수행
-                if (userId != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                    // 로그인한 어드민 사용자 정보 조회
-                    BotUser botUser = botUserRepository.findByUserId(userId).orElseThrow(() -> new EntityNotFoundException("No such BotUser"));
+                // 검증된 토큰에서 시스템 사용자 아이디 추출
+                var nickname = jwtUtil.extractUsername(accessToken);
+                // 시스템 사용자 아이디가 유효하고, 현재 인증이 없다면 사용자 인증 수행
+                if (nickname != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                    // 로그인한 시스템 사용자 정보 조회
+                    Administrator administrator = administratorRepository.findByNickname(nickname).orElseThrow(() -> new EntityNotFoundException("No such BotUser"));
                     // 권한 부여 및 인증 객체 생성
-                    var authorities = userDetailsService.loadUserByUsername(botUser.getUserId());
-                    var authenticationToken = new UsernamePasswordAuthenticationToken(userId, accessToken, authorities.getAuthorities());
+                    var authorities = userDetailsService.loadUserByUsername(administrator.getNickname());
+                    var authenticationToken = new UsernamePasswordAuthenticationToken(authorities, accessToken, authorities.getAuthorities());
                     // SecurityContext에 인증 객체 설정
                     SecurityContextHolder.getContext().setAuthentication(authenticationToken);
                 }
