@@ -25,9 +25,9 @@ public class AdministratorServiceImpl implements AdministratorService {
     private final JwtUtil jwtUtil;
 
     /**
-     * 시스템 관리자 등록
-     * @param createAdministratorRequest 시스템 관리자 등록 정보를 담은 DTO
-     * @return 등록된 시스템 관리자 정보
+     * 어드민 사용자 등록
+     * @param createAdministratorRequest 어드민 사용자 등록 정보를 담은 DTO
+     * @return 등록된 어드민 사용자 정보
      */
     @Override
     @Transactional
@@ -44,9 +44,9 @@ public class AdministratorServiceImpl implements AdministratorService {
     }
 
     /**
-     * 조건에 맞는 시스템 관리자 목록 조회
+     * 조건에 맞는 어드민 사용자 목록 조회
      * @param findAdministratorRequest 조회 조건을 담은 DTO
-     * @return 조회된 시스템 관리자 목록 및 페이징 정보
+     * @return 조회된 어드민 사용자 목록 및 페이징 정보
      */
     @Override
     @Transactional(readOnly = true)
@@ -61,9 +61,9 @@ public class AdministratorServiceImpl implements AdministratorService {
     }
 
     /**
-     * 특정 시스템 관리자 조회
-     * @param administratorId 시스템 관리자 고유번호
-     * @return 특정 시스템 관리자 응답 객체
+     * 특정 어드민 사용자 조회
+     * @param administratorId 어드민 사용자 고유번호
+     * @return 특정 어드민 사용자 응답 객체
      */
     @Override
     @Transactional(readOnly = true)
@@ -74,9 +74,9 @@ public class AdministratorServiceImpl implements AdministratorService {
     }
 
     /**
-     * 특정 시스템 관리자 엔티티 조회(닉네임으로 조회)
-     * @param nickname 시스템 관리자 닉네임
-     * @return 특정 시스템 관리자 엔티티 객체
+     * 특정 어드민 사용자 엔티티 조회(닉네임으로 조회)
+     * @param nickname 어드민 사용자 닉네임
+     * @return 특정 어드민 사용자 엔티티 객체
      */
     @Override
     @Transactional(readOnly = true)
@@ -88,9 +88,9 @@ public class AdministratorServiceImpl implements AdministratorService {
     }
 
     /**
-     * 특정 시스템 관리자 엔티티 조회
-     * @param administratorId 시스템 관리자 고유번호
-     * @return 특정 시스템 관리자 엔티티 객체
+     * 특정 어드민 사용자 엔티티 조회
+     * @param administratorId 어드민 사용자 고유번호
+     * @return 특정 어드민 사용자 엔티티 객체
      */
     @Override
     @Transactional(readOnly = true)
@@ -102,8 +102,8 @@ public class AdministratorServiceImpl implements AdministratorService {
     }
 
     /**
-     * 시스템 관리자 수정
-     * @param administratorId 수정할 시스템 관리자의 ID
+     * 어드민 사용자 수정
+     * @param administratorId 수정할 어드민 사용자의 ID
      * @param updateAdministratorRequest 수정할 정보를 담은 DTO
      */
     @Override
@@ -112,7 +112,7 @@ public class AdministratorServiceImpl implements AdministratorService {
             Long administratorId,
             AdministratorDto.UpdateAdministratorRequest updateAdministratorRequest
     ) {
-        // 수정할 시스템 관리자 엔티티 조회
+        // 수정할 어드민 사용자 엔티티 조회
         Administrator administrator = getAdministrator(administratorId);
         // UPDATE 도메인 메서드로 변환
         administrator.updateAdministrator(
@@ -125,13 +125,13 @@ public class AdministratorServiceImpl implements AdministratorService {
                 updateAdministratorRequest.lastLoginIp(),
                 updateAdministratorRequest.lastLoginAt()
         );
-        // 시스템 관리자 엔티티 UPDATE
+        // 어드민 사용자 엔티티 UPDATE
         administratorRepository.save(administrator);
     }
 
     /**
-     * 시스템 관리자 삭제
-     * @param administratorId 삭제할 시스템 관리자의 ID
+     * 어드민 사용자 삭제
+     * @param administratorId 삭제할 어드민 사용자의 ID
      */
     @Override
     @Transactional

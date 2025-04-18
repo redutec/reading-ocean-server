@@ -30,11 +30,11 @@ public class SampleData {
 
     @Getter
     @AllArgsConstructor
-    public enum ParentAdministratorMenu {
+    public enum ParentAdminMenu {
         ADMIN(
-                "Administrator Service",
+                "시스템 관리",
                 "/admin",
-                "시스템 관리자 계정을 관리합니다.",
+                "어드민 사용자, 메뉴 등을 관리",
                 List.of(AdministratorRole.CEO, AdministratorRole.DEVELOPMENT_TEAM_MANAGER, AdministratorRole.BUSINESS_TEAM_MANAGER, AdministratorRole.RESEARCH_TEAM_MANAGER, AdministratorRole.MANAGEMENT_TEAM_MANAGER)
         );
 
@@ -46,19 +46,19 @@ public class SampleData {
 
     @Getter
     @AllArgsConstructor
-    public enum ChildrenAdministratorMenu {
+    public enum ChildrenAdminMenu {
         ADMINISTRATOR(
-                "시스템 관리자",
+                "어드민 사용자",
                 "/admin/administrator",
-                "시스템 관리자를 관리합니다.",
-                ParentAdministratorMenu.ADMIN,
-                ParentAdministratorMenu.ADMIN.accessibleRoles
+                "어드민 사용자 목록",
+                ParentAdminMenu.ADMIN,
+                ParentAdminMenu.ADMIN.accessibleRoles
         );
 
         private final String name;
         private final String url;
         private final String description;
-        private final ParentAdministratorMenu parentMenu;
+        private final ParentAdminMenu parentAdminMenu;
         private final List<AdministratorRole> accessibleRoles;
     }
 }

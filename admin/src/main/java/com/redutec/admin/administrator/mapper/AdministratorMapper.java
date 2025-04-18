@@ -4,10 +4,10 @@ import com.redutec.admin.administrator.dto.AdministratorDto;
 import com.redutec.admin.config.JwtUtil;
 import com.redutec.core.config.EncryptUtil;
 import com.redutec.core.criteria.AdministratorCriteria;
+import com.redutec.core.entity.AdminMenu;
 import com.redutec.core.entity.Administrator;
-import com.redutec.core.entity.AdministratorMenu;
 import com.redutec.core.meta.AuthenticationStatus;
-import com.redutec.core.repository.AdministratorMenuRepository;
+import com.redutec.core.repository.AdminMenuRepository;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -24,12 +24,12 @@ public class AdministratorMapper {
     private final EncryptUtil encryptUtil;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
-    private final AdministratorMenuRepository administratorMenuRepository;
+    private final AdminMenuRepository adminMenuRepository;
 
     /**
      * CreateAdministratorRequest DTO를 기반으로 Administrator 엔티티를 생성합니다.
      *
-     * @param createAdministratorRequest 시스템 관리자 생성에 필요한 데이터를 담은 DTO
+     * @param createAdministratorRequest 어드민 사용자 생성에 필요한 데이터를 담은 DTO
      * @return 생성된 Administrator 엔티티
      */
     public Administrator toEntity(
@@ -48,7 +48,7 @@ public class AdministratorMapper {
     /**
      * 이 메서드는 현재 FindAdministratorRequest 객체를 기반으로
      * AdministratorCriteria 객체를 생성합니다.
-     * 내부 검색 로직에서 시스템 관리자 검색 조건을 구성할 때 사용됩니다.
+     * 내부 검색 로직에서 어드민 사용자 검색 조건을 구성할 때 사용됩니다.
      *
      * @return 해당 요청의 필드를 이용해 생성된 AdministratorCriteria 객체
      */
@@ -79,8 +79,8 @@ public class AdministratorMapper {
                         admin.getId(),
                         admin.getEmail(),
                         admin.getNickname(),
-                        administratorMenuRepository.findAllByAccessibleRolesContains(admin.getRole()).stream()
-                                .map(AdministratorMenu::getId)
+                        adminMenuRepository.findAllByAccessibleRolesContains(admin.getRole()).stream()
+                                .map(AdminMenu::getId)
                                 .collect(Collectors.toList()),
                         admin.getRole(),
                         admin.getCreatedAt(),

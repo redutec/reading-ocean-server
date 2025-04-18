@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public class AdministratorDto {
-    @Schema(description = "시스템 관리자 등록 요청 객체")
+    @Schema(description = "어드민 사용자 등록 요청 객체")
     public record CreateAdministratorRequest(
         @Schema(description = "이메일")
         @Email
@@ -36,9 +36,9 @@ public class AdministratorDto {
         AdministratorRole role
     ) {}
 
-    @Schema(description = "시스템 관리자 조회 요청 객체")
+    @Schema(description = "어드민 사용자 조회 요청 객체")
     public record FindAdministratorRequest(
-        @Schema(description = "시스템 관리자 ID")
+        @Schema(description = "어드민 사용자 ID")
         List<@Positive Long> administratorIds,
 
         @Schema(description = "이메일")
@@ -46,7 +46,7 @@ public class AdministratorDto {
         String email,
 
         @Schema(description = "닉네임")
-        @Size(max = 50, message = "닉네임은 50자를 넘을 수 없습니다")
+        @Size(max = 20, message = "닉네임은 20자를 넘을 수 없습니다")
         String nickname,
 
         @Schema(description = "권한")
@@ -74,7 +74,7 @@ public class AdministratorDto {
         Integer size
     ) {}
 
-    @Schema(description = "시스템 관리자 수정 요청 객체")
+    @Schema(description = "어드민 사용자 수정 요청 객체")
     public record UpdateAdministratorRequest(
         @Schema(description = "닉네임", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
         @Size(min = 1, max = 20)
@@ -108,7 +108,7 @@ public class AdministratorDto {
 
     ) {}
 
-    @Schema(description = "시스템 관리자 응답 객체")
+    @Schema(description = "어드민 사용자 응답 객체")
     public record AdministratorResponse(
         Long administratorId,
         String email,
@@ -119,7 +119,7 @@ public class AdministratorDto {
         LocalDateTime updatedAt
     ) {}
 
-    @Schema(description = "시스템 관리자 응답 페이징 객체")
+    @Schema(description = "어드민 사용자 응답 페이징 객체")
     public record AdministratorPageResponse(
         List<AdministratorResponse> administrators,
         long totalElements,

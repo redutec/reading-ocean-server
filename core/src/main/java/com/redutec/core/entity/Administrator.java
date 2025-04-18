@@ -14,11 +14,11 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDateTime;
 
 /**
- * Administrator 엔티티 클래스는 시스템 내에서 시스템 관리자의 정보를 나타냅니다.
- * 시스템 관리자 정보에는 로그인 정보, 보안 인증 정보, 권한, 계정 상태 등이 포함됩니다.
+ * Administrator 엔티티 클래스는 시스템 내에서 어드민 사용자의 정보를 나타냅니다.
+ * 어드민 사용자 정보에는 로그인 정보, 보안 인증 정보, 권한, 계정 상태 등이 포함됩니다.
  */
 @Entity
-@Comment("시스템 관리자")
+@Comment("어드민 사용자")
 @DynamicUpdate
 @Getter
 @Builder
@@ -26,7 +26,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
 public class Administrator {
-    @Comment("시스템 관리자 고유번호")
+    @Comment("어드민 사용자 고유번호")
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

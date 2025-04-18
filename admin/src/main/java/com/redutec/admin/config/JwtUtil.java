@@ -4,10 +4,10 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.redutec.admin.authentication.dto.AuthenticationDto;
 import com.redutec.core.entity.Administrator;
-import com.redutec.core.entity.AdministratorMenu;
+import com.redutec.core.entity.AdminMenu;
 import com.redutec.core.entity.RefreshToken;
 import com.redutec.core.meta.Domain;
-import com.redutec.core.repository.AdministratorMenuRepository;
+import com.redutec.core.repository.AdminMenuRepository;
 import com.redutec.core.repository.AdministratorRepository;
 import com.redutec.core.repository.RefreshTokenRepository;
 import io.jsonwebtoken.JwtException;
@@ -42,7 +42,7 @@ import java.util.Map;
 @Component
 public class JwtUtil {
     private final AdministratorRepository administratorRepository;
-    private final AdministratorMenuRepository administratorMenuRepository;
+    private final AdminMenuRepository adminMenuRepository;
     private final RefreshTokenRepository refreshTokenRepository;
 
     @Value("${jwt.secret}")
@@ -62,11 +62,11 @@ public class JwtUtil {
      */
     public JwtUtil(
             AdministratorRepository administratorRepository,
-            AdministratorMenuRepository administratorMenuRepository,
+            AdminMenuRepository adminMenuRepository,
             RefreshTokenRepository refreshTokenRepository
     ) {
         this.administratorRepository = administratorRepository;
-        this.administratorMenuRepository = administratorMenuRepository;
+        this.adminMenuRepository = adminMenuRepository;
         this.refreshTokenRepository = refreshTokenRepository;
         this.key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
     }
@@ -86,20 +86,20 @@ public class JwtUtil {
     }
 
     /**
-     * 시스템 관리자 정보를 JWT Claims로 변환
+     * 어드민 사용자 정보를 JWT Claims로 변환
      *
-     * @param administrator 시스템 관리자 객체
+     * @param administrator 어드민 사용자 객체
      * @return JWT Claims 맵 객체
      */
     @Transactional(readOnly = true)
     protected AuthenticationDto.AuthenticatedAdministrator buildJwtClaims(
             Administrator administrator
     ) {
-        // 현재 접속한 시스템 관리자가 접근할 수 있는 메뉴 목록 조회
-        List<Long> accessibleMenus = administratorMenuRepository.findAllByAccessibleRolesContains(administrator.getRole()).stream()
-                .map(AdministratorMenu::getId)
+        // 현재 접속한 어드민 사용자가 접근할 수 있는 메뉴 목록 조회
+        List<Long> accessibleMenus = adminMenuRepository.findAllByAccessibleRolesContains(administrator.getRole()).stream()
+                .map(AdminMenu::getId)
                 .toList();
-        // 현재 로그인한 시스템 관리자의 정보를 JWT Claims 응답 객체로 변환하여 리턴
+        // 현재 로그인한 어드민 사용자의 정보를 JWT Claims 응답 객체로 변환하여 리턴
         return new AuthenticationDto.AuthenticatedAdministrator(
                 administrator.getId(),
                 administrator.getEmail(),
@@ -112,14 +112,14 @@ public class JwtUtil {
     /**
      * Access Token을 생성합니다.
      *
-     * @param administrator Access Token을 발급할 시스템 관리자 객체
+     * @param administrator Access Token을 발급할 어드민 사용자 객체
      * @return 생성된 Access Token
      */
     @Transactional(readOnly = true)
     public String generateAccessToken(
             Administrator administrator
     ) {
-        // 시스템 관리자 엔티티를 JWT Claims Map으로 변환
+        // 어드민 사용자 엔티티를 JWT Claims Map으로 변환
         Map<String, Object> claims = new ObjectMapper().convertValue(buildJwtClaims(administrator), new TypeReference<>() {});
         return Jwts.builder()
                 .setClaims(claims)
@@ -133,7 +133,7 @@ public class JwtUtil {
     /**
      * Refresh Token을 생성합니다.
      *
-     * @param administrator Refresh Token을 발급할 시스템 관리자 객체
+     * @param administrator Refresh Token을 발급할 어드민 사용자 객체
      * @return 생성된 Refresh Token
      */
     @Transactional(readOnly = true)
@@ -173,7 +173,7 @@ public class JwtUtil {
      * 토큰에서 현재 로그인한 사용자의 로그인 계정을 추출합니다.
      *
      * @param token JWT 토큰
-     * @return 토큰에서 추출된 시스템 관리자 로그인 계정
+     * @return 토큰에서 추출된 어드민 사용자 로그인 계정
      */
     public String extractUsername(
             String token

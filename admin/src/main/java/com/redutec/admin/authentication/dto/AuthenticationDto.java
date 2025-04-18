@@ -9,7 +9,7 @@ import jakarta.validation.constraints.Size;
 import java.util.List;
 
 public class AuthenticationDto {
-    @Schema(description = "현재 로그인한 시스템 관리자의 정보가 담긴 객체")
+    @Schema(description = "현재 로그인한 어드민 사용자의 정보가 담긴 객체")
     public record AuthenticatedAdministrator(
         Long administratorId,
         String nickname,
@@ -18,7 +18,7 @@ public class AuthenticationDto {
         AdministratorRole role
     ) {}
 
-    @Schema(description = "시스템 관리자 로그인 요청 객체")
+    @Schema(description = "어드민 사용자 로그인 요청 객체")
     public record LoginRequest(
         @Schema(description = "닉네임", example = "redutec")
         @Size(max = 20, message = "닉네임은 20자를 넘을 수 없습니다")
@@ -30,20 +30,20 @@ public class AuthenticationDto {
         String password
     ) {}
 
-    @Schema(description = "시스템 관리자 로그인 응답 객체")
+    @Schema(description = "어드민 사용자 로그인 응답 객체")
     public record LoginResponse(
         String accessToken,
         String refreshToken
     ) {}
 
-    @Schema(description = "시스템 관리자 계정 비밀번호 초기화 요청 객체")
+    @Schema(description = "어드민 사용자 계정 비밀번호 초기화 요청 객체")
     public record ResetPasswordRequest(
         @Schema(description = "비밀번호를 초기화 할 계정의 닉네임")
         @NotBlank
         String nickname
     ) {}
 
-    @Schema(description = "시스템 관리자 계정 비밀번호 변경 요청 객체")
+    @Schema(description = "어드민 사용자 계정 비밀번호 변경 요청 객체")
     public record UpdatePasswordRequest(
         @Schema(description = "비밀번호를 변경할 계정의 닉네임")
         @NotBlank

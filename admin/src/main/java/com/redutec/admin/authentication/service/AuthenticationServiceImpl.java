@@ -5,11 +5,11 @@ import com.redutec.admin.authentication.dto.AuthenticationDto;
 import com.redutec.admin.config.JwtUtil;
 import com.redutec.core.config.EncryptUtil;
 import com.redutec.core.entity.Administrator;
-import com.redutec.core.entity.AdministratorMenu;
+import com.redutec.core.entity.AdminMenu;
 import com.redutec.core.entity.RefreshToken;
 import com.redutec.core.meta.AuthenticationStatus;
 import com.redutec.core.meta.Domain;
-import com.redutec.core.repository.AdministratorMenuRepository;
+import com.redutec.core.repository.AdminMenuRepository;
 import com.redutec.core.repository.AdministratorRepository;
 import com.redutec.core.repository.RefreshTokenRepository;
 import jakarta.mail.MessagingException;
@@ -35,8 +35,8 @@ import java.util.Optional;
 import static com.redutec.core.meta.AuthenticationStatus.PASSWORD_RESET;
 
 /**
- * AuthenticationServiceImpl는 시스템 관리자 인증 및 권한 관련 로직을 처리하는 서비스 클래스입니다.
- * 시스템 관리자 로그인, 비밀번호 재설정, 토큰 발급 등의 기능을 제공합니다.
+ * AuthenticationServiceImpl는 어드민 사용자 인증 및 권한 관련 로직을 처리하는 서비스 클래스입니다.
+ * 어드민 사용자 로그인, 비밀번호 재설정, 토큰 발급 등의 기능을 제공합니다.
  */
 @Service
 @Slf4j
@@ -47,11 +47,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final AdministratorService administratorService;
     private final RefreshTokenRepository refreshTokenRepository;
     private final PasswordEncoder passwordEncoder;
-    private final AdministratorMenuRepository administratorMenuRepository;
+    private final AdminMenuRepository adminMenuRepository;
     private final EncryptUtil encryptUtil;
 
     /**
-     * 시스템 관리자 로그인 처리
+     * 어드민 사용자 로그인 처리
      *
      * @param loginRequest 로그인 요청 정보를 포함하는 데이터 전송 객체
      * @return Access Token 및 Refresh Token이 담긴 Map 객체
@@ -60,9 +60,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public AuthenticationDto.LoginResponse login(
             AuthenticationDto.LoginRequest loginRequest
     ) {
-        // 시스템 관리자 엔티티 조회
+        // 어드민 사용자 엔티티 조회
         Administrator administrator = administratorService.findByNickname(loginRequest.nickname());
-        // 시스템 관리자 계정 상태 검증
+        // 어드민 사용자 계정 상태 검증
         validateAuthenticationStatus(administrator);
         // 비밀번호가 일치하는지 검증
         Optional.of(administrator)
@@ -92,9 +92,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     /**
-     * 현재 로그인한 시스템 관리자 정보 조회
+     * 현재 로그인한 어드민 사용자 정보 조회
      *
-     * @return 시스템 관리자 정보가 담긴 DTO
+     * @return 어드민 사용자 정보가 담긴 DTO
      */
     @Override
     @Transactional(readOnly = true)
@@ -107,13 +107,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 : ((User) principal).getUsername();
         // 이메일로 Administrator 엔티티 조회
         Administrator administrator = administratorService.findByNickname(nickname);
-        // 현재 로그인한 시스템 관리자 정보를 리턴
+        // 현재 로그인한 어드민 사용자 정보를 리턴
         return new AuthenticationDto.AuthenticatedAdministrator(
                 administrator.getId(),
                 administrator.getEmail(),
                 administrator.getNickname(),
-                administratorMenuRepository.findAllByAccessibleRolesContains(administrator.getRole()).stream()
-                        .map(AdministratorMenu::getId)
+                adminMenuRepository.findAllByAccessibleRolesContains(administrator.getRole()).stream()
+                        .map(AdminMenu::getId)
                         .toList(),
                 administrator.getRole()
         );
@@ -172,7 +172,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         RefreshToken refreshTokenEntity = refreshTokenRepository.findByToken(refreshToken)
                 .filter(RefreshToken::isExpired)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid or expired refresh token"));
-        // refreshTokenEntity에 있는 시스템 관리자 닉네임으로 시스템 관리자 엔티티 조회
+        // refreshTokenEntity에 있는 어드민 사용자 닉네임으로 어드민 사용자 엔티티 조회
         Administrator administrator = administratorRepository.findByNickname(refreshTokenEntity.getUsername())
                 .orElseThrow(() -> new EntityNotFoundException("No such administrator"));
         // 새로운 Access Token 생성 후 리턴
@@ -183,9 +183,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     /**
-     * 시스템 관리자 계정 상태 검증
+     * 어드민 사용자 계정 상태 검증
      *
-     * @param administrator 검증할 시스템 관리자 객체
+     * @param administrator 검증할 어드민 사용자 객체
      */
     public void validateAuthenticationStatus(
             Administrator administrator
@@ -208,7 +208,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     /**
      * 로그인 실패 처리
      *
-     * @param administrator 로그인 실패한 시스템 관리자 객체
+     * @param administrator 로그인 실패한 어드민 사용자 객체
      */
     private void handleFailedLoginAttempt(Administrator administrator) {
         // 비밀번호를 틀린 횟수 1회 추가
@@ -223,9 +223,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     /**
-     * 시스템 관리자 비밀번호 및 상태 업데이트
+     * 어드민 사용자 비밀번호 및 상태 업데이트
      *
-     * @param administrator 시스템 관리자 객체
+     * @param administrator 어드민 사용자 객체
      * @param newPassword 새 비밀번호
      * @param newStatus 새 상태
      */

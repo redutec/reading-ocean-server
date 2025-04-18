@@ -12,19 +12,19 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * 시스템 관리자 메뉴 정보를 저장하는 엔티티 클래스입니다.
- * 이 클래스는 데이터베이스의 `administrator_menu` 테이블과 매핑됩니다.
+ * 어드민 메뉴 정보를 저장하는 엔티티 클래스입니다.
+ * 이 클래스는 데이터베이스의 `admin_menu` 테이블과 매핑됩니다.
  */
 @Entity
-@Comment("시스템 관리자 메뉴")
+@Comment("어드민 메뉴")
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-public class AdministratorMenu {
-    @Comment("시스템 관리자 메뉴 고유번호")
+public class AdminMenu {
+    @Comment("어드민 메뉴 고유번호")
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -47,7 +47,7 @@ public class AdministratorMenu {
 
     @Comment("접근 가능 권한")
     @ElementCollection(fetch = FetchType.EAGER, targetClass = AdministratorRole.class)
-    @CollectionTable(name = "administrator_menu_roles", joinColumns = @JoinColumn(name = "administrator_menu_id"))
+    @CollectionTable(name = "admin_menu_roles", joinColumns = @JoinColumn(name = "admin_menu_id"))
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private List<AdministratorRole> accessibleRoles;
@@ -59,11 +59,11 @@ public class AdministratorMenu {
     @Comment("상위 메뉴")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
-    private AdministratorMenu parent;
+    private AdminMenu parent;
 
     @Comment("소속된 하위 메뉴")
     @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<AdministratorMenu> children;
+    private List<AdminMenu> children;
 
     @CreatedDate
     @Column(updatable = false)
@@ -72,14 +72,14 @@ public class AdministratorMenu {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
-    public void updateAdministratorMenu (
+    public void updateAdminMenu (
             String name,
             String url,
             String description,
             Boolean available,
             List<AdministratorRole> accessibleRoles,
             Integer depth,
-            AdministratorMenu parent
+            AdminMenu parent
     ) {
         this.name = name != null ? name : this.name;
         this.url = url != null ? url : this.url;

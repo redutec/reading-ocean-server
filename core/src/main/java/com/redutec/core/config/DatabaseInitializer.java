@@ -1,9 +1,9 @@
 package com.redutec.core.config;
 
 import com.redutec.core.entity.Administrator;
-import com.redutec.core.entity.AdministratorMenu;
+import com.redutec.core.entity.AdminMenu;
 import com.redutec.core.meta.SampleData;
-import com.redutec.core.repository.AdministratorMenuRepository;
+import com.redutec.core.repository.AdminMenuRepository;
 import com.redutec.core.repository.AdministratorRepository;
 import jakarta.annotation.PostConstruct;
 import jakarta.persistence.EntityNotFoundException;
@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class DatabaseInitializer {
     private final AdministratorRepository administratorRepository;
-    private final AdministratorMenuRepository administratorMenuRepository;
+    private final AdminMenuRepository adminMenuRepository;
     private final PasswordEncoder passwordEncoder;
 
     @PostConstruct
@@ -34,8 +34,8 @@ public class DatabaseInitializer {
     public void initializeDatabase() {
         // Admin 서비스의 샘플 데이터 생성
         createSampleAdministrator();
-        createSampleParentAdministratorMenu();
-        createSampleChildrenAdministratorMenu();
+        createSampleParentAdminMenu();
+        createSampleChildrenAdminMenu();
     }
 
     // Admin 서비스용
@@ -58,11 +58,11 @@ public class DatabaseInitializer {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    protected void createSampleParentAdministratorMenu() {
-        if (administratorMenuRepository.count() == 0) {
-            log.info("No parent administrator menu data found. Creating sample parent administrator menus.");
-            var parentAdministratorMenus = Arrays.stream(SampleData.ParentAdministratorMenu.values())
-                    .map(pam -> AdministratorMenu.builder()
+    protected void createSampleParentAdminMenu() {
+        if (adminMenuRepository.count() == 0) {
+            log.info("No parent admin menu data found. Creating sample parent admin menus.");
+            var parentAdminMenus = Arrays.stream(SampleData.ParentAdminMenu.values())
+                    .map(pam -> AdminMenu.builder()
                             .name(pam.getName())
                             .url(pam.getUrl())
                             .description(pam.getDescription())
@@ -71,24 +71,24 @@ public class DatabaseInitializer {
                             .available(true)
                             .build())
                     .toList();
-            administratorMenuRepository.saveAll(parentAdministratorMenus);
+            adminMenuRepository.saveAll(parentAdminMenus);
         }
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    protected void createSampleChildrenAdministratorMenu() {
-        if (!administratorMenuRepository.existsByDepth(1)) {
-            log.info("No children administrator menu data found. Creating sample children administrator menus.");
+    protected void createSampleChildrenAdminMenu() {
+        if (!adminMenuRepository.existsByDepth(1)) {
+            log.info("No children admin menu data found. Creating sample children admin menus.");
             // 먼저 모든 상위 메뉴를 Map으로 변환 (이름 -> Menu)
-            Map<String, AdministratorMenu> parentMenuMap = administratorMenuRepository.findAll().stream()
-                    .collect(Collectors.toMap(AdministratorMenu::getName, Function.identity()));
-            var childrenAdministratorMenus = Arrays.stream(SampleData.ChildrenAdministratorMenu.values())
+            Map<String, AdminMenu> parentMenuMap = adminMenuRepository.findAll().stream()
+                    .collect(Collectors.toMap(AdminMenu::getName, Function.identity()));
+            var childrenAdminMenus = Arrays.stream(SampleData.ChildrenAdminMenu.values())
                     .map(cam -> {
-                        var parent = parentMenuMap.get(cam.getParentMenu().getName());
+                        var parent = parentMenuMap.get(cam.getParentAdminMenu().getName());
                         if (parent == null) {
-                            throw new EntityNotFoundException("Parent administrator menu not found: " + cam.getParentMenu().getName());
+                            throw new EntityNotFoundException("Parent admin menu not found: " + cam.getParentAdminMenu().getName());
                         }
-                        return AdministratorMenu.builder()
+                        return AdminMenu.builder()
                                 .name(cam.getName())
                                 .url(cam.getUrl())
                                 .description(cam.getDescription())
@@ -99,7 +99,7 @@ public class DatabaseInitializer {
                                 .build();
                     })
                     .toList();
-            administratorMenuRepository.saveAll(childrenAdministratorMenus);
+            adminMenuRepository.saveAll(childrenAdminMenus);
         }
     }
 }

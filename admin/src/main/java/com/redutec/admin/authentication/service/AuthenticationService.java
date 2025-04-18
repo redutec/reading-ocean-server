@@ -52,9 +52,9 @@ public interface AuthenticationService {
     AuthenticationDto.LoginResponse refreshAccessToken(String refreshToken);
 
     /**
-     * 시스템 관리자 계정 상태 검증
+     * 어드민 사용자 계정 상태 검증
      *
-     * @param administrator 검증할 시스템 관리자 엔티티
+     * @param administrator 검증할 어드민 사용자 엔티티
      */
     void validateAuthenticationStatus(Administrator administrator);
 }
