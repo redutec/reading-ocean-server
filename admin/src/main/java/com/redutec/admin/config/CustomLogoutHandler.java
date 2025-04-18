@@ -1,8 +1,8 @@
 package com.redutec.admin.config;
 
-import com.redutec.core.entity.Administrator;
+import com.redutec.core.entity.AdminUser;
 import com.redutec.core.entity.BlacklistedToken;
-import com.redutec.core.repository.AdministratorRepository;
+import com.redutec.core.repository.AdminUserRepository;
 import com.redutec.core.repository.BlacklistedTokenRepository;
 import com.redutec.core.repository.RefreshTokenRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -26,7 +26,7 @@ public class CustomLogoutHandler implements LogoutHandler {
     private final JwtUtil jwtUtil;
     private final BlacklistedTokenRepository blacklistedTokenRepository;
     private final RefreshTokenRepository refreshTokenRepository;
-    private final AdministratorRepository administratorRepository;
+    private final AdminUserRepository adminUserRepository;
 
     /**
      * 로그아웃 처리를 수행합니다. 요청에서 JWT 토큰을 추출하고, 해당 토큰을 블랙리스트에 추가합니다.
@@ -51,13 +51,13 @@ public class CustomLogoutHandler implements LogoutHandler {
                                 .build());
             }
             // JWT 토큰에서 시스템 사용자의 로그인 아이디를 추출
-            String nickname = jwtUtil.extractUsername(token);
-            if (nickname != null) {
-                // Administrator 엔티티를 시스템 사용자의 로그인 아이디로 조회
-                Administrator administrator = administratorRepository.findByNickname(nickname)
-                        .orElseThrow(() -> new EntityNotFoundException("No such Administrator"));
+            String email = jwtUtil.extractUsername(token);
+            if (email != null) {
+                // AdminUser 엔티티를 시스템 사용자의 로그인 아이디로 조회
+                AdminUser adminUser = adminUserRepository.findByEmail(email)
+                        .orElseThrow(() -> new EntityNotFoundException("No such AdminUser"));
                 // 해당 시스템 사용자의 리프레시 토큰 삭제
-                refreshTokenRepository.deleteById(administrator.getId());
+                refreshTokenRepository.deleteById(adminUser.getId());
             }
         }
     }

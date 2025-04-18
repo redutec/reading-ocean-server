@@ -1,6 +1,6 @@
-package com.redutec.admin.administrator.dto;
+package com.redutec.admin.user.dto;
 
-import com.redutec.core.meta.AdministratorRole;
+import com.redutec.core.meta.AdminUserRole;
 import com.redutec.core.meta.AuthenticationStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.ElementCollection;
@@ -11,9 +11,9 @@ import jakarta.validation.constraints.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class AdministratorDto {
+public class AdminUserDto {
     @Schema(description = "어드민 사용자 등록 요청 객체")
-    public record CreateAdministratorRequest(
+    public record CreateAdminUserRequest(
         @Schema(description = "이메일")
         @Email
         String email,
@@ -33,13 +33,13 @@ public class AdministratorDto {
 
         @Schema(description = "권한")
         @Enumerated(EnumType.STRING)
-        AdministratorRole role
+        AdminUserRole role
     ) {}
 
     @Schema(description = "어드민 사용자 조회 요청 객체")
-    public record FindAdministratorRequest(
+    public record FindAdminUserRequest(
         @Schema(description = "어드민 사용자 ID")
-        List<@Positive Long> administratorIds,
+        List<@Positive Long> adminUserIds,
 
         @Schema(description = "이메일")
         @Email
@@ -50,9 +50,9 @@ public class AdministratorDto {
         String nickname,
 
         @Schema(description = "권한")
-        @ElementCollection(targetClass = AdministratorRole.class)
+        @ElementCollection(targetClass = AdminUserRole.class)
         @Enumerated(EnumType.STRING)
-        List<AdministratorRole> roles,
+        List<AdminUserRole> roles,
 
         @Schema(description = "계정 상태")
         @ElementCollection(targetClass = AuthenticationStatus.class)
@@ -75,7 +75,7 @@ public class AdministratorDto {
     ) {}
 
     @Schema(description = "어드민 사용자 수정 요청 객체")
-    public record UpdateAdministratorRequest(
+    public record UpdateAdminUserRequest(
         @Schema(description = "닉네임", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
         @Size(min = 1, max = 20)
         String nickname,
@@ -87,7 +87,7 @@ public class AdministratorDto {
 
         @Schema(description = "권한", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
         @Enumerated(EnumType.STRING)
-        AdministratorRole role,
+        AdminUserRole role,
 
         @Schema(description = "계정 상태", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
         @Enumerated(EnumType.STRING)
@@ -109,19 +109,19 @@ public class AdministratorDto {
     ) {}
 
     @Schema(description = "어드민 사용자 응답 객체")
-    public record AdministratorResponse(
-        Long administratorId,
+    public record AdminUserResponse(
+        Long adminUserId,
         String email,
         String nickname,
         List<Long> accessibleMenuIds,
-        AdministratorRole role,
+        AdminUserRole role,
         LocalDateTime createdAt,
         LocalDateTime updatedAt
     ) {}
 
     @Schema(description = "어드민 사용자 응답 페이징 객체")
-    public record AdministratorPageResponse(
-        List<AdministratorResponse> administrators,
+    public record AdminUserPageResponse(
+        List<AdminUserResponse> adminUsers,
         long totalElements,
         int totalPages
     ) {}

@@ -1,16 +1,16 @@
 package com.redutec.admin.authentication.service;
 
-import com.redutec.admin.administrator.service.AdministratorService;
+import com.redutec.admin.user.service.AdminUserService;
 import com.redutec.admin.authentication.dto.AuthenticationDto;
 import com.redutec.admin.config.JwtUtil;
 import com.redutec.core.config.EncryptUtil;
-import com.redutec.core.entity.Administrator;
+import com.redutec.core.entity.AdminUser;
 import com.redutec.core.entity.AdminMenu;
 import com.redutec.core.entity.RefreshToken;
 import com.redutec.core.meta.AuthenticationStatus;
 import com.redutec.core.meta.Domain;
 import com.redutec.core.repository.AdminMenuRepository;
-import com.redutec.core.repository.AdministratorRepository;
+import com.redutec.core.repository.AdminUserRepository;
 import com.redutec.core.repository.RefreshTokenRepository;
 import jakarta.mail.MessagingException;
 import jakarta.persistence.EntityNotFoundException;
@@ -43,8 +43,8 @@ import static com.redutec.core.meta.AuthenticationStatus.PASSWORD_RESET;
 @RequiredArgsConstructor
 public class AuthenticationServiceImpl implements AuthenticationService {
     private final JwtUtil jwtUtil;
-    private final AdministratorRepository administratorRepository;
-    private final AdministratorService administratorService;
+    private final AdminUserRepository adminUserRepository;
+    private final AdminUserService adminUserService;
     private final RefreshTokenRepository refreshTokenRepository;
     private final PasswordEncoder passwordEncoder;
     private final AdminMenuRepository adminMenuRepository;
@@ -61,14 +61,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             AuthenticationDto.LoginRequest loginRequest
     ) {
         // 어드민 사용자 엔티티 조회
-        Administrator administrator = administratorService.findByNickname(loginRequest.nickname());
+        AdminUser adminUser = adminUserService.findByEmail(loginRequest.email());
         // 어드민 사용자 계정 상태 검증
-        validateAuthenticationStatus(administrator);
+        validateAuthenticationStatus(adminUser);
         // 비밀번호가 일치하는지 검증
-        Optional.of(administrator)
+        Optional.of(adminUser)
                 .filter(admin -> passwordEncoder.matches(loginRequest.password(), admin.getPassword()))
                 .orElseThrow(() -> {
-                    handleFailedLoginAttempt(administrator);
+                    handleFailedLoginAttempt(adminUser);
                     return new BadCredentialsException("Please check your email or password");
                 });
         // 현재 요청의 IP 주소를 Optional 체인으로 가져옴 (없으면 "unknown")
@@ -77,16 +77,16 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .map(HttpServletRequest::getRemoteAddr)
                 .orElse("unknown");
         // 로그인에 성공하면 마지막 로그인 일시와 IP 업데이트 후 실패 횟수 초기화
-        administrator.setLastLoginAt(LocalDateTime.now());
-        administrator.setLastLoginIp(ipAddress);
-        administrator.setFailedLoginAttempts(0);
-        administratorRepository.save(administrator);
+        adminUser.setLastLoginAt(LocalDateTime.now());
+        adminUser.setLastLoginIp(ipAddress);
+        adminUser.setFailedLoginAttempts(0);
+        adminUserRepository.save(adminUser);
         // AccessToken 생성
-        String accessToken = jwtUtil.generateAccessToken(administrator);
+        String accessToken = jwtUtil.generateAccessToken(adminUser);
         // RefreshToken 생성
-        String refreshToken = jwtUtil.generateRefreshToken(administrator);
+        String refreshToken = jwtUtil.generateRefreshToken(adminUser);
         // 생성한 RefreshToken을 DB에 저장
-        jwtUtil.saveRefreshToken(refreshToken, administrator.getEmail(), Domain.ADMIN);
+        jwtUtil.saveRefreshToken(refreshToken, adminUser.getEmail(), Domain.ADMIN);
         // 생성한 Token으로 로그인 응답 객체를 리턴
         return new AuthenticationDto.LoginResponse(accessToken, refreshToken);
     }
@@ -98,24 +98,24 @@ public class AuthenticationServiceImpl implements AuthenticationService {
      */
     @Override
     @Transactional(readOnly = true)
-    public AuthenticationDto.AuthenticatedAdministrator getAuthenticatedAdministrator() {
+    public AuthenticationDto.AuthenticatedAdminUser getAuthenticatedAdminUser() {
         // 현재 접속한 계정 정보를 가져오기
         var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         // 계정 정보에 담긴 이메일 정보 가져오기
-        String nickname = (principal instanceof String)
+        String email = (principal instanceof String)
                 ? (String) principal
                 : ((User) principal).getUsername();
-        // 이메일로 Administrator 엔티티 조회
-        Administrator administrator = administratorService.findByNickname(nickname);
+        // 이메일로 AdminUser 엔티티 조회
+        AdminUser adminUser = adminUserService.findByEmail(email);
         // 현재 로그인한 어드민 사용자 정보를 리턴
-        return new AuthenticationDto.AuthenticatedAdministrator(
-                administrator.getId(),
-                administrator.getEmail(),
-                administrator.getNickname(),
-                adminMenuRepository.findAllByAccessibleRolesContains(administrator.getRole()).stream()
+        return new AuthenticationDto.AuthenticatedAdminUser(
+                adminUser.getId(),
+                adminUser.getEmail(),
+                adminUser.getNickname(),
+                adminMenuRepository.findAllByAccessibleRolesContains(adminUser.getRole()).stream()
                         .map(AdminMenu::getId)
                         .toList(),
-                administrator.getRole()
+                adminUser.getRole()
         );
     }
 
@@ -129,11 +129,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public void resetPassword(
             AuthenticationDto.ResetPasswordRequest resetPasswordRequest
     ) throws MessagingException {
-        var administrator = administratorService.findByNickname(resetPasswordRequest.nickname());
-        validateAuthenticationStatus(administrator);
+        var adminUser = adminUserService.findByEmail(resetPasswordRequest.email());
+        validateAuthenticationStatus(adminUser);
         var newPasswordLength = 8;
         var newPassword = generateRandomPassword(newPasswordLength);
-        updatePasswordAndStatus(administrator, newPassword, PASSWORD_RESET);
+        updatePasswordAndStatus(adminUser, newPassword, PASSWORD_RESET);
         // TODO 메일 또는 알림톡 발송 기능 구현
     }
 
@@ -147,14 +147,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public void updatePassword(
             AuthenticationDto.UpdatePasswordRequest updatePasswordRequest
     ) {
-        var administrator = administratorService.findByNickname(updatePasswordRequest.nickname());
-        if (administrator.getAuthenticationStatus() != PASSWORD_RESET) {
-            validateAuthenticationStatus(administrator);
+        var adminUser = adminUserService.findByEmail(updatePasswordRequest.email());
+        if (adminUser.getAuthenticationStatus() != PASSWORD_RESET) {
+            validateAuthenticationStatus(adminUser);
         }
-        if (!passwordEncoder.matches(updatePasswordRequest.password(), administrator.getPassword())) {
+        if (!passwordEncoder.matches(updatePasswordRequest.password(), adminUser.getPassword())) {
             throw new BadCredentialsException("Your email or password does not match.");
         }
-        updatePasswordAndStatus(administrator, updatePasswordRequest.newPassword(), AuthenticationStatus.ACTIVE);
+        updatePasswordAndStatus(adminUser, updatePasswordRequest.newPassword(), AuthenticationStatus.ACTIVE);
     }
 
     /**
@@ -173,11 +173,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .filter(RefreshToken::isExpired)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid or expired refresh token"));
         // refreshTokenEntity에 있는 어드민 사용자 닉네임으로 어드민 사용자 엔티티 조회
-        Administrator administrator = administratorRepository.findByNickname(refreshTokenEntity.getUsername())
-                .orElseThrow(() -> new EntityNotFoundException("No such administrator"));
+        AdminUser adminUser = adminUserRepository.findByEmail(refreshTokenEntity.getUsername())
+                .orElseThrow(() -> new EntityNotFoundException("No such adminUser"));
         // 새로운 Access Token 생성 후 리턴
         return new AuthenticationDto.LoginResponse(
-                jwtUtil.generateAccessToken(administrator),
+                jwtUtil.generateAccessToken(adminUser),
                 refreshToken
         );
     }
@@ -185,12 +185,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     /**
      * 어드민 사용자 계정 상태 검증
      *
-     * @param administrator 검증할 어드민 사용자 객체
+     * @param adminUser 검증할 어드민 사용자 객체
      */
     public void validateAuthenticationStatus(
-            Administrator administrator
+            AdminUser adminUser
     ) {
-        switch (administrator.getAuthenticationStatus()) {
+        switch (adminUser.getAuthenticationStatus()) {
             case ACTIVE -> {}
             case INACTIVE, SUSPENDED ->
                     throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Your account is not active.");
@@ -208,36 +208,36 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     /**
      * 로그인 실패 처리
      *
-     * @param administrator 로그인 실패한 어드민 사용자 객체
+     * @param adminUser 로그인 실패한 어드민 사용자 객체
      */
-    private void handleFailedLoginAttempt(Administrator administrator) {
+    private void handleFailedLoginAttempt(AdminUser adminUser) {
         // 비밀번호를 틀린 횟수 1회 추가
-        administrator.setFailedLoginAttempts(administrator.getFailedLoginAttempts() + 1);
+        adminUser.setFailedLoginAttempts(adminUser.getFailedLoginAttempts() + 1);
         // 비밀번호를 틀린 횟수가 5회 이상일 경우 계정 LOCKED
-        if (administrator.getFailedLoginAttempts() >= 5) {
-            administrator.setAuthenticationStatus(AuthenticationStatus.LOCKED);
-            administratorRepository.save(administrator);
+        if (adminUser.getFailedLoginAttempts() >= 5) {
+            adminUser.setAuthenticationStatus(AuthenticationStatus.LOCKED);
+            adminUserRepository.save(adminUser);
             throw new ResponseStatusException(HttpStatus.LOCKED, "Your account is locked due to too many failed login attempts. please reset your password.");
         }
-        administratorRepository.saveAndFlush(administrator);
+        adminUserRepository.saveAndFlush(adminUser);
     }
 
     /**
      * 어드민 사용자 비밀번호 및 상태 업데이트
      *
-     * @param administrator 어드민 사용자 객체
+     * @param adminUser 어드민 사용자 객체
      * @param newPassword 새 비밀번호
      * @param newStatus 새 상태
      */
     private void updatePasswordAndStatus(
-            Administrator administrator,
+            AdminUser adminUser,
             String newPassword,
             AuthenticationStatus newStatus
     ) {
-        administrator.setPassword(passwordEncoder.encode(newPassword));
-        administrator.setAuthenticationStatus(newStatus);
-        administrator.setFailedLoginAttempts(0);
-        administratorRepository.save(administrator);
+        adminUser.setPassword(passwordEncoder.encode(newPassword));
+        adminUser.setAuthenticationStatus(newStatus);
+        adminUser.setFailedLoginAttempts(0);
+        adminUserRepository.save(adminUser);
     }
 
     /**

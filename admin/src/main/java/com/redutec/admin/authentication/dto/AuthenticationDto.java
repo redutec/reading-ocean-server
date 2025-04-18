@@ -1,28 +1,28 @@
 package com.redutec.admin.authentication.dto;
 
-import com.redutec.core.meta.AdministratorRole;
+import com.redutec.core.meta.AdminUserRole;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
 
 import java.util.List;
 
 public class AuthenticationDto {
     @Schema(description = "현재 로그인한 어드민 사용자의 정보가 담긴 객체")
-    public record AuthenticatedAdministrator(
-        Long administratorId,
-        String nickname,
+    public record AuthenticatedAdminUser(
+        Long adminUserId,
         String email,
+        String nickname,
         List<Long> accessibleMenus,
-        AdministratorRole role
+        AdminUserRole role
     ) {}
 
     @Schema(description = "어드민 사용자 로그인 요청 객체")
     public record LoginRequest(
-        @Schema(description = "닉네임", example = "redutec")
-        @Size(max = 20, message = "닉네임은 20자를 넘을 수 없습니다")
-        String nickname,
+        @Schema(description = "로그인 이메일", example = "redutec@redutec.co.kr")
+        @Email
+        String email,
 
         @Schema(description = "비밀번호", example = "Redutec123!")
         @Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*\\d)(?=.*[!@#$%^&*(),.?\":{}|<>]).{8,32}$",
@@ -38,16 +38,18 @@ public class AuthenticationDto {
 
     @Schema(description = "어드민 사용자 계정 비밀번호 초기화 요청 객체")
     public record ResetPasswordRequest(
-        @Schema(description = "비밀번호를 초기화 할 계정의 닉네임")
+        @Schema(description = "비밀번호를 초기화 할 계정의 이메일")
         @NotBlank
-        String nickname
+        @Email
+        String email
     ) {}
 
     @Schema(description = "어드민 사용자 계정 비밀번호 변경 요청 객체")
     public record UpdatePasswordRequest(
-        @Schema(description = "비밀번호를 변경할 계정의 닉네임")
+        @Schema(description = "비밀번호를 변경할 계정의 이메일")
         @NotBlank
-        String nickname,
+        @Email
+        String email,
 
         @Schema(description = "기존 비밀번호")
         @NotBlank

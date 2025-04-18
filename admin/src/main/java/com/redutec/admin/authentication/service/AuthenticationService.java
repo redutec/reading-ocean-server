@@ -1,7 +1,7 @@
 package com.redutec.admin.authentication.service;
 
 import com.redutec.admin.authentication.dto.AuthenticationDto;
-import com.redutec.core.entity.Administrator;
+import com.redutec.core.entity.AdminUser;
 import jakarta.mail.MessagingException;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -23,7 +23,7 @@ public interface AuthenticationService {
      *
      * @return 사용자 정보 객체입니다. 사용자의 아이디, 이름, 권한 등의 정보가 포함됩니다.
      */
-    AuthenticationDto.AuthenticatedAdministrator getAuthenticatedAdministrator();
+    AuthenticationDto.AuthenticatedAdminUser getAuthenticatedAdminUser();
 
     /**
      * 사용자의 비밀번호를 초기화합니다.
@@ -54,7 +54,7 @@ public interface AuthenticationService {
     /**
      * 어드민 사용자 계정 상태 검증
      *
-     * @param administrator 검증할 어드민 사용자 엔티티
+     * @param adminUser 검증할 어드민 사용자 엔티티
      */
-    void validateAuthenticationStatus(Administrator administrator);
+    void validateAuthenticationStatus(AdminUser adminUser);
 }

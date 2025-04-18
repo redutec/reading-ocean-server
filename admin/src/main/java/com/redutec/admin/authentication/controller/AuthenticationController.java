@@ -68,8 +68,8 @@ public class AuthenticationController {
     @Operation(summary = "현재 로그인한 사용자 정보 조회", description = "JWT 토큰을 이용하여 현재 로그인한 사용자 정보를 조회하는 API")
     @SecurityRequirement(name = "bearerAuth")
     @GetMapping
-    public ResponseEntity<ApiResponseBody> getAuthenticatedAdministrator() {
-        return apiResponseManager.success(authenticationService.getAuthenticatedAdministrator());
+    public ResponseEntity<ApiResponseBody> getAuthenticatedAdminUser() {
+        return apiResponseManager.success(authenticationService.getAuthenticatedAdminUser());
     }
 
     /**

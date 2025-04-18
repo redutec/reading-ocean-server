@@ -1,6 +1,6 @@
 package com.redutec.core.entity;
 
-import com.redutec.core.meta.AdministratorRole;
+import com.redutec.core.meta.AdminUserRole;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.Comment;
@@ -46,11 +46,11 @@ public class AdminMenu {
     private Boolean available;
 
     @Comment("접근 가능 권한")
-    @ElementCollection(fetch = FetchType.EAGER, targetClass = AdministratorRole.class)
+    @ElementCollection(fetch = FetchType.EAGER, targetClass = AdminUserRole.class)
     @CollectionTable(name = "admin_menu_roles", joinColumns = @JoinColumn(name = "admin_menu_id"))
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private List<AdministratorRole> accessibleRoles;
+    private List<AdminUserRole> accessibleRoles;
 
     @Comment("메뉴의 깊이")
     @Column(nullable = false)
@@ -77,7 +77,7 @@ public class AdminMenu {
             String url,
             String description,
             Boolean available,
-            List<AdministratorRole> accessibleRoles,
+            List<AdminUserRole> accessibleRoles,
             Integer depth,
             AdminMenu parent
     ) {

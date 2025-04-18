@@ -1,7 +1,7 @@
 package com.redutec.core.repository;
 
 import com.redutec.core.entity.AdminMenu;
-import com.redutec.core.meta.AdministratorRole;
+import com.redutec.core.meta.AdminUserRole;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
@@ -13,5 +13,5 @@ import java.util.List;
  */
 public interface AdminMenuRepository extends JpaRepository<AdminMenu, Long>, JpaSpecificationExecutor<AdminMenu> {
     boolean existsByDepth(int depth);
-    List<AdminMenu> findAllByAccessibleRolesContains(AdministratorRole role);
+    List<AdminMenu> findAllByAccessibleRolesContains(AdminUserRole role);
 }

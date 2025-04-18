@@ -1,6 +1,6 @@
 package com.redutec.core.criteria;
 
-import com.redutec.core.meta.AdministratorRole;
+import com.redutec.core.meta.AdminUserRole;
 
 import java.util.List;
 
@@ -9,5 +9,5 @@ public record AdminMenuCriteria(
     String name,
     String url,
     Boolean available,
-    List<AdministratorRole> accessibleRoles
+    List<AdminUserRole> accessibleRoles
 ) {}

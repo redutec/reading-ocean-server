@@ -1,8 +1,8 @@
 package com.redutec.admin.config;
 
-import com.redutec.admin.administrator.service.AdministratorService;
-import com.redutec.core.entity.Administrator;
-import com.redutec.core.repository.AdministratorRepository;
+import com.redutec.admin.user.service.AdminUserService;
+import com.redutec.core.entity.AdminUser;
+import com.redutec.core.repository.AdminUserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -31,8 +31,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class JwtRequestFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
-    private final AdministratorService administratorService;
-    private final AdministratorRepository administratorRepository;
+    private final AdminUserService adminUserService;
+    private final AdminUserRepository adminUserRepository;
 
     @Setter
     private UserDetailsService userDetailsService;
@@ -74,21 +74,22 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         // 로컬 프로파일인 경우, 토큰이 없으면 샘플 데이터를 사용하여 토큰 생성
         if ("local".equals(activeProfile) && accessToken == null) {
             // 로컬용 임시 어드민 사용자 데이터로 accessToken 발급
-            Administrator localAdministrator = administratorService.getAdministrator(1L);
-            accessToken = jwtUtil.generateAccessToken(localAdministrator);
+            AdminUser localAdminUser = adminUserService.getAdminUser(1L);
+            accessToken = jwtUtil.generateAccessToken(localAdminUser);
             log.info("**** Local profile detected with no token. Generated accessToken for test: {}", accessToken);
         }
         if (accessToken != null) {
             // 토큰을 검증
             if (jwtUtil.validateToken(accessToken)) {
                 // 검증된 토큰에서 시스템 사용자 아이디 추출
-                var nickname = jwtUtil.extractUsername(accessToken);
+                var email = jwtUtil.extractUsername(accessToken);
                 // 시스템 사용자 아이디가 유효하고, 현재 인증이 없다면 사용자 인증 수행
-                if (nickname != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                     // 로그인한 시스템 사용자 정보 조회
-                    Administrator administrator = administratorRepository.findByNickname(nickname).orElseThrow(() -> new EntityNotFoundException("No such BotUser"));
+                    AdminUser adminUser = adminUserRepository.findByEmail(email)
+                            .orElseThrow(() -> new EntityNotFoundException("No such admin user"));
                     // 권한 부여 및 인증 객체 생성
-                    var authorities = userDetailsService.loadUserByUsername(administrator.getNickname());
+                    var authorities = userDetailsService.loadUserByUsername(adminUser.getEmail());
                     var authenticationToken = new UsernamePasswordAuthenticationToken(authorities, accessToken, authorities.getAuthorities());
                     // SecurityContext에 인증 객체 설정
                     SecurityContextHolder.getContext().setAuthentication(authenticationToken);

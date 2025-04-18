@@ -1,14 +1,14 @@
 package com.redutec.core.criteria;
 
-import com.redutec.core.meta.AdministratorRole;
+import com.redutec.core.meta.AdminUserRole;
 import com.redutec.core.meta.AuthenticationStatus;
 
 import java.util.List;
 
-public record AdministratorCriteria(
-    List<Long> administratorIds,
+public record AdminUserCriteria(
+    List<Long> adminUserIds,
     String nickname,
     String email,
-    List<AdministratorRole> roles,
+    List<AdminUserRole> roles,
     List<AuthenticationStatus> authenticationStatuses
 ) {}

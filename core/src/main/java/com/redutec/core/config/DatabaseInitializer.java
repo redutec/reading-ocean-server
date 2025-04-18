@@ -1,10 +1,10 @@
 package com.redutec.core.config;
 
-import com.redutec.core.entity.Administrator;
+import com.redutec.core.entity.AdminUser;
 import com.redutec.core.entity.AdminMenu;
 import com.redutec.core.meta.SampleData;
 import com.redutec.core.repository.AdminMenuRepository;
-import com.redutec.core.repository.AdministratorRepository;
+import com.redutec.core.repository.AdminUserRepository;
 import jakarta.annotation.PostConstruct;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.Getter;
@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 @Getter
 @RequiredArgsConstructor
 public class DatabaseInitializer {
-    private final AdministratorRepository administratorRepository;
+    private final AdminUserRepository adminUserRepository;
     private final AdminMenuRepository adminMenuRepository;
     private final PasswordEncoder passwordEncoder;
 
@@ -33,27 +33,27 @@ public class DatabaseInitializer {
     @Transactional
     public void initializeDatabase() {
         // Admin 서비스의 샘플 데이터 생성
-        createSampleAdministrator();
+        createSampleAdminUser();
         createSampleParentAdminMenu();
         createSampleChildrenAdminMenu();
     }
 
     // Admin 서비스용
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    protected void createSampleAdministrator() {
-        if (administratorRepository.count() == 0) {
-            log.info("No administrator data found. Creating sample Administrators.");
-            var administrators = Arrays.stream(SampleData.Administrator.values())
-                    .map(administrator -> Administrator.builder()
-                            .email(administrator.getEmail())
-                            .password(passwordEncoder.encode(administrator.getPassword()))
-                            .role(administrator.getRole())
-                            .authenticationStatus(administrator.getAuthenticationStatus())
-                            .nickname(administrator.getNickname())
-                            .failedLoginAttempts(administrator.getFailedLoginAttempts())
+    protected void createSampleAdminUser() {
+        if (adminUserRepository.count() == 0) {
+            log.info("No admin user data found. Creating sample admin users.");
+            var adminUsers = Arrays.stream(SampleData.AdminUser.values())
+                    .map(adminUser -> AdminUser.builder()
+                            .email(adminUser.getEmail())
+                            .password(passwordEncoder.encode(adminUser.getPassword()))
+                            .role(adminUser.getRole())
+                            .authenticationStatus(adminUser.getAuthenticationStatus())
+                            .nickname(adminUser.getNickname())
+                            .failedLoginAttempts(adminUser.getFailedLoginAttempts())
                             .build())
                     .toList();
-            administratorRepository.saveAll(administrators);
+            adminUserRepository.saveAll(adminUsers);
         }
     }
 

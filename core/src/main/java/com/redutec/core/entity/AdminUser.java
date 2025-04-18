@@ -1,7 +1,7 @@
 package com.redutec.core.entity;
 
 import com.redutec.core.config.AesAttributeConverter;
-import com.redutec.core.meta.AdministratorRole;
+import com.redutec.core.meta.AdminUserRole;
 import com.redutec.core.meta.AuthenticationStatus;
 import jakarta.persistence.*;
 import lombok.*;
@@ -14,7 +14,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDateTime;
 
 /**
- * Administrator 엔티티 클래스는 시스템 내에서 어드민 사용자의 정보를 나타냅니다.
+ * AdminUser 엔티티 클래스는 시스템 내에서 어드민 사용자의 정보를 나타냅니다.
  * 어드민 사용자 정보에는 로그인 정보, 보안 인증 정보, 권한, 계정 상태 등이 포함됩니다.
  */
 @Entity
@@ -25,7 +25,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-public class Administrator {
+public class AdminUser {
     @Comment("어드민 사용자 고유번호")
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,7 +43,7 @@ public class Administrator {
     @Comment("권한")
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private AdministratorRole role;
+    private AdminUserRole role;
 
     @Comment("계정 상태")
     @Column(nullable = false, length = 14)
@@ -81,10 +81,10 @@ public class Administrator {
     @Column(nullable = false)
     private LocalDateTime updatedAt;
 
-    public void updateAdministrator(
+    public void updateAdminUser(
             String nickname,
             String password,
-            AdministratorRole role,
+            AdminUserRole role,
             AuthenticationStatus authenticationStatus,
             String email,
             Integer failedLoginAttempts,

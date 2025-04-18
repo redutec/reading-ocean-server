@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum AdministratorRole {
+public enum AdminUserRole {
     CEO("대표"),
     DEVELOPMENT_TEAM_MANAGER("개발팀 책임"),
     DEVELOPMENT_TEAM_MEMBER("개발팀원"),
