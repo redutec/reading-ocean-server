@@ -12,10 +12,74 @@ public class SampleData {
     public enum AdminUser {
         // Master: 1개 (서울)
         MASTER_ADMIN(
-            "redutec@redutec.co.kr",
+                "redutec@redutec.co.kr",
                 "Redutec123!",
                 AdminUserRole.CEO,
                 "redutec",
+                AuthenticationStatus.ACTIVE,
+                0
+        ),
+        DEVELOPMENT_TEAM_MANAGER(
+                "development.manager@redutec.co.kr",
+                "Redutec123!",
+                AdminUserRole.DEVELOPMENT_TEAM_MANAGER,
+                "devManager",
+                AuthenticationStatus.ACTIVE,
+                0
+        ),
+        DEVELOPMENT_TEAM_MEMBER(
+                "development.member@redutec.co.kr",
+                "Redutec123!",
+                AdminUserRole.DEVELOPMENT_TEAM_MEMBER,
+                "devMember",
+                AuthenticationStatus.ACTIVE,
+                0
+        ),
+        BUSINESS_TEAM_MANAGER(
+                "business.manager@redutec.co.kr",
+                "Redutec123!",
+                AdminUserRole.BUSINESS_TEAM_MANAGER,
+                "businessManager",
+                AuthenticationStatus.ACTIVE,
+                0
+        ),
+        BUSINESS_TEAM_MEMBER(
+                "business.member@redutec.co.kr",
+                "Redutec123!",
+                AdminUserRole.BUSINESS_TEAM_MEMBER,
+                "businessMember",
+                AuthenticationStatus.ACTIVE,
+                0
+        ),
+        RESEARCH_TEAM_MANAGER(
+                "research.manager@redutec.co.kr",
+                "Redutec123!",
+                AdminUserRole.RESEARCH_TEAM_MANAGER,
+                "researchManager",
+                AuthenticationStatus.ACTIVE,
+                0
+        ),
+        RESEARCH_TEAM_MEMBER(
+                "research.member@redutec.co.kr",
+                "Redutec123!",
+                AdminUserRole.RESEARCH_TEAM_MEMBER,
+                "researchMember",
+                AuthenticationStatus.ACTIVE,
+                0
+        ),
+        MANAGEMENT_TEAM_MANAGER(
+                "management.manager@redutec.co.kr",
+                "Redutec123!",
+                AdminUserRole.MANAGEMENT_TEAM_MANAGER,
+                "managementManager",
+                AuthenticationStatus.ACTIVE,
+                0
+        ),
+        MANAGEMENT_TEAM_MEMBER(
+                "management.member@redutec.co.kr",
+                "Redutec123!",
+                AdminUserRole.MANAGEMENT_TEAM_MEMBER,
+                "managementMember",
                 AuthenticationStatus.ACTIVE,
                 0
         );

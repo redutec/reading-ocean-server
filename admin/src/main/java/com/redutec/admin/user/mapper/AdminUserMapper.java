@@ -1,8 +1,6 @@
 package com.redutec.admin.user.mapper;
 
 import com.redutec.admin.user.dto.AdminUserDto;
-import com.redutec.admin.config.JwtUtil;
-import com.redutec.core.config.EncryptUtil;
 import com.redutec.core.criteria.AdminUserCriteria;
 import com.redutec.core.entity.AdminMenu;
 import com.redutec.core.entity.AdminUser;
@@ -21,9 +19,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Component
 public class AdminUserMapper {
-    private final EncryptUtil encryptUtil;
     private final PasswordEncoder passwordEncoder;
-    private final JwtUtil jwtUtil;
     private final AdminMenuRepository adminMenuRepository;
 
     /**
@@ -57,8 +53,8 @@ public class AdminUserMapper {
     ) {
         return new AdminUserCriteria(
                 findAdminUserRequest.adminUserIds(),
-                findAdminUserRequest.nickname(),
                 findAdminUserRequest.email(),
+                findAdminUserRequest.nickname(),
                 findAdminUserRequest.roles(),
                 findAdminUserRequest.authenticationStatuses()
         );

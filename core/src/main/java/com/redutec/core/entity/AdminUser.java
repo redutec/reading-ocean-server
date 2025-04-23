@@ -31,7 +31,12 @@ public class AdminUser {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Comment("닉네임(로그인에 사용)")
+    @Comment("이메일(AES256 암호화, 로그인에 사용)")
+    @Convert(converter = AesAttributeConverter.class)
+    @Column(nullable = false, unique = true)
+    private String email;
+
+    @Comment("닉네임")
     @Column(length = 20)
     private String nickname;
 
@@ -51,11 +56,6 @@ public class AdminUser {
     @Builder.Default
     @Setter
     private AuthenticationStatus authenticationStatus = AuthenticationStatus.INACTIVE;
-
-    @Comment("이메일")
-    @Convert(converter = AesAttributeConverter.class)
-    @Column(nullable = false, unique = true)
-    private String email;
 
     @Comment("비밀번호 틀린 횟수")
     @Column(nullable = false)
@@ -82,20 +82,20 @@ public class AdminUser {
     private LocalDateTime updatedAt;
 
     public void updateAdminUser(
-            String nickname,
+            String email,
             String password,
+            String nickname,
             AdminUserRole role,
             AuthenticationStatus authenticationStatus,
-            String email,
             Integer failedLoginAttempts,
             String lastLoginIp,
             LocalDateTime lastLoginAt
     ) {
-        this.nickname = nickname != null ? nickname : this.nickname;
+        this.email = email != null ? email : this.email;
         this.password = password != null ? password : this.password;
+        this.nickname = nickname != null ? nickname : this.nickname;
         this.role = role != null ? role : this.role;
         this.authenticationStatus = authenticationStatus != null ? authenticationStatus : this.authenticationStatus;
-        this.email = email != null ? email : this.email;
         this.failedLoginAttempts = failedLoginAttempts != null ? failedLoginAttempts : this.failedLoginAttempts;
         this.lastLoginIp = lastLoginIp != null ? lastLoginIp : this.lastLoginIp;
         this.lastLoginAt = lastLoginAt != null ? lastLoginAt : this.lastLoginAt;

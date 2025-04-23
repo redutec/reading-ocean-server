@@ -7,8 +7,8 @@ import java.util.List;
 
 public record AdminUserCriteria(
     List<Long> adminUserIds,
-    String nickname,
     String email,
+    String nickname,
     List<AdminUserRole> roles,
     List<AuthenticationStatus> authenticationStatuses
 ) {}

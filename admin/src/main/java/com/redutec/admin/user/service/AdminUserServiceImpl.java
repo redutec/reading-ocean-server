@@ -118,9 +118,9 @@ public class AdminUserServiceImpl implements AdminUserService {
         adminUser.updateAdminUser(
                 updateAdminUserRequest.email(),
                 passwordEncoder.encode(updateAdminUserRequest.password()),
+                updateAdminUserRequest.nickname(),
                 updateAdminUserRequest.role(),
                 updateAdminUserRequest.authenticationStatus(),
-                updateAdminUserRequest.nickname(),
                 updateAdminUserRequest.failedLoginAttempts(),
                 updateAdminUserRequest.lastLoginIp(),
                 updateAdminUserRequest.lastLoginAt()
