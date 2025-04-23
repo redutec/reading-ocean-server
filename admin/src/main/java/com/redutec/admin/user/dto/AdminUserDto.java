@@ -105,7 +105,6 @@ public class AdminUserDto {
 
         @Schema(description = "마지막 로그인 시각", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
         LocalDateTime lastLoginAt
-
     ) {}
 
     @Schema(description = "어드민 사용자 응답 객체")
