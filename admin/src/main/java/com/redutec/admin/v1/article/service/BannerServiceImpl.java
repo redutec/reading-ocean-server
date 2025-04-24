@@ -72,7 +72,7 @@ public class BannerServiceImpl implements BannerService {
                             banner,
                             AttachFileValue.PC,
                             file.getOriginalFilename(),
-                            pcFileUploadResult.getFileUrl()
+                            pcFileUploadResult.fileUrl()
                     );
                     bdtArticleAttachFileRepository.save(pcBannerAttachFile);
                 });
@@ -85,7 +85,7 @@ public class BannerServiceImpl implements BannerService {
                             banner,
                             AttachFileValue.MOBILE,
                             file.getOriginalFilename(),
-                            mobileFileUploadResult.getFileUrl()
+                            mobileFileUploadResult.fileUrl()
                     );
                     bdtArticleAttachFileRepository.save(mobileBannerAttachFile);
                 });
@@ -214,7 +214,7 @@ public class BannerServiceImpl implements BannerService {
                             banner,
                             AttachFileValue.PC,
                             file.getOriginalFilename(),
-                            pcFileUploadResult.getFileUrl()
+                            pcFileUploadResult.fileUrl()
                     );
                     bdtArticleAttachFileRepository.save(pcAttachFile);
                 });
@@ -227,7 +227,7 @@ public class BannerServiceImpl implements BannerService {
                             banner,
                             AttachFileValue.MOBILE,
                             file.getOriginalFilename(),
-                            mobileFileUploadResult.getFileUrl()
+                            mobileFileUploadResult.fileUrl()
                     );
                     bdtArticleAttachFileRepository.save(mobileAttachFile);
                 });

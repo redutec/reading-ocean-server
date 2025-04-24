@@ -1,11 +1,12 @@
 package com.redutec.admin.branch.service;
 
-import com.redutec.admin.config.JwtUtil;
-import com.redutec.admin.user.dto.AdminUserDto;
-import com.redutec.admin.user.mapper.AdminUserMapper;
-import com.redutec.core.entity.AdminUser;
-import com.redutec.core.repository.AdminUserRepository;
-import com.redutec.core.specification.AdminUserSpecification;
+import com.redutec.admin.branch.dto.BranchDto;
+import com.redutec.admin.branch.mapper.BranchMapper;
+import com.redutec.core.config.FileUploadResult;
+import com.redutec.core.config.FileUtil;
+import com.redutec.core.entity.Branch;
+import com.redutec.core.repository.BranchRepository;
+import com.redutec.core.specification.BranchSpecification;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,129 +16,140 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.nio.file.Paths;
+import java.util.Optional;
+
 @Service
 @Slf4j
 @AllArgsConstructor
 public class BranchServiceImpl implements BranchService {
-    private final AdminUserMapper adminUserMapper;
-    private final AdminUserRepository adminUserRepository;
+    private final BranchMapper branchMapper;
+    private final BranchRepository branchRepository;
     private final PasswordEncoder passwordEncoder;
-    private final JwtUtil jwtUtil;
+    private final FileUtil fileUtil;
 
     /**
-     * 어드민 사용자 등록
-     * @param createAdminUserRequest 어드민 사용자 등록 정보를 담은 DTO
-     * @return 등록된 어드민 사용자 정보
+     * 지사 등록
+     * @param createBranchRequest 지사 등록 정보를 담은 DTO
+     * @return 등록된 지사 정보
      */
     @Override
     @Transactional
-    public AdminUserDto.AdminUserResponse create(
-            AdminUserDto.CreateAdminUserRequest createAdminUserRequest
+    public BranchDto.BranchResponse create(
+            BranchDto.CreateBranchRequest createBranchRequest
     ) {
-        return adminUserMapper.toResponseDto(
-                adminUserRepository.save(
-                        adminUserMapper.toEntity(
-                                createAdminUserRequest
+        return branchMapper.toResponseDto(
+                branchRepository.save(
+                        branchMapper.toEntity(
+                                createBranchRequest
                         )
                 )
         );
     }
 
     /**
-     * 조건에 맞는 어드민 사용자 목록 조회
-     * @param findAdminUserRequest 조회 조건을 담은 DTO
-     * @return 조회된 어드민 사용자 목록 및 페이징 정보
+     * 조건에 맞는 지사 목록 조회
+     * @param findBranchRequest 조회 조건을 담은 DTO
+     * @return 조회된 지사 목록 및 페이징 정보
      */
     @Override
     @Transactional(readOnly = true)
-    public AdminUserDto.AdminUserPageResponse find(
-            AdminUserDto.FindAdminUserRequest findAdminUserRequest
+    public BranchDto.BranchPageResponse find(
+            BranchDto.FindBranchRequest findBranchRequest
     ) {
-        return adminUserMapper.toPageResponseDto(adminUserRepository.findAll(
-                AdminUserSpecification.findWith(adminUserMapper.toCriteria(findAdminUserRequest)),
-                (findAdminUserRequest.page() != null && findAdminUserRequest.size() != null)
-                        ? PageRequest.of(findAdminUserRequest.page(), findAdminUserRequest.size())
+        return branchMapper.toPageResponseDto(branchRepository.findAll(
+                BranchSpecification.findWith(branchMapper.toCriteria(findBranchRequest)),
+                (findBranchRequest.page() != null && findBranchRequest.size() != null)
+                        ? PageRequest.of(findBranchRequest.page(), findBranchRequest.size())
                         : Pageable.unpaged()));
     }
 
     /**
-     * 특정 어드민 사용자 조회
-     * @param adminUserId 어드민 사용자 고유번호
-     * @return 특정 어드민 사용자 응답 객체
+     * 특정 지사 조회
+     * @param branchId 지사 고유번호
+     * @return 특정 지사 응답 객체
      */
     @Override
     @Transactional(readOnly = true)
-    public AdminUserDto.AdminUserResponse findById(
-            Long adminUserId
+    public BranchDto.BranchResponse findById(
+            Long branchId
     ) {
-        return adminUserMapper.toResponseDto(getAdminUser(adminUserId));
+        return branchMapper.toResponseDto(getBranch(branchId));
     }
 
     /**
-     * 특정 어드민 사용자 엔티티 조회(닉네임으로 조회)
-     * @param email 어드민 사용자 닉네임
-     * @return 특정 어드민 사용자 엔티티 객체
+     * 특정 지사 엔티티 조회
+     * @param branchId 지사 고유번호
+     * @return 특정 지사 엔티티 객체
      */
     @Override
     @Transactional(readOnly = true)
-    public AdminUser findByEmail(
-            String email
+    public Branch getBranch(
+            Long branchId
     ) {
-        return adminUserRepository.findByEmail(email)
-                .orElseThrow(() -> new EntityNotFoundException("No such adminUser"));
+        return branchRepository.findById(branchId)
+                .orElseThrow(() -> new EntityNotFoundException("No such branch"));
     }
 
     /**
-     * 특정 어드민 사용자 엔티티 조회
-     * @param adminUserId 어드민 사용자 고유번호
-     * @return 특정 어드민 사용자 엔티티 객체
-     */
-    @Override
-    @Transactional(readOnly = true)
-    public AdminUser getAdminUser(
-            Long adminUserId
-    ) {
-        return adminUserRepository.findById(adminUserId)
-                .orElseThrow(() -> new EntityNotFoundException("No such adminUser"));
-    }
-
-    /**
-     * 어드민 사용자 수정
-     * @param adminUserId 수정할 어드민 사용자의 ID
-     * @param updateAdminUserRequest 수정할 정보를 담은 DTO
+     * 특정 지사 수정
+     * @param branchId 수정할 지사의 ID
+     * @param updateBranchRequest 수정할 정보를 담은 DTO
      */
     @Override
     @Transactional
     public void update(
-            Long adminUserId,
-            AdminUserDto.UpdateAdminUserRequest updateAdminUserRequest
+            Long branchId,
+            BranchDto.UpdateBranchRequest updateBranchRequest
     ) {
-        // 수정할 어드민 사용자 엔티티 조회
-        AdminUser adminUser = getAdminUser(adminUserId);
+        // 수정할 지사 엔티티 조회
+        Branch branch = getBranch(branchId);
+        // 현재 비밀번호와 기존 비밀번호가 일치하면 진행. 다르다면 예외처리
+        Optional.of(updateBranchRequest.currentPassword())
+                .filter(pwd -> passwordEncoder.matches(pwd, branch.getPassword()))
+                .orElseThrow(() -> new IllegalArgumentException("현재 비밀번호가 일치하지 않습니다."));
+        // 새로운 비밀번호를 암호화
+        String encodedNewPassword = Optional.ofNullable(updateBranchRequest.newPassword())
+                .filter(pwd -> !pwd.isBlank())
+                .map(passwordEncoder::encode)
+                .orElse(null);
+        // 업로드할 계약서 파일이 있는 경우 업로드하고 파일명을 생성
+        String contractFileName = Optional.ofNullable(updateBranchRequest.contractFileName())
+                .filter(file -> !file.isEmpty())
+                .map(file -> {
+                    FileUploadResult result = fileUtil.uploadFile(file, "/branch");
+                    return Paths.get(result.filePath()).getFileName().toString();
+                })
+                .orElse(null);
         // UPDATE 도메인 메서드로 변환
-        adminUser.updateAdminUser(
-                updateAdminUserRequest.email(),
-                passwordEncoder.encode(updateAdminUserRequest.password()),
-                updateAdminUserRequest.nickname(),
-                updateAdminUserRequest.role(),
-                updateAdminUserRequest.authenticationStatus(),
-                updateAdminUserRequest.failedLoginAttempts(),
-                updateAdminUserRequest.lastLoginIp(),
-                updateAdminUserRequest.lastLoginAt()
+        branch.updateBranch(
+                updateBranchRequest.accountId(),
+                encodedNewPassword,
+                updateBranchRequest.region(),
+                updateBranchRequest.name(),
+                updateBranchRequest.status(),
+                updateBranchRequest.businessArea(),
+                updateBranchRequest.managerName(),
+                updateBranchRequest.managerPhoneNumber(),
+                updateBranchRequest.managerEmail(),
+                contractFileName,
+                updateBranchRequest.contractDate(),
+                updateBranchRequest.renewalDate(),
+                updateBranchRequest.description()
         );
-        // 어드민 사용자 엔티티 UPDATE
-        adminUserRepository.save(adminUser);
+        // 지사 엔티티 UPDATE
+        branchRepository.save(branch);
     }
 
     /**
-     * 어드민 사용자 삭제
-     * @param adminUserId 삭제할 어드민 사용자의 ID
+     * 특정 지사 삭제
+     * @param branchId 삭제할 지사의 ID
      */
     @Override
     @Transactional
     public void delete(
-            Long adminUserId
+            Long branchId
     ) {
-        adminUserRepository.delete(getAdminUser(adminUserId));
+        branchRepository.delete(getBranch(branchId));
     }
 }

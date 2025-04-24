@@ -46,3 +46,4 @@ admin/.DS_Store
 logs/admin.log.2025-04-15.0.gz
 logs/admin.log.2025-04-15.1.gz
 logs/admin.log.2025-04-15.2.gz
+/admin/branch

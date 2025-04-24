@@ -33,14 +33,14 @@ public interface BranchService {
     Branch getBranch(Long branchId);
 
     /**
-     * 지사 수정
+     * 특정 지사 수정
      * @param branchId 수정할 지사의 ID
      * @param updateBranchRequest 지사 수정 요청 객체
      */
     void update(Long branchId, BranchDto.UpdateBranchRequest updateBranchRequest);
 
     /**
-     * 지사 삭제
+     * 특정 지사 삭제
      * @param branchId 삭제할 지사의 ID
      */
     void delete(Long branchId);
