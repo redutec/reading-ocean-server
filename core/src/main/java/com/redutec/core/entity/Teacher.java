@@ -2,6 +2,7 @@ package com.redutec.core.entity;
 
 import com.redutec.core.config.AesAttributeConverter;
 import com.redutec.core.meta.AuthenticationStatus;
+import com.redutec.core.meta.TeacherRole;
 import com.redutec.core.meta.TeacherStatus;
 import jakarta.persistence.*;
 import lombok.*;
@@ -27,7 +28,7 @@ public class Teacher {
     @Comment("교사 고유번호")
     private Long id;
 
-    @Comment("계정 아이디")
+    @Comment("로그인 아이디")
     @Column(length = 20, nullable = false)
     private String accountId;
 
@@ -42,7 +43,7 @@ public class Teacher {
 
     @Comment("연락처(AES256 암호화)")
     @Convert(converter = AesAttributeConverter.class)
-    @Column
+    @Column(nullable = false)
     private String phoneNumber;
 
     @Comment("이메일(AES256 암호화)")
@@ -55,6 +56,12 @@ public class Teacher {
     @Enumerated(EnumType.STRING)
     @Builder.Default
     private TeacherStatus status = TeacherStatus.WAIT;
+
+    @Comment("역할")
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    @Builder.Default
+    private TeacherRole role = TeacherRole.TEACHER;
 
     @Comment("계정 상태")
     @Column(nullable = false)
@@ -95,6 +102,28 @@ public class Teacher {
     private LocalDateTime updatedAt;
 
     public void updateTeacher(
+            String accountId,
+            String password,
+            String name,
+            String phoneNumber,
+            String email,
+            TeacherStatus status,
+            TeacherRole role,
+            AuthenticationStatus authenticationStatus,
+            String description,
+            Institute institute,
+            InstituteClass instituteClass
     ) {
+        this.accountId = accountId != null ? accountId : this.accountId;
+        this.password = password != null ? password : this.password;
+        this.name = name != null ? name : this.name;
+        this.phoneNumber = phoneNumber != null ? phoneNumber : this.phoneNumber;
+        this.email = email != null ? email : this.email;
+        this.status = status != null ? status : this.status;
+        this.role = role != null ? role : this.role;
+        this.authenticationStatus = authenticationStatus != null ? authenticationStatus : this.authenticationStatus;
+        this.description = description != null ? description : this.description;
+        this.institute = institute != null ? institute : this.institute;
+        this.instituteClass = instituteClass != null ? instituteClass : this.instituteClass;
     }
 }

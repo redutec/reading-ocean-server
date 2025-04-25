@@ -1,23 +1,27 @@
 package com.redutec.admin.institute.service;
 
+import com.redutec.admin.branch.service.BranchService;
 import com.redutec.admin.institute.dto.InstituteDto;
 import com.redutec.admin.institute.mapper.InstituteMapper;
-import com.redutec.core.config.FileUploadResult;
-import com.redutec.core.config.FileUtil;
+import com.redutec.core.entity.Branch;
 import com.redutec.core.entity.Institute;
+import com.redutec.core.entity.Teacher;
+import com.redutec.core.meta.TeacherRole;
 import com.redutec.core.repository.InstituteRepository;
+import com.redutec.core.repository.TeacherRepository;
 import com.redutec.core.specification.InstituteSpecification;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.nio.file.Paths;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -25,8 +29,8 @@ import java.util.Optional;
 public class InstituteServiceImpl implements InstituteService {
     private final InstituteMapper instituteMapper;
     private final InstituteRepository instituteRepository;
-    private final PasswordEncoder passwordEncoder;
-    private final FileUtil fileUtil;
+    private final BranchService branchService;
+    private final TeacherRepository teacherRepository;
 
     /**
      * 교육기관 등록
@@ -38,13 +42,22 @@ public class InstituteServiceImpl implements InstituteService {
     public InstituteDto.InstituteResponse create(
             InstituteDto.CreateInstituteRequest createInstituteRequest
     ) {
-        return instituteMapper.toResponseDto(
-                instituteRepository.save(
-                        instituteMapper.toEntity(
-                                createInstituteRequest
-                        )
+        // 교육기관 등록
+        Institute institute = instituteRepository.save(
+                instituteMapper.toEntity(
+                        createInstituteRequest,
+                        Optional.ofNullable(createInstituteRequest.branchId())
+                                .map(branchService::getBranch)
+                                .orElse(null)
                 )
         );
+        // 지사가 존재하면 조회, 없으면 null
+        Branch branch = Optional.ofNullable(institute.getBranch())
+                .map(Branch::getId)
+                .map(branchService::getBranch)
+                .orElse(null);
+        // 응답 객체에 담아 리턴
+        return instituteMapper.toResponseDto(institute, null, branch);
     }
 
     /**
@@ -57,11 +70,30 @@ public class InstituteServiceImpl implements InstituteService {
     public InstituteDto.InstitutePageResponse find(
             InstituteDto.FindInstituteRequest findInstituteRequest
     ) {
-        return instituteMapper.toPageResponseDto(instituteRepository.findAll(
+        Page<Institute> page = instituteRepository.findAll(
                 InstituteSpecification.findWith(instituteMapper.toCriteria(findInstituteRequest)),
                 (findInstituteRequest.page() != null && findInstituteRequest.size() != null)
                         ? PageRequest.of(findInstituteRequest.page(), findInstituteRequest.size())
-                        : Pageable.unpaged()));
+                        : Pageable.unpaged()
+        );
+        List<InstituteDto.InstituteResponse> instituteResponses = page.getContent().stream()
+                .map(institute -> {
+                    // Chief 교사 조회
+                    Teacher chiefTeacher = teacherRepository.findByInstituteAndRole(institute, TeacherRole.CHIEF)
+                            .orElse(null);
+                    // Branch가 있을 때만 조회, 없으면 null
+                    Branch branch = Optional.ofNullable(institute.getBranch())
+                            .map(Branch::getId)
+                            .map(branchService::getBranch)
+                            .orElse(null);
+                    return instituteMapper.toResponseDto(institute, chiefTeacher, branch);
+                })
+                .collect(Collectors.toList());
+        return new InstituteDto.InstitutePageResponse(
+                instituteResponses,
+                page.getTotalElements(),
+                page.getTotalPages()
+        );
     }
 
     /**
@@ -74,7 +106,15 @@ public class InstituteServiceImpl implements InstituteService {
     public InstituteDto.InstituteResponse findById(
             Long instituteId
     ) {
-        return instituteMapper.toResponseDto(getInstitute(instituteId));
+        // 교육기관과 원장 교사, 지사 조회
+        Institute institute = getInstitute(instituteId);
+        Teacher chiefTeacher = teacherRepository.findByInstituteAndRole(institute, TeacherRole.CHIEF)
+                .orElseThrow(() -> new EntityNotFoundException("No such chief teacher"));
+        Branch branch = branchService.getBranch(institute.getBranch().getId());
+        return instituteMapper.toResponseDto(
+                institute,
+                chiefTeacher,
+                branch);
     }
 
     /**
@@ -104,38 +144,22 @@ public class InstituteServiceImpl implements InstituteService {
     ) {
         // 수정할 교육기관 엔티티 조회
         Institute institute = getInstitute(instituteId);
-        // 현재 비밀번호와 기존 비밀번호가 일치하면 진행. 다르다면 예외처리
-        Optional.of(updateInstituteRequest.currentPassword())
-                .filter(pwd -> passwordEncoder.matches(pwd, institute.getPassword()))
-                .orElseThrow(() -> new IllegalArgumentException("현재 비밀번호가 일치하지 않습니다."));
-        // 새로운 비밀번호를 암호화
-        String encodedNewPassword = Optional.ofNullable(updateInstituteRequest.newPassword())
-                .filter(pwd -> !pwd.isBlank())
-                .map(passwordEncoder::encode)
-                .orElse(null);
-        // 업로드할 계약서 파일이 있는 경우 업로드하고 파일명을 생성
-        String contractFileName = Optional.ofNullable(updateInstituteRequest.contractFileName())
-                .filter(file -> !file.isEmpty())
-                .map(file -> {
-                    FileUploadResult result = fileUtil.uploadFile(file, "/institute");
-                    return Paths.get(result.filePath()).getFileName().toString();
-                })
-                .orElse(null);
         // UPDATE 도메인 메서드로 변환
         institute.updateInstitute(
-                updateInstituteRequest.accountId(),
-                encodedNewPassword,
-                updateInstituteRequest.region(),
                 updateInstituteRequest.name(),
+                updateInstituteRequest.businessRegistrationName(),
+                updateInstituteRequest.address(),
+                updateInstituteRequest.zipCode(),
+                updateInstituteRequest.phoneNumber(),
+                updateInstituteRequest.url(),
+                updateInstituteRequest.naverPlaceUrl(),
+                updateInstituteRequest.type(),
+                updateInstituteRequest.managementType(),
                 updateInstituteRequest.status(),
-                updateInstituteRequest.businessArea(),
-                updateInstituteRequest.managerName(),
-                updateInstituteRequest.managerPhoneNumber(),
-                updateInstituteRequest.managerEmail(),
-                contractFileName,
-                updateInstituteRequest.contractDate(),
-                updateInstituteRequest.renewalDate(),
-                updateInstituteRequest.description()
+                updateInstituteRequest.operationStatus(),
+                Optional.ofNullable(updateInstituteRequest.branchId())
+                        .map(branchService::getBranch)
+                        .orElse(null)
         );
         // 교육기관 엔티티 UPDATE
         instituteRepository.save(institute);

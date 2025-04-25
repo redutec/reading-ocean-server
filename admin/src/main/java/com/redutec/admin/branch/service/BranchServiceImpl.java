@@ -7,7 +7,6 @@ import com.redutec.core.config.FileUtil;
 import com.redutec.core.entity.Branch;
 import com.redutec.core.repository.BranchRepository;
 import com.redutec.core.specification.BranchSpecification;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -88,7 +87,7 @@ public class BranchServiceImpl implements BranchService {
             Long branchId
     ) {
         return branchRepository.findById(branchId)
-                .orElseThrow(() -> new EntityNotFoundException("No such branch"));
+                .orElse(null);
     }
 
     /**
