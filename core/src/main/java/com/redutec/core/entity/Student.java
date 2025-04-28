@@ -1,10 +1,7 @@
 package com.redutec.core.entity;
 
 import com.redutec.core.config.AesAttributeConverter;
-import com.redutec.core.meta.AuthenticationStatus;
-import com.redutec.core.meta.ReadingLevel;
-import com.redutec.core.meta.SchoolGrade;
-import com.redutec.core.meta.StudentStatus;
+import com.redutec.core.meta.*;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -31,7 +28,7 @@ public class Student {
     @Comment("학생 고유번호")
     private Long id;
 
-    @Comment("계정 아이디")
+    @Comment("로그인 아이디")
     @Column(length = 20, nullable = false)
     private String accountId;
 
@@ -39,7 +36,7 @@ public class Student {
     @Column(nullable = false)
     private String password;
 
-    @Comment("학생명(AES256 암호화)")
+    @Comment("이름(AES256 암호화)")
     @Convert(converter = AesAttributeConverter.class)
     @Column(nullable = false)
     private String name;
@@ -71,19 +68,19 @@ public class Student {
     @Builder.Default
     private AuthenticationStatus authenticationStatus = AuthenticationStatus.INACTIVE;
 
-    @Comment("독서레벨")
+    @Comment("독서 레벨")
     @Column
     @Enumerated(EnumType.STRING)
     private ReadingLevel readingLevel;
+
+    @Comment("실제 RAQ")
+    @Column
+    private Integer raq;
 
     @Comment("학년")
     @Column
     @Enumerated(EnumType.STRING)
     private SchoolGrade schoolGrade;
-
-    @Comment("실제 RAQ")
-    @Column
-    private Integer raq;
 
     @Comment("도서 포인트")
     @Column
@@ -104,6 +101,11 @@ public class Student {
     @Column
     private String description;
 
+    @Comment("서비스 도메인")
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Domain domain;
+
     @Comment("소속 교육기관")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
@@ -123,6 +125,38 @@ public class Student {
     private LocalDateTime updatedAt;
 
     public void updateStudent(
+            String accountId,
+            String password,
+            String name,
+            String phoneNumber,
+            String email,
+            String birthday,
+            StudentStatus status,
+            AuthenticationStatus authenticationStatus,
+            ReadingLevel readingLevel,
+            Integer raq,
+            SchoolGrade schoolGrade,
+            Integer bookPoints,
+            String description,
+            Domain domain,
+            Institute institute,
+            InstituteClass instituteClass
     ) {
+        this.accountId = accountId != null ? accountId : this.accountId;
+        this.password = password != null ? password : this.password;
+        this.name = name != null ? name : this.name;
+        this.phoneNumber = phoneNumber != null ? phoneNumber : this.phoneNumber;
+        this.email = email != null ? email : this.email;
+        this.birthday = birthday != null ? birthday : this.birthday;
+        this.status = status != null ? status : this.status;
+        this.authenticationStatus = authenticationStatus != null ? authenticationStatus : this.authenticationStatus;
+        this.readingLevel = readingLevel != null ? readingLevel : this.readingLevel;
+        this.raq = raq != null ? raq : this.raq;
+        this.schoolGrade = schoolGrade != null ? schoolGrade : this.schoolGrade;
+        this.bookPoints = bookPoints != null ? bookPoints : this.bookPoints;
+        this.description = description != null ? description : this.description;
+        this.domain = domain != null ? domain : this.domain;
+        this.institute = institute != null ? institute : this.institute;
+        this.instituteClass = instituteClass != null ? instituteClass : this.instituteClass;
     }
 }

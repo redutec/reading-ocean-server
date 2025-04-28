@@ -14,5 +14,5 @@ public enum StudentStatus {
     WITHDRAWAL("탈퇴"),
     NO_AFFILIATION("미소속");
 
-    private final String name;
+    private final String displayName;
 }

@@ -1,222 +1,221 @@
 package com.redutec.admin.student.dto;
 
-import com.redutec.core.meta.v1.AccountStatus;
-import com.redutec.core.meta.Domain;
-import com.redutec.core.meta.SchoolGrade;
+import com.redutec.core.meta.*;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
 import jakarta.validation.constraints.*;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class StudentDto {
-    @Schema(description = "계정 등록 요청 객체")
+    @Schema(description = "학생 등록 요청 객체")
     public record CreateStudentRequest(
             @Schema(description = "로그인 아이디", requiredMode = Schema.RequiredMode.REQUIRED)
             @NotNull
-            @Pattern(regexp = "^(?=.{6,16}$)(?=.*[a-z])[a-z0-9]+$", message = "accountId는 6자 이상 16자 이하의 영문 소문자와 숫자 조합이어야 하며, 순수 숫자는 허용되지 않습니다.")
+            @Size(max = 20)
             String accountId,
 
             @Schema(description = "비밀번호", requiredMode = Schema.RequiredMode.REQUIRED)
             @NotNull
-            @Pattern(
-                    regexp = "^(?=.{8,16}$)(?:(?=.*[A-Za-z])(?=.*\\d)|(?=.*[A-Za-z])(?=.*[^A-Za-z\\d])|(?=.*\\d)(?=.*[^A-Za-z\\d])).*$",
-                    message = "비밀번호는 8~16자 영문/숫자/특수문자 중 2개 이상 조합이어야 합니다."
-            )
+            @Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*\\d)(?=.*[!@#$%^&*(),.?\":{}|<>]).{8,32}$",
+                    message = "비밀번호는 영문 대소문자, 숫자, 특수문자 중 최소 3가지 이상의 조합으로 최소 8자 이상, 최대 32자 이하이어야 합니다.")
             String password,
-
-            @Schema(description = "계정 상태", requiredMode = Schema.RequiredMode.REQUIRED)
-            @NotNull
-            @Enumerated(EnumType.STRING)
-            AccountStatus accountStatus,
-
-            @Schema(description = "이메일", requiredMode = Schema.RequiredMode.REQUIRED)
-            @NotNull
-            @Email
-            String email,
 
             @Schema(description = "이름", requiredMode = Schema.RequiredMode.REQUIRED)
             @NotNull
-            @Size(max = 20)
+            @Size(max = 4)
             String name,
-
-            @Schema(description = "생년월일", requiredMode = Schema.RequiredMode.REQUIRED)
-            @NotNull
-            LocalDate birthday,
-
-            @Schema(description = "성별", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-            @Min(1)
-            @Max(2)
-            Byte gender,
 
             @Schema(description = "연락처", requiredMode = Schema.RequiredMode.REQUIRED)
             @NotNull
-            @Pattern(regexp = "^010\\d{8}$", message = "휴대폰 번호는 010으로 시작하는 11자리 숫자여야 합니다.")
-            String mobileNo,
-
-            @Schema(description = "학교명", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-            String schoolName,
-
-            @Schema(description = "학년", requiredMode = Schema.RequiredMode.REQUIRED)
-            @NotNull
-            @Enumerated(EnumType.STRING)
-            SchoolGrade schoolGrade,
-
-            @Schema(description = "주소", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-            @Size(max = 200)
-            String address,
-
-            @Schema(description = "상세 주소", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-            @Size(max = 200)
-            String addressDetail,
-
-            @Schema(description = "보호자 연락처", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-            @Pattern(regexp = "^010\\d{8}$", message = "휴대폰 번호는 010으로 시작하는 11자리 숫자여야 합니다.")
-            String protectorMobileNo,
-
-            @Schema(description = "가입 도메인", requiredMode = Schema.RequiredMode.REQUIRED)
-            @NotNull
-            @Enumerated(EnumType.STRING)
-            Domain signupDomainCode,
-
-            @Schema(description = "이메일 수신 허용 여부", requiredMode = Schema.RequiredMode.REQUIRED)
-            @NotNull
-            @Pattern(regexp = "^[YN]$", message = "이메일 수신 허용 여부는 Y 또는 N이어야 합니다.")
-            String allowEmailYn,
-
-            @Schema(description = "SMS 수신 허용 여부", requiredMode = Schema.RequiredMode.REQUIRED)
-            @NotNull
-            @Pattern(regexp = "^[YN]$", message = "SMS 수신 허용 여부는 Y 또는 N이어야 합니다.")
-            String allowSmsYn,
-
-            @Schema(description = "소속 학원의 고유번호", requiredMode = Schema.RequiredMode.REQUIRED, example = "1")
-            @NotNull
-            Integer academyNo
-    ) {}
-
-    @Schema(description = "학생 계정 조회 요청 리코드")
-    public record FindStudentRequest(
-            @Schema(description = "학생 계정의 고유번호", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-            List<@Positive Integer> accountNoList,
-
-            @Schema(description = "학원명", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-            @Size(max = 30)
-            String academyName,
-
-            @Schema(description = "학생명", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-            @Size(max = 20)
-            String name,
-
-            @Schema(description = "학생 ID", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-            @Size(max = 16)
-            String accountId,
-
-            @Schema(description = "가입 도메인", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-            @ElementCollection(fetch = FetchType.LAZY)
-            @Enumerated(EnumType.STRING)
-            List<Domain> signupDomainCodeList
-    ) {}
-
-    @Schema(description = "학생 계정 수정 요청 리코드")
-    record UpdateStudentRequest(
-            @Schema(description = "로그인 아이디", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-            @NotBlank
-            @Pattern(regexp = "^(?=.{6,16}$)(?=.*[a-z])[a-z0-9]+$", message = "accountId는 6자 이상 16자 이하의 영문 소문자와 숫자 조합이어야 하며, 순수 숫자는 허용되지 않습니다.")
-            String accountId,
-
-            @Schema(description = "새로운 비밀번호", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-            @NotBlank
-            @Pattern(
-                    regexp = "^(?=.{8,16}$)(?:(?=.*[A-Za-z])(?=.*\\d)|(?=.*[A-Za-z])(?=.*[^A-Za-z\\d])|(?=.*\\d)(?=.*[^A-Za-z\\d])).*$",
-                    message = "비밀번호는 8~16자 영문/숫자/특수문자 중 2개 이상 조합이어야 합니다."
-            )
-            String newPassword,
-
-            @Schema(description = "계정 상태", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-            @NotBlank
-            @Enumerated(EnumType.STRING)
-            AccountStatus accountStatus,
+            @Pattern(regexp = "\\d{11}")
+            String phoneNumber,
 
             @Schema(description = "이메일", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-            @NotBlank
             @Email
             String email,
 
-            @Schema(description = "이름", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-            @NotBlank
-            @Size(max = 20)
-            String name,
+            @Schema(description = "생년월일", requiredMode = Schema.RequiredMode.REQUIRED)
+            @Pattern(regexp = "^[0-9]{8}$", message = "생년월일은 8자리의 숫자로만 구성되어야 합니다.")
+            String birthday,
 
-            @Schema(description = "생년월일", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-            @NotBlank
-            LocalDate birthday,
+            @Schema(description = "상태", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+            @Enumerated(EnumType.STRING)
+            StudentStatus status,
 
-            @Schema(description = "성별", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-            @Min(1)
-            @Max(2)
-            Byte gender,
+            @Schema(description = "계정 상태", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+            @Enumerated(EnumType.STRING)
+            AuthenticationStatus authenticationStatus,
 
-            @Schema(description = "연락처", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-            @NotBlank
-            @Pattern(regexp = "^010\\d{8}$", message = "휴대폰 번호는 010으로 시작하는 11자리 숫자여야 합니다.")
-            String mobileNo,
+            @Schema(description = "독서 레벨", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+            @Enumerated(EnumType.STRING)
+            ReadingLevel readingLevel,
 
-            @Schema(description = "학교명", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-            String schoolName,
+            @Schema(description = "RAQ", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+            Integer raq,
 
             @Schema(description = "학년", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-            @NotBlank
             @Enumerated(EnumType.STRING)
             SchoolGrade schoolGrade,
 
-            @Schema(description = "주소", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-            @Size(max = 200)
-            String address,
+            @Schema(description = "도서 포인트", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+            @PositiveOrZero
+            Integer bookPoints,
 
-            @Schema(description = "상세 주소", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-            @Size(max = 200)
-            String addressDetail,
+            @Schema(description = "비고", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+            String description,
 
-            @Schema(description = "보호자 연락처", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-            @Pattern(regexp = "^010\\d{8}$", message = "휴대폰 번호는 010으로 시작하는 11자리 숫자여야 합니다.")
-            String protectorMobileNo,
+            @Schema(description = "서비스 도메인", requiredMode = Schema.RequiredMode.REQUIRED)
+            @NotNull
+            @Enumerated(EnumType.STRING)
+            Domain domain,
 
-            @Schema(description = "이메일 수신 허용 여부", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-            @NotBlank
-            @Pattern(regexp = "^[YN]$", message = "이메일 수신 허용 여부는 Y 또는 N이어야 합니다.")
-            String allowEmailYn,
+            @Schema(description = "소속된 교육기관 ID", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+            @Positive
+            Long instituteId,
 
-            @Schema(description = "SMS 수신 허용 여부", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-            @NotBlank
-            @Pattern(regexp = "^[YN]$", message = "SMS 수신 허용 여부는 Y 또는 N이어야 합니다.")
-            String allowSmsYn,
-
-            @Schema(description = "소속 학원의 고유번호", requiredMode = Schema.RequiredMode.NOT_REQUIRED, example = "1")
-            @NotBlank
-            Integer academyNo
+            @Schema(description = "소속된 학급 ID", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+            @Positive
+            Long instituteClassId
     ) {}
 
-    @Schema(description = "학생 계정 응답 객체")
-    public record StudentResponse(
-            Integer accountNo,
+    @Schema(description = "학생 조회 요청 객체")
+    public record FindStudentRequest(
+            @Schema(description = "학생 ID", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+            List<@Positive Long> studentIds,
+
+            @Schema(description = "로그인 아이디", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+            @Size(max = 20)
             String accountId,
-            String email,
+
+            @Schema(description = "이름", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+            @Size(max = 4)
             String name,
-            String mobileNo,
-            SchoolGrade schoolGrade,
-            AccountStatus accountStatus,
-            Domain signupDomainCode,
-            Integer academyNo,
-            String academyName
+
+            @Schema(description = "소속 교육기관명", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+            @Size(max = 60)
+            String instituteName,
+
+            @Schema(description = "서비스 도메인", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+            @ElementCollection(targetClass = Domain.class)
+            @Enumerated(EnumType.STRING)
+            List<Domain> domains,
+
+            @Schema(description = "페이지 번호(0 이상의 정수)", requiredMode = Schema.RequiredMode.NOT_REQUIRED, example = "0")
+            @PositiveOrZero
+            Integer page,
+
+            @Schema(description = "페이지 당 데이터 개수(1 이상의 자연수)", requiredMode = Schema.RequiredMode.NOT_REQUIRED, example = "60")
+            @Positive
+            Integer size
     ) {}
 
-    @Schema(description = "학생 계정 페이징 응답 객체")
+    @Schema(description = "학생 수정 요청 객체")
+    public record UpdateStudentRequest(
+            @Schema(description = "로그인 아이디", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+            @Size(max = 20)
+            String accountId,
+
+            @Schema(description = "기존 비밀번호", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+            @Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*\\d)(?=.*[!@#$%^&*(),.?\":{}|<>]).{8,32}$",
+                    message = "비밀번호는 영문 대소문자, 숫자, 특수문자 중 최소 3가지 이상의 조합으로 최소 8자 이상, 최대 32자 이하이어야 합니다.")
+            String currentPassword,
+
+            @Schema(description = "신규 비밀번호", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+            @Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*\\d)(?=.*[!@#$%^&*(),.?\":{}|<>]).{8,32}$",
+                    message = "비밀번호는 영문 대소문자, 숫자, 특수문자 중 최소 3가지 이상의 조합으로 최소 8자 이상, 최대 32자 이하이어야 합니다.")
+            String newPassword,
+
+            @Schema(description = "이름", requiredMode = Schema.RequiredMode.REQUIRED)
+            @NotNull
+            @Size(max = 4)
+            String name,
+
+            @Schema(description = "연락처", requiredMode = Schema.RequiredMode.REQUIRED)
+            @NotNull
+            @Pattern(regexp = "\\d{11}")
+            String phoneNumber,
+
+            @Schema(description = "이메일", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+            @Email
+            String email,
+
+            @Schema(description = "생년월일", requiredMode = Schema.RequiredMode.REQUIRED)
+            @Pattern(regexp = "^[0-9]{8}$", message = "생년월일은 8자리의 숫자로만 구성되어야 합니다.")
+            String birthday,
+
+            @Schema(description = "상태", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+            @Enumerated(EnumType.STRING)
+            StudentStatus status,
+
+            @Schema(description = "계정 상태", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+            @Enumerated(EnumType.STRING)
+            AuthenticationStatus authenticationStatus,
+
+            @Schema(description = "독서 레벨", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+            @Enumerated(EnumType.STRING)
+            ReadingLevel readingLevel,
+
+            @Schema(description = "RAQ", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+            Integer raq,
+
+            @Schema(description = "학년", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+            @Enumerated(EnumType.STRING)
+            SchoolGrade schoolGrade,
+
+            @Schema(description = "도서 포인트", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+            @PositiveOrZero
+            Integer bookPoints,
+
+            @Schema(description = "비고", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+            String description,
+
+            @Schema(description = "서비스 도메인", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+            @Enumerated(EnumType.STRING)
+            Domain domain,
+
+            @Schema(description = "소속된 교육기관 ID", requiredMode = Schema.RequiredMode.REQUIRED)
+            @NotNull
+            @Positive
+            Long instituteId,
+
+            @Schema(description = "소속된 학급 ID", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+            @Positive
+            Long instituteClassId
+    ) {}
+
+    @Schema(description = "학생 응답 객체")
+    public record StudentResponse(
+            Long studentId,
+            String accountId,
+            String name,
+            String phoneNumber,
+            String email,
+            String birthday,
+            StudentStatus status,
+            AuthenticationStatus authenticationStatus,
+            ReadingLevel readingLevel,
+            Integer raq,
+            SchoolGrade schoolGrade,
+            Integer bookPoints,
+            String lastLoginIp,
+            LocalDateTime lastLoginAt,
+            String description,
+            Domain domain,
+            Long instituteId,
+            String instituteName,
+            Long instituteClassId,
+            String instituteClassName,
+            LocalDateTime createdAt,
+            LocalDateTime updatedAt
+    ) {}
+
+    @Schema(description = "학생 응답 페이징 객체")
     public record StudentPageResponse(
-            List<StudentResponse> studentList,
+            List<StudentResponse> students,
             Long totalElements,
             Integer totalPages
     ) {}

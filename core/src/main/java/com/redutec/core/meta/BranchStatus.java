@@ -9,5 +9,5 @@ public enum BranchStatus {
     ACTIVE("활성화"),
     INACTIVE("비활성화");
 
-    private final String name;
+    private final String displayName;
 }

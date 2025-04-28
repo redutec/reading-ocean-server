@@ -13,5 +13,5 @@ public enum TeacherStatus {
     WITHDRAWAL_REQUEST("탈퇴 신청"),
     WITHDRAWAL("탈퇴");
 
-    private final String name;
+    private final String displayName;
 }

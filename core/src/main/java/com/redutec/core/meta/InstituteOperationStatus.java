@@ -11,5 +11,5 @@ public enum InstituteOperationStatus {
     PREPARING("준비"),
     RESERVED("선점");
 
-    private final String name;
+    private final String displayName;
 }

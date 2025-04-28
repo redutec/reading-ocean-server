@@ -1,48 +1,166 @@
 package com.redutec.admin.student.service;
 
+import com.redutec.admin.institute.service.InstituteService;
+import com.redutec.admin.instituteclass.service.InstituteClassService;
 import com.redutec.admin.student.dto.StudentDto;
-import com.redutec.core.entity.v1.ActAcademy;
-import com.redutec.core.repository.v1.ActAccountRepository;
-import lombok.RequiredArgsConstructor;
+import com.redutec.admin.student.mapper.StudentMapper;
+import com.redutec.core.entity.Institute;
+import com.redutec.core.entity.InstituteClass;
+import com.redutec.core.entity.Student;
+import com.redutec.core.repository.StudentRepository;
+import com.redutec.core.specification.StudentSpecification;
+import jakarta.persistence.EntityNotFoundException;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import java.util.Optional;
 
 @Service
-@RequiredArgsConstructor
+@Slf4j
+@AllArgsConstructor
 public class StudentServiceImpl implements StudentService {
-    private final ActAccountRepository actAccountRepository;
+    private final StudentMapper studentMapper;
+    private final StudentRepository studentRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final InstituteService instituteService;
+    private final InstituteClassService instituteClassService;
 
     /**
-     * 조건에 맞는 학생 계정 목록 조회 API
-     *
-     * @param findStudentRequest 학생 계정 조회 조건을 포함하는 DTO
-     * @return 조회된 학생 계정 목록과 관련된 추가 정보를 포함하는 응답 객체
+     * 학생 등록
+     * @param createStudentRequest 학생 등록 정보를 담은 DTO
+     * @return 등록된 학생 정보
+     */
+    @Override
+    @Transactional
+    public StudentDto.StudentResponse create(
+            StudentDto.CreateStudentRequest createStudentRequest
+    ) {
+        return studentMapper.toResponseDto(
+                studentRepository.save(
+                        studentMapper.toEntity(
+                                createStudentRequest,
+                                Optional.ofNullable(createStudentRequest.instituteId())
+                                        .map(instituteService::getInstitute)
+                                        .orElse(null),
+                                Optional.ofNullable(createStudentRequest.instituteClassId())
+                                        .map(instituteClassService::getInstituteClass)
+                                        .orElse(null)
+                        )
+                )
+        );
+    }
+
+    /**
+     * 조건에 맞는 학생 목록 조회
+     * @param findStudentRequest 조회 조건을 담은 DTO
+     * @return 조회된 학생 목록 및 페이징 정보
      */
     @Override
     @Transactional(readOnly = true)
-    public List<StudentDto.StudentResponse> find(StudentDto.FindStudentRequest findStudentRequest) {
-        var actAccountEntityList = actAccountRepository.findAll();
-        return actAccountEntityList.stream()
-                .map(student -> {
-                    // null 여부 체크 및 academy 정보 추출
-                    ActAcademy academy = student.getAcademy();
-                    Integer academyNo = academy != null ? academy.getAcademyNo() : null;
-                    String academyName = academy != null ? academy.getAcademyName() : null;
-                    return new StudentDto.StudentResponse(
-                            student.getAccountNo(),
-                            student.getAccountId(),
-                            student.getEmail(),
-                            student.getName(),
-                            student.getMobileNo(),
-                            student.getSchoolGrade(),
-                            student.getAccountStatus(),
-                            student.getSignupDomainCode(),
-                            academyNo,
-                            academyName
-                    );
-                })
-                .toList();
+    public StudentDto.StudentPageResponse find(
+            StudentDto.FindStudentRequest findStudentRequest
+    ) {
+        return studentMapper.toPageResponseDto(studentRepository.findAll(
+                StudentSpecification.findWith(studentMapper.toCriteria(findStudentRequest)),
+                (findStudentRequest.page() != null && findStudentRequest.size() != null)
+                        ? PageRequest.of(findStudentRequest.page(), findStudentRequest.size())
+                        : Pageable.unpaged()));
+    }
+
+    /**
+     * 특정 학생 조회
+     * @param studentId 학생 고유번호
+     * @return 특정 학생 응답 객체
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public StudentDto.StudentResponse findById(
+            Long studentId
+    ) {
+        return studentMapper.toResponseDto(getStudent(studentId));
+    }
+
+    /**
+     * 특정 학생 엔티티 조회
+     * @param studentId 학생 고유번호
+     * @return 특정 학생 엔티티 객체
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public Student getStudent(
+            Long studentId
+    ) {
+        return studentRepository.findById(studentId)
+                .orElseThrow(() -> new EntityNotFoundException("No such student"));
+    }
+
+    /**
+     * 특정 학생 수정
+     * @param studentId 수정할 학생의 ID
+     * @param updateStudentRequest 수정할 정보를 담은 DTO
+     */
+    @Override
+    @Transactional
+    public void update(
+            Long studentId,
+            StudentDto.UpdateStudentRequest updateStudentRequest
+    ) {
+        // 수정할 학생 엔티티 조회
+        Student student = getStudent(studentId);
+        // 수정 요청 객체에 학원 ID가 있다면 학원 엔티티 조회(없으면 Null)
+        Institute institute = Optional.ofNullable(updateStudentRequest.instituteId())
+                .map(instituteService::getInstitute)
+                .orElse(null);
+        // 수정 요청 객체에 학급 ID가 있다면 학급 엔티티 조회(없으면 Null)
+        InstituteClass instituteClass = Optional.ofNullable(updateStudentRequest.instituteClassId())
+                .map(instituteClassService::getInstituteClass)
+                .orElse(null);
+        // 현재 비밀번호와 기존 비밀번호가 일치하면 진행. 다르다면 예외처리
+        Optional.of(updateStudentRequest.currentPassword())
+                .filter(pwd -> passwordEncoder.matches(pwd, student.getPassword()))
+                .orElseThrow(() -> new IllegalArgumentException("현재 비밀번호가 일치하지 않습니다."));
+        // 새로운 비밀번호를 암호화
+        String encodedNewPassword = Optional.ofNullable(updateStudentRequest.newPassword())
+                .filter(pwd -> !pwd.isBlank())
+                .map(passwordEncoder::encode)
+                .orElse(null);
+        // UPDATE 도메인 메서드로 변환
+        student.updateStudent(
+                updateStudentRequest.accountId(),
+                encodedNewPassword,
+                updateStudentRequest.name(),
+                updateStudentRequest.phoneNumber(),
+                updateStudentRequest.email(),
+                updateStudentRequest.birthday(),
+                updateStudentRequest.status(),
+                updateStudentRequest.authenticationStatus(),
+                updateStudentRequest.readingLevel(),
+                updateStudentRequest.raq(),
+                updateStudentRequest.schoolGrade(),
+                updateStudentRequest.bookPoints(),
+                updateStudentRequest.description(),
+                updateStudentRequest.domain(),
+                institute,
+                instituteClass
+        );
+        // 학생 엔티티 UPDATE
+        studentRepository.save(student);
+    }
+
+    /**
+     * 특정 학생 삭제
+     * @param studentId 삭제할 학생의 ID
+     */
+    @Override
+    @Transactional
+    public void delete(
+            Long studentId
+    ) {
+        studentRepository.delete(getStudent(studentId));
     }
 }

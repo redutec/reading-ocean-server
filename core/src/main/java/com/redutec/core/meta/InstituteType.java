@@ -9,5 +9,5 @@ public enum InstituteType {
     ACADEMY("학원"),
     SCHOOL("학교");
 
-    private final String name;
+    private final String displayName;
 }

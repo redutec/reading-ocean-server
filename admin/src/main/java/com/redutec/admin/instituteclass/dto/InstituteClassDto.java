@@ -77,7 +77,7 @@ public class InstituteClassDto {
 
     @Schema(description = "학급 응답 페이징 객체")
     public record InstituteClassPageResponse(
-            List<InstituteClassResponse> instituteClasss,
+            List<InstituteClassResponse> instituteClasses,
             Long totalElements,
             Integer totalPages
     ) {}

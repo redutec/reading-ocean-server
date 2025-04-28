@@ -10,5 +10,5 @@ public enum AttachFileValue {
     PC("PC"),
     ETC("기타");
 
-    private final String name;
+    private final String displayName;
 }

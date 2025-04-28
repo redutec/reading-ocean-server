@@ -9,5 +9,5 @@ public enum TeacherRole {
     CHIEF("원장"),
     TEACHER("교사");
 
-    private final String name;
+    private final String displayName;
 }

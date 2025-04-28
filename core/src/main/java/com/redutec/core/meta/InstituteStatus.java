@@ -11,5 +11,5 @@ public enum InstituteStatus {
     TERMINATION("계약종료"),
     WAIT("승인대기");
 
-    private final String name;
+    private final String displayName;
 }

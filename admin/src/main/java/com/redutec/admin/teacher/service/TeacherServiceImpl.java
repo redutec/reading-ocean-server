@@ -111,9 +111,13 @@ public class TeacherServiceImpl implements TeacherService {
         // 수정할 교사 엔티티 조회
         Teacher teacher = getTeacher(teacherId);
         // 수정 요청 객체에 학원 ID가 있다면 학원 엔티티 조회(없으면 Null)
-        Institute institute = instituteService.getInstitute(updateTeacherRequest.instituteId());
+        Institute institute = Optional.ofNullable(updateTeacherRequest.instituteId())
+                .map(instituteService::getInstitute)
+                .orElse(null);
         // 수정 요청 객체에 학급 ID가 있다면 학급 엔티티 조회(없으면 Null)
-        InstituteClass instituteClass = instituteClassService.getInstituteClass(updateTeacherRequest.instituteId());
+        InstituteClass instituteClass = Optional.ofNullable(updateTeacherRequest.instituteClassId())
+                .map(instituteClassService::getInstituteClass)
+                .orElse(null);
         // 현재 비밀번호와 기존 비밀번호가 일치하면 진행. 다르다면 예외처리
         Optional.of(updateTeacherRequest.currentPassword())
                 .filter(pwd -> passwordEncoder.matches(pwd, teacher.getPassword()))

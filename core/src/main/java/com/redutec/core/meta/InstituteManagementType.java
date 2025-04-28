@@ -9,5 +9,5 @@ public enum InstituteManagementType {
     BASIC("베이직"),
     STANDARD("스탠다드");
 
-    private final String name;
+    private final String displayName;
 }

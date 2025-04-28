@@ -13,6 +13,6 @@ public enum AuthenticationStatus {
     PASSWORD_RESET("비밀번호 초기화", "사용자의 비밀번호가 초기화된 상태입니다."),
     WITHDRAWN("탈퇴", "사용자가 탈퇴한 상태입니다.");
 
-    private final String name;
+    private final String displayName;
     private final String description;
 }

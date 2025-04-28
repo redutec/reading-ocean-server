@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum BannerType {
-    BNT001("캐러셀");
+    CAROUSEL("캐러셀");
 
-    private final String name;
+    private final String displayName;
 }
