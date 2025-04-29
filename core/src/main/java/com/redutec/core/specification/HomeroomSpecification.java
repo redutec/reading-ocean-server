@@ -1,7 +1,7 @@
 package com.redutec.core.specification;
 
-import com.redutec.core.criteria.InstituteClassCriteria;
-import com.redutec.core.entity.InstituteClass;
+import com.redutec.core.criteria.HomeroomCriteria;
+import com.redutec.core.entity.Homeroom;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -10,23 +10,23 @@ import java.util.stream.Stream;
 
 import static com.redutec.core.config.SpecificationUtil.combinePredicate;
 
-public class InstituteClassSpecification {
-    public static Specification<InstituteClass> findWith(
-            InstituteClassCriteria instituteClassCriteria
+public class HomeroomSpecification {
+    public static Specification<Homeroom> findWith(
+            HomeroomCriteria homeroomCriteria
     ) {
         return (root, query, criteriaBuilder) -> {
             // 각 조건에 맞는 Optional<Predicate> 생성
             Stream<Optional<Predicate>> predicateStream = Stream.of(
-                    Optional.ofNullable(instituteClassCriteria.instituteClassIds())
-                            .filter(instituteClassIds -> !instituteClassIds.isEmpty())
-                            .map(instituteClassIds -> root.get("id").in(instituteClassIds)),
-                    Optional.ofNullable(instituteClassCriteria.name())
+                    Optional.ofNullable(homeroomCriteria.homeroomIds())
+                            .filter(homeroomIds -> !homeroomIds.isEmpty())
+                            .map(homeroomIds -> root.get("id").in(homeroomIds)),
+                    Optional.ofNullable(homeroomCriteria.name())
                             .filter(name -> !name.isEmpty())
                             .map(name -> criteriaBuilder.like(root.get("name"), "%" + name + "%")),
-                    Optional.ofNullable(instituteClassCriteria.description())
+                    Optional.ofNullable(homeroomCriteria.description())
                             .filter(description -> !description.isEmpty())
                             .map(description -> criteriaBuilder.like(root.get("description"), "%" + description + "%")),
-                    Optional.ofNullable(instituteClassCriteria.instituteIds())
+                    Optional.ofNullable(homeroomCriteria.instituteIds())
                             .filter(instituteIds -> !instituteIds.isEmpty())
                             .map(instituteIds -> root.get("institute").get("id").in(instituteIds))
             );

@@ -79,7 +79,7 @@ public class StudentDto {
 
             @Schema(description = "소속된 학급 ID", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
             @Positive
-            Long instituteClassId
+            Long homeroomId
     ) {}
 
     @Schema(description = "학생 조회 요청 객체")
@@ -184,7 +184,7 @@ public class StudentDto {
 
             @Schema(description = "소속된 학급 ID", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
             @Positive
-            Long instituteClassId
+            Long homeroomId
     ) {}
 
     @Schema(description = "학생 응답 객체")
@@ -207,8 +207,8 @@ public class StudentDto {
             Domain domain,
             Long instituteId,
             String instituteName,
-            Long instituteClassId,
-            String instituteClassName,
+            Long homeroomId,
+            String homeroomName,
             LocalDateTime createdAt,
             LocalDateTime updatedAt
     ) {}

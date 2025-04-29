@@ -62,7 +62,7 @@ public class TeacherDto {
 
             @Schema(description = "소속된 학급 ID", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
             @Positive
-            Long instituteClassId
+            Long homeroomId
     ) {}
 
     @Schema(description = "교사 조회 요청 객체")
@@ -150,7 +150,7 @@ public class TeacherDto {
 
             @Schema(description = "소속된 학급 ID", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
             @Positive
-            Long instituteClassId
+            Long homeroomId
     ) {}
 
     @Schema(description = "교사 응답 객체")

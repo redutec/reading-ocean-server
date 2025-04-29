@@ -1,11 +1,11 @@
 package com.redutec.admin.teacher.service;
 
+import com.redutec.admin.homeroom.service.HomeroomService;
 import com.redutec.admin.institute.service.InstituteService;
-import com.redutec.admin.instituteclass.service.InstituteClassService;
 import com.redutec.admin.teacher.dto.TeacherDto;
 import com.redutec.admin.teacher.mapper.TeacherMapper;
+import com.redutec.core.entity.Homeroom;
 import com.redutec.core.entity.Institute;
-import com.redutec.core.entity.InstituteClass;
 import com.redutec.core.entity.Teacher;
 import com.redutec.core.repository.TeacherRepository;
 import com.redutec.core.specification.TeacherSpecification;
@@ -28,7 +28,7 @@ public class TeacherServiceImpl implements TeacherService {
     private final TeacherRepository teacherRepository;
     private final PasswordEncoder passwordEncoder;
     private final InstituteService instituteService;
-    private final InstituteClassService instituteClassService;
+    private final HomeroomService homeroomService;
 
     /**
      * 교사 등록
@@ -45,8 +45,8 @@ public class TeacherServiceImpl implements TeacherService {
                         teacherMapper.toEntity(
                                 createTeacherRequest,
                                 instituteService.getInstitute(createTeacherRequest.instituteId()),
-                                Optional.ofNullable(createTeacherRequest.instituteClassId())
-                                        .map(instituteClassService::getInstituteClass)
+                                Optional.ofNullable(createTeacherRequest.homeroomId())
+                                        .map(homeroomService::getHomeroom)
                                         .orElse(null)
                         )
                 )
@@ -115,8 +115,8 @@ public class TeacherServiceImpl implements TeacherService {
                 .map(instituteService::getInstitute)
                 .orElse(null);
         // 수정 요청 객체에 학급 ID가 있다면 학급 엔티티 조회(없으면 Null)
-        InstituteClass instituteClass = Optional.ofNullable(updateTeacherRequest.instituteClassId())
-                .map(instituteClassService::getInstituteClass)
+        Homeroom homeroom = Optional.ofNullable(updateTeacherRequest.homeroomId())
+                .map(homeroomService::getHomeroom)
                 .orElse(null);
         // 현재 비밀번호와 기존 비밀번호가 일치하면 진행. 다르다면 예외처리
         Optional.of(updateTeacherRequest.currentPassword())
@@ -139,7 +139,7 @@ public class TeacherServiceImpl implements TeacherService {
                 updateTeacherRequest.authenticationStatus(),
                 updateTeacherRequest.description(),
                 institute,
-                instituteClass
+                homeroom
         );
         // 교사 엔티티 UPDATE
         teacherRepository.save(teacher);

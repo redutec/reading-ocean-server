@@ -1,7 +1,7 @@
-package com.redutec.admin.instituteclass.controller;
+package com.redutec.admin.homeroom.controller;
 
-import com.redutec.admin.instituteclass.dto.InstituteClassDto;
-import com.redutec.admin.instituteclass.service.InstituteClassService;
+import com.redutec.admin.homeroom.dto.HomeroomDto;
+import com.redutec.admin.homeroom.service.HomeroomService;
 import com.redutec.core.config.ApiResponseBody;
 import com.redutec.core.config.ApiResponseManager;
 import io.swagger.v3.oas.annotations.Operation;
@@ -15,52 +15,52 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/institute/class")
+@RequestMapping("/institute/homeroom")
 @Tag(name = "학급 관리 API", description = "학급 관리 API 모음")
-public class InstituteClassController {
+public class HomeroomController {
     private final ApiResponseManager apiResponseManager;
-    private final InstituteClassService instituteClassService;
+    private final HomeroomService homeroomService;
 
     @Operation(summary = "학급 등록", description = "학급 정보를 등록하는 API")
     @PostMapping
     public ResponseEntity<ApiResponseBody> create(
-            @ParameterObject @Valid InstituteClassDto.CreateInstituteClassRequest createInstituteClassRequest
+            @ParameterObject @Valid HomeroomDto.CreateHomeroomRequest createHomeroomRequest
     ) {
-        return apiResponseManager.success(instituteClassService.create(createInstituteClassRequest));
+        return apiResponseManager.success(homeroomService.create(createHomeroomRequest));
     }
 
     @Operation(summary = "조건에 맞는 학급 목록 조회", description = "조건에 맞는 학급 목록을 조회하는 API")
     @GetMapping
     public ResponseEntity<ApiResponseBody> find(
-            @ParameterObject @Valid InstituteClassDto.FindInstituteClassRequest findInstituteClassRequest
+            @ParameterObject @Valid HomeroomDto.FindHomeroomRequest findHomeroomRequest
     ) {
-        return apiResponseManager.success(instituteClassService.find(findInstituteClassRequest));
+        return apiResponseManager.success(homeroomService.find(findHomeroomRequest));
     }
 
     @Operation(summary = "특정 학급 조회", description = "특정 학급를 조회하는 API")
-    @GetMapping("/{instituteClassId}")
+    @GetMapping("/{homeroomId}")
     public ResponseEntity<ApiResponseBody> findById(
-            @PathVariable Long instituteClassId
+            @PathVariable Long homeroomId
     ) {
-        return apiResponseManager.success(instituteClassService.findById(instituteClassId));
+        return apiResponseManager.success(homeroomService.findById(homeroomId));
     }
 
     @Operation(summary = "특정 학급 수정", description = "특정 학급를 수정하는 API")
-    @PatchMapping("/{instituteClassId}")
+    @PatchMapping("/{homeroomId}")
     public ResponseEntity<ApiResponseBody> update(
-            @Parameter(description = "학급 ID") @PathVariable Long instituteClassId,
-            @ParameterObject @Valid InstituteClassDto.UpdateInstituteClassRequest updateInstituteClassRequest
+            @Parameter(description = "학급 ID") @PathVariable Long homeroomId,
+            @ParameterObject @Valid HomeroomDto.UpdateHomeroomRequest updateHomeroomRequest
     ) {
-        instituteClassService.update(instituteClassId, updateInstituteClassRequest);
+        homeroomService.update(homeroomId, updateHomeroomRequest);
         return apiResponseManager.success(null);
     }
 
     @Operation(summary = "특정 학급 삭제", description = "특정 학급를 삭제하는 API")
-    @DeleteMapping("/{instituteClassId}")
+    @DeleteMapping("/{homeroomId}")
     public ResponseEntity<ApiResponseBody> delete(
-            @Parameter(description = "학급 ID") @PathVariable Long instituteClassId
+            @Parameter(description = "학급 ID") @PathVariable Long homeroomId
     ) {
-        instituteClassService.delete(instituteClassId);
+        homeroomService.delete(homeroomId);
         return apiResponseManager.success(null);
     }
 }

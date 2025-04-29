@@ -22,7 +22,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-public class InstituteClass {
+public class Homeroom {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Comment("학급 고유번호")
@@ -42,11 +42,11 @@ public class InstituteClass {
     private String description;
 
     @Comment("이 학급에 소속된 학생")
-    @OneToMany(mappedBy = "instituteClass", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "homeroom", fetch = FetchType.LAZY)
     private List<Student> students;
 
     @Comment("이 학급에 소속된 교사")
-    @OneToMany(mappedBy = "instituteClass", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "homeroom", fetch = FetchType.LAZY)
     private List<Teacher> teachers;
 
     @CreatedDate
@@ -57,7 +57,7 @@ public class InstituteClass {
     @Column(nullable = false)
     private LocalDateTime updatedAt;
 
-    public void updateInstituteClass(
+    public void updateHomeroom(
             String name,
             Institute institute,
             String description

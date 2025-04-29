@@ -91,7 +91,7 @@ public class Teacher {
     @Comment("소속 학급")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
-    private InstituteClass instituteClass;
+    private Homeroom homeroom;
 
     @CreatedDate
     @Column(nullable = false, updatable = false)
@@ -112,7 +112,7 @@ public class Teacher {
             AuthenticationStatus authenticationStatus,
             String description,
             Institute institute,
-            InstituteClass instituteClass
+            Homeroom homeroom
     ) {
         this.accountId = accountId != null ? accountId : this.accountId;
         this.password = password != null ? password : this.password;
@@ -124,6 +124,6 @@ public class Teacher {
         this.authenticationStatus = authenticationStatus != null ? authenticationStatus : this.authenticationStatus;
         this.description = description != null ? description : this.description;
         this.institute = institute != null ? institute : this.institute;
-        this.instituteClass = instituteClass != null ? instituteClass : this.instituteClass;
+        this.homeroom = homeroom != null ? homeroom : this.homeroom;
     }
 }

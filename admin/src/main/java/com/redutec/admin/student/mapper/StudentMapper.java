@@ -3,7 +3,7 @@ package com.redutec.admin.student.mapper;
 import com.redutec.admin.student.dto.StudentDto;
 import com.redutec.core.criteria.StudentCriteria;
 import com.redutec.core.entity.Institute;
-import com.redutec.core.entity.InstituteClass;
+import com.redutec.core.entity.Homeroom;
 import com.redutec.core.entity.Student;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +29,7 @@ public class StudentMapper {
     public Student toEntity(
             StudentDto.CreateStudentRequest createStudentRequest,
             Institute institute,
-            InstituteClass instituteClass
+            Homeroom homeroom
     ) {
         return Student.builder()
                 .accountId(createStudentRequest.accountId())
@@ -47,7 +47,7 @@ public class StudentMapper {
                 .description(createStudentRequest.description())
                 .domain(createStudentRequest.domain())
                 .institute(institute)
-                .instituteClass(instituteClass)
+                .homeroom(homeroom)
                 .build();
     }
     
@@ -100,8 +100,8 @@ public class StudentMapper {
                         s.getDomain(),
                         s.getInstitute().getId(),
                         s.getInstitute().getName(),
-                        s.getInstituteClass().getId(),
-                        s.getInstituteClass().getName(),
+                        s.getHomeroom().getId(),
+                        s.getHomeroom().getName(),
                         s.getCreatedAt(),
                         s.getUpdatedAt()
                 ))

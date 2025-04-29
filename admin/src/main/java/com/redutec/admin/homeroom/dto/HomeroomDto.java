@@ -1,4 +1,4 @@
-package com.redutec.admin.instituteclass.dto;
+package com.redutec.admin.homeroom.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
@@ -9,9 +9,9 @@ import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class InstituteClassDto {
+public class HomeroomDto {
     @Schema(description = "학급 등록 요청 객체")
-    public record CreateInstituteClassRequest(
+    public record CreateHomeroomRequest(
             @Schema(description = "학급명", requiredMode = Schema.RequiredMode.REQUIRED)
             @NotNull
             @Size(max = 20)
@@ -27,9 +27,9 @@ public class InstituteClassDto {
     ) {}
 
     @Schema(description = "학급 조회 요청 객체")
-    public record FindInstituteClassRequest(
+    public record FindHomeroomRequest(
             @Schema(description = "학급 ID", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-            List<@Positive Long> instituteClassIds,
+            List<@Positive Long> homeroomIds,
 
             @Schema(description = "학급명", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
             @Size(max = 20)
@@ -51,7 +51,7 @@ public class InstituteClassDto {
     ) {}
 
     @Schema(description = "학급 수정 요청 객체")
-    public record UpdateInstituteClassRequest(
+    public record UpdateHomeroomRequest(
             @Schema(description = "학급명", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
             @Size(max = 20)
             String name,
@@ -65,8 +65,8 @@ public class InstituteClassDto {
     ) {}
 
     @Schema(description = "학급 응답 객체")
-    public record InstituteClassResponse(
-            Long instituteClassId,
+    public record HomeroomResponse(
+            Long homeroomId,
             String name,
             String description,
             Long instituteId,
@@ -76,8 +76,8 @@ public class InstituteClassDto {
     ) {}
 
     @Schema(description = "학급 응답 페이징 객체")
-    public record InstituteClassPageResponse(
-            List<InstituteClassResponse> instituteClasses,
+    public record HomeroomPageResponse(
+            List<HomeroomResponse> homeroomes,
             Long totalElements,
             Integer totalPages
     ) {}

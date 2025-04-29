@@ -1,11 +1,11 @@
 package com.redutec.admin.student.service;
 
+import com.redutec.admin.homeroom.service.HomeroomService;
 import com.redutec.admin.institute.service.InstituteService;
-import com.redutec.admin.instituteclass.service.InstituteClassService;
 import com.redutec.admin.student.dto.StudentDto;
 import com.redutec.admin.student.mapper.StudentMapper;
+import com.redutec.core.entity.Homeroom;
 import com.redutec.core.entity.Institute;
-import com.redutec.core.entity.InstituteClass;
 import com.redutec.core.entity.Student;
 import com.redutec.core.repository.StudentRepository;
 import com.redutec.core.specification.StudentSpecification;
@@ -28,7 +28,7 @@ public class StudentServiceImpl implements StudentService {
     private final StudentRepository studentRepository;
     private final PasswordEncoder passwordEncoder;
     private final InstituteService instituteService;
-    private final InstituteClassService instituteClassService;
+    private final HomeroomService homeroomService;
 
     /**
      * 학생 등록
@@ -47,8 +47,8 @@ public class StudentServiceImpl implements StudentService {
                                 Optional.ofNullable(createStudentRequest.instituteId())
                                         .map(instituteService::getInstitute)
                                         .orElse(null),
-                                Optional.ofNullable(createStudentRequest.instituteClassId())
-                                        .map(instituteClassService::getInstituteClass)
+                                Optional.ofNullable(createStudentRequest.homeroomId())
+                                        .map(homeroomService::getHomeroom)
                                         .orElse(null)
                         )
                 )
@@ -117,8 +117,8 @@ public class StudentServiceImpl implements StudentService {
                 .map(instituteService::getInstitute)
                 .orElse(null);
         // 수정 요청 객체에 학급 ID가 있다면 학급 엔티티 조회(없으면 Null)
-        InstituteClass instituteClass = Optional.ofNullable(updateStudentRequest.instituteClassId())
-                .map(instituteClassService::getInstituteClass)
+        Homeroom homeroom = Optional.ofNullable(updateStudentRequest.homeroomId())
+                .map(homeroomService::getHomeroom)
                 .orElse(null);
         // 현재 비밀번호와 기존 비밀번호가 일치하면 진행. 다르다면 예외처리
         Optional.of(updateStudentRequest.currentPassword())
@@ -146,7 +146,7 @@ public class StudentServiceImpl implements StudentService {
                 updateStudentRequest.description(),
                 updateStudentRequest.domain(),
                 institute,
-                instituteClass
+                homeroom
         );
         // 학생 엔티티 UPDATE
         studentRepository.save(student);
