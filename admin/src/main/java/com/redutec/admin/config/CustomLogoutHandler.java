@@ -55,7 +55,7 @@ public class CustomLogoutHandler implements LogoutHandler {
             if (email != null) {
                 // AdminUser 엔티티를 시스템 사용자의 로그인 아이디로 조회
                 AdminUser adminUser = adminUserRepository.findByEmail(email)
-                        .orElseThrow(() -> new EntityNotFoundException("No such AdminUser"));
+                        .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 어드민 사용자입니다. email = " + email));
                 // 해당 시스템 사용자의 리프레시 토큰 삭제
                 refreshTokenRepository.deleteById(adminUser.getId());
             }

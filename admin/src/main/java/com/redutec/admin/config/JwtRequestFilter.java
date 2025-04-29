@@ -87,7 +87,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                 if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                     // 로그인한 시스템 사용자 정보 조회
                     AdminUser adminUser = adminUserRepository.findByEmail(email)
-                            .orElseThrow(() -> new EntityNotFoundException("No such admin user"));
+                            .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 어드민 사용자입니다. email = " + email));
                     // 권한 부여 및 인증 객체 생성
                     var authorities = userDetailsService.loadUserByUsername(adminUser.getEmail());
                     var authenticationToken = new UsernamePasswordAuthenticationToken(authorities, accessToken, authorities.getAuthorities());

@@ -7,6 +7,7 @@ import com.redutec.core.config.FileUtil;
 import com.redutec.core.entity.Branch;
 import com.redutec.core.repository.BranchRepository;
 import com.redutec.core.specification.BranchSpecification;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -81,7 +82,7 @@ public class BranchServiceImpl implements BranchService {
             Long branchId
     ) {
         return branchRepository.findById(branchId)
-                .orElse(null);
+                .orElseThrow(() -> new EntityNotFoundException("지사를 찾을 수 없습니다. id = " + branchId));
     }
 
     /**
@@ -100,7 +101,7 @@ public class BranchServiceImpl implements BranchService {
         // 현재 비밀번호와 기존 비밀번호가 일치하면 진행. 다르다면 예외처리
         Optional.of(updateBranchRequest.currentPassword())
                 .filter(pwd -> passwordEncoder.matches(pwd, branch.getPassword()))
-                .orElseThrow(() -> new IllegalArgumentException("현재 비밀번호가 일치하지 않습니다."));
+                .orElseThrow(() -> new IllegalArgumentException("현재 비밀번호가 일치하지 않습니다"));
         // 새로운 비밀번호를 암호화
         String encodedNewPassword = Optional.ofNullable(updateBranchRequest.newPassword())
                 .filter(pwd -> !pwd.isBlank())

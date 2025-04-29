@@ -239,6 +239,6 @@ public class JwtUtil {
                 ? user.getUsername()
                 : principal.toString();
         return adminUserRepository.findByEmail(email)
-                .orElseThrow(() -> new EntityNotFoundException("AdminUser not found with email: " + email));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 어드민 사용자입니다. email = " + email));
     }
 }

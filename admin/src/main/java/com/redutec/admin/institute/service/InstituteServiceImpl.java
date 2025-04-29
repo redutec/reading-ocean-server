@@ -109,8 +109,10 @@ public class InstituteServiceImpl implements InstituteService {
         // 교육기관과 원장 교사, 지사 조회
         Institute institute = getInstitute(instituteId);
         Teacher chiefTeacher = teacherRepository.findByInstituteAndRole(institute, TeacherRole.CHIEF)
-                .orElseThrow(() -> new EntityNotFoundException("No such chief teacher"));
-        Branch branch = branchService.getBranch(institute.getBranch().getId());
+                .orElse(null);
+        Branch branch = Optional.ofNullable(institute.getBranch())
+                .map(b -> branchService.getBranch(b.getId()))
+                .orElse(null);
         return instituteMapper.toResponseDto(
                 institute,
                 chiefTeacher,
@@ -128,7 +130,7 @@ public class InstituteServiceImpl implements InstituteService {
             Long instituteId
     ) {
         return instituteRepository.findById(instituteId)
-                .orElseThrow(() -> new EntityNotFoundException("No such institute"));
+                .orElseThrow(() -> new EntityNotFoundException("교육기관이 존재하지 않습니다. id = " + instituteId));
     }
 
     /**

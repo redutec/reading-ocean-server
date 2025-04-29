@@ -85,7 +85,7 @@ public class InstituteClassServiceImpl implements InstituteClassService {
             Long instituteClassId
     ) {
         return instituteClassRepository.findById(instituteClassId)
-                .orElseThrow(() -> new EntityNotFoundException("No such institute class"));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 학급입니다. id = " + instituteClassId));
     }
 
     /**

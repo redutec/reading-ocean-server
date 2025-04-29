@@ -1,11 +1,10 @@
 package com.redutec.admin.authentication.service;
 
-import com.redutec.admin.user.service.AdminUserService;
 import com.redutec.admin.authentication.dto.AuthenticationDto;
 import com.redutec.admin.config.JwtUtil;
-import com.redutec.core.config.EncryptUtil;
-import com.redutec.core.entity.AdminUser;
+import com.redutec.admin.user.service.AdminUserService;
 import com.redutec.core.entity.AdminMenu;
+import com.redutec.core.entity.AdminUser;
 import com.redutec.core.entity.RefreshToken;
 import com.redutec.core.meta.AuthenticationStatus;
 import com.redutec.core.meta.Domain;
@@ -48,7 +47,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final RefreshTokenRepository refreshTokenRepository;
     private final PasswordEncoder passwordEncoder;
     private final AdminMenuRepository adminMenuRepository;
-    private final EncryptUtil encryptUtil;
 
     /**
      * 어드민 사용자 로그인 처리
@@ -69,7 +67,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .filter(admin -> passwordEncoder.matches(loginRequest.password(), admin.getPassword()))
                 .orElseThrow(() -> {
                     handleFailedLoginAttempt(adminUser);
-                    return new BadCredentialsException("Please check your email or password");
+                    return new BadCredentialsException("로그인 이메일 또는 비밀번호를 확인해주세요.");
                 });
         // 현재 요청의 IP 주소를 Optional 체인으로 가져옴 (없으면 "unknown")
         String ipAddress = Optional.ofNullable((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
@@ -152,7 +150,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             validateAuthenticationStatus(adminUser);
         }
         if (!passwordEncoder.matches(updatePasswordRequest.password(), adminUser.getPassword())) {
-            throw new BadCredentialsException("Your email or password does not match.");
+            throw new BadCredentialsException("로그인 이메일 또는 비밀번호를 확인해주세요");
         }
         updatePasswordAndStatus(adminUser, updatePasswordRequest.newPassword(), AuthenticationStatus.ACTIVE);
     }
@@ -171,10 +169,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         // 새로운 Access Token 발급을 요청한 Refresh Token 조회
         RefreshToken refreshTokenEntity = refreshTokenRepository.findByToken(refreshToken)
                 .filter(RefreshToken::isExpired)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid or expired refresh token"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "유효하지 않거나 만료된 토큰입니다."));
         // refreshTokenEntity에 있는 어드민 사용자 닉네임으로 어드민 사용자 엔티티 조회
         AdminUser adminUser = adminUserRepository.findByEmail(refreshTokenEntity.getUsername())
-                .orElseThrow(() -> new EntityNotFoundException("No such adminUser"));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 계정입니다. email = " + refreshTokenEntity.getUsername()));
         // 새로운 Access Token 생성 후 리턴
         return new AuthenticationDto.LoginResponse(
                 jwtUtil.generateAccessToken(adminUser),
@@ -193,15 +191,15 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         switch (adminUser.getAuthenticationStatus()) {
             case ACTIVE -> {}
             case INACTIVE, SUSPENDED ->
-                    throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Your account is not active.");
+                    throw new ResponseStatusException(HttpStatus.FORBIDDEN, "계정이 활성화되어 있지 않습니다.");
             case LOCKED ->
-                    throw new ResponseStatusException(HttpStatus.LOCKED, "Your account is locked. Please reset your password.");
+                    throw new ResponseStatusException(HttpStatus.LOCKED, "계정이 잠겨 있습니다. 비밀번호를 재설정해 주세요.");
             case PASSWORD_RESET ->
-                    throw new ResponseStatusException(HttpStatus.CONFLICT, "Your password has been reset. Please change your password before logging in.");
+                    throw new ResponseStatusException(HttpStatus.CONFLICT, "비밀번호가 초기화되었습니다. 로그인 전에 비밀번호를 변경해 주세요.");
             case WITHDRAWN ->
-                    throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Your account is withdrawn.");
+                    throw new ResponseStatusException(HttpStatus.NOT_FOUND, "탈퇴한 계정입니다.");
             default ->
-                    throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Unexpected account status.");
+                    throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "계정 상태 확인 중 서버에서 오류가 발생하였습니다.");
         }
     }
 
@@ -217,7 +215,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         if (adminUser.getFailedLoginAttempts() >= 5) {
             adminUser.setAuthenticationStatus(AuthenticationStatus.LOCKED);
             adminUserRepository.save(adminUser);
-            throw new ResponseStatusException(HttpStatus.LOCKED, "Your account is locked due to too many failed login attempts. please reset your password.");
+            throw new ResponseStatusException(HttpStatus.LOCKED, "비밀번호 입력 실패 횟수가 5회를 초과하여 계정이 잠금 처리되었습니다. 비밀번호를 재설정해 주세요.");
         }
         adminUserRepository.saveAndFlush(adminUser);
     }
@@ -269,7 +267,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             password[index] = password[i];
             password[i] = temp;
         }
-        log.info("**** reset password: {}", new String(password));
+        log.info("**** 초기화된 비밀번호: {}", new String(password));
         return new String(password);
     }
 }

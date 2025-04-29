@@ -96,7 +96,7 @@ public class StudentServiceImpl implements StudentService {
             Long studentId
     ) {
         return studentRepository.findById(studentId)
-                .orElseThrow(() -> new EntityNotFoundException("No such student"));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 학생입니다. id = " + studentId));
     }
 
     /**
@@ -122,11 +122,11 @@ public class StudentServiceImpl implements StudentService {
                 .orElse(null);
         // 현재 비밀번호와 기존 비밀번호가 일치하면 진행. 다르다면 예외처리
         Optional.of(updateStudentRequest.currentPassword())
-                .filter(pwd -> passwordEncoder.matches(pwd, student.getPassword()))
+                .filter(currentPassword -> passwordEncoder.matches(currentPassword, student.getPassword()))
                 .orElseThrow(() -> new IllegalArgumentException("현재 비밀번호가 일치하지 않습니다."));
         // 새로운 비밀번호를 암호화
         String encodedNewPassword = Optional.ofNullable(updateStudentRequest.newPassword())
-                .filter(pwd -> !pwd.isBlank())
+                .filter(newPassword -> !newPassword.isBlank())
                 .map(passwordEncoder::encode)
                 .orElse(null);
         // UPDATE 도메인 메서드로 변환

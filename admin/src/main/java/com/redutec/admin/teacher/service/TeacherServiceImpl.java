@@ -94,7 +94,7 @@ public class TeacherServiceImpl implements TeacherService {
             Long teacherId
     ) {
         return teacherRepository.findById(teacherId)
-                .orElseThrow(() -> new EntityNotFoundException("No such teacher"));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 교사입니다. id = " + teacherId));
     }
 
     /**

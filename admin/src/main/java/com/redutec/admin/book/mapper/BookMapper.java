@@ -5,6 +5,9 @@ import com.redutec.core.config.FileUploadResult;
 import com.redutec.core.config.FileUtil;
 import com.redutec.core.criteria.BookCriteria;
 import com.redutec.core.entity.Book;
+import com.redutec.core.meta.BookGenre;
+import com.redutec.core.meta.BookSubGenre;
+import com.redutec.core.meta.SchoolGrade;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -135,9 +138,15 @@ public class BookMapper {
                         b.getVisible(),
                         b.getEnabled(),
                         b.getPageCount(),
-                        b.getSchoolGrade().getDisplayName(),
-                        b.getGenre().getDisplayName(),
-                        b.getSubGenre().getDisplayName(),
+                        Optional.ofNullable(b.getSchoolGrade())
+                                .map(SchoolGrade::getDisplayName)
+                                .orElse(null),
+                        Optional.ofNullable(b.getGenre())
+                                .map(BookGenre::getDisplayName)
+                                .orElse(null),
+                        Optional.ofNullable(b.getSubGenre())
+                                .map(BookSubGenre::getDisplayName)
+                                .orElse(null),
                         b.getBookPoints(),
                         b.getRaq(),
                         b.getReadingLevel(),

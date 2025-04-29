@@ -1,5 +1,6 @@
 package com.redutec.core.entity;
 
+import com.redutec.core.config.StringListConverter;
 import com.redutec.core.meta.*;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Pattern;
@@ -67,27 +68,27 @@ public class Book {
     private String coverImageFileName;
 
     @Comment("추천 도서 여부")
-    @Column(nullable = false, columnDefinition = "boolean default false")
+    @Column(nullable = false)
     @ColumnDefault("false")
     private Boolean recommended = false;
 
     @Comment("전자책 제공 여부")
-    @Column(nullable = false, columnDefinition = "boolean default false")
+    @Column(nullable = false)
     @ColumnDefault("false")
     private Boolean ebookAvailable = false;
 
     @Comment("오디오북 제공 여부")
-    @Column(nullable = false, columnDefinition = "boolean default false")
+    @Column(nullable = false)
     @ColumnDefault("false")
     private Boolean audiobookAvailable = false;
 
     @Comment("노출 여부")
-    @Column(nullable = false, columnDefinition = "boolean default true")
+    @Column(nullable = false)
     @ColumnDefault("true")
     private Boolean visible = true;
 
     @Comment("사용 여부")
-    @Column(nullable = false, columnDefinition = "boolean default true")
+    @Column(nullable = false)
     @ColumnDefault("true")
     private Boolean enabled = true;
 
@@ -102,12 +103,12 @@ public class Book {
     private SchoolGrade schoolGrade;
 
     @Comment("장르")
-    @Column
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private BookGenre genre;
 
     @Comment("세부 장르")
-    @Column
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private BookSubGenre subGenre;
 
@@ -156,12 +157,8 @@ public class Book {
     private String educationOfficeRecommendations;
 
     @Comment("주제어(태그) 목록")
-    @ElementCollection
-    @CollectionTable(
-            name = "book_tags",
-            joinColumns = @JoinColumn(name = "book_id")
-    )
-    @Column(name = "tag", length = 20)
+    @Convert(converter = StringListConverter.class)
+    @Column(length = 1000)
     private List<String> tags;
 
     @CreatedDate

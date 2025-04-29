@@ -47,19 +47,19 @@ public class BookDto {
             @Schema(description = "커버 이미지 파일", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
             MultipartFile coverImageFile,
 
-            @Schema(description = "추천 도서 여부", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+            @Schema(description = "추천 도서 여부", requiredMode = Schema.RequiredMode.NOT_REQUIRED, example = "false")
             Boolean recommended,
 
-            @Schema(description = "전자책 제공 여부", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+            @Schema(description = "전자책 제공 여부", requiredMode = Schema.RequiredMode.NOT_REQUIRED, example = "false")
             Boolean ebookAvailable,
 
-            @Schema(description = "오디오북 제공 여부", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+            @Schema(description = "오디오북 제공 여부", requiredMode = Schema.RequiredMode.NOT_REQUIRED, example = "false")
             Boolean audiobookAvalable,
 
-            @Schema(description = "노출 여부", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+            @Schema(description = "노출 여부", requiredMode = Schema.RequiredMode.NOT_REQUIRED, example = "true")
             Boolean visible,
 
-            @Schema(description = "사용 여부", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+            @Schema(description = "사용 여부", requiredMode = Schema.RequiredMode.NOT_REQUIRED, example = "true")
             Boolean enabled,
 
             @Schema(description = "전체 페이지 수", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
@@ -70,15 +70,17 @@ public class BookDto {
             @Enumerated(EnumType.STRING)
             SchoolGrade schoolGrade,
 
-            @Schema(description = "장르", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+            @Schema(description = "장르", requiredMode = Schema.RequiredMode.REQUIRED)
+            @NotNull
             @Enumerated(EnumType.STRING)
             BookGenre genre,
 
-            @Schema(description = "세부 장르", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+            @Schema(description = "세부 장르", requiredMode = Schema.RequiredMode.REQUIRED)
+            @NotNull
             @Enumerated(EnumType.STRING)
             BookSubGenre subGenre,
 
-            @Schema(description = "도서 포인트", requiredMode = Schema.RequiredMode.REQUIRED)
+            @Schema(description = "도서 포인트", requiredMode = Schema.RequiredMode.REQUIRED, example = "0")
             @NotNull
             @PositiveOrZero
             Integer bookPoints,

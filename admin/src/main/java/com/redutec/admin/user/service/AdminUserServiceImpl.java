@@ -2,7 +2,6 @@ package com.redutec.admin.user.service;
 
 import com.redutec.admin.user.dto.AdminUserDto;
 import com.redutec.admin.user.mapper.AdminUserMapper;
-import com.redutec.admin.config.JwtUtil;
 import com.redutec.core.entity.AdminUser;
 import com.redutec.core.repository.AdminUserRepository;
 import com.redutec.core.specification.AdminUserSpecification;
@@ -22,7 +21,6 @@ public class AdminUserServiceImpl implements AdminUserService {
     private final AdminUserMapper adminUserMapper;
     private final AdminUserRepository adminUserRepository;
     private final PasswordEncoder passwordEncoder;
-    private final JwtUtil jwtUtil;
 
     /**
      * 어드민 사용자 등록
@@ -84,7 +82,7 @@ public class AdminUserServiceImpl implements AdminUserService {
             String email
     ) {
         return adminUserRepository.findByEmail(email)
-                .orElseThrow(() -> new EntityNotFoundException("No such adminUser"));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 어드민 사용자입니다. email = " + email));
     }
 
     /**
@@ -98,7 +96,7 @@ public class AdminUserServiceImpl implements AdminUserService {
             Long adminUserId
     ) {
         return adminUserRepository.findById(adminUserId)
-                .orElseThrow(() -> new EntityNotFoundException("No such adminUser"));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 어드민 사용자입니다. id = " + adminUserId));
     }
 
     /**

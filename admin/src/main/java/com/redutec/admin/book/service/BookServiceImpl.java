@@ -80,7 +80,7 @@ public class BookServiceImpl implements BookService {
             Long bookId
     ) {
         return bookRepository.findById(bookId)
-                .orElseThrow(() -> new EntityNotFoundException("No such book"));
+                .orElseThrow(() -> new EntityNotFoundException("도서를 찾을 수 없습니다. id = " + bookId));
     }
 
     /**

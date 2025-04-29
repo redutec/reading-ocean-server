@@ -86,7 +86,7 @@ public class DatabaseInitializer {
                     .map(cam -> {
                         var parent = parentMenuMap.get(cam.getParentAdminMenu().getName());
                         if (parent == null) {
-                            throw new EntityNotFoundException("Parent admin menu not found: " + cam.getParentAdminMenu().getName());
+                            throw new EntityNotFoundException("상위 메뉴를 찾을 수 없습니다. menuName: " + cam.getParentAdminMenu().getName());
                         }
                         return AdminMenu.builder()
                                 .name(cam.getName())
