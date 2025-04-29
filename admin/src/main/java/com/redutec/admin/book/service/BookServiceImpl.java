@@ -2,26 +2,21 @@ package com.redutec.admin.book.service;
 
 import com.redutec.admin.book.dto.BookDto;
 import com.redutec.admin.book.mapper.BookMapper;
-import com.redutec.admin.branch.service.BranchService;
-import com.redutec.core.entity.Branch;
+import com.redutec.core.config.FileUploadResult;
+import com.redutec.core.config.FileUtil;
 import com.redutec.core.entity.Book;
-import com.redutec.core.entity.Teacher;
-import com.redutec.core.meta.TeacherRole;
 import com.redutec.core.repository.BookRepository;
-import com.redutec.core.repository.TeacherRepository;
 import com.redutec.core.specification.BookSpecification;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import java.nio.file.Paths;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -29,8 +24,7 @@ import java.util.stream.Collectors;
 public class BookServiceImpl implements BookService {
     private final BookMapper bookMapper;
     private final BookRepository bookRepository;
-    private final BranchService branchService;
-    private final TeacherRepository teacherRepository;
+    private final FileUtil fileUtil;
 
     /**
      * 도서 등록
@@ -42,22 +36,7 @@ public class BookServiceImpl implements BookService {
     public BookDto.BookResponse create(
             BookDto.CreateBookRequest createBookRequest
     ) {
-        // 도서 등록
-        Book book = bookRepository.save(
-                bookMapper.toEntity(
-                        createBookRequest,
-                        Optional.ofNullable(createBookRequest.branchId())
-                                .map(branchService::getBranch)
-                                .orElse(null)
-                )
-        );
-        // 지사가 존재하면 조회, 없으면 null
-        Branch branch = Optional.ofNullable(book.getBranch())
-                .map(Branch::getId)
-                .map(branchService::getBranch)
-                .orElse(null);
-        // 응답 객체에 담아 리턴
-        return bookMapper.toResponseDto(book, null, branch);
+        return bookMapper.toResponseDto(bookRepository.save(bookMapper.toEntity(createBookRequest)));
     }
 
     /**
@@ -70,30 +49,11 @@ public class BookServiceImpl implements BookService {
     public BookDto.BookPageResponse find(
             BookDto.FindBookRequest findBookRequest
     ) {
-        Page<Book> page = bookRepository.findAll(
+        return bookMapper.toPageResponseDto(bookRepository.findAll(
                 BookSpecification.findWith(bookMapper.toCriteria(findBookRequest)),
                 (findBookRequest.page() != null && findBookRequest.size() != null)
                         ? PageRequest.of(findBookRequest.page(), findBookRequest.size())
-                        : Pageable.unpaged()
-        );
-        List<BookDto.BookResponse> bookResponses = page.getContent().stream()
-                .map(book -> {
-                    // Chief 교사 조회
-                    Teacher chiefTeacher = teacherRepository.findByBookAndRole(book, TeacherRole.CHIEF)
-                            .orElse(null);
-                    // Branch가 있을 때만 조회, 없으면 null
-                    Branch branch = Optional.ofNullable(book.getBranch())
-                            .map(Branch::getId)
-                            .map(branchService::getBranch)
-                            .orElse(null);
-                    return bookMapper.toResponseDto(book, chiefTeacher, branch);
-                })
-                .collect(Collectors.toList());
-        return new BookDto.BookPageResponse(
-                bookResponses,
-                page.getTotalElements(),
-                page.getTotalPages()
-        );
+                        : Pageable.unpaged()));
     }
 
     /**
@@ -106,15 +66,7 @@ public class BookServiceImpl implements BookService {
     public BookDto.BookResponse findById(
             Long bookId
     ) {
-        // 도서과 원장 교사, 지사 조회
-        Book book = getBook(bookId);
-        Teacher chiefTeacher = teacherRepository.findByBookAndRole(book, TeacherRole.CHIEF)
-                .orElseThrow(() -> new EntityNotFoundException("No such chief teacher"));
-        Branch branch = branchService.getBranch(book.getBranch().getId());
-        return bookMapper.toResponseDto(
-                book,
-                chiefTeacher,
-                branch);
+        return bookMapper.toResponseDto(getBook(bookId));
     }
 
     /**
@@ -144,22 +96,44 @@ public class BookServiceImpl implements BookService {
     ) {
         // 수정할 도서 엔티티 조회
         Book book = getBook(bookId);
+        // 업로드할 커버 이미지 파일이 있는 경우 업로드하고 파일명을 생성
+        String coverImageFileName = Optional.ofNullable(updateBookRequest.coverImageFile())
+                .filter(coverImageFile -> !coverImageFile.isEmpty())
+                .map(coverImageFile -> {
+                    FileUploadResult result = fileUtil.uploadFile(coverImageFile, "/branch");
+                    return Paths.get(result.filePath()).getFileName().toString();
+                })
+                .orElse(null);
         // UPDATE 도메인 메서드로 변환
         book.updateBook(
-                updateBookRequest.name(),
-                updateBookRequest.businessRegistrationName(),
-                updateBookRequest.address(),
-                updateBookRequest.zipCode(),
-                updateBookRequest.phoneNumber(),
-                updateBookRequest.url(),
-                updateBookRequest.naverPlaceUrl(),
-                updateBookRequest.type(),
-                updateBookRequest.managementType(),
-                updateBookRequest.status(),
-                updateBookRequest.operationStatus(),
-                Optional.ofNullable(updateBookRequest.branchId())
-                        .map(branchService::getBranch)
-                        .orElse(null)
+                updateBookRequest.isbn(),
+                updateBookRequest.title(),
+                updateBookRequest.author(),
+                updateBookRequest.publisher(),
+                updateBookRequest.translator(),
+                updateBookRequest.illustrator(),
+                updateBookRequest.publicationDate(),
+                coverImageFileName,
+                updateBookRequest.recommended(),
+                updateBookRequest.ebookAvailable(),
+                updateBookRequest.audiobookAvalable(),
+                updateBookRequest.visible(),
+                updateBookRequest.enabled(),
+                updateBookRequest.pageCount(),
+                updateBookRequest.schoolGrade(),
+                updateBookRequest.genre(),
+                updateBookRequest.subGenre(),
+                updateBookRequest.bookPoints(),
+                updateBookRequest.raq(),
+                updateBookRequest.readingLevel(),
+                updateBookRequest.bookMbti(),
+                updateBookRequest.subject(),
+                updateBookRequest.content(),
+                updateBookRequest.awardHistory(),
+                updateBookRequest.includedBookName(),
+                updateBookRequest.institutionRecommendations(),
+                updateBookRequest.educationOfficeRecommendations(),
+                updateBookRequest.tags()
         );
         // 도서 엔티티 UPDATE
         bookRepository.save(book);
@@ -171,9 +145,7 @@ public class BookServiceImpl implements BookService {
      */
     @Override
     @Transactional
-    public void delete(
-            Long bookId
-    ) {
+    public void delete(Long bookId) {
         bookRepository.delete(getBook(bookId));
     }
 }

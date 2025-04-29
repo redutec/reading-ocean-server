@@ -37,13 +37,7 @@ public class BranchServiceImpl implements BranchService {
     public BranchDto.BranchResponse create(
             BranchDto.CreateBranchRequest createBranchRequest
     ) {
-        return branchMapper.toResponseDto(
-                branchRepository.save(
-                        branchMapper.toEntity(
-                                createBranchRequest
-                        )
-                )
-        );
+        return branchMapper.toResponseDto(branchRepository.save(branchMapper.toEntity(createBranchRequest)));
     }
 
     /**
@@ -113,10 +107,10 @@ public class BranchServiceImpl implements BranchService {
                 .map(passwordEncoder::encode)
                 .orElse(null);
         // 업로드할 계약서 파일이 있는 경우 업로드하고 파일명을 생성
-        String contractFileName = Optional.ofNullable(updateBranchRequest.contractFileName())
-                .filter(file -> !file.isEmpty())
-                .map(file -> {
-                    FileUploadResult result = fileUtil.uploadFile(file, "/branch");
+        String contractFileName = Optional.ofNullable(updateBranchRequest.contractFile())
+                .filter(contractFile -> !contractFile.isEmpty())
+                .map(contractFile -> {
+                    FileUploadResult result = fileUtil.uploadFile(contractFile, "/branch");
                     return Paths.get(result.filePath()).getFileName().toString();
                 })
                 .orElse(null);

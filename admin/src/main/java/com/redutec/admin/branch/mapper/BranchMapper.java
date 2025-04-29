@@ -39,6 +39,7 @@ public class BranchMapper {
                     return Paths.get(result.filePath()).getFileName().toString();
                 })
                 .orElse(null);
+        // Branch 엔티티 Build
         return Branch.builder()
                 .accountId(createBranchRequest.accountId())
                 .password(passwordEncoder.encode(createBranchRequest.password()))

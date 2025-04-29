@@ -3,7 +3,6 @@ package com.redutec.core.entity;
 import com.redutec.core.meta.*;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -32,7 +31,6 @@ public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Comment("도서 고유번호")
-    @Positive
     private Long id;
 
     @Comment("ISBN")
@@ -62,7 +60,7 @@ public class Book {
 
     @Comment("출판일자")
     @Column
-    private LocalDate publishedDate;
+    private LocalDate publicationDate;
 
     @Comment("커버 이미지 파일명")
     @Column
@@ -128,10 +126,10 @@ public class Book {
     @Enumerated(EnumType.STRING)
     private ReadingLevel readingLevel;
 
-    @Comment("도서 MBTI 유형")
+    @Comment("도서 MBTI")
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private BookMbtiType mbtiType;
+    private BookMbti bookMbti;
 
     @Comment("주제")
     @Column(nullable = false, length = 200)
@@ -157,6 +155,7 @@ public class Book {
     @Column(length = 200)
     private String educationOfficeRecommendations;
 
+    @Comment("주제어(태그) 목록")
     @ElementCollection
     @CollectionTable(
             name = "book_tags",
@@ -174,8 +173,62 @@ public class Book {
     private LocalDateTime updatedAt;
 
     public void updateBook(
-
+            String isbn,
+            String title,
+            String author,
+            String publisher,
+            String translator,
+            String illustrator,
+            LocalDate publicationDate,
+            String coverImageFileName,
+            Boolean recommended,
+            Boolean ebookAvailable,
+            Boolean audiobookAvailable,
+            Boolean visible,
+            Boolean enabled,
+            Integer pageCount,
+            SchoolGrade schoolGrade,
+            BookGenre genre,
+            BookSubGenre subGenre,
+            Integer bookPoints,
+            Integer raq,
+            ReadingLevel readingLevel,
+            BookMbti bookMbti,
+            String subject,
+            String content,
+            String awardHistory,
+            String includedBookName,
+            String institutionRecommendations,
+            String educationOfficeRecommendations,
+            List<String> tags
     ) {
-
+        this.isbn = isbn != null ? isbn : this.isbn;
+        this.title = title != null ? title : this.title;
+        this.author = author != null ? author : this.author;
+        this.publisher = publisher != null ? publisher : this.publisher;
+        this.translator = translator != null ? translator : this.translator;
+        this.illustrator = illustrator != null ? illustrator : this.illustrator;
+        this.publicationDate = publicationDate != null ? publicationDate : this.publicationDate;
+        this.coverImageFileName = coverImageFileName != null ? coverImageFileName : this.coverImageFileName;
+        this.recommended = recommended != null ? recommended : this.recommended;
+        this.ebookAvailable = ebookAvailable != null ? ebookAvailable : this.ebookAvailable;
+        this.audiobookAvailable = audiobookAvailable != null ? audiobookAvailable : this.audiobookAvailable;
+        this.visible = visible != null ? visible : this.visible;
+        this.enabled = enabled != null ? enabled : this.enabled;
+        this.pageCount = pageCount != null ? pageCount : this.pageCount;
+        this.schoolGrade = schoolGrade != null ? schoolGrade : this.schoolGrade;
+        this.genre = genre != null ? genre : this.genre;
+        this.subGenre = subGenre != null ? subGenre : this.subGenre;
+        this.bookPoints = bookPoints != null ? bookPoints : this.bookPoints;
+        this.raq = raq != null ? raq : this.raq;
+        this.readingLevel = readingLevel != null ? readingLevel : this.readingLevel;
+        this.bookMbti = bookMbti != null ? bookMbti : this.bookMbti;
+        this.subject = subject != null ? subject : this.subject;
+        this.content = content != null ? content : this.content;
+        this.awardHistory = awardHistory != null ? awardHistory : this.awardHistory;
+        this.includedBookName = includedBookName != null ? includedBookName : this.includedBookName;
+        this.institutionRecommendations = institutionRecommendations != null ? institutionRecommendations : this.institutionRecommendations;
+        this.educationOfficeRecommendations = educationOfficeRecommendations != null ? educationOfficeRecommendations : this.educationOfficeRecommendations;
+        this.tags = tags != null ? tags : this.tags;
     }
 }

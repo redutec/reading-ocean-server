@@ -144,7 +144,7 @@ public class BranchDto {
             String managerEmail,
 
             @Schema(description = "계약서 파일", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-            MultipartFile contractFileName,
+            MultipartFile contractFile,
 
             @Schema(description = "계약일", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
             LocalDate contractDate,

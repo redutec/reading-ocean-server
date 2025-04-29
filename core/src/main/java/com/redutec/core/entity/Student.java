@@ -87,6 +87,11 @@ public class Student {
     @PositiveOrZero
     private Integer bookPoints;
 
+    @Comment("도서 MBTI")
+    @Column
+    @Enumerated(EnumType.STRING)
+    private BookMbti bookMbti;
+
     @Comment("마지막 로그인 IP")
     @Column(length = 45)
     @Setter

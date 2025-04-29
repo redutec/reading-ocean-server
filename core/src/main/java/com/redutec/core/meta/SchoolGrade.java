@@ -6,21 +6,21 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum SchoolGrade {
-    ALL(1, "전체학년"),
-    CHILD(2, "누리과정"),
-    ELEMENTARY_1(3, "초등1"),
-    ELEMENTARY_2(4, "초등2"),
-    ELEMENTARY_3(5, "초등3"),
-    ELEMENTARY_4(6, "초등4"),
-    ELEMENTARY_5(7, "초등5"),
-    ELEMENTARY_6(8, "초등6"),
-    MIDDLE_1(9, "중등1"),
-    MIDDLE_2(10, "중등2"),
-    MIDDLE_3(11, "중등3"),
-    HIGH_1(12, "고등1"),
-    HIGH_2(13, "고등2"),
-    HIGH_3(14, "고등3");
+    ALL(-1, "전체학년"),
+    CHILD(0, "누리과정"),
+    ELEMENTARY_1(1, "초등1"),
+    ELEMENTARY_2(2, "초등2"),
+    ELEMENTARY_3(3, "초등3"),
+    ELEMENTARY_4(4, "초등4"),
+    ELEMENTARY_5(5, "초등5"),
+    ELEMENTARY_6(6, "초등6"),
+    MIDDLE_1(7, "중등1"),
+    MIDDLE_2(8, "중등2"),
+    MIDDLE_3(9, "중등3"),
+    HIGH_1(10, "고등1"),
+    HIGH_2(11, "고등2"),
+    HIGH_3(12, "고등3");
 
     private final Integer order;
-    private final String name;
+    private final String displayName;
 }
