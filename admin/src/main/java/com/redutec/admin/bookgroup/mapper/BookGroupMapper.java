@@ -1,5 +1,6 @@
 package com.redutec.admin.bookgroup.mapper;
 
+import com.redutec.admin.book.mapper.BookMapper;
 import com.redutec.admin.bookgroup.dto.BookGroupDto;
 import com.redutec.core.criteria.BookGroupCriteria;
 import com.redutec.core.entity.Book;
@@ -18,6 +19,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Component
 public class BookGroupMapper {
+    private final BookMapper bookMapper;
+
     /**
      * CreateBookGroupRequest DTO를 기반으로 BookGroup 엔티티를 생성합니다.
      *
@@ -29,6 +32,7 @@ public class BookGroupMapper {
             List<Book> books
     ) {
         return BookGroup.builder()
+                .name(createBookGroupRequest.name())
                 .yearMonth(createBookGroupRequest.yearMonth())
                 .type(createBookGroupRequest.type())
                 .schoolGrade(createBookGroupRequest.schoolGrade())
@@ -48,6 +52,7 @@ public class BookGroupMapper {
     ) {
         return new BookGroupCriteria(
                 findBookGroupRequest.bookGroupIds(),
+                findBookGroupRequest.name(),
                 findBookGroupRequest.yearMonth(),
                 findBookGroupRequest.types(),
                 findBookGroupRequest.schoolGrades()
@@ -67,13 +72,14 @@ public class BookGroupMapper {
         return Optional.ofNullable(bookGroup)
                 .map(bg -> new BookGroupDto.BookGroupResponse(
                         bg.getId(),
+                        bg.getName(),
                         bg.getYearMonth(),
                         bg.getType(),
                         Optional.ofNullable(bg.getSchoolGrade())
                                 .map(SchoolGrade::getDisplayName)
                                 .orElse(null),
                         bg.getBooks().stream()
-                                .map(Book::getId)
+                                .map(bookMapper::toResponseDto)
                                 .collect(Collectors.toList()),
                         bg.getCreatedAt(),
                         bg.getUpdatedAt()

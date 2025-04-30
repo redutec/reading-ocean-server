@@ -3,6 +3,7 @@ package com.redutec.core.entity;
 import com.redutec.core.meta.BookGroupType;
 import com.redutec.core.meta.SchoolGrade;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,10 +15,8 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
-import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Entity
@@ -40,9 +39,14 @@ public class BookGroup {
     @Comment("도서 그룹 고유번호")
     private Long id;
 
+    @Comment("그룹명")
+    @Column(nullable = false, length = 100)
+    private String name;
+
     @Comment("기준연월")
     @Column(nullable = false)
-    private YearMonth yearMonth;
+    @Pattern(regexp  = "^[0-9]{4}-[0-9]{2}$", message = "기준연월은 YYYY-MM 형식이어야 합니다.")
+    private String yearMonth;
 
     @Comment("그룹 유형")
     @Column(nullable = false)
@@ -63,14 +67,6 @@ public class BookGroup {
     )
     private List<Book> books = new ArrayList<>();
 
-    // 도서 추가/제거 편의 메서드
-    public void addBook(Book book) {
-        if (!books.contains(book)) books.add(book);
-    }
-    public void removeBook(Book book) {
-        books.remove(book);
-    }
-
     @CreatedDate
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -80,18 +76,16 @@ public class BookGroup {
     private LocalDateTime updatedAt;
 
     public void updateBookGroup(
-            YearMonth yearMonth,
+            String name,
+            String yearMonth,
             BookGroupType type,
-            SchoolGrade schoolGrade
+            SchoolGrade schoolGrade,
+            List<Book> books
     ) {
-        // 1) type 우선 업데이트
-        BookGroupType updatedType = Optional.ofNullable(type).orElse(this.type);
-        this.type = updatedType;
-        // 2) GRADE_LINK일 때는 requireNonNull, 아니면 기존 또는 새 값으로 대체
-        this.schoolGrade = updatedType == BookGroupType.GRADE_LINK
-                ? Objects.requireNonNull(schoolGrade, "GRADE_LINK 그룹은 schoolGrade가 필수입니다.")
-                : Optional.ofNullable(schoolGrade).orElse(this.schoolGrade);
-        // 3) yearMonth 업데이트
+        this.name = name != null ? name : this.name;
+        this.type = Optional.ofNullable(type).orElse(this.type);
+        this.schoolGrade = Optional.ofNullable(schoolGrade).orElse(this.schoolGrade);
         this.yearMonth = Optional.ofNullable(yearMonth).orElse(this.yearMonth);
+        this.books = Optional.ofNullable(books).orElse(this.books);
     }
 }

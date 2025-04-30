@@ -5,31 +5,26 @@ import com.redutec.core.entity.BookGroup;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
 
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
 import static com.redutec.core.config.SpecificationUtil.combinePredicate;
 
 public class BookGroupSpecification {
-    public static Specification<BookGroup> findWith(BookGroupCriteria criteria) {
+    public static Specification<BookGroup> findWith(BookGroupCriteria bookGroupCriteria) {
         return (bookGroupRoot, criteriaQuery, criteriaBuilder) -> {
             Stream<Optional<Predicate>> stream = Stream.of(
-                    Optional.ofNullable(criteria.groupIds())
-                            .filter(groupIds -> !groupIds.isEmpty())
-                            .map(groupIds -> bookGroupRoot.get("id").in(groupIds)),
-                    Optional.ofNullable(criteria.yearMonth())
-                            .map(yearMonth -> criteriaBuilder.equal(bookGroupRoot.get("yearMonth"), yearMonth)),
-                    Optional.ofNullable(criteria.type())
-                            .map(type -> criteriaBuilder.equal(bookGroupRoot.get("type"), type)),
-                    Optional.ofNullable(criteria.schoolGrade())
-                            .map(schoolGrade -> criteriaBuilder.equal(bookGroupRoot.get("schoolGrade"), schoolGrade)),
-                    Optional.ofNullable(criteria.bookIds())
-                            .filter(bookIds -> !bookIds.isEmpty())
-                            .map(bookIds -> {
-                                Objects.requireNonNull(criteriaQuery).distinct(true);
-                                return bookGroupRoot.join("books").get("id").in(bookIds);
-                            })
+                    Optional.ofNullable(bookGroupCriteria.bookGroupIds())
+                            .filter(bookGroupIds -> !bookGroupIds.isEmpty())
+                            .map(bookGroupIds -> bookGroupRoot.get("id").in(bookGroupIds)),
+                    Optional.ofNullable(bookGroupCriteria.name())
+                            .map(name -> criteriaBuilder.like(bookGroupRoot.get("name"), "%" + name + "%")),
+                    Optional.ofNullable(bookGroupCriteria.yearMonth())
+                            .map(yearMonth -> criteriaBuilder.like(bookGroupRoot.get("yearMonth"), "%" + yearMonth + "%")),
+                    Optional.ofNullable(bookGroupCriteria.types())
+                            .map(types -> bookGroupRoot.get("type").in(types)),
+                    Optional.ofNullable(bookGroupCriteria.schoolGrades())
+                            .map(schoolGrades -> bookGroupRoot.get("schoolGrade").in(schoolGrades))
             );
             return combinePredicate(stream, criteriaBuilder);
         };

@@ -1,12 +1,12 @@
 package com.redutec.admin.bookgroup.service;
 
+import com.redutec.admin.book.service.BookService;
 import com.redutec.admin.bookgroup.dto.BookGroupDto;
 import com.redutec.admin.bookgroup.mapper.BookGroupMapper;
-import com.redutec.core.config.FileUploadResult;
-import com.redutec.core.config.FileUtil;
 import com.redutec.core.entity.Book;
-import com.redutec.core.repository.BookRepository;
-import com.redutec.core.specification.BookSpecification;
+import com.redutec.core.entity.BookGroup;
+import com.redutec.core.repository.BookGroupRepository;
+import com.redutec.core.specification.BookGroupSpecification;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,137 +15,116 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.nio.file.Paths;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
 @AllArgsConstructor
 public class BookGroupServiceImpl implements BookGroupService {
     private final BookGroupMapper bookGroupMapper;
-    private final BookRepository bookRepository;
-    private final FileUtil fileUtil;
+    private final BookGroupRepository bookGroupRepository;
+    private final BookService bookService;
 
     /**
-     * 도서 등록
-     * @param createBookRequest 도서 등록 정보를 담은 DTO
-     * @return 등록된 도서 정보
+     * 도서 그룹 등록
+     * @param createBookGroupRequest 도서 그룹 등록 정보를 담은 DTO
+     * @return 등록된 도서 그룹 정보
      */
     @Override
     @Transactional
-    public BookGroupDto.BookResponse create(
-            BookGroupDto.CreateBookRequest createBookRequest
-    ) {
-        return bookGroupMapper.toResponseDto(bookRepository.save(bookGroupMapper.toEntity(createBookRequest)));
+    public BookGroupDto.BookGroupResponse create(BookGroupDto.CreateBookGroupRequest createBookGroupRequest) {
+        // 도서 그룹에 등록할 도서 리스트 조회
+        List<Book> books = Optional.ofNullable(createBookGroupRequest.bookIds())
+                .orElse(Collections.emptyList())
+                .stream()
+                .map(bookService::getBook)
+                .collect(Collectors.toList());
+        return bookGroupMapper.toResponseDto(
+                bookGroupRepository.save(
+                        bookGroupMapper.toEntity(
+                                createBookGroupRequest,
+                                books
+                        )
+                )
+        );
     }
 
     /**
-     * 조건에 맞는 도서 목록 조회
-     * @param findBookRequest 조회 조건을 담은 DTO
-     * @return 조회된 도서 목록 및 페이징 정보
+     * 조건에 맞는 도서 그룹 목록 조회
+     * @param findBookGroupRequest 조회 조건을 담은 DTO
+     * @return 조회된 도서 그룹 목록 및 페이징 정보
      */
     @Override
     @Transactional(readOnly = true)
-    public BookGroupDto.BookPageResponse find(
-            BookGroupDto.FindBookRequest findBookRequest
-    ) {
-        return bookGroupMapper.toPageResponseDto(bookRepository.findAll(
-                BookSpecification.findWith(bookGroupMapper.toCriteria(findBookRequest)),
-                (findBookRequest.page() != null && findBookRequest.size() != null)
-                        ? PageRequest.of(findBookRequest.page(), findBookRequest.size())
+    public BookGroupDto.BookGroupPageResponse find(BookGroupDto.FindBookGroupRequest findBookGroupRequest) {
+        return bookGroupMapper.toPageResponseDto(bookGroupRepository.findAll(
+                BookGroupSpecification.findWith(bookGroupMapper.toCriteria(findBookGroupRequest)),
+                (findBookGroupRequest.page() != null && findBookGroupRequest.size() != null)
+                        ? PageRequest.of(findBookGroupRequest.page(), findBookGroupRequest.size())
                         : Pageable.unpaged()));
     }
 
     /**
-     * 특정 도서 조회
-     * @param bookId 도서 고유번호
-     * @return 특정 도서 응답 객체
+     * 특정 도서 그룹 조회
+     * @param bookGroupId 도서 그룹 고유번호
+     * @return 특정 도서 그룹 응답 객체
      */
     @Override
     @Transactional(readOnly = true)
-    public BookGroupDto.BookResponse findById(
-            Long bookId
-    ) {
-        return bookGroupMapper.toResponseDto(getBook(bookId));
+    public BookGroupDto.BookGroupResponse findById(Long bookGroupId) {
+        return bookGroupMapper.toResponseDto(getBookGroup(bookGroupId));
     }
 
     /**
-     * 특정 도서 엔티티 조회
-     * @param bookId 도서 고유번호
-     * @return 특정 도서 엔티티 객체
+     * 특정 도서 그룹 엔티티 조회
+     * @param bookGroupId 도서 그룹 고유번호
+     * @return 특정 도서 그룹 엔티티 객체
      */
     @Override
     @Transactional(readOnly = true)
-    public Book getBook(
-            Long bookId
-    ) {
-        return bookRepository.findById(bookId)
-                .orElseThrow(() -> new EntityNotFoundException("도서를 찾을 수 없습니다. id = " + bookId));
+    public BookGroup getBookGroup(Long bookGroupId) {
+        return bookGroupRepository.findById(bookGroupId)
+                .orElseThrow(() -> new EntityNotFoundException("도서 그룹을 찾을 수 없습니다. id = " + bookGroupId));
     }
 
     /**
-     * 특정 도서 수정
-     * @param bookId 수정할 도서의 ID
-     * @param updateBookRequest 수정할 정보를 담은 DTO
+     * 특정 도서 그룹 수정
+     * @param bookGroupId 수정할 도서 그룹의 ID
+     * @param updateBookGroupRequest 수정할 정보를 담은 DTO
      */
     @Override
     @Transactional
-    public void update(
-            Long bookId,
-            BookGroupDto.UpdateBookRequest updateBookRequest
-    ) {
-        // 수정할 도서 엔티티 조회
-        Book book = getBook(bookId);
-        // 업로드할 커버 이미지 파일이 있는 경우 업로드하고 파일명을 생성
-        String coverImageFileName = Optional.ofNullable(updateBookRequest.coverImageFile())
-                .filter(coverImageFile -> !coverImageFile.isEmpty())
-                .map(coverImageFile -> {
-                    FileUploadResult result = fileUtil.uploadFile(coverImageFile, "/branch");
-                    return Paths.get(result.filePath()).getFileName().toString();
-                })
-                .orElse(null);
+    public void update(Long bookGroupId, BookGroupDto.UpdateBookGroupRequest updateBookGroupRequest) {
+        // 수정할 도서 그룹 엔티티 조회
+        BookGroup bookGroup = getBookGroup(bookGroupId);
+        // 도서 그룹에 포함될 도서 엔티티들을 조회
+        List<Book> books = Optional.ofNullable(updateBookGroupRequest.bookIds())
+                .orElse(Collections.emptyList())
+                .stream()
+                .map(bookService::getBook)
+                .collect(Collectors.toList());
         // UPDATE 도메인 메서드로 변환
-        book.updateBook(
-                updateBookRequest.isbn(),
-                updateBookRequest.title(),
-                updateBookRequest.author(),
-                updateBookRequest.publisher(),
-                updateBookRequest.translator(),
-                updateBookRequest.illustrator(),
-                updateBookRequest.publicationDate(),
-                coverImageFileName,
-                updateBookRequest.recommended(),
-                updateBookRequest.ebookAvailable(),
-                updateBookRequest.audiobookAvalable(),
-                updateBookRequest.visible(),
-                updateBookRequest.enabled(),
-                updateBookRequest.pageCount(),
-                updateBookRequest.schoolGrade(),
-                updateBookRequest.genre(),
-                updateBookRequest.subGenre(),
-                updateBookRequest.bookPoints(),
-                updateBookRequest.raq(),
-                updateBookRequest.readingLevel(),
-                updateBookRequest.bookMbti(),
-                updateBookRequest.subject(),
-                updateBookRequest.content(),
-                updateBookRequest.awardHistory(),
-                updateBookRequest.includedBookName(),
-                updateBookRequest.institutionRecommendations(),
-                updateBookRequest.educationOfficeRecommendations(),
-                updateBookRequest.tags()
+        bookGroup.updateBookGroup(
+                updateBookGroupRequest.name(),
+                updateBookGroupRequest.yearMonth(),
+                updateBookGroupRequest.type(),
+                updateBookGroupRequest.schoolGrade(),
+                books
         );
-        // 도서 엔티티 UPDATE
-        bookRepository.save(book);
+        // 도서 그룹 엔티티 UPDATE
+        bookGroupRepository.save(bookGroup);
     }
 
     /**
-     * 특정 도서 삭제
-     * @param bookId 삭제할 도서의 ID
+     * 특정 도서 그룹 삭제
+     * @param bookGroupId 삭제할 도서 그룹의 ID
      */
     @Override
     @Transactional
-    public void delete(Long bookId) {
-        bookRepository.delete(getBook(bookId));
+    public void delete(Long bookGroupId) {
+        bookGroupRepository.delete(getBookGroup(bookGroupId));
     }
 }

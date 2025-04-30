@@ -1,25 +1,38 @@
 package com.redutec.admin.bookgroup.dto;
 
+import com.redutec.admin.book.dto.BookDto;
 import com.redutec.core.meta.BookGroupType;
 import com.redutec.core.meta.SchoolGrade;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.validation.constraints.*;
 
 import java.time.LocalDateTime;
-import java.time.YearMonth;
 import java.util.List;
 
 public class BookGroupDto {
     @Schema(description = "도서 그룹 등록 요청 객체")
     public record CreateBookGroupRequest(
-            @Schema(description = "기준연월", requiredMode = Schema.RequiredMode.REQUIRED)
+            @Schema(description = "그룹명", requiredMode = Schema.RequiredMode.REQUIRED)
             @NotNull
-            YearMonth yearMonth,
+            @Size(max = 100)
+            String name,
+
+            @Schema(
+                    description = "기준연월(YYYY-MM)",
+                    requiredMode = Schema.RequiredMode.REQUIRED,
+                    type        = "string",
+                    pattern     = "^[0-9]{4}-[0-9]{2}$",
+                    example     = "2025-04"
+            )
+            @NotNull
+            @Pattern(
+                    regexp  = "^[0-9]{4}-[0-9]{2}$",
+                    message = "기준연월은 YYYY-MM 형식이어야 합니다."
+            )
+            String yearMonth,
 
             @Schema(description = "그룹 유형", requiredMode = Schema.RequiredMode.REQUIRED)
             @NotNull
@@ -39,8 +52,18 @@ public class BookGroupDto {
             @Schema(description = "도서 그룹 ID", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
             List<@Positive Long> bookGroupIds,
 
-            @Schema(description = "기준연월", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-            YearMonth yearMonth,
+            @Schema(description = "그룹명", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+            @Size(max = 100)
+            String name,
+
+            @Schema(
+                    description = "기준연월(YYYY-MM)",
+                    requiredMode = Schema.RequiredMode.NOT_REQUIRED,
+                    type        = "string",
+                    pattern     = "^[0-9]{4}-[0-9]{2}$"
+            )
+            @Pattern(regexp  = "^[0-9]{4}-[0-9]{2}$", message = "기준연월은 YYYY-MM 형식이어야 합니다.")
+            String yearMonth,
 
             @Schema(description = "그룹 유형", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
             @ElementCollection(targetClass = BookGroupType.class)
@@ -63,8 +86,22 @@ public class BookGroupDto {
 
     @Schema(description = "도서 그룹 수정 요청 객체")
     public record UpdateBookGroupRequest(
-            @Schema(description = "기준연월", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-            YearMonth yearMonth,
+            @Schema(description = "그룹명", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+            @Size(max = 100)
+            String name,
+
+            @Schema(
+                    description = "기준연월(YYYY-MM)",
+                    requiredMode = Schema.RequiredMode.NOT_REQUIRED,
+                    type        = "string",
+                    pattern     = "^[0-9]{4}-[0-9]{2}$",
+                    example     = "2025-04"
+            )
+            @Pattern(
+                    regexp  = "^[0-9]{4}-[0-9]{2}$",
+                    message = "기준연월은 YYYY-MM 형식이어야 합니다."
+            )
+            String yearMonth,
 
             @Schema(description = "그룹 유형", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
             @Enumerated(EnumType.STRING)
@@ -81,10 +118,11 @@ public class BookGroupDto {
     @Schema(description = "도서 그룹 응답 객체")
     public record BookGroupResponse(
             Long bookGroupId,
-            YearMonth yearMonth,
+            String name,
+            String yearMonth,
             BookGroupType type,
             String schoolGrade,
-            List<Long> bookIds,
+            List<BookDto.BookResponse> books,
             LocalDateTime createdAt,
             LocalDateTime updatedAt
     ) {}
