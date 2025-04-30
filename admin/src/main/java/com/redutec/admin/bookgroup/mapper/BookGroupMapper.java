@@ -27,10 +27,7 @@ public class BookGroupMapper {
      * @param createBookGroupRequest 도서 생성에 필요한 데이터를 담은 DTO
      * @return 생성된 BookGroup 엔티티
      */
-    public BookGroup toEntity(
-            BookGroupDto.CreateBookGroupRequest createBookGroupRequest,
-            List<Book> books
-    ) {
+    public BookGroup toEntity(BookGroupDto.CreateBookGroupRequest createBookGroupRequest, List<Book> books) {
         return BookGroup.builder()
                 .name(createBookGroupRequest.name())
                 .yearMonth(createBookGroupRequest.yearMonth())
@@ -47,9 +44,7 @@ public class BookGroupMapper {
      *
      * @return 해당 요청의 필드를 이용해 생성된 BookGroupCriteria 객체
      */
-    public BookGroupCriteria toCriteria(
-            BookGroupDto.FindBookGroupRequest findBookGroupRequest
-    ) {
+    public BookGroupCriteria toCriteria(BookGroupDto.FindBookGroupRequest findBookGroupRequest) {
         return new BookGroupCriteria(
                 findBookGroupRequest.bookGroupIds(),
                 findBookGroupRequest.name(),
@@ -66,9 +61,7 @@ public class BookGroupMapper {
      * @param bookGroup 변환할 BookGroup 엔티티 (null 가능)
      * @return BookGroup 엔티티의 데이터를 담은 BookGroupResponse DTO, bookGroup가 null이면 null 반환
      */
-    public BookGroupDto.BookGroupResponse toResponseDto(
-            BookGroup bookGroup
-    ) {
+    public BookGroupDto.BookGroupResponse toResponseDto(BookGroup bookGroup) {
         return Optional.ofNullable(bookGroup)
                 .map(bg -> new BookGroupDto.BookGroupResponse(
                         bg.getId(),

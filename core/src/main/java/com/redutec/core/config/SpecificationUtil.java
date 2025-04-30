@@ -28,7 +28,6 @@ public final class SpecificationUtil {
         List<Predicate> predicates = predicateStream
                 .flatMap(Optional::stream)
                 .toList();
-
         return predicates.isEmpty()
                 ? criteriaBuilder.conjunction()
                 : criteriaBuilder.and(predicates.toArray(Predicate[]::new));

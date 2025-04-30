@@ -16,9 +16,7 @@ public class AesAttributeConverter implements AttributeConverter<String, String>
      * 생성자 주입을 통해 EncryptUtil 빈을 주입받습니다.
      * @param encryptUtil AES 암호화/복호화 유틸리티
      */
-    public AesAttributeConverter(
-            EncryptUtil encryptUtil
-    ) {
+    public AesAttributeConverter(EncryptUtil encryptUtil) {
         this.encryptUtil = encryptUtil;
     }
 
@@ -28,9 +26,7 @@ public class AesAttributeConverter implements AttributeConverter<String, String>
      * @return 암호화된 Base64 문자열 또는 null
      */
     @Override
-    public String convertToDatabaseColumn(
-            String attribute
-    ) {
+    public String convertToDatabaseColumn(String attribute) {
         return (attribute == null) ? null : encryptUtil.encrypt(attribute);
     }
 
@@ -40,9 +36,7 @@ public class AesAttributeConverter implements AttributeConverter<String, String>
      * @return 복호화된 평문 문자열 또는 null
      */
     @Override
-    public String convertToEntityAttribute(
-            String dbData
-    ) {
+    public String convertToEntityAttribute(String dbData) {
         return (dbData == null) ? null : encryptUtil.decrypt(dbData);
     }
 }

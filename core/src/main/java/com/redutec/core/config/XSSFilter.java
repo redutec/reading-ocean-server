@@ -46,8 +46,11 @@ public class XSSFilter implements Filter {
      * @throws ServletException 서블릿 처리 중 예외 발생 시
      */
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
-            throws IOException, ServletException {
+    public void doFilter(
+            ServletRequest request,
+            ServletResponse response,
+            FilterChain chain
+    ) throws IOException, ServletException {
         if (request instanceof HttpServletRequest httpRequest &&
                 "application/json".equalsIgnoreCase(request.getContentType())) {
             CachedBodyHttpServletRequest wrappedRequest = new CachedBodyHttpServletRequest(httpRequest);

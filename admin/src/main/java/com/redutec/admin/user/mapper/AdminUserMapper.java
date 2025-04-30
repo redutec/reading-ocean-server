@@ -28,9 +28,7 @@ public class AdminUserMapper {
      * @param createAdminUserRequest 어드민 사용자 생성에 필요한 데이터를 담은 DTO
      * @return 생성된 AdminUser 엔티티
      */
-    public AdminUser toEntity(
-            AdminUserDto.CreateAdminUserRequest createAdminUserRequest
-    ) {
+    public AdminUser toEntity(AdminUserDto.CreateAdminUserRequest createAdminUserRequest) {
         return AdminUser.builder()
                 .email(createAdminUserRequest.email())
                 .password(passwordEncoder.encode(createAdminUserRequest.password()))
@@ -48,9 +46,7 @@ public class AdminUserMapper {
      *
      * @return 해당 요청의 필드를 이용해 생성된 AdminUserCriteria 객체
      */
-    public AdminUserCriteria toCriteria(
-            AdminUserDto.FindAdminUserRequest findAdminUserRequest
-    ) {
+    public AdminUserCriteria toCriteria(AdminUserDto.FindAdminUserRequest findAdminUserRequest) {
         return new AdminUserCriteria(
                 findAdminUserRequest.adminUserIds(),
                 findAdminUserRequest.email(),
@@ -67,9 +63,7 @@ public class AdminUserMapper {
      * @param adminUser 변환할 AdminUser 엔티티 (null 가능)
      * @return AdminUser 엔티티의 데이터를 담은 AdminUserResponse DTO, adminUser가 null이면 null 반환
      */
-    public AdminUserDto.AdminUserResponse toResponseDto(
-            AdminUser adminUser
-    ) {
+    public AdminUserDto.AdminUserResponse toResponseDto(AdminUser adminUser) {
         return Optional.ofNullable(adminUser)
                 .map(admin -> new AdminUserDto.AdminUserResponse(
                         admin.getId(),

@@ -55,9 +55,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
      * @return Access Token 및 Refresh Token이 담긴 Map 객체
      */
     @Override
-    public AuthenticationDto.LoginResponse login(
-            AuthenticationDto.LoginRequest loginRequest
-    ) {
+    public AuthenticationDto.LoginResponse login(AuthenticationDto.LoginRequest loginRequest) {
         // 어드민 사용자 엔티티 조회
         AdminUser adminUser = adminUserService.findByEmail(loginRequest.email());
         // 어드민 사용자 계정 상태 검증
@@ -124,9 +122,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
      */
     @Override
     @Transactional
-    public void resetPassword(
-            AuthenticationDto.ResetPasswordRequest resetPasswordRequest
-    ) throws MessagingException {
+    public void resetPassword(AuthenticationDto.ResetPasswordRequest resetPasswordRequest) throws MessagingException {
         var adminUser = adminUserService.findByEmail(resetPasswordRequest.email());
         validateAuthenticationStatus(adminUser);
         var newPasswordLength = 8;
@@ -142,9 +138,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
      */
     @Override
     @Transactional
-    public void updatePassword(
-            AuthenticationDto.UpdatePasswordRequest updatePasswordRequest
-    ) {
+    public void updatePassword(AuthenticationDto.UpdatePasswordRequest updatePasswordRequest) {
         var adminUser = adminUserService.findByEmail(updatePasswordRequest.email());
         if (adminUser.getAuthenticationStatus() != PASSWORD_RESET) {
             validateAuthenticationStatus(adminUser);
@@ -163,9 +157,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
      */
     @Override
     @Transactional
-    public AuthenticationDto.LoginResponse refreshAccessToken(
-            String refreshToken
-    ) {
+    public AuthenticationDto.LoginResponse refreshAccessToken(String refreshToken) {
         // 새로운 Access Token 발급을 요청한 Refresh Token 조회
         RefreshToken refreshTokenEntity = refreshTokenRepository.findByToken(refreshToken)
                 .filter(RefreshToken::isExpired)
@@ -185,9 +177,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
      *
      * @param adminUser 검증할 어드민 사용자 객체
      */
-    public void validateAuthenticationStatus(
-            AdminUser adminUser
-    ) {
+    public void validateAuthenticationStatus(AdminUser adminUser) {
         switch (adminUser.getAuthenticationStatus()) {
             case ACTIVE -> {}
             case INACTIVE, SUSPENDED ->
@@ -227,11 +217,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
      * @param newPassword 새 비밀번호
      * @param newStatus 새 상태
      */
-    private void updatePasswordAndStatus(
-            AdminUser adminUser,
-            String newPassword,
-            AuthenticationStatus newStatus
-    ) {
+    private void updatePasswordAndStatus(AdminUser adminUser, String newPassword, AuthenticationStatus newStatus) {
         adminUser.setPassword(passwordEncoder.encode(newPassword));
         adminUser.setAuthenticationStatus(newStatus);
         adminUser.setFailedLoginAttempts(0);
@@ -244,9 +230,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
      * @param length 비밀번호 길이
      * @return 랜덤 생성된 비밀번호
      */
-    private String generateRandomPassword(
-            int length
-    ) {
+    private String generateRandomPassword(int length) {
         var upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         var lower = "abcdefghijklmnopqrstuvwxyz";
         var digits = "0123456789";

@@ -39,9 +39,7 @@ public class TeacherController {
 
     @Operation(summary = "특정 교사 조회", description = "특정 교사를 조회하는 API")
     @GetMapping("/{teacherId}")
-    public ResponseEntity<ApiResponseBody> findById(
-            @PathVariable Long teacherId
-    ) {
+    public ResponseEntity<ApiResponseBody> findById(@PathVariable Long teacherId) {
         return apiResponseManager.success(teacherService.findById(teacherId));
     }
 

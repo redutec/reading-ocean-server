@@ -21,10 +21,7 @@ public class InstituteMapper {
      * @param createInstituteRequest 교육기관 생성에 필요한 데이터를 담은 DTO
      * @return 생성된 Institute 엔티티
      */
-    public Institute toEntity(
-            InstituteDto.CreateInstituteRequest createInstituteRequest,
-            Branch branch
-    ) {
+    public Institute toEntity(InstituteDto.CreateInstituteRequest createInstituteRequest, Branch branch) {
         return Institute.builder()
                 .name(createInstituteRequest.name())
                 .businessRegistrationName(createInstituteRequest.businessRegistrationName())
@@ -48,9 +45,7 @@ public class InstituteMapper {
      *
      * @return 해당 요청의 필드를 이용해 생성된 InstituteCriteria 객체
      */
-    public InstituteCriteria toCriteria(
-            InstituteDto.FindInstituteRequest findInstituteRequest
-    ) {
+    public InstituteCriteria toCriteria(InstituteDto.FindInstituteRequest findInstituteRequest) {
         return new InstituteCriteria(
                 findInstituteRequest.instituteIds(),
                 findInstituteRequest.name(),
@@ -70,11 +65,7 @@ public class InstituteMapper {
      * @param institute 변환할 Institute 엔티티 (null 가능)
      * @return Institute 엔티티의 데이터를 담은 InstituteResponse DTO, institute가 null이면 null 반환
      */
-    public InstituteDto.InstituteResponse toResponseDto(
-            Institute institute,
-            Teacher chiefTeacher,
-            Branch branch
-    ) {
+    public InstituteDto.InstituteResponse toResponseDto(Institute institute, Teacher chiefTeacher, Branch branch) {
         return Optional.ofNullable(institute)
                 .map(in -> new InstituteDto.InstituteResponse(
                         in.getId(),

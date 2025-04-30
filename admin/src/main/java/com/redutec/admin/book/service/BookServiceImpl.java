@@ -33,9 +33,7 @@ public class BookServiceImpl implements BookService {
      */
     @Override
     @Transactional
-    public BookDto.BookResponse create(
-            BookDto.CreateBookRequest createBookRequest
-    ) {
+    public BookDto.BookResponse create(BookDto.CreateBookRequest createBookRequest) {
         return bookMapper.toResponseDto(bookRepository.save(bookMapper.toEntity(createBookRequest)));
     }
 
@@ -63,9 +61,7 @@ public class BookServiceImpl implements BookService {
      */
     @Override
     @Transactional(readOnly = true)
-    public BookDto.BookResponse findById(
-            Long bookId
-    ) {
+    public BookDto.BookResponse findById(Long bookId) {
         return bookMapper.toResponseDto(getBook(bookId));
     }
 
@@ -90,10 +86,7 @@ public class BookServiceImpl implements BookService {
      */
     @Override
     @Transactional
-    public void update(
-            Long bookId,
-            BookDto.UpdateBookRequest updateBookRequest
-    ) {
+    public void update(Long bookId, BookDto.UpdateBookRequest updateBookRequest) {
         // 수정할 도서 엔티티 조회
         Book book = getBook(bookId);
         // 업로드할 커버 이미지 파일이 있는 경우 업로드하고 파일명을 생성

@@ -32,7 +32,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         // 암호화된 이메일로 어드민 사용자 정보 조회
         var adminUser = adminUserRepository.findByEmail(username)
-                .orElseThrow(() -> new UsernameNotFoundException("AdminUser not found with email: " + username));
+                .orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 어드민 사용자입니다. email: " + username));
         // 어드민 사용자의 역할을 GrantedAuthority로 변환하여 UserDetails 객체 생성
         Set<GrantedAuthority> authorities = new HashSet<>();
         // 어드민 사용자 권한을 설정하여 UserDetails 객체 반환

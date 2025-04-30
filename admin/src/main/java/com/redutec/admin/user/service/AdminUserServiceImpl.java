@@ -29,9 +29,7 @@ public class AdminUserServiceImpl implements AdminUserService {
      */
     @Override
     @Transactional
-    public AdminUserDto.AdminUserResponse create(
-            AdminUserDto.CreateAdminUserRequest createAdminUserRequest
-    ) {
+    public AdminUserDto.AdminUserResponse create(AdminUserDto.CreateAdminUserRequest createAdminUserRequest) {
         return adminUserMapper.toResponseDto(
                 adminUserRepository.save(
                         adminUserMapper.toEntity(
@@ -48,9 +46,7 @@ public class AdminUserServiceImpl implements AdminUserService {
      */
     @Override
     @Transactional(readOnly = true)
-    public AdminUserDto.AdminUserPageResponse find(
-            AdminUserDto.FindAdminUserRequest findAdminUserRequest
-    ) {
+    public AdminUserDto.AdminUserPageResponse find(AdminUserDto.FindAdminUserRequest findAdminUserRequest) {
         return adminUserMapper.toPageResponseDto(adminUserRepository.findAll(
                 AdminUserSpecification.findWith(adminUserMapper.toCriteria(findAdminUserRequest)),
                 (findAdminUserRequest.page() != null && findAdminUserRequest.size() != null)
@@ -65,9 +61,7 @@ public class AdminUserServiceImpl implements AdminUserService {
      */
     @Override
     @Transactional(readOnly = true)
-    public AdminUserDto.AdminUserResponse findById(
-            Long adminUserId
-    ) {
+    public AdminUserDto.AdminUserResponse findById(Long adminUserId) {
         return adminUserMapper.toResponseDto(getAdminUser(adminUserId));
     }
 
@@ -78,9 +72,7 @@ public class AdminUserServiceImpl implements AdminUserService {
      */
     @Override
     @Transactional(readOnly = true)
-    public AdminUser findByEmail(
-            String email
-    ) {
+    public AdminUser findByEmail(String email) {
         return adminUserRepository.findByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 어드민 사용자입니다. email = " + email));
     }
@@ -92,9 +84,7 @@ public class AdminUserServiceImpl implements AdminUserService {
      */
     @Override
     @Transactional(readOnly = true)
-    public AdminUser getAdminUser(
-            Long adminUserId
-    ) {
+    public AdminUser getAdminUser(Long adminUserId) {
         return adminUserRepository.findById(adminUserId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 어드민 사용자입니다. id = " + adminUserId));
     }
@@ -106,10 +96,7 @@ public class AdminUserServiceImpl implements AdminUserService {
      */
     @Override
     @Transactional
-    public void update(
-            Long adminUserId,
-            AdminUserDto.UpdateAdminUserRequest updateAdminUserRequest
-    ) {
+    public void update(Long adminUserId, AdminUserDto.UpdateAdminUserRequest updateAdminUserRequest) {
         // 수정할 어드민 사용자 엔티티 조회
         AdminUser adminUser = getAdminUser(adminUserId);
         // UPDATE 도메인 메서드로 변환
@@ -133,9 +120,7 @@ public class AdminUserServiceImpl implements AdminUserService {
      */
     @Override
     @Transactional
-    public void delete(
-            Long adminUserId
-    ) {
+    public void delete(Long adminUserId) {
         adminUserRepository.delete(getAdminUser(adminUserId));
     }
 }

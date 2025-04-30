@@ -37,9 +37,7 @@ public class StudentServiceImpl implements StudentService {
      */
     @Override
     @Transactional
-    public StudentDto.StudentResponse create(
-            StudentDto.CreateStudentRequest createStudentRequest
-    ) {
+    public StudentDto.StudentResponse create(StudentDto.CreateStudentRequest createStudentRequest) {
         return studentMapper.toResponseDto(
                 studentRepository.save(
                         studentMapper.toEntity(
@@ -62,9 +60,7 @@ public class StudentServiceImpl implements StudentService {
      */
     @Override
     @Transactional(readOnly = true)
-    public StudentDto.StudentPageResponse find(
-            StudentDto.FindStudentRequest findStudentRequest
-    ) {
+    public StudentDto.StudentPageResponse find(StudentDto.FindStudentRequest findStudentRequest) {
         return studentMapper.toPageResponseDto(studentRepository.findAll(
                 StudentSpecification.findWith(studentMapper.toCriteria(findStudentRequest)),
                 (findStudentRequest.page() != null && findStudentRequest.size() != null)
@@ -79,9 +75,7 @@ public class StudentServiceImpl implements StudentService {
      */
     @Override
     @Transactional(readOnly = true)
-    public StudentDto.StudentResponse findById(
-            Long studentId
-    ) {
+    public StudentDto.StudentResponse findById(Long studentId) {
         return studentMapper.toResponseDto(getStudent(studentId));
     }
 
@@ -92,9 +86,7 @@ public class StudentServiceImpl implements StudentService {
      */
     @Override
     @Transactional(readOnly = true)
-    public Student getStudent(
-            Long studentId
-    ) {
+    public Student getStudent(Long studentId) {
         return studentRepository.findById(studentId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 학생입니다. id = " + studentId));
     }
@@ -106,10 +98,7 @@ public class StudentServiceImpl implements StudentService {
      */
     @Override
     @Transactional
-    public void update(
-            Long studentId,
-            StudentDto.UpdateStudentRequest updateStudentRequest
-    ) {
+    public void update(Long studentId, StudentDto.UpdateStudentRequest updateStudentRequest) {
         // 수정할 학생 엔티티 조회
         Student student = getStudent(studentId);
         // 수정 요청 객체에 학원 ID가 있다면 학원 엔티티 조회(없으면 Null)
@@ -143,6 +132,7 @@ public class StudentServiceImpl implements StudentService {
                 updateStudentRequest.raq(),
                 updateStudentRequest.schoolGrade(),
                 updateStudentRequest.bookPoints(),
+                updateStudentRequest.bookMbti(),
                 updateStudentRequest.description(),
                 updateStudentRequest.domain(),
                 institute,
@@ -158,9 +148,7 @@ public class StudentServiceImpl implements StudentService {
      */
     @Override
     @Transactional
-    public void delete(
-            Long studentId
-    ) {
+    public void delete(Long studentId) {
         studentRepository.delete(getStudent(studentId));
     }
 }

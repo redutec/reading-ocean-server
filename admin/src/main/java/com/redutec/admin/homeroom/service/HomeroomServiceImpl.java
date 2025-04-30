@@ -31,9 +31,7 @@ public class HomeroomServiceImpl implements HomeroomService {
      */
     @Override
     @Transactional
-    public HomeroomDto.HomeroomResponse create(
-            HomeroomDto.CreateHomeroomRequest createHomeroomRequest
-    ) {
+    public HomeroomDto.HomeroomResponse create(HomeroomDto.CreateHomeroomRequest createHomeroomRequest) {
         return homeroomMapper.toResponseDto(
                 homeroomRepository.save(
                         homeroomMapper.toEntity(
@@ -51,9 +49,7 @@ public class HomeroomServiceImpl implements HomeroomService {
      */
     @Override
     @Transactional(readOnly = true)
-    public HomeroomDto.HomeroomPageResponse find(
-            HomeroomDto.FindHomeroomRequest findHomeroomRequest
-    ) {
+    public HomeroomDto.HomeroomPageResponse find(HomeroomDto.FindHomeroomRequest findHomeroomRequest) {
         return homeroomMapper.toPageResponseDto(homeroomRepository.findAll(
                 HomeroomSpecification.findWith(homeroomMapper.toCriteria(findHomeroomRequest)),
                 (findHomeroomRequest.page() != null && findHomeroomRequest.size() != null)
@@ -68,9 +64,7 @@ public class HomeroomServiceImpl implements HomeroomService {
      */
     @Override
     @Transactional(readOnly = true)
-    public HomeroomDto.HomeroomResponse findById(
-            Long homeroomId
-    ) {
+    public HomeroomDto.HomeroomResponse findById(Long homeroomId) {
         return homeroomMapper.toResponseDto(getHomeroom(homeroomId));
     }
 
@@ -81,9 +75,7 @@ public class HomeroomServiceImpl implements HomeroomService {
      */
     @Override
     @Transactional(readOnly = true)
-    public Homeroom getHomeroom(
-            Long homeroomId
-    ) {
+    public Homeroom getHomeroom(Long homeroomId) {
         return homeroomRepository.findById(homeroomId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 학급입니다. id = " + homeroomId));
     }
@@ -95,10 +87,7 @@ public class HomeroomServiceImpl implements HomeroomService {
      */
     @Override
     @Transactional
-    public void update(
-            Long homeroomId,
-            HomeroomDto.UpdateHomeroomRequest updateHomeroomRequest
-    ) {
+    public void update(Long homeroomId, HomeroomDto.UpdateHomeroomRequest updateHomeroomRequest) {
         // 수정할 학급 엔티티 조회
         Homeroom homeroom = getHomeroom(homeroomId);
         // UPDATE 도메인 메서드로 변환
@@ -119,9 +108,7 @@ public class HomeroomServiceImpl implements HomeroomService {
      */
     @Override
     @Transactional
-    public void delete(
-            Long homeroomId
-    ) {
+    public void delete(Long homeroomId) {
         homeroomRepository.delete(getHomeroom(homeroomId));
     }
 }

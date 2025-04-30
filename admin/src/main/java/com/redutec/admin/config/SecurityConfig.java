@@ -68,32 +68,30 @@ public class SecurityConfig {
      */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf(AbstractHttpConfigurer::disable)
-                .cors(Customizer.withDefaults())
-                .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(
-                                "/swagger-ui/**",
-                                "/v3/api-docs/**",
-                                "/swagger-resources/**",
-                                "/webjars/**",
-                                "/configuration/**",
-                                "/auth/**",
-                                "/account/list",
-                                "/academy/list")
-                        .permitAll()
-                        .requestMatchers(HttpMethod.POST, "/auth/renew").permitAll()
-                        .anyRequest().authenticated())
-                .httpBasic(Customizer.withDefaults())
-                .logout(logout -> logout
-                        .logoutUrl("/auth/logout")
-                        .addLogoutHandler(customLogoutHandler)
-                        .logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler(HttpStatus.OK)))
-                .exceptionHandling(handler -> handler
-                        .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)));
+        http.csrf(AbstractHttpConfigurer::disable)
+            .cors(Customizer.withDefaults())
+            .authorizeHttpRequests(authorize -> authorize
+                    .requestMatchers(
+                            "/swagger-ui/**",
+                            "/v3/api-docs/**",
+                            "/swagger-resources/**",
+                            "/webjars/**",
+                            "/configuration/**",
+                            "/auth/**",
+                            "/account/list",
+                            "/academy/list")
+                    .permitAll()
+                    .requestMatchers(HttpMethod.POST, "/auth/renew").permitAll()
+                    .anyRequest().authenticated())
+            .httpBasic(Customizer.withDefaults())
+            .logout(logout -> logout
+                    .logoutUrl("/auth/logout")
+                    .addLogoutHandler(customLogoutHandler)
+                    .logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler(HttpStatus.OK)))
+            .exceptionHandling(handler -> handler
+                    .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)));
         // JWT 인증 필터 추가
         jwtRequestFilter.setUserDetailsService(userDetailsService);
-
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }

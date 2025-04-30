@@ -39,9 +39,7 @@ public class InstituteServiceImpl implements InstituteService {
      */
     @Override
     @Transactional
-    public InstituteDto.InstituteResponse create(
-            InstituteDto.CreateInstituteRequest createInstituteRequest
-    ) {
+    public InstituteDto.InstituteResponse create(InstituteDto.CreateInstituteRequest createInstituteRequest) {
         // 교육기관 등록
         Institute institute = instituteRepository.save(
                 instituteMapper.toEntity(
@@ -67,9 +65,7 @@ public class InstituteServiceImpl implements InstituteService {
      */
     @Override
     @Transactional(readOnly = true)
-    public InstituteDto.InstitutePageResponse find(
-            InstituteDto.FindInstituteRequest findInstituteRequest
-    ) {
+    public InstituteDto.InstitutePageResponse find(InstituteDto.FindInstituteRequest findInstituteRequest) {
         Page<Institute> page = instituteRepository.findAll(
                 InstituteSpecification.findWith(instituteMapper.toCriteria(findInstituteRequest)),
                 (findInstituteRequest.page() != null && findInstituteRequest.size() != null)
@@ -89,11 +85,7 @@ public class InstituteServiceImpl implements InstituteService {
                     return instituteMapper.toResponseDto(institute, chiefTeacher, branch);
                 })
                 .collect(Collectors.toList());
-        return new InstituteDto.InstitutePageResponse(
-                instituteResponses,
-                page.getTotalElements(),
-                page.getTotalPages()
-        );
+        return new InstituteDto.InstitutePageResponse(instituteResponses, page.getTotalElements(), page.getTotalPages());
     }
 
     /**
@@ -103,9 +95,7 @@ public class InstituteServiceImpl implements InstituteService {
      */
     @Override
     @Transactional(readOnly = true)
-    public InstituteDto.InstituteResponse findById(
-            Long instituteId
-    ) {
+    public InstituteDto.InstituteResponse findById(Long instituteId) {
         // 교육기관과 원장 교사, 지사 조회
         Institute institute = getInstitute(instituteId);
         Teacher chiefTeacher = teacherRepository.findByInstituteAndRole(institute, TeacherRole.CHIEF)
@@ -126,9 +116,7 @@ public class InstituteServiceImpl implements InstituteService {
      */
     @Override
     @Transactional(readOnly = true)
-    public Institute getInstitute(
-            Long instituteId
-    ) {
+    public Institute getInstitute(Long instituteId) {
         return instituteRepository.findById(instituteId)
                 .orElseThrow(() -> new EntityNotFoundException("교육기관이 존재하지 않습니다. id = " + instituteId));
     }
@@ -140,10 +128,7 @@ public class InstituteServiceImpl implements InstituteService {
      */
     @Override
     @Transactional
-    public void update(
-            Long instituteId,
-            InstituteDto.UpdateInstituteRequest updateInstituteRequest
-    ) {
+    public void update(Long instituteId, InstituteDto.UpdateInstituteRequest updateInstituteRequest) {
         // 수정할 교육기관 엔티티 조회
         Institute institute = getInstitute(instituteId);
         // UPDATE 도메인 메서드로 변환
@@ -173,9 +158,7 @@ public class InstituteServiceImpl implements InstituteService {
      */
     @Override
     @Transactional
-    public void delete(
-            Long instituteId
-    ) {
+    public void delete(Long instituteId) {
         instituteRepository.delete(getInstitute(instituteId));
     }
 }

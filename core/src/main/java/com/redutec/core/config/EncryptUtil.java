@@ -23,28 +23,24 @@ public class EncryptUtil {
      *
      * @param key Base64로 인코딩된 암호화 키
      */
-    public EncryptUtil(
-            @Value("${aes-256-key}") String key
-    ) {
+    public EncryptUtil(@Value("${aes-256-key}") String key) {
         this.secretKey = new SecretKeySpec(Base64.getDecoder().decode(key), ALGORITHM);
     }
 
     /**
      * 문자열을 AES 알고리즘을 사용해 암호화한 후, Base64로 인코딩하여 반환합니다.
      *
-     * @param data 암호화할 데이터 (평문)
+     * @param rawData 암호화할 데이터 (평문)
      * @return 암호화된 데이터 (Base64 인코딩된 문자열)
      */
-    public String encrypt(
-            String data
-    ) {
+    public String encrypt(String rawData) {
         try {
             var cipher = Cipher.getInstance(TRANSFORMATION);
             cipher.init(Cipher.ENCRYPT_MODE, secretKey);
-            var encryptedData = cipher.doFinal(data.getBytes());
+            var encryptedData = cipher.doFinal(rawData.getBytes());
             return Base64.getEncoder().encodeToString(encryptedData);
         } catch (Exception e) {
-            throw new RuntimeException("Error during encryption", e);
+            throw new RuntimeException("암호화 중 오류가 발생하였습니다.", e);
         }
     }
 
@@ -54,16 +50,14 @@ public class EncryptUtil {
      * @param encryptedData 암호화된 데이터 (Base64 인코딩된 문자열)
      * @return 복호화된 데이터 (평문)
      */
-    public String decrypt(
-            String encryptedData
-    ) {
+    public String decrypt(String encryptedData) {
         try {
             var cipher = Cipher.getInstance(TRANSFORMATION);
             cipher.init(Cipher.DECRYPT_MODE, secretKey);
             var decodedData = Base64.getDecoder().decode(encryptedData);
             return new String(cipher.doFinal(decodedData));
         } catch (Exception e) {
-            throw new RuntimeException("Error during decryption", e);
+            throw new RuntimeException("복호화 중 오류가 발생하였습니다.", e);
         }
     }
 }

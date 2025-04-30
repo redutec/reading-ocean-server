@@ -29,9 +29,7 @@ public class BookMapper {
      * @param createBookRequest 도서 생성에 필요한 데이터를 담은 DTO
      * @return 생성된 Book 엔티티
      */
-    public Book toEntity(
-            BookDto.CreateBookRequest createBookRequest
-    ) {
+    public Book toEntity(BookDto.CreateBookRequest createBookRequest) {
         // 커버 디자인 파일이 존재하는 경우 파일을 업로드하고 파일명을 가져오기(파일이 없으면 파일명은 null)
         String coverImageFIleName = Optional.ofNullable(createBookRequest.coverImageFile())
                 .filter(coverImageFile -> !coverImageFile.isEmpty())
@@ -80,9 +78,7 @@ public class BookMapper {
      *
      * @return 해당 요청의 필드를 이용해 생성된 BookCriteria 객체
      */
-    public BookCriteria toCriteria(
-            BookDto.FindBookRequest findBookRequest
-    ) {
+    public BookCriteria toCriteria(BookDto.FindBookRequest findBookRequest) {
         return new BookCriteria(
                 findBookRequest.bookIds(),
                 findBookRequest.isbn(),
@@ -118,9 +114,7 @@ public class BookMapper {
      * @param book 변환할 Book 엔티티 (null 가능)
      * @return Book 엔티티의 데이터를 담은 BookResponse DTO, book가 null이면 null 반환
      */
-    public BookDto.BookResponse toResponseDto(
-            Book book
-    ) {
+    public BookDto.BookResponse toResponseDto(Book book) {
         return Optional.ofNullable(book)
                 .map(b -> new BookDto.BookResponse(
                         b.getId(),

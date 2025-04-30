@@ -142,6 +142,7 @@ public class Student {
             Integer raq,
             SchoolGrade schoolGrade,
             Integer bookPoints,
+            BookMbti bookMbti,
             String description,
             Domain domain,
             Institute institute,
@@ -159,6 +160,7 @@ public class Student {
         this.raq = raq != null ? raq : this.raq;
         this.schoolGrade = schoolGrade != null ? schoolGrade : this.schoolGrade;
         this.bookPoints = bookPoints != null ? bookPoints : this.bookPoints;
+        this.bookMbti = bookMbti != null ? bookMbti : this.bookMbti;
         this.description = description != null ? description : this.description;
         this.domain = domain != null ? domain : this.domain;
         this.institute = institute != null ? institute : this.institute;

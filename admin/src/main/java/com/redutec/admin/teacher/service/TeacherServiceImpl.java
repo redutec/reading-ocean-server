@@ -37,9 +37,7 @@ public class TeacherServiceImpl implements TeacherService {
      */
     @Override
     @Transactional
-    public TeacherDto.TeacherResponse create(
-            TeacherDto.CreateTeacherRequest createTeacherRequest
-    ) {
+    public TeacherDto.TeacherResponse create(TeacherDto.CreateTeacherRequest createTeacherRequest) {
         return teacherMapper.toResponseDto(
                 teacherRepository.save(
                         teacherMapper.toEntity(
@@ -60,9 +58,7 @@ public class TeacherServiceImpl implements TeacherService {
      */
     @Override
     @Transactional(readOnly = true)
-    public TeacherDto.TeacherPageResponse find(
-            TeacherDto.FindTeacherRequest findTeacherRequest
-    ) {
+    public TeacherDto.TeacherPageResponse find(TeacherDto.FindTeacherRequest findTeacherRequest) {
         return teacherMapper.toPageResponseDto(teacherRepository.findAll(
                 TeacherSpecification.findWith(teacherMapper.toCriteria(findTeacherRequest)),
                 (findTeacherRequest.page() != null && findTeacherRequest.size() != null)
@@ -77,9 +73,7 @@ public class TeacherServiceImpl implements TeacherService {
      */
     @Override
     @Transactional(readOnly = true)
-    public TeacherDto.TeacherResponse findById(
-            Long teacherId
-    ) {
+    public TeacherDto.TeacherResponse findById(Long teacherId) {
         return teacherMapper.toResponseDto(getTeacher(teacherId));
     }
 
@@ -90,9 +84,7 @@ public class TeacherServiceImpl implements TeacherService {
      */
     @Override
     @Transactional(readOnly = true)
-    public Teacher getTeacher(
-            Long teacherId
-    ) {
+    public Teacher getTeacher(Long teacherId) {
         return teacherRepository.findById(teacherId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 교사입니다. id = " + teacherId));
     }
@@ -104,10 +96,7 @@ public class TeacherServiceImpl implements TeacherService {
      */
     @Override
     @Transactional
-    public void update(
-            Long teacherId,
-            TeacherDto.UpdateTeacherRequest updateTeacherRequest
-    ) {
+    public void update(Long teacherId, TeacherDto.UpdateTeacherRequest updateTeacherRequest) {
         // 수정할 교사 엔티티 조회
         Teacher teacher = getTeacher(teacherId);
         // 수정 요청 객체에 학원 ID가 있다면 학원 엔티티 조회(없으면 Null)
@@ -151,9 +140,7 @@ public class TeacherServiceImpl implements TeacherService {
      */
     @Override
     @Transactional
-    public void delete(
-            Long teacherId
-    ) {
+    public void delete(Long teacherId) {
         teacherRepository.delete(getTeacher(teacherId));
     }
 }

@@ -35,9 +35,7 @@ public class BranchServiceImpl implements BranchService {
      */
     @Override
     @Transactional
-    public BranchDto.BranchResponse create(
-            BranchDto.CreateBranchRequest createBranchRequest
-    ) {
+    public BranchDto.BranchResponse create(BranchDto.CreateBranchRequest createBranchRequest) {
         return branchMapper.toResponseDto(branchRepository.save(branchMapper.toEntity(createBranchRequest)));
     }
 
@@ -48,9 +46,7 @@ public class BranchServiceImpl implements BranchService {
      */
     @Override
     @Transactional(readOnly = true)
-    public BranchDto.BranchPageResponse find(
-            BranchDto.FindBranchRequest findBranchRequest
-    ) {
+    public BranchDto.BranchPageResponse find(BranchDto.FindBranchRequest findBranchRequest) {
         return branchMapper.toPageResponseDto(branchRepository.findAll(
                 BranchSpecification.findWith(branchMapper.toCriteria(findBranchRequest)),
                 (findBranchRequest.page() != null && findBranchRequest.size() != null)
@@ -65,9 +61,7 @@ public class BranchServiceImpl implements BranchService {
      */
     @Override
     @Transactional(readOnly = true)
-    public BranchDto.BranchResponse findById(
-            Long branchId
-    ) {
+    public BranchDto.BranchResponse findById(Long branchId) {
         return branchMapper.toResponseDto(getBranch(branchId));
     }
 
@@ -78,9 +72,7 @@ public class BranchServiceImpl implements BranchService {
      */
     @Override
     @Transactional(readOnly = true)
-    public Branch getBranch(
-            Long branchId
-    ) {
+    public Branch getBranch(Long branchId) {
         return branchRepository.findById(branchId)
                 .orElseThrow(() -> new EntityNotFoundException("지사를 찾을 수 없습니다. id = " + branchId));
     }
@@ -92,10 +84,7 @@ public class BranchServiceImpl implements BranchService {
      */
     @Override
     @Transactional
-    public void update(
-            Long branchId,
-            BranchDto.UpdateBranchRequest updateBranchRequest
-    ) {
+    public void update(Long branchId, BranchDto.UpdateBranchRequest updateBranchRequest) {
         // 수정할 지사 엔티티 조회
         Branch branch = getBranch(branchId);
         // 현재 비밀번호와 기존 비밀번호가 일치하면 진행. 다르다면 예외처리
@@ -141,9 +130,7 @@ public class BranchServiceImpl implements BranchService {
      */
     @Override
     @Transactional
-    public void delete(
-            Long branchId
-    ) {
+    public void delete(Long branchId) {
         branchRepository.delete(getBranch(branchId));
     }
 }

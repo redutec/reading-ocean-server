@@ -28,9 +28,7 @@ public class BranchMapper {
      * @param createBranchRequest 지사 생성에 필요한 데이터를 담은 DTO
      * @return 생성된 Branch 엔티티
      */
-    public Branch toEntity(
-            BranchDto.CreateBranchRequest createBranchRequest
-    ) {
+    public Branch toEntity(BranchDto.CreateBranchRequest createBranchRequest) {
         // 계약서 파일이 존재하는 경우 파일을 업로드하고 파일명을 가져오기(파일이 없으면 파일명은 null)
         String contractFileName = Optional.ofNullable(createBranchRequest.contractFile())
                 .filter(file -> !file.isEmpty())
@@ -64,9 +62,7 @@ public class BranchMapper {
      *
      * @return 해당 요청의 필드를 이용해 생성된 BranchCriteria 객체
      */
-    public BranchCriteria toCriteria(
-            BranchDto.FindBranchRequest findBranchRequest
-    ) {
+    public BranchCriteria toCriteria(BranchDto.FindBranchRequest findBranchRequest) {
         return new BranchCriteria(
                 findBranchRequest.branchIds(),
                 findBranchRequest.accountId(),
@@ -83,9 +79,7 @@ public class BranchMapper {
      * @param branch 변환할 Branch 엔티티 (null 가능)
      * @return Branch 엔티티의 데이터를 담은 BranchResponse DTO, branch가 null이면 null 반환
      */
-    public BranchDto.BranchResponse toResponseDto(
-            Branch branch
-    ) {
+    public BranchDto.BranchResponse toResponseDto(Branch branch) {
         return Optional.ofNullable(branch)
                 .map(br -> new BranchDto.BranchResponse(
                         br.getId(),

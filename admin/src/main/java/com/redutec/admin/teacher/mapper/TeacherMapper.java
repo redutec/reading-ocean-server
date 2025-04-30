@@ -52,9 +52,7 @@ public class TeacherMapper {
      *
      * @return 해당 요청의 필드를 이용해 생성된 TeacherCriteria 객체
      */
-    public TeacherCriteria toCriteria(
-            TeacherDto.FindTeacherRequest findTeacherRequest
-    ) {
+    public TeacherCriteria toCriteria(TeacherDto.FindTeacherRequest findTeacherRequest) {
         return new TeacherCriteria(
                 findTeacherRequest.teacherIds(),
                 findTeacherRequest.accountId(),
@@ -71,9 +69,7 @@ public class TeacherMapper {
      * @param teacher 변환할 Teacher 엔티티 (null 가능)
      * @return Teacher 엔티티의 데이터를 담은 TeacherResponse DTO, teacher가 null이면 null 반환
      */
-    public TeacherDto.TeacherResponse toResponseDto(
-            Teacher teacher
-    ) {
+    public TeacherDto.TeacherResponse toResponseDto(Teacher teacher) {
         return Optional.ofNullable(teacher)
                 .map(t -> new TeacherDto.TeacherResponse(
                         t.getId(),

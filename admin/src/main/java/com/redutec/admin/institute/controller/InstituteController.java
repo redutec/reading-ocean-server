@@ -39,9 +39,7 @@ public class InstituteController {
 
     @Operation(summary = "특정 교육기관 조회", description = "특정 교육기관를 조회하는 API")
     @GetMapping("/{instituteId}")
-    public ResponseEntity<ApiResponseBody> findById(
-            @PathVariable Long instituteId
-    ) {
+    public ResponseEntity<ApiResponseBody> findById(@PathVariable Long instituteId) {
         return apiResponseManager.success(instituteService.findById(instituteId));
     }
 

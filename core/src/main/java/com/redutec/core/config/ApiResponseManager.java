@@ -38,17 +38,14 @@ public class ApiResponseManager {
     /**
      * 공통 응답 빌드를 처리하는 메서드.
      *
-     * @param status HTTP 상태 코드
-     * @param data   응답에 포함할 데이터
+     * @param status  HTTP 상태 코드
+     * @param message 응답 메시지
+     * @param data    응답에 포함할 데이터
      * @return 상태 코드와 메시지를 포함한 응답 객체
      */
     private ResponseEntity<ApiResponseBody> buildResponse(HttpStatus status, String message, Object data) {
-        return ResponseEntity.status(status)
-                .body(new ApiResponseBody(
-                        status.value(),
-                        message,
-                        data
-                     )
-                );
+        return ResponseEntity
+                .status(status)
+                .body(new ApiResponseBody(status.value(), message, data));
     }
 }

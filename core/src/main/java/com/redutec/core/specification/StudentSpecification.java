@@ -11,9 +11,7 @@ import java.util.stream.Stream;
 import static com.redutec.core.config.SpecificationUtil.combinePredicate;
 
 public class StudentSpecification {
-    public static Specification<Student> findWith(
-            StudentCriteria studentCriteria
-    ) {
+    public static Specification<Student> findWith(StudentCriteria studentCriteria) {
         return (root, query, criteriaBuilder) -> {
             // 각 조건에 맞는 Optional<Predicate> 생성
             Stream<Optional<Predicate>> predicateStream = Stream.of(

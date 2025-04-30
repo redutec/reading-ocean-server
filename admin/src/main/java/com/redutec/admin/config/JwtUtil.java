@@ -15,16 +15,11 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
@@ -92,9 +87,7 @@ public class JwtUtil {
      * @return JWT Claims 맵 객체
      */
     @Transactional(readOnly = true)
-    protected AuthenticationDto.AuthenticatedAdminUser buildJwtClaims(
-            AdminUser adminUser
-    ) {
+    protected AuthenticationDto.AuthenticatedAdminUser buildJwtClaims(AdminUser adminUser) {
         // 현재 접속한 어드민 사용자가 접근할 수 있는 메뉴 목록 조회
         List<Long> accessibleMenus = adminMenuRepository.findAllByAccessibleRolesContains(adminUser.getRole()).stream()
                 .map(AdminMenu::getId)
@@ -116,9 +109,7 @@ public class JwtUtil {
      * @return 생성된 Access Token
      */
     @Transactional(readOnly = true)
-    public String generateAccessToken(
-            AdminUser adminUser
-    ) {
+    public String generateAccessToken(AdminUser adminUser) {
         // 어드민 사용자 엔티티를 JWT Claims Map으로 변환
         Map<String, Object> claims = new ObjectMapper().convertValue(buildJwtClaims(adminUser), new TypeReference<>() {});
         return Jwts.builder()
@@ -155,11 +146,7 @@ public class JwtUtil {
      * @param refreshToken Refresh Token
      * @param username 계정 로그인 아이디
      */
-    public void saveRefreshToken(
-            String refreshToken,
-            String username,
-            Domain domain
-    ) {
+    public void saveRefreshToken(String refreshToken, String username, Domain domain) {
         RefreshToken refreshTokenEntity = RefreshToken.builder()
                 .token(refreshToken)
                 .username(username)
@@ -175,9 +162,7 @@ public class JwtUtil {
      * @param token JWT 토큰
      * @return 토큰에서 추출된 어드민 사용자 로그인 계정
      */
-    public String extractUsername(
-            String token
-    ) {
+    public String extractUsername(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()
@@ -192,9 +177,7 @@ public class JwtUtil {
      * @param token JWT 토큰
      * @return 토큰이 유효하면 true, 그렇지 않으면 false
      */
-    public boolean validateToken(
-            String token
-    ) {
+    public boolean validateToken(String token) {
         try {
             var claims = Jwts.parserBuilder()
                     .setSigningKey(key)
@@ -215,30 +198,11 @@ public class JwtUtil {
      * @param request HttpServletRequest 정보
      * @return JWT 토큰
      */
-    public String extractTokenFromRequest(
-            HttpServletRequest request
-    ) {
+    public String extractTokenFromRequest(HttpServletRequest request) {
         var authorizationHeader = request.getHeader("Authorization");
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             return authorizationHeader.substring(7); // "Bearer " 부분을 제거하고 실제 토큰을 반환
         }
         return null;
-    }
-
-    public AdminUser getCurrentAdminUser() {
-        var authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || !authentication.isAuthenticated()) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Unauthorized");
-        }
-        Object principal = authentication.getPrincipal();
-        if (principal instanceof AdminUser adminUser) {
-            return adminUser;
-        }
-        // User나 String 타입 모두에서 이메일 문자열 추출
-        String email = principal instanceof User user
-                ? user.getUsername()
-                : principal.toString();
-        return adminUserRepository.findByEmail(email)
-                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 어드민 사용자입니다. email = " + email));
     }
 }

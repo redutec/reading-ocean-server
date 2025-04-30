@@ -39,9 +39,7 @@ public class BookGroupController {
 
     @Operation(summary = "특정 도서 그룹 조회", description = "특정 도서 그룹를 조회하는 API")
     @GetMapping("/{bookGroupId}")
-    public ResponseEntity<ApiResponseBody> findById(
-            @PathVariable Long bookGroupId
-    ) {
+    public ResponseEntity<ApiResponseBody> findById(@PathVariable Long bookGroupId) {
         return apiResponseManager.success(bookGroupService.findById(bookGroupId));
     }
 

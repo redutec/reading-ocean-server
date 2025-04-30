@@ -58,9 +58,7 @@ public class StudentMapper {
      *
      * @return 해당 요청의 필드를 이용해 생성된 StudentCriteria 객체
      */
-    public StudentCriteria toCriteria(
-            StudentDto.FindStudentRequest findStudentRequest
-    ) {
+    public StudentCriteria toCriteria(StudentDto.FindStudentRequest findStudentRequest) {
         return new StudentCriteria(
                 findStudentRequest.studentIds(),
                 findStudentRequest.accountId(),
@@ -77,9 +75,7 @@ public class StudentMapper {
      * @param student 변환할 Student 엔티티 (null 가능)
      * @return Student 엔티티의 데이터를 담은 StudentResponse DTO, student가 null이면 null 반환
      */
-    public StudentDto.StudentResponse toResponseDto(
-            Student student
-    ) {
+    public StudentDto.StudentResponse toResponseDto(Student student) {
         return Optional.ofNullable(student)
                 .map(s -> new StudentDto.StudentResponse(
                         s.getId(),
@@ -94,6 +90,7 @@ public class StudentMapper {
                         s.getRaq(),
                         s.getSchoolGrade(),
                         s.getBookPoints(),
+                        s.getBookMbti(),
                         s.getLastLoginIp(),
                         s.getLastLoginAt(),
                         s.getDescription(),

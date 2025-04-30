@@ -18,10 +18,11 @@ import java.util.UUID;
 @Slf4j
 public class RequestLoggingFilter extends OncePerRequestFilter {
     @Override
-    protected void doFilterInternal(HttpServletRequest request,
-                                    @NonNull HttpServletResponse response,
-                                    @NonNull FilterChain chain)
-            throws ServletException, IOException {
+    protected void doFilterInternal(
+            HttpServletRequest request,
+            @NonNull HttpServletResponse response,
+            @NonNull FilterChain chain
+    ) throws ServletException, IOException {
         MDC.put("requestId", UUID.randomUUID().toString());
         long start = System.currentTimeMillis();
         var uri = request.getRequestURI() + (request.getQueryString() != null ? "?" + request.getQueryString() : "");

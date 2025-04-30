@@ -47,19 +47,24 @@ public class BookDto {
             @Schema(description = "커버 이미지 파일", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
             MultipartFile coverImageFile,
 
-            @Schema(description = "추천 도서 여부", requiredMode = Schema.RequiredMode.NOT_REQUIRED, example = "false")
+            @Schema(description = "추천 도서 여부", requiredMode = Schema.RequiredMode.REQUIRED, example = "false")
+            @NotNull
             Boolean recommended,
 
-            @Schema(description = "전자책 제공 여부", requiredMode = Schema.RequiredMode.NOT_REQUIRED, example = "false")
+            @Schema(description = "전자책 제공 여부", requiredMode = Schema.RequiredMode.REQUIRED, example = "false")
+            @NotNull
             Boolean ebookAvailable,
 
-            @Schema(description = "오디오북 제공 여부", requiredMode = Schema.RequiredMode.NOT_REQUIRED, example = "false")
+            @Schema(description = "오디오북 제공 여부", requiredMode = Schema.RequiredMode.REQUIRED, example = "false")
+            @NotNull
             Boolean audiobookAvalable,
 
-            @Schema(description = "노출 여부", requiredMode = Schema.RequiredMode.NOT_REQUIRED, example = "true")
+            @Schema(description = "노출 여부", requiredMode = Schema.RequiredMode.REQUIRED, example = "true")
+            @NotNull
             Boolean visible,
 
-            @Schema(description = "사용 여부", requiredMode = Schema.RequiredMode.NOT_REQUIRED, example = "true")
+            @Schema(description = "사용 여부", requiredMode = Schema.RequiredMode.REQUIRED, example = "true")
+            @NotNull
             Boolean enabled,
 
             @Schema(description = "전체 페이지 수", requiredMode = Schema.RequiredMode.NOT_REQUIRED)

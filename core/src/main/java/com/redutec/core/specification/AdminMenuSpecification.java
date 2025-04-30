@@ -11,9 +11,7 @@ import java.util.stream.Stream;
 import static com.redutec.core.config.SpecificationUtil.combinePredicate;
 
 public class AdminMenuSpecification {
-    public static Specification<AdminMenu> findWith(
-            AdminMenuCriteria adminMenuCriteria
-    ) {
+    public static Specification<AdminMenu> findWith(AdminMenuCriteria adminMenuCriteria) {
         return (root, query, criteriaBuilder) -> {
             // 각 조건에 맞는 Optional<Predicate> 생성
             Stream<Optional<Predicate>> predicateStream = Stream.of(

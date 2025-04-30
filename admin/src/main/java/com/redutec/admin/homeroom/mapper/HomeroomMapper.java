@@ -22,10 +22,7 @@ public class HomeroomMapper {
      * @param createHomeroomRequest 교육기관 생성에 필요한 데이터를 담은 DTO
      * @return 생성된 Institute 엔티티
      */
-    public Homeroom toEntity(
-            HomeroomDto.CreateHomeroomRequest createHomeroomRequest,
-            Institute institute
-    ) {
+    public Homeroom toEntity(HomeroomDto.CreateHomeroomRequest createHomeroomRequest, Institute institute) {
         return Homeroom.builder()
                 .name(createHomeroomRequest.name())
                 .institute(institute)
@@ -40,9 +37,7 @@ public class HomeroomMapper {
      *
      * @return 해당 요청의 필드를 이용해 생성된 InstituteCriteria 객체
      */
-    public HomeroomCriteria toCriteria(
-            HomeroomDto.FindHomeroomRequest findHomeroomRequest
-    ) {
+    public HomeroomCriteria toCriteria(HomeroomDto.FindHomeroomRequest findHomeroomRequest) {
         return new HomeroomCriteria(
                 findHomeroomRequest.homeroomIds(),
                 findHomeroomRequest.name(),
@@ -58,9 +53,7 @@ public class HomeroomMapper {
      * @param homeroom 변환할 Institute 엔티티 (null 가능)
      * @return Homeroom 엔티티의 데이터를 담은 HomeroomResponse DTO, homeroom가 null이면 null 반환
      */
-    public HomeroomDto.HomeroomResponse toResponseDto(
-            Homeroom homeroom
-    ) {
+    public HomeroomDto.HomeroomResponse toResponseDto(Homeroom homeroom) {
         return Optional.ofNullable(homeroom)
                 .map(ic -> new HomeroomDto.HomeroomResponse(
                         ic.getId(),

@@ -13,11 +13,8 @@ import static com.redutec.core.config.SpecificationUtil.combinePredicate;
 
 @Slf4j
 public class AdminUserSpecification {
-    public static Specification<AdminUser> findWith(
-            AdminUserCriteria adminUserCriteria
-    ) {
+    public static Specification<AdminUser> findWith(AdminUserCriteria adminUserCriteria) {
         return (root, query, criteriaBuilder) -> {
-            log.info("email: {}", adminUserCriteria.email());
             // 각 조건에 맞는 Optional<Predicate> 생성
             Stream<Optional<Predicate>> predicateStream = Stream.of(
                     Optional.ofNullable(adminUserCriteria.adminUserIds())

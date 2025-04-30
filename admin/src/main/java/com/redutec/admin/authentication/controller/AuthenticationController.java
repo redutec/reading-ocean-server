@@ -36,9 +36,7 @@ public class AuthenticationController {
      */
     @Operation(summary = "로그인", description = "로그인 후 JWT Access Token과 Refresh Token을 발급하는 API")
     @PostMapping("/login")
-    public ResponseEntity<ApiResponseBody> login(
-            @ParameterObject AuthenticationDto.LoginRequest loginRequest
-    ) {
+    public ResponseEntity<ApiResponseBody> login(@ParameterObject AuthenticationDto.LoginRequest loginRequest) {
         return apiResponseManager.success(authenticationService.login(loginRequest));
     }
 
