@@ -32,9 +32,10 @@ public class StudentSubscription extends Subscription {
             SubscriptionPlan subscriptionPlan,
             LocalDateTime startedAt,
             LocalDateTime endedAt,
+            LocalDateTime nextPaymentAt,
             Student student
     ) {
-        super.updateSubscription(subscriptionPlan, startedAt, endedAt);
+        super.updateSubscription(subscriptionPlan, startedAt, endedAt, nextPaymentAt);
         this.student = Optional.ofNullable(student).orElse(this.student);
     }
 }

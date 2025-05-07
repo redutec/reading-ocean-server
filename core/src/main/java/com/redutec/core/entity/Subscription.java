@@ -27,7 +27,12 @@ public abstract class Subscription {
     private LocalDateTime startedAt;
 
     @Comment("종료일")
+    @Column
     private LocalDateTime endedAt;
+
+    @Comment("다음 결제일")
+    @Column
+    private LocalDateTime nextPaymentAt;
 
     @CreatedDate
     @Column(nullable = false, updatable = false)
@@ -40,10 +45,12 @@ public abstract class Subscription {
     protected void updateSubscription(
             SubscriptionPlan subscriptionPlan,
             LocalDateTime startedAt,
-            LocalDateTime endedAt
+            LocalDateTime endedAt,
+            LocalDateTime nextPaymentAt
     ) {
         this.subscriptionPlan = Optional.ofNullable(subscriptionPlan).orElse(this.subscriptionPlan);
         this.startedAt = Optional.ofNullable(startedAt).orElse(this.startedAt);
         this.endedAt = Optional.ofNullable(endedAt).orElse(this.endedAt);
+        this.nextPaymentAt = Optional.ofNullable(nextPaymentAt).orElse(this.nextPaymentAt);
     }
 }

@@ -35,9 +35,10 @@ public class InstituteSubscription extends Subscription {
             SubscriptionPlan subscriptionPlan,
             LocalDateTime startedAt,
             LocalDateTime endedAt,
+            LocalDateTime nextPaymentAt,
             Institute institute
     ) {
-        super.updateSubscription(subscriptionPlan, startedAt, endedAt);
+        super.updateSubscription(subscriptionPlan, startedAt, endedAt, nextPaymentAt);
         this.institute = Optional.ofNullable(institute).orElse(this.institute);
     }
 }
