@@ -1,7 +1,7 @@
 package com.redutec.admin.subscription.institute.service;
 
 import com.redutec.admin.subscription.institute.dto.SubscriptionInstituteDto;
-import com.redutec.core.entity.InstituteSubscription;
+import com.redutec.core.entity.SubscriptionInstitute;
 
 public interface SubscriptionInstituteService {
     /**
@@ -30,7 +30,7 @@ public interface SubscriptionInstituteService {
      * @param subscriptionInstituteId 구독 상품 고유번호
      * @return 특정 구독 상품 엔티티 객체
      */
-    InstituteSubscription getSubscriptionInstitute(Long subscriptionInstituteId);
+    SubscriptionInstitute getSubscriptionInstitute(Long subscriptionInstituteId);
 
     /**
      * 특정 구독 상품 수정

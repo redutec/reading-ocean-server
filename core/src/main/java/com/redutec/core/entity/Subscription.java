@@ -1,6 +1,10 @@
 package com.redutec.core.entity;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.Comment;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -10,7 +14,10 @@ import java.util.Optional;
 
 import static jakarta.persistence.FetchType.LAZY;
 
+@SuperBuilder
 @MappedSuperclass
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class Subscription {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

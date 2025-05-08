@@ -1,11 +1,12 @@
 package com.redutec.admin.subscription.institute.service;
 
-import com.redutec.admin.subscription.plan.dto.SubscriptionPlanDto;
-import com.redutec.admin.subscription.plan.mapper.SubscriptionPlanMapper;
+import com.redutec.admin.institute.service.InstituteService;
+import com.redutec.admin.subscription.institute.dto.SubscriptionInstituteDto;
+import com.redutec.admin.subscription.institute.mapper.SubscriptionInstituteMapper;
 import com.redutec.admin.subscription.plan.service.SubscriptionPlanService;
-import com.redutec.core.entity.SubscriptionPlan;
-import com.redutec.core.repository.SubscriptionPlanRepository;
-import com.redutec.core.specification.SubscriptionPlanSpecification;
+import com.redutec.core.entity.SubscriptionInstitute;
+import com.redutec.core.repository.SubscriptionInstituteRepository;
+import com.redutec.core.specification.SubscriptionInstituteSpecification;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,104 +15,114 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 @Slf4j
 @AllArgsConstructor
-public class SubscriptionInstituteServiceImpl implements SubscriptionPlanService {
-    private final SubscriptionPlanMapper subscriptionPlanMapper;
-    private final SubscriptionPlanRepository subscriptionPlanRepository;
+public class SubscriptionInstituteServiceImpl implements SubscriptionInstituteService {
+    private final SubscriptionPlanService subscriptionPlanService;
+    private final InstituteService instituteService;
+    private final SubscriptionInstituteMapper subscriptionInstituteMapper;
+    private final SubscriptionInstituteRepository subscriptionInstituteRepository;
 
     /**
-     * 구독 상품 등록
-     * @param createSubscriptionPlanRequest 구독 상품 등록 정보를 담은 DTO
-     * @return 등록된 구독 상품 정보
+     * 구독(교육기관) 등록
+     * @param createSubscriptionInstituteRequest 구독(교육기관) 등록 정보를 담은 DTO
+     * @return 등록된 구독(교육기관) 정보
      */
     @Override
     @Transactional
-    public SubscriptionPlanDto.SubscriptionPlanResponse create(
-            SubscriptionPlanDto.CreateSubscriptionPlanRequest createSubscriptionPlanRequest
+    public SubscriptionInstituteDto.SubscriptionInstituteResponse create(
+            SubscriptionInstituteDto.CreateSubscriptionInstituteRequest createSubscriptionInstituteRequest
     ) {
-        return subscriptionPlanMapper.toResponseDto(
-                subscriptionPlanRepository.save(
-                        subscriptionPlanMapper.toEntity(createSubscriptionPlanRequest)
+        return subscriptionInstituteMapper.toResponseDto(
+                subscriptionInstituteRepository.save(
+                        subscriptionInstituteMapper.toEntity(
+                                createSubscriptionInstituteRequest,
+                                subscriptionPlanService.getSubscriptionPlan(createSubscriptionInstituteRequest.subscriptionPlanId()),
+                                instituteService.getInstitute(createSubscriptionInstituteRequest.instituteId())
+                        )
                 )
         );
     }
 
     /**
-     * 조건에 맞는 구독 상품 목록 조회
-     * @param findSubscriptionPlanRequest 조회 조건을 담은 DTO
-     * @return 조회된 구독 상품 목록 및 페이징 정보
+     * 조건에 맞는 구독(교육기관) 목록 조회
+     * @param findSubscriptionInstituteRequest 조회 조건을 담은 DTO
+     * @return 조회된 구독(교육기관) 목록 및 페이징 정보
      */
     @Override
     @Transactional(readOnly = true)
-    public SubscriptionPlanDto.SubscriptionPlanPageResponse find(
-            SubscriptionPlanDto.FindSubscriptionPlanRequest findSubscriptionPlanRequest
+    public SubscriptionInstituteDto.SubscriptionInstitutePageResponse find(
+            SubscriptionInstituteDto.FindSubscriptionInstituteRequest findSubscriptionInstituteRequest
     ) {
-        return subscriptionPlanMapper.toPageResponseDto(subscriptionPlanRepository.findAll(
-                SubscriptionPlanSpecification.findWith(subscriptionPlanMapper.toCriteria(findSubscriptionPlanRequest)),
-                (findSubscriptionPlanRequest.page() != null && findSubscriptionPlanRequest.size() != null)
-                        ? PageRequest.of(findSubscriptionPlanRequest.page(), findSubscriptionPlanRequest.size())
+        return subscriptionInstituteMapper.toPageResponseDto(subscriptionInstituteRepository.findAll(
+                SubscriptionInstituteSpecification.findWith(subscriptionInstituteMapper.toCriteria(findSubscriptionInstituteRequest)),
+                (findSubscriptionInstituteRequest.page() != null && findSubscriptionInstituteRequest.size() != null)
+                        ? PageRequest.of(findSubscriptionInstituteRequest.page(), findSubscriptionInstituteRequest.size())
                         : Pageable.unpaged()));
     }
 
     /**
-     * 특정 구독 상품 조회
-     * @param subscriptionPlanId 구독 상품 고유번호
-     * @return 특정 구독 상품 응답 객체
+     * 특정 구독(교육기관) 조회
+     * @param subscriptionInstituteId 구독(교육기관) 고유번호
+     * @return 특정 구독(교육기관) 응답 객체
      */
     @Override
     @Transactional(readOnly = true)
-    public SubscriptionPlanDto.SubscriptionPlanResponse findById(Long subscriptionPlanId) {
-        return subscriptionPlanMapper.toResponseDto(getSubscriptionPlan(subscriptionPlanId));
+    public SubscriptionInstituteDto.SubscriptionInstituteResponse findById(Long subscriptionInstituteId) {
+        return subscriptionInstituteMapper.toResponseDto(getSubscriptionInstitute(subscriptionInstituteId));
     }
 
     /**
-     * 특정 구독 상품 엔티티 조회
-     * @param subscriptionPlanId 구독 상품 고유번호
-     * @return 특정 구독 상품 엔티티 객체
+     * 특정 구독(교육기관) 엔티티 조회
+     * @param subscriptionInstituteId 구독(교육기관) 고유번호
+     * @return 특정 구독(교육기관) 엔티티 객체
      */
     @Override
     @Transactional(readOnly = true)
-    public SubscriptionPlan getSubscriptionPlan(Long subscriptionPlanId) {
-        return subscriptionPlanRepository.findById(subscriptionPlanId)
-                .orElseThrow(() -> new EntityNotFoundException("구독 상품를 찾을 수 없습니다. id = " + subscriptionPlanId));
+    public SubscriptionInstitute getSubscriptionInstitute(Long subscriptionInstituteId) {
+        return subscriptionInstituteRepository.findById(subscriptionInstituteId)
+                .orElseThrow(() -> new EntityNotFoundException("구독(교육기관)를 찾을 수 없습니다. id = " + subscriptionInstituteId));
     }
 
     /**
-     * 특정 구독 상품 수정
-     * @param subscriptionPlanId 수정할 구독 상품의 ID
-     * @param updateSubscriptionPlanRequest 수정할 정보를 담은 DTO
+     * 특정 구독(교육기관) 수정
+     * @param subscriptionInstituteId 수정할 구독(교육기관)의 ID
+     * @param updateSubscriptionInstituteRequest 수정할 정보를 담은 DTO
      */
     @Override
     @Transactional
     public void update(
-            Long subscriptionPlanId,
-            SubscriptionPlanDto.UpdateSubscriptionPlanRequest updateSubscriptionPlanRequest
+            Long subscriptionInstituteId,
+            SubscriptionInstituteDto.UpdateSubscriptionInstituteRequest updateSubscriptionInstituteRequest
     ) {
-        // 수정할 구독 상품 엔티티 조회
-        SubscriptionPlan subscriptionPlan = getSubscriptionPlan(subscriptionPlanId);
+        // 수정할 구독(교육기관) 엔티티 조회
+        SubscriptionInstitute subscriptionInstitute = getSubscriptionInstitute(subscriptionInstituteId);
         // UPDATE 도메인 메서드로 변환
-        subscriptionPlan.updateSubscriptionPlan(
-                updateSubscriptionPlanRequest.name(),
-                updateSubscriptionPlanRequest.details(),
-                updateSubscriptionPlanRequest.price(),
-                updateSubscriptionPlanRequest.discountPercentage(),
-                updateSubscriptionPlanRequest.durationDays(),
-                updateSubscriptionPlanRequest.status(),
-                updateSubscriptionPlanRequest.autoRenew()
+        subscriptionInstitute.updateSubscriptionInstitute(
+                Optional.ofNullable(updateSubscriptionInstituteRequest.subscriptionPlanId())
+                        .map(subscriptionPlanService::getSubscriptionPlan)
+                        .orElse(null),
+                updateSubscriptionInstituteRequest.startedAt(),
+                updateSubscriptionInstituteRequest.endedAt(),
+                updateSubscriptionInstituteRequest.nextPaymentAt(),
+                Optional.ofNullable(updateSubscriptionInstituteRequest.instituteId())
+                        .map(instituteService::getInstitute)
+                        .orElse(null)
         );
-        // 구독 상품 엔티티 UPDATE
-        subscriptionPlanRepository.save(subscriptionPlan);
+        // 구독(교육기관) 엔티티 UPDATE
+        subscriptionInstituteRepository.save(subscriptionInstitute);
     }
 
     /**
-     * 특정 구독 상품 삭제
-     * @param subscriptionPlanId 삭제할 구독 상품의 ID
+     * 특정 구독(교육기관) 삭제
+     * @param subscriptionInstituteId 삭제할 구독(교육기관)의 ID
      */
     @Override
     @Transactional
-    public void delete(Long subscriptionPlanId) {
-        subscriptionPlanRepository.delete(getSubscriptionPlan(subscriptionPlanId));
+    public void delete(Long subscriptionInstituteId) {
+        subscriptionInstituteRepository.delete(getSubscriptionInstitute(subscriptionInstituteId));
     }
 }

@@ -40,7 +40,7 @@ public class SubscriptionInstituteController {
     }
 
     @Operation(summary = "특정 구독(교육기관) 수정", description = "특정 구독(교육기관) 정보를 수정하는 API")
-    @PatchMapping("/{InstituteSubscriptionId}")
+    @PatchMapping("/{subscriptionInstituteId}")
     public ResponseEntity<ApiResponseBody> update(
             @Parameter(description = "구독(교육기관) ID") @PathVariable Long subscriptionInstituteId,
             @ParameterObject @Valid SubscriptionInstituteDto.UpdateSubscriptionInstituteRequest updateSubscriptionInstituteRequest
@@ -50,7 +50,7 @@ public class SubscriptionInstituteController {
     }
 
     @Operation(summary = "특정 구독(교육기관) 삭제", description = "특정 구독(교육기관) 정보를 삭제하는 API")
-    @DeleteMapping("/{InstituteSubscriptionId}")
+    @DeleteMapping("/{subscriptionInstituteId}")
     public ResponseEntity<ApiResponseBody> delete(@Parameter(description = "구독(교육기관) ID") @PathVariable Long subscriptionInstituteId) {
         subscriptionInstituteService.delete(subscriptionInstituteId);
         return apiResponseManager.success(null);

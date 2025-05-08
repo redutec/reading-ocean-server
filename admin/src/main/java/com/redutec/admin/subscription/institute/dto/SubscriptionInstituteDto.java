@@ -1,5 +1,6 @@
 package com.redutec.admin.subscription.institute.dto;
 
+import com.redutec.core.meta.SubscriptionPlanStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -75,15 +76,17 @@ public class SubscriptionInstituteDto {
     @Schema(description = "구독(교육기관) 응답 객체")
     public record SubscriptionInstituteResponse(
             Long subscriptionInstituteId,
-
-
-
-            
-
-
-
-
-
+            LocalDateTime startedAt,
+            LocalDateTime endedAt,
+            LocalDateTime nextPaymentAt,
+            Long subscriptionPlanId,
+            String subscriptionPlanName,
+            String subscriptionPlanDetails,
+            Integer price,
+            Integer discountPercentage,
+            Integer durationDays,
+            SubscriptionPlanStatus subscriptionPlanStatus,
+            Boolean autoRenew,
             LocalDateTime createdAt,
             LocalDateTime updatedAt
     ) {}

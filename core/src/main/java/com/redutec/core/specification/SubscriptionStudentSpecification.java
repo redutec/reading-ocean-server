@@ -1,7 +1,7 @@
 package com.redutec.core.specification;
 
-import com.redutec.core.criteria.StudentSubscriptionCriteria;
-import com.redutec.core.entity.StudentSubscription;
+import com.redutec.core.criteria.SubscriptionStudentCriteria;
+import com.redutec.core.entity.SubscriptionStudent;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -10,18 +10,18 @@ import java.util.stream.Stream;
 
 import static com.redutec.core.config.SpecificationUtil.combinePredicate;
 
-public class StudentSubscriptionSpecification {
-    public static Specification<StudentSubscription> findWith(StudentSubscriptionCriteria studentSubscriptionCriteria) {
+public class SubscriptionStudentSpecification {
+    public static Specification<SubscriptionStudent> findWith(SubscriptionStudentCriteria subscriptionStudentCriteria) {
         return (root, query, criteriaBuilder) -> {
             // 각 조건에 맞는 Optional<Predicate> 생성
             Stream<Optional<Predicate>> predicateStream = Stream.of(
-                    Optional.ofNullable(studentSubscriptionCriteria.studentSubscriptionIds())
-                            .filter(studentSubscriptionIds -> !studentSubscriptionIds.isEmpty())
-                            .map(studentSubscriptionIds -> root.get("id").in(studentSubscriptionIds)),
-                    Optional.ofNullable(studentSubscriptionCriteria.subscriptionPlanIds())
+                    Optional.ofNullable(subscriptionStudentCriteria.subscriptionStudentIds())
+                            .filter(subscriptionStudentIds -> !subscriptionStudentIds.isEmpty())
+                            .map(subscriptionStudentIds -> root.get("id").in(subscriptionStudentIds)),
+                    Optional.ofNullable(subscriptionStudentCriteria.subscriptionPlanIds())
                             .filter(subscriptionPlanIds -> !subscriptionPlanIds.isEmpty())
                             .map(subscriptionPlanIds -> root.get("subscriptionPlanId").in(subscriptionPlanIds)),
-                    Optional.ofNullable(studentSubscriptionCriteria.studentIds())
+                    Optional.ofNullable(subscriptionStudentCriteria.studentIds())
                             .filter(studentIds -> !studentIds.isEmpty())
                             .map(studentIds -> root.get("student").in(studentIds))
             );

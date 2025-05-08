@@ -4,10 +4,10 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -18,27 +18,26 @@ import java.util.Optional;
 import static jakarta.persistence.FetchType.LAZY;
 
 @Entity
-@Comment("구독(교육기관)")
+@Comment("구독(학생)")
 @DynamicUpdate
 @Getter
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
+@SuperBuilder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
-public class InstituteSubscription extends Subscription {
-    @Comment("구독자(교육기관)")
+public class SubscriptionStudent extends Subscription {
+    @Comment("구독자(학생)")
     @ManyToOne(fetch = LAZY, optional = false)
     @JoinColumn
-    private Institute institute;
+    private Student student;
 
-    public void updateInstituteSubscription(
+    public void updateStudentSubscription(
             SubscriptionPlan subscriptionPlan,
             LocalDateTime startedAt,
             LocalDateTime endedAt,
             LocalDateTime nextPaymentAt,
-            Institute institute
+            Student student
     ) {
         super.updateSubscription(subscriptionPlan, startedAt, endedAt, nextPaymentAt);
-        this.institute = Optional.ofNullable(institute).orElse(this.institute);
+        this.student = Optional.ofNullable(student).orElse(this.student);
     }
 }
