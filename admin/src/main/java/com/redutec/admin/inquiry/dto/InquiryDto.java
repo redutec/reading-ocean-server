@@ -1,14 +1,14 @@
 package com.redutec.admin.inquiry.dto;
 
 import com.redutec.core.meta.Domain;
+import com.redutec.core.meta.InquirerType;
+import com.redutec.core.meta.InquiryCategory;
+import com.redutec.core.meta.InquiryStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.PositiveOrZero;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -16,31 +16,48 @@ import java.util.List;
 public class InquiryDto {
     @Schema(description = "고객문의 등록 요청 객체")
     public record CreateInquiryRequest(
-            @Schema(description = "노출 도메인", requiredMode = Schema.RequiredMode.REQUIRED)
+            @Schema(description = "서비스 도메인", requiredMode = Schema.RequiredMode.REQUIRED)
             @NotNull
             @Enumerated(EnumType.STRING)
             Domain domain,
+
+            @Schema(description = "문의자 구분(학생/교사/비회원)", requiredMode = Schema.RequiredMode.REQUIRED)
+            @NotNull
+            @Enumerated(EnumType.STRING)
+            InquirerType inquirerType,
+
+            @Schema(description = "문의 유형(예: 리딩오션, 기술지원 등)", requiredMode = Schema.RequiredMode.REQUIRED)
+            @NotNull
+            @Enumerated(EnumType.STRING)
+            InquiryCategory category,
+
+            @Schema(description = "처리 상태(응답대기/처리중/응답완료/종료)", requiredMode = Schema.RequiredMode.REQUIRED)
+            @NotNull
+            @Enumerated(EnumType.STRING)
+            InquiryStatus status,
+
+            @Schema(description = "문의자 로그인 아이디(STUDENT 또는 TEACHER)", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+            @Size(max = 20)
+            String inquirerAccountId,
+
+            @Schema(description = "문의자 이메일(비로그인 문의자 전용)", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+            @Email
+            String guestEmail,
+
+            @Schema(description = "답변자 로그인 아이디", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+            @Size(max = 20)
+            String responderAccountId,
 
             @Schema(description = "제목", requiredMode = Schema.RequiredMode.REQUIRED)
             @NotNull
             @Size(max = 100)
             String title,
 
-            @Schema(description = "내용", requiredMode = Schema.RequiredMode.REQUIRED)
-            @NotNull
+            @Schema(description = "내용", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
             String content,
 
-            @Schema(description = "노출 여부", requiredMode = Schema.RequiredMode.REQUIRED, example = "true")
-            @NotNull
-            Boolean visible,
-
-            @Schema(description = "노출 시작일시", requiredMode = Schema.RequiredMode.REQUIRED)
-            @NotNull
-            LocalDateTime visibleStartAt,
-
-            @Schema(description = "노출 종료일시", requiredMode = Schema.RequiredMode.REQUIRED)
-            @NotNull
-            LocalDateTime visibleEndAt
+            @Schema(description = "답변", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+            String response
     ) {}
 
     @Schema(description = "고객문의 조회 요청 객체")
@@ -48,10 +65,37 @@ public class InquiryDto {
             @Schema(description = "고객문의 ID", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
             List<@Positive Long> inquiryIds,
 
-            @Schema(description = "노출 도메인", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+            @Schema(description = "서비스 도메인", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
             @ElementCollection(targetClass = Domain.class)
             @Enumerated(EnumType.STRING)
             List<Domain> domains,
+
+            @Schema(description = "서비스 도메인", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+            @ElementCollection(targetClass = InquirerType.class)
+            @Enumerated(EnumType.STRING)
+            List<InquirerType> inquirerTypes,
+
+            @Schema(description = "서비스 도메인", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+            @ElementCollection(targetClass = InquiryCategory.class)
+            @Enumerated(EnumType.STRING)
+            List<InquiryCategory> categories,
+
+            @Schema(description = "서비스 도메인", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+            @ElementCollection(targetClass = InquiryStatus.class)
+            @Enumerated(EnumType.STRING)
+            List<InquiryStatus> statuses,
+
+            @Schema(description = "문의자 로그인 아이디(STUDENT 또는 TEACHER)", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+            @Size(max = 20)
+            String inquirerAccountId,
+
+            @Schema(description = "문의자 이메일(비로그인 문의자 전용)", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+            @Email
+            String guestEmail,
+
+            @Schema(description = "답변자 로그인 아이디", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+            @Size(max = 20)
+            String responderAccountId,
 
             @Schema(description = "제목", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
             @Size(max = 200)
@@ -60,8 +104,8 @@ public class InquiryDto {
             @Schema(description = "내용", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
             String content,
 
-            @Schema(description = "노출 여부", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-            Boolean visible,
+            @Schema(description = "답변", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+            String response,
 
             @Schema(description = "페이지 번호(0 이상의 정수)", requiredMode = Schema.RequiredMode.NOT_REQUIRED, example = "0")
             @PositiveOrZero
@@ -74,9 +118,33 @@ public class InquiryDto {
 
     @Schema(description = "고객문의 수정 요청 객체")
     public record UpdateInquiryRequest(
-            @Schema(description = "노출 도메인", requiredMode = Schema.RequiredMode.REQUIRED)
+            @Schema(description = "서비스 도메인", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
             @Enumerated(EnumType.STRING)
             Domain domain,
+
+            @Schema(description = "문의자 구분(학생/교사/비회원)", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+            @Enumerated(EnumType.STRING)
+            InquirerType inquirerType,
+
+            @Schema(description = "문의 유형(예: 리딩오션, 기술지원 등)", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+            @Enumerated(EnumType.STRING)
+            InquiryCategory category,
+
+            @Schema(description = "처리 상태(응답대기/처리중/응답완료/종료)", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+            @Enumerated(EnumType.STRING)
+            InquiryStatus status,
+
+            @Schema(description = "문의자 로그인 아이디(STUDENT 또는 TEACHER)", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+            @Size(max = 20)
+            String inquirerAccountId,
+
+            @Schema(description = "문의자 이메일(비로그인 문의자 전용)", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+            @Email
+            String guestEmail,
+
+            @Schema(description = "답변자 로그인 아이디", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+            @Size(max = 20)
+            String responderAccountId,
 
             @Schema(description = "제목", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
             @Size(max = 100)
@@ -85,17 +153,22 @@ public class InquiryDto {
             @Schema(description = "내용", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
             String content,
 
-            @Schema(description = "노출 여부", requiredMode = Schema.RequiredMode.NOT_REQUIRED, example = "true")
-            Boolean visible
+            @Schema(description = "답변", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+            String response
     ) {}
 
     @Schema(description = "고객문의 응답 객체")
     public record InquiryResponse(
             Long inquiryId,
             Domain domain,
+            InquirerType inquirerType,
+            InquiryCategory category,
+            InquiryStatus status,
+            String inquirerAccountId,
+            String guestEmail,
+            String responderAccountId,
             String title,
             String content,
-            Boolean visible,
             LocalDateTime createdAt,
             LocalDateTime updatedAt
     ) {}
