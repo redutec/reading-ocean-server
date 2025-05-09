@@ -28,10 +28,10 @@ public class BannerMapper {
      */
     public Banner toEntity(BannerDto.CreateBannerRequest createBannerRequest) {
         // 첨부 파일이 존재하는 경우 파일을 업로드하고 파일명을 가져오기(파일이 없으면 파일명은 null)
-        String imageFileName = Optional.ofNullable(createBannerRequest.imageFile())
-                .filter(imageFile -> !imageFile.isEmpty())
-                .map(imageFile -> {
-                    FileUploadResult result = fileUtil.uploadFile(imageFile, "/banner");
+        String attachedFileName = Optional.ofNullable(createBannerRequest.attachedFile())
+                .filter(attachedFile -> !attachedFile.isEmpty())
+                .map(attachedFile -> {
+                    FileUploadResult result = fileUtil.uploadFile(attachedFile, "/banner");
                     return Paths.get(result.filePath()).getFileName().toString();
                 })
                 .orElse(null);
@@ -41,7 +41,7 @@ public class BannerMapper {
                 .title(createBannerRequest.title())
                 .content(createBannerRequest.content())
                 .linkUrl(createBannerRequest.linkUrl())
-                .imageFileName(imageFileName)
+                .attachedFileName(attachedFileName)
                 .priority(createBannerRequest.priority())
                 .visible(createBannerRequest.visible())
                 .visibleStartAt(createBannerRequest.visibleStartAt())
@@ -81,7 +81,7 @@ public class BannerMapper {
                         b.getTitle(),
                         b.getContent(),
                         b.getLinkUrl(),
-                        b.getImageFileName(),
+                        b.getAttachedFileName(),
                         b.getPriority(),
                         b.getVisible(),
                         b.getCreatedAt(),

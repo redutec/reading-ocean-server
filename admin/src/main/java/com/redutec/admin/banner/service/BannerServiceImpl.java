@@ -90,10 +90,10 @@ public class BannerServiceImpl implements BannerService {
         // 수정할 배너 엔티티 조회
         Banner banner = getBanner(bannerId);
         // 업로드할 첨부 파일이 있는 경우 업로드하고 파일명을 생성
-        String imageFileName = Optional.ofNullable(updateBannerRequest.imageFile())
-                .filter(imageFile -> !imageFile.isEmpty())
-                .map(imageFile -> {
-                    FileUploadResult result = fileUtil.uploadFile(imageFile, "/banner");
+        String attachedFileName = Optional.ofNullable(updateBannerRequest.attachedFile())
+                .filter(attachedFile -> !attachedFile.isEmpty())
+                .map(attachedFile -> {
+                    FileUploadResult result = fileUtil.uploadFile(attachedFile, "/banner");
                     return Paths.get(result.filePath()).getFileName().toString();
                 })
                 .orElse(null);
@@ -103,7 +103,7 @@ public class BannerServiceImpl implements BannerService {
                 updateBannerRequest.title(),
                 updateBannerRequest.content(),
                 updateBannerRequest.linkUrl(),
-                imageFileName,
+                attachedFileName,
                 updateBannerRequest.priority(),
                 updateBannerRequest.visible(),
                 updateBannerRequest.visibleStartAt(),

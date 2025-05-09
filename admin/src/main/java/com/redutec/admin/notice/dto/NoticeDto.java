@@ -1,4 +1,4 @@
-package com.redutec.admin.banner.dto;
+package com.redutec.admin.notice.dto;
 
 import com.redutec.core.meta.Domain;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -11,9 +11,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class BannerDto {
-    @Schema(description = "배너 등록 요청 객체")
-    public record CreateBannerRequest(
+public class NoticeDto {
+    @Schema(description = "공지사항 등록 요청 객체")
+    public record CreateNoticeRequest(
             @Schema(description = "노출 도메인", requiredMode = Schema.RequiredMode.REQUIRED)
             @NotNull
             @Enumerated(EnumType.STRING)
@@ -28,18 +28,8 @@ public class BannerDto {
             @NotNull
             String content,
 
-            @Schema(description = "링크 URL", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-            @Size(max = 300)
-            String linkUrl,
-
-            @Schema(description = "첨부 파일", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+            @Schema(description = "첨부 이미지 파일", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
             MultipartFile attachedFile,
-
-            @Schema(description = "우선순위(0이 최상위)", requiredMode = Schema.RequiredMode.REQUIRED)
-            @NotNull
-            @Min(0)
-            @PositiveOrZero
-            Integer priority,
 
             @Schema(description = "노출 여부", requiredMode = Schema.RequiredMode.REQUIRED, example = "true")
             @NotNull
@@ -54,10 +44,10 @@ public class BannerDto {
             LocalDateTime visibleEndAt
     ) {}
 
-    @Schema(description = "배너 조회 요청 객체")
-    public record FindBannerRequest(
-            @Schema(description = "배너 ID", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-            List<@Positive Long> bannerIds,
+    @Schema(description = "공지사항 조회 요청 객체")
+    public record FindNoticeRequest(
+            @Schema(description = "공지사항 ID", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+            List<@Positive Long> noticeIds,
 
             @Schema(description = "노출 도메인", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
             @ElementCollection(targetClass = Domain.class)
@@ -83,8 +73,8 @@ public class BannerDto {
             Integer size
     ) {}
 
-    @Schema(description = "배너 수정 요청 객체")
-    public record UpdateBannerRequest(
+    @Schema(description = "공지사항 수정 요청 객체")
+    public record UpdateNoticeRequest(
             @Schema(description = "노출 도메인", requiredMode = Schema.RequiredMode.REQUIRED)
             @Enumerated(EnumType.STRING)
             Domain domain,
@@ -96,17 +86,8 @@ public class BannerDto {
             @Schema(description = "내용", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
             String content,
 
-            @Schema(description = "링크 URL", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-            @Size(max = 300)
-            String linkUrl,
-
-            @Schema(description = "첨부 파일", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+            @Schema(description = "첨부 이미지 파일", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
             MultipartFile attachedFile,
-
-            @Schema(description = "우선순위(0이 최상위)", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-            @Min(0)
-            @PositiveOrZero
-            Integer priority,
 
             @Schema(description = "노출 여부", requiredMode = Schema.RequiredMode.NOT_REQUIRED, example = "true")
             Boolean visible,
@@ -118,23 +99,21 @@ public class BannerDto {
             LocalDateTime visibleEndAt
     ) {}
 
-    @Schema(description = "배너 응답 객체")
-    public record BannerResponse(
-            Long bannerId,
+    @Schema(description = "공지사항 응답 객체")
+    public record NoticeResponse(
+            Long noticeId,
             Domain domain,
             String title,
             String content,
-            String linkUrl,
-            String attachedFile,
-            Integer priority,
+            String imageFileName,
             Boolean visible,
             LocalDateTime createdAt,
             LocalDateTime updatedAt
     ) {}
 
-    @Schema(description = "배너 응답 페이징 객체")
-    public record BannerPageResponse(
-            List<BannerResponse> banners,
+    @Schema(description = "공지사항 응답 페이징 객체")
+    public record NoticePageResponse(
+            List<NoticeResponse> notices,
             Long totalElements,
             Integer totalPages
     ) {}
