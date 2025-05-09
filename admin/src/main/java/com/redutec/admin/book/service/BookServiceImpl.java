@@ -93,7 +93,7 @@ public class BookServiceImpl implements BookService {
         String coverImageFileName = Optional.ofNullable(updateBookRequest.coverImageFile())
                 .filter(coverImageFile -> !coverImageFile.isEmpty())
                 .map(coverImageFile -> {
-                    FileUploadResult result = fileUtil.uploadFile(coverImageFile, "/branch");
+                    FileUploadResult result = fileUtil.uploadFile(coverImageFile, "/book");
                     return Paths.get(result.filePath()).getFileName().toString();
                 })
                 .orElse(null);

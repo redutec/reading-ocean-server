@@ -1,19 +1,21 @@
-package com.redutec.admin.notice.dto;
+package com.redutec.admin.faq.dto;
 
 import com.redutec.core.meta.Domain;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.validation.constraints.*;
-import org.springframework.web.multipart.MultipartFile;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.validation.constraints.Size;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class NoticeDto {
-    @Schema(description = "공지사항 등록 요청 객체")
-    public record CreateNoticeRequest(
+public class FaqDto {
+    @Schema(description = "이용안내 등록 요청 객체")
+    public record CreateFaqRequest(
             @Schema(description = "노출 도메인", requiredMode = Schema.RequiredMode.REQUIRED)
             @NotNull
             @Enumerated(EnumType.STRING)
@@ -28,9 +30,6 @@ public class NoticeDto {
             @NotNull
             String content,
 
-            @Schema(description = "첨부 이미지 파일", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-            MultipartFile attachedFile,
-
             @Schema(description = "노출 여부", requiredMode = Schema.RequiredMode.REQUIRED, example = "true")
             @NotNull
             Boolean visible,
@@ -44,10 +43,10 @@ public class NoticeDto {
             LocalDateTime visibleEndAt
     ) {}
 
-    @Schema(description = "공지사항 조회 요청 객체")
-    public record FindNoticeRequest(
-            @Schema(description = "공지사항 ID", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-            List<@Positive Long> noticeIds,
+    @Schema(description = "이용안내 조회 요청 객체")
+    public record FindFaqRequest(
+            @Schema(description = "이용안내 ID", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+            List<@Positive Long> faqIds,
 
             @Schema(description = "노출 도메인", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
             @ElementCollection(targetClass = Domain.class)
@@ -73,8 +72,8 @@ public class NoticeDto {
             Integer size
     ) {}
 
-    @Schema(description = "공지사항 수정 요청 객체")
-    public record UpdateNoticeRequest(
+    @Schema(description = "이용안내 수정 요청 객체")
+    public record UpdateFaqRequest(
             @Schema(description = "노출 도메인", requiredMode = Schema.RequiredMode.REQUIRED)
             @Enumerated(EnumType.STRING)
             Domain domain,
@@ -86,36 +85,24 @@ public class NoticeDto {
             @Schema(description = "내용", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
             String content,
 
-            @Schema(description = "첨부 이미지 파일", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-            MultipartFile attachedFile,
-
             @Schema(description = "노출 여부", requiredMode = Schema.RequiredMode.NOT_REQUIRED, example = "true")
-            Boolean visible,
-
-            @Schema(description = "노출 시작일시", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-            LocalDateTime visibleStartAt,
-
-            @Schema(description = "노출 종료일시", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-            LocalDateTime visibleEndAt
+            Boolean visible
     ) {}
 
-    @Schema(description = "공지사항 응답 객체")
-    public record NoticeResponse(
-            Long noticeId,
+    @Schema(description = "이용안내 응답 객체")
+    public record FaqResponse(
+            Long faqId,
             Domain domain,
             String title,
             String content,
-            String attachedFileName,
             Boolean visible,
-            LocalDateTime visibleStartAt,
-            LocalDateTime visibleEndAt,
             LocalDateTime createdAt,
             LocalDateTime updatedAt
     ) {}
 
-    @Schema(description = "공지사항 응답 페이징 객체")
-    public record NoticePageResponse(
-            List<NoticeResponse> notices,
+    @Schema(description = "이용안내 응답 페이징 객체")
+    public record FaqPageResponse(
+            List<FaqResponse> faqs,
             Long totalElements,
             Integer totalPages
     ) {}

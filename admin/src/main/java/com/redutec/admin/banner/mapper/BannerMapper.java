@@ -84,6 +84,8 @@ public class BannerMapper {
                         b.getAttachedFileName(),
                         b.getPriority(),
                         b.getVisible(),
+                        b.getVisibleStartAt(),
+                        b.getVisibleEndAt(),
                         b.getCreatedAt(),
                         b.getUpdatedAt()
                 ))

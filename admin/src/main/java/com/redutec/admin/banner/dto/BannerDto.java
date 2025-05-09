@@ -128,6 +128,8 @@ public class BannerDto {
             String attachedFile,
             Integer priority,
             Boolean visible,
+            LocalDateTime visibleStartAt,
+            LocalDateTime visibleEndAt,
             LocalDateTime createdAt,
             LocalDateTime updatedAt
     ) {}

@@ -80,6 +80,8 @@ public class NoticeMapper {
                         n.getContent(),
                         n.getAttachedFileName(),
                         n.getVisible(),
+                        n.getVisibleStartAt(),
+                        n.getVisibleEndAt(),
                         n.getCreatedAt(),
                         n.getUpdatedAt()
                 ))
