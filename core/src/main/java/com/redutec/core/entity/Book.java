@@ -19,6 +19,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Entity
 @Comment("도서")
@@ -199,33 +200,33 @@ public class Book {
             String educationOfficeRecommendations,
             List<String> tags
     ) {
-        this.isbn = isbn != null ? isbn : this.isbn;
-        this.title = title != null ? title : this.title;
-        this.author = author != null ? author : this.author;
-        this.publisher = publisher != null ? publisher : this.publisher;
-        this.translator = translator != null ? translator : this.translator;
-        this.illustrator = illustrator != null ? illustrator : this.illustrator;
-        this.publicationDate = publicationDate != null ? publicationDate : this.publicationDate;
-        this.coverImageFileName = coverImageFileName != null ? coverImageFileName : this.coverImageFileName;
-        this.recommended = recommended != null ? recommended : this.recommended;
-        this.ebookAvailable = ebookAvailable != null ? ebookAvailable : this.ebookAvailable;
-        this.audiobookAvailable = audiobookAvailable != null ? audiobookAvailable : this.audiobookAvailable;
-        this.visible = visible != null ? visible : this.visible;
-        this.enabled = enabled != null ? enabled : this.enabled;
-        this.pageCount = pageCount != null ? pageCount : this.pageCount;
-        this.schoolGrade = schoolGrade != null ? schoolGrade : this.schoolGrade;
-        this.genre = genre != null ? genre : this.genre;
-        this.subGenre = subGenre != null ? subGenre : this.subGenre;
-        this.bookPoints = bookPoints != null ? bookPoints : this.bookPoints;
-        this.raq = raq != null ? raq : this.raq;
-        this.readingLevel = readingLevel != null ? readingLevel : this.readingLevel;
-        this.bookMbti = bookMbti != null ? bookMbti : this.bookMbti;
-        this.subject = subject != null ? subject : this.subject;
-        this.content = content != null ? content : this.content;
-        this.awardHistory = awardHistory != null ? awardHistory : this.awardHistory;
-        this.includedBookName = includedBookName != null ? includedBookName : this.includedBookName;
-        this.institutionRecommendations = institutionRecommendations != null ? institutionRecommendations : this.institutionRecommendations;
-        this.educationOfficeRecommendations = educationOfficeRecommendations != null ? educationOfficeRecommendations : this.educationOfficeRecommendations;
-        this.tags = tags != null ? tags : this.tags;
+        this.isbn = Optional.ofNullable(isbn).orElse(this.isbn);
+        this.title = Optional.ofNullable(title).orElse(this.title);
+        this.author = Optional.ofNullable(author).orElse(this.author);
+        this.publisher = Optional.ofNullable(publisher).orElse(this.publisher);
+        this.translator = Optional.ofNullable(translator).orElse(this.translator);
+        this.illustrator = Optional.ofNullable(illustrator).orElse(this.illustrator);
+        this.publicationDate = Optional.ofNullable(publicationDate).orElse(this.publicationDate);
+        this.coverImageFileName = Optional.ofNullable(coverImageFileName).orElse(this.coverImageFileName);
+        this.recommended = Optional.ofNullable(recommended).orElse(this.recommended);
+        this.ebookAvailable = Optional.ofNullable(ebookAvailable).orElse(this.ebookAvailable);
+        this.audiobookAvailable = Optional.ofNullable(audiobookAvailable).orElse(this.audiobookAvailable);
+        this.visible = Optional.ofNullable(visible).orElse(this.visible);
+        this.enabled = Optional.ofNullable(enabled).orElse(this.enabled);
+        this.pageCount = Optional.ofNullable(pageCount).orElse(this.pageCount);
+        this.schoolGrade = Optional.ofNullable(schoolGrade).orElse(this.schoolGrade);
+        this.genre = Optional.ofNullable(genre).orElse(this.genre);
+        this.subGenre = Optional.ofNullable(subGenre).orElse(this.subGenre);
+        this.bookPoints = Optional.ofNullable(bookPoints).orElse(this.bookPoints);
+        this.raq = Optional.ofNullable(raq).orElse(this.raq);
+        this.readingLevel = Optional.ofNullable(readingLevel).orElse(this.readingLevel);
+        this.bookMbti = Optional.ofNullable(bookMbti).orElse(this.bookMbti);
+        this.subject = Optional.ofNullable(subject).orElse(this.subject);
+        this.content = Optional.ofNullable(content).orElse(this.content);
+        this.awardHistory = Optional.ofNullable(awardHistory).orElse(this.awardHistory);
+        this.includedBookName = Optional.ofNullable(includedBookName).orElse(this.includedBookName);
+        this.institutionRecommendations = Optional.ofNullable(institutionRecommendations).orElse(this.institutionRecommendations);
+        this.educationOfficeRecommendations = Optional.ofNullable(educationOfficeRecommendations).orElse(this.educationOfficeRecommendations);
+        this.tags = Optional.ofNullable(tags).orElse(this.tags);
     }
 }

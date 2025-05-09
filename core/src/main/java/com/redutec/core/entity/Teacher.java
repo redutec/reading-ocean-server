@@ -13,6 +13,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Entity
 @Comment("교사")
@@ -114,16 +115,16 @@ public class Teacher {
             Institute institute,
             Homeroom homeroom
     ) {
-        this.accountId = accountId != null ? accountId : this.accountId;
-        this.password = password != null ? password : this.password;
-        this.name = name != null ? name : this.name;
-        this.phoneNumber = phoneNumber != null ? phoneNumber : this.phoneNumber;
-        this.email = email != null ? email : this.email;
-        this.status = status != null ? status : this.status;
-        this.role = role != null ? role : this.role;
-        this.authenticationStatus = authenticationStatus != null ? authenticationStatus : this.authenticationStatus;
-        this.description = description != null ? description : this.description;
-        this.institute = institute != null ? institute : this.institute;
-        this.homeroom = homeroom != null ? homeroom : this.homeroom;
+        this.accountId = Optional.ofNullable(accountId).orElse(this.accountId);
+        this.password = Optional.ofNullable(password).orElse(this.password);
+        this.name = Optional.ofNullable(name).orElse(this.name);
+        this.phoneNumber = Optional.ofNullable(phoneNumber).orElse(this.phoneNumber);
+        this.email = Optional.ofNullable(email).orElse(this.email);
+        this.status = Optional.ofNullable(status).orElse(this.status);
+        this.role = Optional.ofNullable(role).orElse(this.role);
+        this.authenticationStatus = Optional.ofNullable(authenticationStatus).orElse(this.authenticationStatus);
+        this.description = Optional.ofNullable(description).orElse(this.description);
+        this.institute = Optional.ofNullable(institute).orElse(this.institute);
+        this.homeroom = Optional.ofNullable(homeroom).orElse(this.homeroom);
     }
 }

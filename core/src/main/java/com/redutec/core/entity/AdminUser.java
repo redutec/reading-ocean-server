@@ -12,6 +12,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 /**
  * AdminUser 엔티티 클래스는 시스템 내에서 어드민 사용자의 정보를 나타냅니다.
@@ -91,13 +92,13 @@ public class AdminUser {
             String lastLoginIp,
             LocalDateTime lastLoginAt
     ) {
-        this.email = email != null ? email : this.email;
-        this.password = password != null ? password : this.password;
-        this.nickname = nickname != null ? nickname : this.nickname;
-        this.role = role != null ? role : this.role;
-        this.authenticationStatus = authenticationStatus != null ? authenticationStatus : this.authenticationStatus;
-        this.failedLoginAttempts = failedLoginAttempts != null ? failedLoginAttempts : this.failedLoginAttempts;
-        this.lastLoginIp = lastLoginIp != null ? lastLoginIp : this.lastLoginIp;
-        this.lastLoginAt = lastLoginAt != null ? lastLoginAt : this.lastLoginAt;
+        this.email = Optional.ofNullable(email).orElse(this.email);
+        this.password = Optional.ofNullable(password).orElse(this.password);
+        this.nickname = Optional.ofNullable(nickname).orElse(this.nickname);
+        this.role = Optional.ofNullable(role).orElse(this.role);
+        this.authenticationStatus = Optional.ofNullable(authenticationStatus).orElse(this.authenticationStatus);
+        this.failedLoginAttempts = Optional.ofNullable(failedLoginAttempts).orElse(this.failedLoginAttempts);
+        this.lastLoginIp = Optional.ofNullable(lastLoginIp).orElse(this.lastLoginIp);
+        this.lastLoginAt = Optional.ofNullable(lastLoginAt).orElse(this.lastLoginAt);
     }
 }

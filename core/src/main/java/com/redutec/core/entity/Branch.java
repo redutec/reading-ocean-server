@@ -15,6 +15,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Entity
 @Comment("지사")
@@ -109,18 +110,18 @@ public class Branch {
             LocalDate renewalDate,
             String description
     ) {
-        this.accountId = accountId != null ? accountId : this.accountId;
-        this.password = password != null ? password : this.password;
-        this.region = region != null ? region : this.region;
-        this.name = name != null ? name : this.name;
-        this.status = status != null ? status : this.status;
-        this.businessArea = businessArea != null ? businessArea : this.businessArea;
-        this.managerName = managerName != null ? managerName : this.managerName;
-        this.managerPhoneNumber = managerPhoneNumber != null ? managerPhoneNumber : this.managerPhoneNumber;
-        this.managerEmail = managerEmail != null ? managerEmail : this.managerEmail;
-        this.contractFileName = contractFileName != null ? contractFileName : this.contractFileName;
-        this.contractDate = contractDate != null ? contractDate : this.contractDate;
-        this.renewalDate = renewalDate != null ? renewalDate : this.renewalDate;
-        this.description = description != null ? description : this.description;
+        this.accountId = Optional.ofNullable(accountId).orElse(this.accountId);
+        this.password = Optional.ofNullable(password).orElse(this.password);
+        this.region = Optional.ofNullable(region).orElse(this.region);
+        this.name = Optional.ofNullable(name).orElse(this.name);
+        this.status = Optional.ofNullable(status).orElse(this.status);
+        this.businessArea = Optional.ofNullable(businessArea).orElse(this.businessArea);
+        this.managerName = Optional.ofNullable(managerName).orElse(this.managerName);
+        this.managerPhoneNumber = Optional.ofNullable(managerPhoneNumber).orElse(this.managerPhoneNumber);
+        this.managerEmail = Optional.ofNullable(managerEmail).orElse(this.managerEmail);
+        this.contractFileName = Optional.ofNullable(contractFileName).orElse(this.contractFileName);
+        this.contractDate = Optional.ofNullable(contractDate).orElse(this.contractDate);
+        this.renewalDate = Optional.ofNullable(renewalDate).orElse(this.renewalDate);
+        this.description = Optional.ofNullable(description).orElse(this.description);
     }
 }

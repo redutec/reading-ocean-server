@@ -82,7 +82,7 @@ public class BookGroup {
             SchoolGrade schoolGrade,
             List<Book> books
     ) {
-        this.name = name != null ? name : this.name;
+        this.name = Optional.ofNullable(name).orElse(this.name);
         this.type = Optional.ofNullable(type).orElse(this.type);
         this.schoolGrade = Optional.ofNullable(schoolGrade).orElse(this.schoolGrade);
         this.yearMonth = Optional.ofNullable(yearMonth).orElse(this.yearMonth);

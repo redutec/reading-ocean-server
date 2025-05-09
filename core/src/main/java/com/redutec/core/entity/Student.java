@@ -13,6 +13,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Entity
 @Comment("학생")
@@ -148,22 +149,22 @@ public class Student {
             Institute institute,
             Homeroom homeroom
     ) {
-        this.accountId = accountId != null ? accountId : this.accountId;
-        this.password = password != null ? password : this.password;
-        this.name = name != null ? name : this.name;
-        this.phoneNumber = phoneNumber != null ? phoneNumber : this.phoneNumber;
-        this.email = email != null ? email : this.email;
-        this.birthday = birthday != null ? birthday : this.birthday;
-        this.status = status != null ? status : this.status;
-        this.authenticationStatus = authenticationStatus != null ? authenticationStatus : this.authenticationStatus;
-        this.readingLevel = readingLevel != null ? readingLevel : this.readingLevel;
-        this.raq = raq != null ? raq : this.raq;
-        this.schoolGrade = schoolGrade != null ? schoolGrade : this.schoolGrade;
-        this.bookPoints = bookPoints != null ? bookPoints : this.bookPoints;
-        this.bookMbti = bookMbti != null ? bookMbti : this.bookMbti;
-        this.description = description != null ? description : this.description;
-        this.domain = domain != null ? domain : this.domain;
-        this.institute = institute != null ? institute : this.institute;
-        this.homeroom = homeroom != null ? homeroom : this.homeroom;
+        this.accountId = Optional.ofNullable(accountId).orElse(this.accountId);
+        this.password = Optional.ofNullable(password).orElse(this.password);
+        this.name = Optional.ofNullable(name).orElse(this.name);
+        this.phoneNumber = Optional.ofNullable(phoneNumber).orElse(this.phoneNumber);
+        this.email = Optional.ofNullable(email).orElse(this.email);
+        this.birthday = Optional.ofNullable(birthday).orElse(this.birthday);
+        this.status = Optional.ofNullable(status).orElse(this.status);
+        this.authenticationStatus = Optional.ofNullable(authenticationStatus).orElse(this.authenticationStatus);
+        this.readingLevel = Optional.ofNullable(readingLevel).orElse(this.readingLevel);
+        this.raq = Optional.ofNullable(raq).orElse(this.raq);
+        this.schoolGrade = Optional.ofNullable(schoolGrade).orElse(this.schoolGrade);
+        this.bookPoints = Optional.ofNullable(bookPoints).orElse(this.bookPoints);
+        this.bookMbti = Optional.ofNullable(bookMbti).orElse(this.bookMbti);
+        this.description = Optional.ofNullable(description).orElse(this.description);
+        this.domain = Optional.ofNullable(domain).orElse(this.domain);
+        this.institute = Optional.ofNullable(institute).orElse(this.institute);
+        this.homeroom = Optional.ofNullable(homeroom).orElse(this.homeroom);
     }
 }

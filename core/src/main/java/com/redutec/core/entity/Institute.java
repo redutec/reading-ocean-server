@@ -17,6 +17,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Entity
 @Comment("교육기관")
@@ -107,20 +108,20 @@ public class Institute {
             InstituteType type,
             InstituteManagementType managementType,
             InstituteStatus status,
-            InstituteOperationStatus instituteOperationStatus,
+            InstituteOperationStatus operationStatus,
             Branch branch
     ) {
-        this.name = name != null ? name : this.name;
-        this.businessRegistrationName = businessRegistrationName != null ? businessRegistrationName : this.businessRegistrationName;
-        this.address = address != null ? address : this.address;
-        this.zipCode = zipCode != null ? zipCode : this.zipCode;
-        this.phoneNumber = phoneNumber != null ? phoneNumber : this.phoneNumber;
-        this.url = url != null ? url : this.url;
-        this.naverPlaceUrl = naverPlaceUrl != null ? naverPlaceUrl : this.naverPlaceUrl;
-        this.type = type != null ? type : this.type;
-        this.managementType = managementType != null ? managementType : this.managementType;
-        this.status = status != null ? status : this.status;
-        this.operationStatus = instituteOperationStatus != null ? instituteOperationStatus : this.operationStatus;
-        this.branch = branch != null ? branch : this.branch;
+        this.name = Optional.ofNullable(name).orElse(this.name);
+        this.businessRegistrationName = Optional.ofNullable(businessRegistrationName).orElse(this.businessRegistrationName);
+        this.address = Optional.ofNullable(address).orElse(this.address);
+        this.zipCode = Optional.ofNullable(zipCode).orElse(this.zipCode);
+        this.phoneNumber = Optional.ofNullable(phoneNumber).orElse(this.phoneNumber);
+        this.url = Optional.ofNullable(url).orElse(this.url);
+        this.naverPlaceUrl = Optional.ofNullable(naverPlaceUrl).orElse(this.naverPlaceUrl);
+        this.type = Optional.ofNullable(type).orElse(this.type);
+        this.managementType = Optional.ofNullable(managementType).orElse(this.managementType);
+        this.status = Optional.ofNullable(status).orElse(this.status);
+        this.operationStatus = Optional.ofNullable(operationStatus).orElse(this.operationStatus);
+        this.branch = Optional.ofNullable(branch).orElse(this.branch);
     }
 }

@@ -30,7 +30,7 @@ public class SubscriptionStudent extends Subscription {
     @JoinColumn
     private Student student;
 
-    public void updateStudentSubscription(
+    public void updateSubscriptionStudent(
             SubscriptionPlan subscriptionPlan,
             LocalDateTime startedAt,
             LocalDateTime endedAt,

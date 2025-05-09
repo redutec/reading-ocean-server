@@ -13,6 +13,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Entity
 @Comment("학급")
@@ -62,8 +63,8 @@ public class Homeroom {
             Institute institute,
             String description
     ) {
-        this.name = name != null ? name : this.name;
-        this.institute = institute != null ? institute : this.institute;
-        this.description = description != null ? description : this.description;
+        this.name = Optional.ofNullable(name).orElse(this.name);
+        this.institute = Optional.ofNullable(institute).orElse(this.institute);
+        this.description = Optional.ofNullable(description).orElse(this.description);
     }
 }
