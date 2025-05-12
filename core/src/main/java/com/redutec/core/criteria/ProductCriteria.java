@@ -1,7 +1,7 @@
 package com.redutec.core.criteria;
 
 import com.redutec.core.meta.ProductCategory;
-import com.redutec.core.meta.SubscriptionPlanStatus;
+import com.redutec.core.meta.ProductStatus;
 
 import java.util.List;
 
@@ -14,5 +14,5 @@ public record ProductCriteria(
         Integer minimumDiscountPercentage,
         Integer maximumDiscountPercentage,
         List<ProductCategory> categories,
-        List<SubscriptionPlanStatus> statuses
+        List<ProductStatus> statuses
 ) {}

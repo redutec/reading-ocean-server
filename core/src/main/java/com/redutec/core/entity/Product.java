@@ -51,6 +51,10 @@ public class Product {
     @Max(100)
     private Integer discountPercentage;
 
+    @Comment("판매상품에 대한 정보가 담긴 파일명")
+    @Column
+    private String attachedFileName;
+
     @Comment("분류")
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -69,11 +73,12 @@ public class Product {
     @Column(nullable = false)
     private LocalDateTime updatedAt;
 
-    public void updateSubscriptionPlan(
+    public void updateProduct(
             String name,
             String details,
             Integer price,
             Integer discountPercentage,
+            String attachedFileName,
             ProductCategory category,
             ProductStatus status
     ) {
@@ -81,6 +86,7 @@ public class Product {
         this.details = Optional.ofNullable(details).orElse(this.details);
         this.price = Optional.ofNullable(price).orElse(this.price);
         this.discountPercentage = Optional.ofNullable(discountPercentage).orElse(this.discountPercentage);
+        this.attachedFileName = Optional.ofNullable(attachedFileName).orElse(this.attachedFileName);
         this.category = Optional.ofNullable(category).orElse(this.category);
         this.status = Optional.ofNullable(status).orElse(this.status);
     }
