@@ -47,6 +47,7 @@ public class Institute {
 
     @Comment("우편번호")
     @Column(length = 5)
+    @Pattern(regexp = "^[0-9]{5}", message = "우편번호는 5자리의 숫자로만 구성되어야 합니다.")
     private String zipCode;
 
     @Comment("연락처")
