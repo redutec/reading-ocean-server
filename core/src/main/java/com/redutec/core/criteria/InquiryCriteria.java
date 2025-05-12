@@ -13,9 +13,8 @@ public record InquiryCriteria(
         List<InquirerType> inquirerTypes,
         List<InquiryCategory> categories,
         List<InquiryStatus> statuses,
-        String inquirerAccountId,
-        String guestEmail,
-        String responderAccountId,
+        String inquirerEmail,
+        String responderNickname,
         String title,
         String content,
         String response

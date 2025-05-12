@@ -36,17 +36,14 @@ public class InquiryDto {
             @Enumerated(EnumType.STRING)
             InquiryStatus status,
 
-            @Schema(description = "문의자 로그인 아이디(STUDENT 또는 TEACHER)", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-            @Size(max = 20)
-            String inquirerAccountId,
+            @Schema(description = "문의자 이메일", requiredMode = Schema.RequiredMode.REQUIRED)
+            @NotNull
+            @Email(message = "이메일 형식으로 입력해주세요")
+            String inquirerEmail,
 
-            @Schema(description = "문의자 이메일(비로그인 문의자 전용)", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-            @Email
-            String guestEmail,
-
-            @Schema(description = "답변자 로그인 아이디", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+            @Schema(description = "답변자 닉네임", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
             @Size(max = 20)
-            String responderAccountId,
+            String responderNickname,
 
             @Schema(description = "제목", requiredMode = Schema.RequiredMode.REQUIRED)
             @NotNull
@@ -70,32 +67,28 @@ public class InquiryDto {
             @Enumerated(EnumType.STRING)
             List<Domain> domains,
 
-            @Schema(description = "서비스 도메인", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+            @Schema(description = "문의자 구분(학생/교사/비회원)", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
             @ElementCollection(targetClass = InquirerType.class)
             @Enumerated(EnumType.STRING)
             List<InquirerType> inquirerTypes,
 
-            @Schema(description = "서비스 도메인", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+            @Schema(description = "문의 유형(예: 리딩오션, 기술지원 등)", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
             @ElementCollection(targetClass = InquiryCategory.class)
             @Enumerated(EnumType.STRING)
             List<InquiryCategory> categories,
 
-            @Schema(description = "서비스 도메인", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+            @Schema(description = "처리 상태(응답대기/처리중/응답완료/종료)", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
             @ElementCollection(targetClass = InquiryStatus.class)
             @Enumerated(EnumType.STRING)
             List<InquiryStatus> statuses,
 
-            @Schema(description = "문의자 로그인 아이디(STUDENT 또는 TEACHER)", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-            @Size(max = 20)
-            String inquirerAccountId,
+            @Schema(description = "문의자 이메일", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+            @Email(message = "이메일 형식으로 입력해주세요")
+            String inquirerEmail,
 
-            @Schema(description = "문의자 이메일(비로그인 문의자 전용)", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-            @Email
-            String guestEmail,
-
-            @Schema(description = "답변자 로그인 아이디", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+            @Schema(description = "답변자 닉네임", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
             @Size(max = 20)
-            String responderAccountId,
+            String responderNickname,
 
             @Schema(description = "제목", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
             @Size(max = 200)
@@ -134,17 +127,13 @@ public class InquiryDto {
             @Enumerated(EnumType.STRING)
             InquiryStatus status,
 
-            @Schema(description = "문의자 로그인 아이디(STUDENT 또는 TEACHER)", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-            @Size(max = 20)
-            String inquirerAccountId,
+            @Schema(description = "문의자 이메일", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+            @Email(message = "이메일 형식으로 입력해주세요")
+            String inquirerEmail,
 
-            @Schema(description = "문의자 이메일(비로그인 문의자 전용)", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-            @Email
-            String guestEmail,
-
-            @Schema(description = "답변자 로그인 아이디", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+            @Schema(description = "답변자 닉네임", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
             @Size(max = 20)
-            String responderAccountId,
+            String responderNickname,
 
             @Schema(description = "제목", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
             @Size(max = 100)
@@ -164,9 +153,8 @@ public class InquiryDto {
             InquirerType inquirerType,
             InquiryCategory category,
             InquiryStatus status,
-            String inquirerAccountId,
-            String guestEmail,
-            String responderAccountId,
+            String inquirerEmail,
+            String responderNickname,
             String title,
             String content,
             LocalDateTime createdAt,

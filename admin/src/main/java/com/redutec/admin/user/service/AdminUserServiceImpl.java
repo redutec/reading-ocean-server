@@ -79,6 +79,18 @@ public class AdminUserServiceImpl implements AdminUserService {
 
     /**
      * 특정 어드민 사용자 엔티티 조회
+     * @param nickname 어드민 사용자 닉네임
+     * @return 특정 어드민 사용자 엔티티 객체
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public AdminUser findByNickname(String nickname) {
+        return adminUserRepository.findByNickname(nickname)
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 어드민 사용자입니다. nickname = " + nickname));
+    }
+
+    /**
+     * 특정 어드민 사용자 엔티티 조회
      * @param adminUserId 어드민 사용자 고유번호
      * @return 특정 어드민 사용자 엔티티 객체
      */

@@ -2,6 +2,8 @@ package com.redutec.admin.inquiry.service;
 
 import com.redutec.admin.inquiry.dto.InquiryDto;
 import com.redutec.admin.inquiry.mapper.InquiryMapper;
+import com.redutec.admin.user.service.AdminUserService;
+import com.redutec.core.entity.AdminUser;
 import com.redutec.core.entity.Inquiry;
 import com.redutec.core.repository.InquiryRepository;
 import com.redutec.core.specification.InquirySpecification;
@@ -13,12 +15,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 @Slf4j
 @AllArgsConstructor
 public class InquiryServiceImpl implements InquiryService {
     private final InquiryMapper inquiryMapper;
     private final InquiryRepository inquiryRepository;
+    private final AdminUserService adminUserService;
 
     /**
      * 고객문의 등록
@@ -28,7 +33,12 @@ public class InquiryServiceImpl implements InquiryService {
     @Override
     @Transactional
     public InquiryDto.InquiryResponse create(InquiryDto.CreateInquiryRequest createInquiryRequest) {
-        return inquiryMapper.toResponseDto(inquiryRepository.save(inquiryMapper.toEntity(createInquiryRequest)));
+        // 고객문의 등록 요청 객체에 답변자 로그인 아이디가 있다면 해당 어드민 사용자 엔티티를 조회
+        AdminUser adminUser = Optional.ofNullable(createInquiryRequest.responderNickname())
+                .map(adminUserService::findByNickname)
+                .orElse(null);
+        // 고객문의 등록
+        return inquiryMapper.toResponseDto(inquiryRepository.save(inquiryMapper.toEntity(createInquiryRequest, adminUser)));
     }
 
     /**
@@ -83,12 +93,21 @@ public class InquiryServiceImpl implements InquiryService {
     public void update(Long inquiryId, InquiryDto.UpdateInquiryRequest updateInquiryRequest) {
         // 수정할 고객문의 엔티티 조회
         Inquiry inquiry = getInquiry(inquiryId);
+        // 고객문의의 답변자가 존재하면 어드민 사용자 엔티티 조회
+        AdminUser adminUser = Optional.ofNullable(updateInquiryRequest.responderNickname())
+                .map(adminUserService::findByNickname)
+                .orElse(null);
         // UPDATE 도메인 메서드로 변환
         inquiry.updateInquiry(
                 updateInquiryRequest.domain(),
+                updateInquiryRequest.inquirerType(),
+                updateInquiryRequest.category(),
+                updateInquiryRequest.status(),
+                updateInquiryRequest.inquirerEmail(),
+                adminUser,
                 updateInquiryRequest.title(),
                 updateInquiryRequest.content(),
-                updateInquiryRequest.visible()
+                updateInquiryRequest.response()
         );
         // 고객문의 엔티티 UPDATE
         inquiryRepository.save(inquiry);

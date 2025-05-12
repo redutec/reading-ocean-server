@@ -54,14 +54,9 @@ public class Inquiry {
     @Enumerated(EnumType.STRING)
     private InquiryStatus status;
 
-    @Comment("문의자 로그인 아이디(STUDENT 또는 TEACHER)")
-    @Column(length = 20)
-    private String inquirerAccountId;
-
-    @Comment("문의자 이메일(비로그인 문의자 전용)(AES256 암호화)")
+    @Comment("문의자 이메일")
     @Convert(converter = AesAttributeConverter.class)
-    @Column
-    private String guestEmail;
+    private String inquirerEmail;
 
     @Comment("답변자")
     @ManyToOne(fetch = FetchType.LAZY)
@@ -96,8 +91,7 @@ public class Inquiry {
             InquirerType inquirerType,
             InquiryCategory category,
             InquiryStatus status,
-            String inquirerAccountId,
-            String guestEmail,
+            String inquirerEmail,
             AdminUser adminUser,
             String title,
             String content,
@@ -107,8 +101,7 @@ public class Inquiry {
         this.inquirerType = Optional.ofNullable(inquirerType).orElse(this.inquirerType);
         this.category = Optional.ofNullable(category).orElse(this.category);
         this.status = Optional.ofNullable(status).orElse(this.status);
-        this.inquirerAccountId = Optional.ofNullable(inquirerAccountId).orElse(this.inquirerAccountId);
-        this.guestEmail = Optional.ofNullable(guestEmail).orElse(this.guestEmail);
+        this.inquirerEmail = Optional.ofNullable(inquirerEmail).orElse(this.inquirerEmail);
         this.adminUser = Optional.ofNullable(adminUser).orElse(this.adminUser);
         this.title = Optional.ofNullable(title).orElse(this.title);
         this.content = Optional.ofNullable(content).orElse(this.content);

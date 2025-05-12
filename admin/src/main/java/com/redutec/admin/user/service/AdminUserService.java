@@ -35,6 +35,13 @@ public interface AdminUserService {
 
     /**
      * 특정 어드민 사용자 엔티티 조회
+     * @param nickname 어드민 사용자 닉네임
+     * @return 특정 어드민 사용자 엔티티 객체
+     */
+    AdminUser findByNickname(String nickname);
+
+    /**
+     * 특정 어드민 사용자 엔티티 조회
      * @param adminUserId 어드민 사용자 고유번호
      * @return 특정 어드민 사용자 엔티티 객체
      */

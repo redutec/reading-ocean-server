@@ -30,15 +30,12 @@ public class InquirySpecification {
                     Optional.ofNullable(inquiryCriteria.statuses())
                             .filter(statuses -> !statuses.isEmpty())
                             .map(statuses -> root.get("status").in(statuses)),
-                    Optional.ofNullable(inquiryCriteria.inquirerAccountId())
-                            .filter(inquirerAccountId -> !inquirerAccountId.isEmpty())
-                            .map(inquirerAccountId -> criteriaBuilder.like(root.get("inquirerAccountId"), "%" + inquirerAccountId + "%")),
-                    Optional.ofNullable(inquiryCriteria.guestEmail())
-                            .filter(guestEmail -> !guestEmail.isEmpty())
-                            .map(guestEmail -> criteriaBuilder.like(root.get("guestEmail"), "%" + guestEmail + "%")),
-                    Optional.ofNullable(inquiryCriteria.responderAccountId())
-                            .filter(responderAccountId -> !responderAccountId.isEmpty())
-                            .map(responderAccountId -> criteriaBuilder.like(root.get("adminUser").get("accountId"), "%" + responderAccountId + "%")),
+                    Optional.ofNullable(inquiryCriteria.inquirerEmail())
+                            .filter(inquirerEmail -> !inquirerEmail.isEmpty())
+                            .map(inquirerEmail -> criteriaBuilder.equal(root.get("inquirerEmail"), inquirerEmail)),
+                    Optional.ofNullable(inquiryCriteria.responderNickname())
+                            .filter(responderNickname -> !responderNickname.isEmpty())
+                            .map(responderNickname -> criteriaBuilder.like(root.get("adminUser").get("nickname"), "%" + responderNickname + "%")),
                     Optional.ofNullable(inquiryCriteria.title())
                             .filter(title -> !title.isEmpty())
                             .map(title -> criteriaBuilder.like(root.get("title"), "%" + title + "%")),

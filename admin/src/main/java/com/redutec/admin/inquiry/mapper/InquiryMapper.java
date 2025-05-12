@@ -3,6 +3,7 @@ package com.redutec.admin.inquiry.mapper;
 import com.redutec.admin.inquiry.dto.InquiryDto;
 import com.redutec.core.config.FileUtil;
 import com.redutec.core.criteria.InquiryCriteria;
+import com.redutec.core.entity.AdminUser;
 import com.redutec.core.entity.Inquiry;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -24,12 +25,20 @@ public class InquiryMapper {
      * @param createInquiryRequest 고객문의 생성에 필요한 데이터를 담은 DTO
      * @return 생성된 Inquiry 엔티티
      */
-    public Inquiry toEntity(InquiryDto.CreateInquiryRequest createInquiryRequest) {
+    public Inquiry toEntity(
+            InquiryDto.CreateInquiryRequest createInquiryRequest,
+            AdminUser adminUser
+    ) {
         return Inquiry.builder()
                 .domain(createInquiryRequest.domain())
+                .inquirerType(createInquiryRequest.inquirerType())
+                .category(createInquiryRequest.category())
+                .status(createInquiryRequest.status())
+                .inquirerEmail(createInquiryRequest.inquirerEmail())
+                .adminUser(adminUser)
                 .title(createInquiryRequest.title())
                 .content(createInquiryRequest.content())
-                .visible(createInquiryRequest.visible())
+                .response(createInquiryRequest.response())
                 .build();
     }
     
@@ -44,9 +53,14 @@ public class InquiryMapper {
         return new InquiryCriteria(
                 findInquiryRequest.inquiryIds(),
                 findInquiryRequest.domains(),
+                findInquiryRequest.inquirerTypes(),
+                findInquiryRequest.categories(),
+                findInquiryRequest.statuses(),
+                findInquiryRequest.inquirerEmail(),
+                findInquiryRequest.responderNickname(),
                 findInquiryRequest.title(),
                 findInquiryRequest.content(),
-                findInquiryRequest.visible()
+                findInquiryRequest.response()
         );
     }
 
@@ -59,14 +73,18 @@ public class InquiryMapper {
      */
     public InquiryDto.InquiryResponse toResponseDto(Inquiry inquiry) {
         return Optional.ofNullable(inquiry)
-                .map(f -> new InquiryDto.InquiryResponse(
-                        f.getId(),
-                        f.getDomain(),
-                        f.getTitle(),
-                        f.getContent(),
-                        f.getVisible(),
-                        f.getCreatedAt(),
-                        f.getUpdatedAt()
+                .map(inq -> new InquiryDto.InquiryResponse(
+                        inq.getId(),
+                        inq.getDomain(),
+                        inq.getInquirerType(),
+                        inq.getCategory(),
+                        inq.getStatus(),
+                        inq.getInquirerEmail(),
+                        inq.getAdminUser().getNickname(),
+                        inq.getTitle(),
+                        inq.getContent(),
+                        inq.getCreatedAt(),
+                        inq.getUpdatedAt()
                 ))
                 .orElse(null);
     }
