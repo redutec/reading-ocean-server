@@ -32,7 +32,11 @@ public class AdminUser {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Comment("이메일(AES256 암호화, 로그인에 사용)")
+    @Comment("로그인 아이디")
+    @Column(length = 20, nullable = false, unique = true)
+    private String accountId;
+
+    @Comment("이메일(AES256 암호화)")
     @Convert(converter = AesAttributeConverter.class)
     @Column(nullable = false, unique = true)
     private String email;

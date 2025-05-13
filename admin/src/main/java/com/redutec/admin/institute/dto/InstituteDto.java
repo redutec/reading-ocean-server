@@ -31,7 +31,7 @@ public class InstituteDto {
 
             @Schema(description = "우편번호", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
             @Pattern(regexp = "\\d{5}")
-            String zipCode,
+            String postalCode,
 
             @Schema(description = "연락처", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
             @Pattern(regexp = "\\d{11}")
@@ -130,7 +130,7 @@ public class InstituteDto {
 
             @Schema(description = "우편번호", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
             @Pattern(regexp = "\\d{5}")
-            String zipCode,
+            String postalCode,
 
             @Schema(description = "연락처", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
             @Pattern(regexp = "\\d{11}")
@@ -170,7 +170,7 @@ public class InstituteDto {
             String name,
             String businessRegistrationName,
             String address,
-            String zipCode,
+            String postalCode,
             String phoneNumber,
             String url,
             String naverPlaceUrl,

@@ -1,6 +1,7 @@
 package com.redutec.core.repository;
 
 import com.redutec.core.entity.RefreshToken;
+import com.redutec.core.meta.Domain;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
@@ -22,6 +23,7 @@ public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Long
      * 특정 사용자의 모든 Refresh Token을 삭제합니다.
      *
      * @param username 사용자 아이디
+     * @param domain 서비스 도메인
      */
-    void deleteByUsername(String username);
+    void deleteByUsernameAndDomain(String username, Domain domain);
 }

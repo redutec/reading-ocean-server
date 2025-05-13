@@ -4,7 +4,7 @@ server:
   error:
     path: /error
   servlet:
-    context-path: /api/to
+    context-path: /api/teaching-ocean
     session:
       timeout: 1440m
 # Spring
@@ -51,10 +51,10 @@ logging:
       resultsettable: off
       sqlerror: warn
   file:
-    name: ./teaching-ocean/logs/to.log
+    name: ./logs/teaching-ocean.log
 # Security
 jwt:
-  secret: "re@ding0ce@n#123AdminJsonWebTokenSecret"
+  secret: "re@ding0ce@n#123TeachingOceanJsonWebTokenSecret"
   access-token-expiration: 60000
   refresh-token-expiration: 37600000
 # Custom

@@ -25,7 +25,7 @@ import java.util.Optional;
 public class Branch {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Comment("고유번호")
+    @Comment("지사 고유번호")
     private Long id;
 
     @Comment("로그인 아이디")
@@ -50,7 +50,7 @@ public class Branch {
     private BranchStatus status;
 
     @Comment("영업 구역")
-    @Column
+    @Column(length = 200)
     private String businessArea;
 
     @Comment("지사장 이름(AES256 암호화)")

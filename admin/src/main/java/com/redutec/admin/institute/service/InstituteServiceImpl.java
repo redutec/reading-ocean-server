@@ -136,7 +136,7 @@ public class InstituteServiceImpl implements InstituteService {
                 updateInstituteRequest.name(),
                 updateInstituteRequest.businessRegistrationName(),
                 updateInstituteRequest.address(),
-                updateInstituteRequest.zipCode(),
+                updateInstituteRequest.postalCode(),
                 updateInstituteRequest.phoneNumber(),
                 updateInstituteRequest.url(),
                 updateInstituteRequest.naverPlaceUrl(),

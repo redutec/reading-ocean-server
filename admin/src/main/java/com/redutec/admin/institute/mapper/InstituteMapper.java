@@ -26,7 +26,7 @@ public class InstituteMapper {
                 .name(createInstituteRequest.name())
                 .businessRegistrationName(createInstituteRequest.businessRegistrationName())
                 .address(createInstituteRequest.address())
-                .zipCode(createInstituteRequest.zipCode())
+                .postalCode(createInstituteRequest.postalCode())
                 .phoneNumber(createInstituteRequest.phoneNumber())
                 .url(createInstituteRequest.url())
                 .naverPlaceUrl(createInstituteRequest.naverPlaceUrl())
@@ -72,7 +72,7 @@ public class InstituteMapper {
                         in.getName(),
                         in.getBusinessRegistrationName(),
                         in.getAddress(),
-                        in.getZipCode(),
+                        in.getPostalCode(),
                         in.getPhoneNumber(),
                         in.getUrl(),
                         in.getNaverPlaceUrl(),

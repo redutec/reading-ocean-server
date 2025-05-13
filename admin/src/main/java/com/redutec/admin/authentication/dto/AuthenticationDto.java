@@ -2,9 +2,9 @@ package com.redutec.admin.authentication.dto;
 
 import com.redutec.core.meta.AdminUserRole;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
 import java.util.List;
 
@@ -12,6 +12,7 @@ public class AuthenticationDto {
     @Schema(description = "현재 로그인한 어드민 사용자의 정보가 담긴 객체")
     public record AuthenticatedAdminUser(
             Long adminUserId,
+            String accountId,
             String email,
             String nickname,
             List<Long> accessibleMenus,
@@ -20,10 +21,10 @@ public class AuthenticationDto {
 
     @Schema(description = "어드민 사용자 로그인 요청 객체")
     public record LoginRequest(
-            @Schema(description = "로그인 이메일", requiredMode = Schema.RequiredMode.REQUIRED, example = "redutec@redutec.co.kr")
+            @Schema(description = "로그인 아이디", requiredMode = Schema.RequiredMode.REQUIRED, example = "redutec")
             @NotNull
-            @Email
-            String email,
+            @Size(min = 1, max = 20)
+            String accountId,
 
             @Schema(description = "비밀번호", requiredMode = Schema.RequiredMode.REQUIRED, example = "Redutec123!")
             @NotNull
@@ -40,18 +41,18 @@ public class AuthenticationDto {
 
     @Schema(description = "어드민 사용자 계정 비밀번호 초기화 요청 객체")
     public record ResetPasswordRequest(
-            @Schema(description = "비밀번호를 초기화 할 계정의 이메일", requiredMode = Schema.RequiredMode.REQUIRED)
+            @Schema(description = "비밀번호를 초기화 할 어드민 사용자 계정의 이메일", requiredMode = Schema.RequiredMode.REQUIRED)
             @NotNull
-            @Email
-            String email
+            @Size(min = 1, max = 20)
+            String accountId
     ) {}
 
     @Schema(description = "어드민 사용자 계정 비밀번호 변경 요청 객체")
     public record UpdatePasswordRequest(
-            @Schema(description = "비밀번호를 변경할 계정의 이메일", requiredMode = Schema.RequiredMode.REQUIRED)
+            @Schema(description = "비밀번호를 변경할 어드민 사용자 계정의 로그인 아이디", requiredMode = Schema.RequiredMode.REQUIRED)
             @NotNull
-            @Email
-            String email,
+            @Size(min = 1, max = 20)
+            String accountId,
 
             @Schema(description = "기존 비밀번호", requiredMode = Schema.RequiredMode.REQUIRED)
             @NotNull

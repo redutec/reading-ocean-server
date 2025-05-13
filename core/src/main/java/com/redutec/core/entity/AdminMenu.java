@@ -80,7 +80,8 @@ public class AdminMenu {
             Boolean available,
             List<AdminUserRole> accessibleRoles,
             Integer depth,
-            AdminMenu parent
+            AdminMenu parent,
+            List<AdminMenu> children
     ) {
         this.name = Optional.ofNullable(name).orElse(this.name);
         this.url = Optional.ofNullable(url).orElse(this.url);
@@ -89,5 +90,6 @@ public class AdminMenu {
         this.accessibleRoles = Optional.ofNullable(accessibleRoles).orElse(this.accessibleRoles);
         this.depth = Optional.ofNullable(depth).orElse(this.depth);
         this.parent = Optional.ofNullable(parent).orElse(this.parent);
+        this.children = Optional.ofNullable(children).orElse(this.children);
     }
 }

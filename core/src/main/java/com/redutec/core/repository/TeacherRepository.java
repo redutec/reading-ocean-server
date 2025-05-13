@@ -10,4 +10,5 @@ import java.util.Optional;
 
 public interface TeacherRepository extends JpaRepository<Teacher, Long>, JpaSpecificationExecutor<Teacher> {
     Optional<Teacher> findByInstituteAndRole(Institute institute, TeacherRole role);
+    Optional<Teacher> findByAccountId(String accountId);
 }

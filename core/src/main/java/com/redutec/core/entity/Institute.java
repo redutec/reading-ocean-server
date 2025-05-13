@@ -48,7 +48,7 @@ public class Institute {
     @Comment("우편번호")
     @Column(length = 5)
     @Pattern(regexp = "^[0-9]{5}", message = "우편번호는 5자리의 숫자로만 구성되어야 합니다.")
-    private String zipCode;
+    private String postalCode;
 
     @Comment("연락처")
     @Column(length = 11)
@@ -102,7 +102,7 @@ public class Institute {
             String name,
             String businessRegistrationName,
             String address,
-            String zipCode,
+            String postalCode,
             String phoneNumber,
             String url,
             String naverPlaceUrl,
@@ -115,7 +115,7 @@ public class Institute {
         this.name = Optional.ofNullable(name).orElse(this.name);
         this.businessRegistrationName = Optional.ofNullable(businessRegistrationName).orElse(this.businessRegistrationName);
         this.address = Optional.ofNullable(address).orElse(this.address);
-        this.zipCode = Optional.ofNullable(zipCode).orElse(this.zipCode);
+        this.postalCode = Optional.ofNullable(postalCode).orElse(this.postalCode);
         this.phoneNumber = Optional.ofNullable(phoneNumber).orElse(this.phoneNumber);
         this.url = Optional.ofNullable(url).orElse(this.url);
         this.naverPlaceUrl = Optional.ofNullable(naverPlaceUrl).orElse(this.naverPlaceUrl);

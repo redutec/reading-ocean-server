@@ -66,15 +66,15 @@ public class AdminUserServiceImpl implements AdminUserService {
     }
 
     /**
-     * 특정 어드민 사용자 엔티티 조회(닉네임으로 조회)
-     * @param email 어드민 사용자 닉네임
+     * 특정 어드민 사용자 엔티티 조회(로그인 아이디로 조회)
+     * @param accountId 어드민 사용자의 로그인 아이디
      * @return 특정 어드민 사용자 엔티티 객체
      */
     @Override
     @Transactional(readOnly = true)
-    public AdminUser findByEmail(String email) {
-        return adminUserRepository.findByEmail(email)
-                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 어드민 사용자입니다. email = " + email));
+    public AdminUser findByAccountId(String accountId) {
+        return adminUserRepository.findByAccountId(accountId)
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 어드민 사용자입니다. accountId = " + accountId));
     }
 
     /**

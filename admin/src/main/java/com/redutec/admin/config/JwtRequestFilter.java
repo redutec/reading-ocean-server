@@ -82,14 +82,14 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             // 토큰을 검증
             if (jwtUtil.validateToken(accessToken)) {
                 // 검증된 토큰에서 시스템 사용자 아이디 추출
-                var email = jwtUtil.extractUsername(accessToken);
+                var accountId = jwtUtil.extractUsername(accessToken);
                 // 시스템 사용자 아이디가 유효하고, 현재 인증이 없다면 사용자 인증 수행
-                if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                if (accountId != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                     // 로그인한 시스템 사용자 정보 조회
-                    AdminUser adminUser = adminUserRepository.findByEmail(email)
-                            .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 어드민 사용자입니다. email = " + email));
+                    AdminUser adminUser = adminUserRepository.findByAccountId(accountId)
+                            .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 어드민 사용자입니다. accountId = " + accountId));
                     // 권한 부여 및 인증 객체 생성
-                    var authorities = userDetailsService.loadUserByUsername(adminUser.getEmail());
+                    var authorities = userDetailsService.loadUserByUsername(adminUser.getAccountId());
                     var authenticationToken = new UsernamePasswordAuthenticationToken(authorities, accessToken, authorities.getAuthorities());
                     // SecurityContext에 인증 객체 설정
                     SecurityContextHolder.getContext().setAuthentication(authenticationToken);

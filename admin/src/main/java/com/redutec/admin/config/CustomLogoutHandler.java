@@ -2,6 +2,7 @@ package com.redutec.admin.config;
 
 import com.redutec.core.entity.AdminUser;
 import com.redutec.core.entity.BlacklistedToken;
+import com.redutec.core.meta.Domain;
 import com.redutec.core.repository.AdminUserRepository;
 import com.redutec.core.repository.BlacklistedTokenRepository;
 import com.redutec.core.repository.RefreshTokenRepository;
@@ -51,13 +52,13 @@ public class CustomLogoutHandler implements LogoutHandler {
                                 .build());
             }
             // JWT 토큰에서 시스템 사용자의 로그인 아이디를 추출
-            String email = jwtUtil.extractUsername(token);
-            if (email != null) {
+            String accountId = jwtUtil.extractUsername(token);
+            if (accountId != null) {
                 // AdminUser 엔티티를 시스템 사용자의 로그인 아이디로 조회
-                AdminUser adminUser = adminUserRepository.findByEmail(email)
-                        .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 어드민 사용자입니다. email = " + email));
+                AdminUser adminUser = adminUserRepository.findByAccountId(accountId)
+                        .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 어드민 사용자입니다. accountId = " + accountId));
                 // 해당 시스템 사용자의 리프레시 토큰 삭제
-                refreshTokenRepository.deleteById(adminUser.getId());
+                refreshTokenRepository.deleteByUsernameAndDomain(adminUser.getAccountId(), Domain.ADMIN);
             }
         }
     }

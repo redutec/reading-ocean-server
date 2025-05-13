@@ -95,6 +95,7 @@ public class JwtUtil {
         // 현재 로그인한 어드민 사용자의 정보를 JWT Claims 응답 객체로 변환하여 리턴
         return new AuthenticationDto.AuthenticatedAdminUser(
                 adminUser.getId(),
+                adminUser.getAccountId(),
                 adminUser.getEmail(),
                 adminUser.getNickname(),
                 accessibleMenus,
@@ -114,7 +115,7 @@ public class JwtUtil {
         Map<String, Object> claims = new ObjectMapper().convertValue(buildJwtClaims(adminUser), new TypeReference<>() {});
         return Jwts.builder()
                 .setClaims(claims)
-                .setSubject(claims.get("email").toString())
+                .setSubject(claims.get("accountId").toString())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + accessTokenExpiration))
                 .signWith(key)
@@ -133,7 +134,7 @@ public class JwtUtil {
     ) {
         Map<String, Object> claims = new ObjectMapper().convertValue(buildJwtClaims(adminUser), new TypeReference<>() {});
         return Jwts.builder()
-                .setSubject(claims.get("email").toString())
+                .setSubject(claims.get("accountId").toString())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + refreshTokenExpiration))
                 .signWith(key)

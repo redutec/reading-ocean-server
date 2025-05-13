@@ -41,7 +41,7 @@ public class InquiryDto {
             @Email(message = "이메일 형식으로 입력해주세요")
             String inquirerEmail,
 
-            @Schema(description = "답변자 닉네임", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+            @Schema(description = "답변자(어드민 사용자) 닉네임", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
             @Size(max = 20)
             String responderNickname,
 
@@ -86,7 +86,7 @@ public class InquiryDto {
             @Email(message = "이메일 형식으로 입력해주세요")
             String inquirerEmail,
 
-            @Schema(description = "답변자 닉네임", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+            @Schema(description = "답변자(어드민 사용자) 닉네임", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
             @Size(max = 20)
             String responderNickname,
 
@@ -131,7 +131,7 @@ public class InquiryDto {
             @Email(message = "이메일 형식으로 입력해주세요")
             String inquirerEmail,
 
-            @Schema(description = "답변자 닉네임", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+            @Schema(description = "답변자(어드민 사용자) 닉네임", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
             @Size(max = 20)
             String responderNickname,
 

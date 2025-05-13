@@ -28,10 +28,10 @@ public interface AdminUserService {
 
     /**
      * 특정 어드민 사용자 엔티티 조회
-     * @param email 어드민 사용자 이메일
+     * @param accountId 어드민 사용자의 로그인 아이디
      * @return 특정 어드민 사용자 엔티티 객체
      */
-    AdminUser findByEmail(String email);
+    AdminUser findByAccountId(String accountId);
 
     /**
      * 특정 어드민 사용자 엔티티 조회

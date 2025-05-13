@@ -7,6 +7,6 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import java.util.Optional;
 
 public interface AdminUserRepository extends JpaRepository<AdminUser, Long>, JpaSpecificationExecutor<AdminUser> {
-    Optional<AdminUser> findByEmail(String email);
+    Optional<AdminUser> findByAccountId(String accountId);
     Optional<AdminUser> findByNickname(String nickname);
 }

@@ -43,8 +43,9 @@ public class DatabaseInitializer {
     protected void createSampleAdminUser() {
         if (adminUserRepository.count() == 0) {
             log.info("No admin user data found. Creating sample admin users.");
-            var adminUsers = Arrays.stream(SampleData.AdminUser.values())
+            var adminUsers = Arrays.stream(SampleData.SampleAdminUser.values())
                     .map(adminUser -> AdminUser.builder()
+                            .accountId(adminUser.getAccountId())
                             .email(adminUser.getEmail())
                             .password(passwordEncoder.encode(adminUser.getPassword()))
                             .role(adminUser.getRole())

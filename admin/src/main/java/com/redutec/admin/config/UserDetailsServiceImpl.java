@@ -24,20 +24,20 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     /**
      * 주어진 이메일을 사용하여 어드민 사용자의 세부 정보를 로드합니다.
      *
-     * @param username 어드민 사용자의 로그인 아이디
+     * @param accountId 어드민 사용자의 로그인 아이디
      * @return UserDetails 객체로, 어드민 사용자 인증 및 권한 부여에 사용됩니다.
      * @throws UsernameNotFoundException 주어진 이메일을 가진 어드민 사용자가 데이터베이스에 존재하지 않을 경우 발생합니다.
      */
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String accountId) throws UsernameNotFoundException {
         // 암호화된 이메일로 어드민 사용자 정보 조회
-        var adminUser = adminUserRepository.findByEmail(username)
-                .orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 어드민 사용자입니다. email: " + username));
+        var adminUser = adminUserRepository.findByAccountId(accountId)
+                .orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 어드민 사용자입니다. accountId: " + accountId));
         // 어드민 사용자의 역할을 GrantedAuthority로 변환하여 UserDetails 객체 생성
         Set<GrantedAuthority> authorities = new HashSet<>();
         // 어드민 사용자 권한을 설정하여 UserDetails 객체 반환
         return new User(
-                adminUser.getEmail(),
+                adminUser.getAccountId(),
                 adminUser.getPassword(),
                 authorities);
     }

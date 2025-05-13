@@ -30,7 +30,7 @@ public class Teacher {
     private Long id;
 
     @Comment("로그인 아이디")
-    @Column(length = 20, nullable = false)
+    @Column(length = 20, nullable = false, unique = true)
     private String accountId;
 
     @Comment("비밀번호")

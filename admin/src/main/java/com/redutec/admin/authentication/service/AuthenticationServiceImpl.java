@@ -57,7 +57,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public AuthenticationDto.LoginResponse login(AuthenticationDto.LoginRequest loginRequest) {
         // 어드민 사용자 엔티티 조회
-        AdminUser adminUser = adminUserService.findByEmail(loginRequest.email());
+        AdminUser adminUser = adminUserService.findByAccountId(loginRequest.accountId());
         // 어드민 사용자 계정 상태 검증
         validateAuthenticationStatus(adminUser);
         // 비밀번호가 일치하는지 검증
@@ -82,7 +82,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         // RefreshToken 생성
         String refreshToken = jwtUtil.generateRefreshToken(adminUser);
         // 생성한 RefreshToken을 DB에 저장
-        jwtUtil.saveRefreshToken(refreshToken, adminUser.getEmail(), Domain.ADMIN);
+        jwtUtil.saveRefreshToken(refreshToken, adminUser.getAccountId(), Domain.ADMIN);
         // 생성한 Token으로 로그인 응답 객체를 리턴
         return new AuthenticationDto.LoginResponse(accessToken, refreshToken);
     }
@@ -98,14 +98,15 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         // 현재 접속한 계정 정보를 가져오기
         var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         // 계정 정보에 담긴 이메일 정보 가져오기
-        String email = (principal instanceof String)
+        String accountId = (principal instanceof String)
                 ? (String) principal
                 : ((User) principal).getUsername();
         // 이메일로 AdminUser 엔티티 조회
-        AdminUser adminUser = adminUserService.findByEmail(email);
+        AdminUser adminUser = adminUserService.findByAccountId(accountId);
         // 현재 로그인한 어드민 사용자 정보를 리턴
         return new AuthenticationDto.AuthenticatedAdminUser(
                 adminUser.getId(),
+                accountId,
                 adminUser.getEmail(),
                 adminUser.getNickname(),
                 adminMenuRepository.findAllByAccessibleRolesContains(adminUser.getRole()).stream()
@@ -123,7 +124,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     @Transactional
     public void resetPassword(AuthenticationDto.ResetPasswordRequest resetPasswordRequest) throws MessagingException {
-        var adminUser = adminUserService.findByEmail(resetPasswordRequest.email());
+        var adminUser = adminUserService.findByAccountId(resetPasswordRequest.accountId());
         validateAuthenticationStatus(adminUser);
         var newPasswordLength = 8;
         var newPassword = generateRandomPassword(newPasswordLength);
@@ -139,7 +140,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     @Transactional
     public void updatePassword(AuthenticationDto.UpdatePasswordRequest updatePasswordRequest) {
-        var adminUser = adminUserService.findByEmail(updatePasswordRequest.email());
+        var adminUser = adminUserService.findByAccountId(updatePasswordRequest.accountId());
         if (adminUser.getAuthenticationStatus() != PASSWORD_RESET) {
             validateAuthenticationStatus(adminUser);
         }
@@ -163,7 +164,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .filter(RefreshToken::isExpired)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "유효하지 않거나 만료된 토큰입니다."));
         // refreshTokenEntity에 있는 어드민 사용자 닉네임으로 어드민 사용자 엔티티 조회
-        AdminUser adminUser = adminUserRepository.findByEmail(refreshTokenEntity.getUsername())
+        AdminUser adminUser = adminUserRepository.findByAccountId(refreshTokenEntity.getUsername())
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 계정입니다. email = " + refreshTokenEntity.getUsername()));
         // 새로운 Access Token 생성 후 리턴
         return new AuthenticationDto.LoginResponse(
