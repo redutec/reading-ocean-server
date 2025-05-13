@@ -38,7 +38,7 @@ public class InstituteSpecification {
                             .map(operationStatuses -> root.get("operationStatus").in(operationStatuses)),
                     Optional.ofNullable(instituteCriteria.branchIds())
                             .filter(branchId -> !branchId.isEmpty())
-                            .map(branchId -> root.get("branch").in(branchId))
+                            .map(branchId -> root.get("branch").get("id").in(branchId))
             );
             // 수집된 Predicate 들을 하나로 결합
             return combinePredicate(predicateStream, criteriaBuilder);

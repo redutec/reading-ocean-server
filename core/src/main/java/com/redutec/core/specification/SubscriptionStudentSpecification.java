@@ -23,7 +23,7 @@ public class SubscriptionStudentSpecification {
                             .map(subscriptionPlanIds -> root.get("subscriptionPlanId").in(subscriptionPlanIds)),
                     Optional.ofNullable(subscriptionStudentCriteria.studentIds())
                             .filter(studentIds -> !studentIds.isEmpty())
-                            .map(studentIds -> root.get("student").in(studentIds))
+                            .map(studentIds -> root.get("student").get("id").in(studentIds))
             );
             // 수집된 Predicate 들을 하나로 결합
             return combinePredicate(predicateStream, criteriaBuilder);

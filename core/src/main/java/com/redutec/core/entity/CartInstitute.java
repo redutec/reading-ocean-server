@@ -12,15 +12,15 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import static jakarta.persistence.FetchType.LAZY;
 
 @Entity
-@Comment("상품주문(교육기관)")
+@Comment("장바구니(교육기관)")
 @DiscriminatorValue("INSTITUTE")
 @DynamicUpdate
 @Getter
 @SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
-public class OrderInstitute extends Order {
-    @Comment("상품주문자(교육기관)")
+public class CartInstitute extends Cart {
+    @Comment("장바구니 소유자(교육기관)")
     @ManyToOne(fetch = LAZY, optional = false)
     @JoinColumn(nullable = false)
     private Institute institute;
