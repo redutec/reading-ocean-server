@@ -140,6 +140,47 @@ public class SampleData {
     // TeachingOceanApplication 서비스용
     @Getter
     @AllArgsConstructor
+    public enum ParentTeachingOceanMenu {
+        INSTITUTE(
+                "교육기관 관리",
+                "/institute",
+                "교육기관의 교사, 학생 등을 관리",
+                List.of(TeacherRole.CHIEF, TeacherRole.TEACHER)
+        );
+
+        private final String name;
+        private final String url;
+        private final String description;
+        private final List<TeacherRole> accessibleRoles;
+    }
+
+    @Getter
+    @AllArgsConstructor
+    public enum ChildrenTeachingOceanMenu {
+        TEACHER(
+                "교사 관리",
+                "/institute/teacher",
+                "교육기관의 교사 관리",
+                ParentTeachingOceanMenu.INSTITUTE,
+                List.of(TeacherRole.CHIEF)
+        ),
+        STUDENT(
+                "학생 관리",
+                "/institute/student",
+                "교육기관의 학생 관리",
+                ParentTeachingOceanMenu.INSTITUTE,
+                ParentTeachingOceanMenu.INSTITUTE.accessibleRoles
+        );
+
+        private final String name;
+        private final String url;
+        private final String description;
+        private final ParentTeachingOceanMenu parentTeachingOceanMenu;
+        private final List<TeacherRole> accessibleRoles;
+    }
+
+    @Getter
+    @AllArgsConstructor
     public enum SampleBranch {
         SEONGNAM(
                 "seongnam",
@@ -195,7 +236,7 @@ public class SampleData {
         private final String businessArea;
         private final String managerName;
         private final String managerPhoneNumber;
-        private final String manaberEmail;
+        private final String managerEmail;
         private final String contractFileName;
         private final LocalDate contractDate;
         private final LocalDate renewalDate;
@@ -216,7 +257,8 @@ public class SampleData {
                 InstituteType.ACADEMY,
                 InstituteManagementType.STANDARD,
                 InstituteStatus.ACTIVE,
-                InstituteOperationStatus.OPERATING
+                InstituteOperationStatus.OPERATING,
+                SampleBranch.SEONGNAM.getName()
         ),
         SEOUL(
                 "리딩오션 서울지점",
@@ -229,7 +271,22 @@ public class SampleData {
                 InstituteType.SCHOOL,
                 InstituteManagementType.BASIC,
                 InstituteStatus.WAIT,
-                InstituteOperationStatus.PREPARING
+                InstituteOperationStatus.PREPARING,
+                SampleBranch.SEOUL.getName()
+        ),
+        BUSAN(
+                "리딩오션 부산지점",
+                "리딩오션 부산지점",
+                "광안리",
+                "71225",
+                "55198764213",
+                "www.redutec.co.kr",
+                "www.redutec.co.kr",
+                InstituteType.ACADEMY,
+                InstituteManagementType.BASIC,
+                InstituteStatus.ACTIVE,
+                InstituteOperationStatus.OPERATING,
+                SampleBranch.BUSAN.getName()
         );
 
         private final String name;
@@ -243,12 +300,13 @@ public class SampleData {
         private final InstituteManagementType managementType;
         private final InstituteStatus status;
         private final InstituteOperationStatus operationStatus;
+        private final String branchName;
     }
 
     @Getter
     @AllArgsConstructor
     public enum SampleTeacher {
-        // CHIEF: 2개
+        // CHIEF: 3개
         SEONGNAM_CHIEF(
                 "seongnam_chief",
                 "Redutec123!",
@@ -257,7 +315,8 @@ public class SampleData {
                 "seongnam_chief@redutec.co.kr",
                 TeacherStatus.ACTIVE,
                 TeacherRole.CHIEF,
-                AuthenticationStatus.ACTIVE
+                AuthenticationStatus.ACTIVE,
+                SampleInstitute.SEONGNAM.getName()
         ),
         SEOUL_CHIEF(
                 "seoul_chief",
@@ -267,7 +326,19 @@ public class SampleData {
                 "seoul_chief@redutec.co.kr",
                 TeacherStatus.ACTIVE,
                 TeacherRole.CHIEF,
-                AuthenticationStatus.ACTIVE
+                AuthenticationStatus.ACTIVE,
+                SampleInstitute.SEOUL.getName()
+        ),
+        BUSAN_CHIEF(
+                "busan_chief",
+                "Redutec123!",
+                "부산지점 원장",
+                "55155556666",
+                "busan_chief@redutec.co.kr",
+                TeacherStatus.ACTIVE,
+                TeacherRole.CHIEF,
+                AuthenticationStatus.ACTIVE,
+                SampleInstitute.BUSAN.getName()
         ),
         // TEACHER: 4개
         SEONGNAM_TEACHER_1(
@@ -278,7 +349,8 @@ public class SampleData {
                 "seongnam_teacher_1@redutec.co.kr",
                 TeacherStatus.ACTIVE,
                 TeacherRole.TEACHER,
-                AuthenticationStatus.ACTIVE
+                AuthenticationStatus.ACTIVE,
+                SampleInstitute.SEONGNAM.getName()
         ),
         SEONGNAM_TEACHER_2(
                 "seongnam_teacher_2",
@@ -288,7 +360,8 @@ public class SampleData {
                 "seongnam_teacher_2@redutec.co.kr",
                 TeacherStatus.INACTIVE,
                 TeacherRole.TEACHER,
-                AuthenticationStatus.ACTIVE
+                AuthenticationStatus.ACTIVE,
+                SampleInstitute.SEONGNAM.getName()
         ),
         SEOUL_TEACHER_1(
                 "seoul_teacher_1",
@@ -298,17 +371,41 @@ public class SampleData {
                 "seoul_teacher_1@redutec.co.kr",
                 TeacherStatus.ACTIVE,
                 TeacherRole.TEACHER,
-                AuthenticationStatus.ACTIVE
+                AuthenticationStatus.ACTIVE,
+                SampleInstitute.SEOUL.getName()
         ),
         SEOUL_TEACHER_2(
                 "seoul_teacher_2",
                 "Redutec123!",
                 "서울지점 교사2",
                 "22211116666",
-                "seonul_teacher_2@redutec.co.kr",
+                "seoul_teacher_2@redutec.co.kr",
                 TeacherStatus.INACTIVE,
                 TeacherRole.TEACHER,
-                AuthenticationStatus.ACTIVE
+                AuthenticationStatus.ACTIVE,
+                SampleInstitute.SEOUL.getName()
+        ),
+        BUSAN_TEACHER_1(
+                "busan_teacher_1",
+                "Redutec123!",
+                "부산지점 교사1",
+                "55533336666",
+                "busan_teacher_1@redutec.co.kr",
+                TeacherStatus.ACTIVE,
+                TeacherRole.TEACHER,
+                AuthenticationStatus.ACTIVE,
+                SampleInstitute.BUSAN.getName()
+        ),
+        BUSAN_TEACHER_2(
+                "busan_teacher_2",
+                "Redutec123!",
+                "부산지점 교사2",
+                "55511116666",
+                "busan_teacher_2@redutec.co.kr",
+                TeacherStatus.INACTIVE,
+                TeacherRole.TEACHER,
+                AuthenticationStatus.ACTIVE,
+                SampleInstitute.BUSAN.getName()
         );
 
         private final String accountId;
@@ -319,5 +416,6 @@ public class SampleData {
         private final TeacherStatus status;
         private final TeacherRole role;
         private final AuthenticationStatus authenticationStatus;
+        private final String instituteName;
     }
 }

@@ -102,6 +102,7 @@ public class AdminUserDto {
             String email,
 
             @Schema(description = "비밀번호를 잘못 입력한 횟수", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+            @PositiveOrZero
             Integer failedLoginAttempts,
 
             @Schema(description = "마지막 로그인 IP", requiredMode = Schema.RequiredMode.NOT_REQUIRED)

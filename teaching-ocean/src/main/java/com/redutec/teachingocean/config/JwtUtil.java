@@ -2,15 +2,12 @@ package com.redutec.teachingocean.config;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.redutec.admin.authentication.dto.AuthenticationDto;
-import com.redutec.core.entity.AdminMenu;
-import com.redutec.core.entity.AdminUser;
-import com.redutec.core.entity.RefreshToken;
-import com.redutec.core.entity.Teacher;
+import com.redutec.core.entity.*;
 import com.redutec.core.meta.Domain;
-import com.redutec.core.repository.AdminMenuRepository;
-import com.redutec.core.repository.AdminUserRepository;
 import com.redutec.core.repository.RefreshTokenRepository;
+import com.redutec.core.repository.TeacherRepository;
+import com.redutec.core.repository.TeachingOceanMenuRepository;
+import com.redutec.teachingocean.authentication.dto.AuthenticationDto;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -37,9 +34,9 @@ import java.util.Map;
 @Slf4j
 @Component
 public class JwtUtil {
-    private final AdminUserRepository adminUserRepository;
-    private final AdminMenuRepository adminMenuRepository;
+    private final TeachingOceanMenuRepository teachingOceanMenuRepository;
     private final RefreshTokenRepository refreshTokenRepository;
+    private final TeacherRepository teacherRepository;
 
     @Value("${jwt.secret}")
     private String jwtSecret;
@@ -57,14 +54,13 @@ public class JwtUtil {
      * Secret Key를 생성하고 HMAC-SHA256 알고리즘을 사용합니다.
      */
     public JwtUtil(
-            AdminUserRepository adminUserRepository,
-            AdminMenuRepository adminMenuRepository,
-            RefreshTokenRepository refreshTokenRepository
-    ) {
-        this.adminUserRepository = adminUserRepository;
-        this.adminMenuRepository = adminMenuRepository;
+            TeachingOceanMenuRepository teachingOceanMenuRepository,
+            RefreshTokenRepository refreshTokenRepository,
+            TeacherRepository teacherRepository) {
+        this.teachingOceanMenuRepository = teachingOceanMenuRepository;
         this.refreshTokenRepository = refreshTokenRepository;
         this.key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+        this.teacherRepository = teacherRepository;
     }
 
     @PostConstruct
@@ -85,37 +81,58 @@ public class JwtUtil {
      * 교사 계정 정보를 JWT Claims로 변환
      *
      * @param teacher 교사 계정 엔티티 객체
+     * @param institute 교사가 소속된 교육기관 엔티티 객체
+     * @param homeroom 교사가 소속된 학급 엔티티 객체
      * @return JWT Claims 맵 객체
      */
     @Transactional(readOnly = true)
-    protected AuthenticationDto.AuthenticatedAdminUser buildJwtClaims(Teacher teacher) {
-        // 현재 접속한 어드민 사용자가 접근할 수 있는 메뉴 목록 조회
-        List<Long> accessibleMenus = adminMenuRepository.findAllByAccessibleRolesContains(adminUser.getRole()).stream()
-                .map(AdminMenu::getId)
+    protected AuthenticationDto.AuthenticatedTeacher buildJwtClaims(
+            Teacher teacher,
+            Institute institute,
+            Homeroom homeroom
+    ) {
+        // 현재 접속한 교사가 접근할 수 있는 메뉴 목록 조회
+        List<Long> accessibleMenus = teachingOceanMenuRepository.findAllByAccessibleRolesContains(teacher.getRole()).stream()
+                .map(TeachingOceanMenu::getId)
                 .toList();
-        // 현재 로그인한 어드민 사용자의 정보를 JWT Claims 응답 객체로 변환하여 리턴
-        return new AuthenticationDto.AuthenticatedAdminUser(
-                adminUser.getId(),
-                adminUser.getEmail(),
-                adminUser.getNickname(),
-                accessibleMenus,
-                adminUser.getRole()
+        Long instituteId = institute != null ? institute.getId() : null;
+        String instituteName = institute != null ? institute.getName() : null;
+        Long homeroomId = homeroom != null ? homeroom.getId() : null;
+        String homeroomName = homeroom != null ? homeroom.getName() : null;
+        // 현재 로그인한 교사의 정보를 JWT Claims 응답 객체로 변환하여 리턴
+        return new AuthenticationDto.AuthenticatedTeacher(
+                teacher.getId(),
+                teacher.getAccountId(),
+                teacher.getName(),
+                teacher.getPhoneNumber(),
+                teacher.getEmail(),
+                teacher.getStatus(),
+                teacher.getRole(),
+                teacher.getAuthenticationStatus(),
+                teacher.getFailedLoginAttempts(),
+                instituteId,
+                instituteName,
+                homeroomId,
+                homeroomName,
+                accessibleMenus
         );
     }
 
     /**
      * Access Token을 생성합니다.
      *
-     * @param teacher Access Token을 발급할 교사 계정 객체
+     * @param teacher Access Token을 발급할 교사 엔티티 객체
+     * @param institute Access Token을 발급할 교사가 소속된 교육기관 엔티티 객체
+     * @param homeroom Access Token을 발급할 교사가 소속된 학급 엔티티 객체
      * @return 생성된 Access Token
      */
     @Transactional(readOnly = true)
-    public String generateAccessToken(Teacher teacher) {
-        // 어드민 사용자 엔티티를 JWT Claims Map으로 변환
-        Map<String, Object> claims = new ObjectMapper().convertValue(buildJwtClaims(teacher), new TypeReference<>() {});
+    public String generateAccessToken(Teacher teacher, Institute institute, Homeroom homeroom) {
+        // 교사 엔티티를 JWT Claims Map으로 변환
+        Map<String, Object> claims = new ObjectMapper().convertValue(buildJwtClaims(teacher, institute, homeroom), new TypeReference<>() {});
         return Jwts.builder()
                 .setClaims(claims)
-                .setSubject(claims.get("email").toString())
+                .setSubject(claims.get("accountId").toString())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + accessTokenExpiration))
                 .signWith(key)
@@ -125,16 +142,18 @@ public class JwtUtil {
     /**
      * Refresh Token을 생성합니다.
      *
-     * @param adminUser Refresh Token을 발급할 어드민 사용자 객체
+     * @param teacher Refresh Token을 발급할 교사 객체
      * @return 생성된 Refresh Token
      */
     @Transactional(readOnly = true)
     public String generateRefreshToken(
-            AdminUser adminUser
+            Teacher teacher,
+            Institute institute,
+            Homeroom homeroom
     ) {
-        Map<String, Object> claims = new ObjectMapper().convertValue(buildJwtClaims(adminUser), new TypeReference<>() {});
+        Map<String, Object> claims = new ObjectMapper().convertValue(buildJwtClaims(teacher, institute, homeroom), new TypeReference<>() {});
         return Jwts.builder()
-                .setSubject(claims.get("email").toString())
+                .setSubject(claims.get("accountId").toString())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + refreshTokenExpiration))
                 .signWith(key)
@@ -161,7 +180,7 @@ public class JwtUtil {
      * 토큰에서 현재 로그인한 사용자의 로그인 계정을 추출합니다.
      *
      * @param token JWT 토큰
-     * @return 토큰에서 추출된 어드민 사용자 로그인 계정
+     * @return 토큰에서 추출된 교사 로그인 계정
      */
     public String extractUsername(String token) {
         return Jwts.parserBuilder()

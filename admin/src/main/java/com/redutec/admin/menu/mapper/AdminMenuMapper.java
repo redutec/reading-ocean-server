@@ -19,7 +19,7 @@ public class AdminMenuMapper {
     /**
      * CreateAdminMenuRequest DTO를 기반으로 AdminMenu 엔티티를 생성합니다.
      *
-     * @param createAdminMenuRequest 어드민 사용자 생성에 필요한 데이터를 담은 DTO
+     * @param createAdminMenuRequest 어드민 메뉴 생성에 필요한 데이터를 담은 DTO
      * @return 생성된 AdminMenu 엔티티
      */
     public AdminMenu toEntity(
@@ -42,7 +42,7 @@ public class AdminMenuMapper {
     /**
      * 이 메서드는 현재 FindAdminMenuRequest 객체를 기반으로
      * AdminMenuCriteria 객체를 생성합니다.
-     * 내부 검색 로직에서 어드민 사용자 검색 조건을 구성할 때 사용됩니다.
+     * 내부 검색 로직에서 어드민 메뉴 검색 조건을 구성할 때 사용됩니다.
      *
      * @return 해당 요청의 필드를 이용해 생성된 AdminMenuCriteria 객체
      */
@@ -67,18 +67,18 @@ public class AdminMenuMapper {
         return Optional.ofNullable(adminMenu)
                 .map(menu -> {
                     AdminMenuDto.AdminMenuResponse parentMenu = Optional.ofNullable(menu.getParent())
-                            .map(p -> new AdminMenuDto.AdminMenuResponse(
-                                    p.getId(),
-                                    p.getName(),
-                                    p.getUrl(),
-                                    p.getDescription(),
-                                    p.getAvailable(),
-                                    p.getAccessibleRoles(),
-                                    p.getDepth(),
+                            .map(parent -> new AdminMenuDto.AdminMenuResponse(
+                                    parent.getId(),
+                                    parent.getName(),
+                                    parent.getUrl(),
+                                    parent.getDescription(),
+                                    parent.getAvailable(),
+                                    parent.getAccessibleRoles(),
+                                    parent.getDepth(),
                                     null,
                                     List.of(),
-                                    p.getCreatedAt(),
-                                    p.getUpdatedAt()
+                                    parent.getCreatedAt(),
+                                    parent.getUpdatedAt()
                             ))
                             .orElse(null);
                     List<AdminMenuDto.AdminMenuResponse> childrenMenus = Optional.ofNullable(menu.getChildren())

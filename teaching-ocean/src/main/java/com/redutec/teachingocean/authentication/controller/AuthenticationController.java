@@ -58,16 +58,16 @@ public class AuthenticationController {
     }
 
     /**
-     * 현재 로그인한 사용자 정보 조회 API.
-     * JWT 토큰을 이용하여 현재 로그인한 사용자 정보를 조회합니다.
+     * 현재 로그인한 교사 정보 조회 API.
+     * JWT 토큰을 이용하여 현재 로그인한 교사 정보를 조회합니다.
      *
-     * @return 사용자 정보
+     * @return 로그인한 교사 정보
      */
-    @Operation(summary = "현재 로그인한 사용자 정보 조회", description = "JWT 토큰을 이용하여 현재 로그인한 사용자 정보를 조회하는 API")
+    @Operation(summary = "현재 로그인한 교사 정보 조회", description = "JWT 토큰을 이용하여 현재 로그인한 교사 정보를 조회하는 API")
     @SecurityRequirement(name = "bearerAuth")
     @GetMapping
-    public ResponseEntity<ApiResponseBody> getAuthenticatedAdminUser() {
-        return apiResponseManager.success(authenticationService.getAuthenticatedAdminUser());
+    public ResponseEntity<ApiResponseBody> getAuthenticatedTeacher() {
+        return apiResponseManager.success(authenticationService.getAuthenticatedTeacher());
     }
 
     /**

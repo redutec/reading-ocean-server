@@ -37,7 +37,7 @@ public class SwaggerConfig {
 				.description("Teaching Ocean API Collection");
 		// OpenAPI 객체 생성 및 설정
 		return new OpenAPI()
-				.addServersItem(new Server().url("/api/to"))
+				.addServersItem(new Server().url("/api/teaching-ocean"))
 				.components(new Components().addSecuritySchemes("bearerAuth",
 						new io.swagger.v3.oas.models.security.SecurityScheme()
 								.type(io.swagger.v3.oas.models.security.SecurityScheme.Type.HTTP)

@@ -11,13 +11,16 @@ server:
 spring:
   application:
     name: teaching-ocean
-  config:
-    activate:
-      on-profile: local
+  profiles:
+    group:
+      local: core
+      dev: core
+      prod: core
+  servlet:
+    multipart:
+      max-file-size: 1000MB
+      max-request-size: 1000MB
   datasource:
-    url: jdbc:log4jdbc:mysql://127.0.0.1:3306/READING_OCEAN?characterEncoding=UTF-8&serverTimezone=Asia/Seoul&noAccessToProcedureBodies=true&allowPublicKeyRetrieval=true&useSSL=false&allowMultiQueries=true&useInformationSchema=true&autoReconnect=true
-    username: "redutec"
-    password: "readingocean2022"
     driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
     hikari:
       maximum-pool-size: 20
@@ -28,19 +31,19 @@ spring:
   jpa:
     database-platform: org.hibernate.dialect.MySQL8Dialect
     hibernate:
-      ddl-auto: validate
-    show-sql: true
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        globally_quoted_identifiers: true
 # Logger Properties
 logging:
   level:
     root: info
-    org:
-      hibernate:
-        sql: debug
-        type:
-          descriptor:
-            sql:
-              BasicBinder: warn
+    org.hibernate: info
+    org.hibernate.SQL: off
+    org.hibernate.type.descriptor.sql.BasicBinder: off
+    org.hibernate.orm.jdbc.bind: off
     log4jdbc: off
     jdbc:
       sqlonly: warn
@@ -57,5 +60,31 @@ jwt:
   secret: "re@ding0ce@n#123TeachingOceanJsonWebTokenSecret"
   access-token-expiration: 60000
   refresh-token-expiration: 37600000
+aes-256-key: "wI9a1XcwVlxiZklgK+P73P7msAVd4eHro3+cdk8pKxU="
+
+---
+# local
+spring:
+  config:
+    activate:
+      on-profile: local
+  datasource:
+    url: jdbc:log4jdbc:mysql://127.0.0.1:3306/REDUTEC?characterEncoding=UTF-8&serverTimezone=Asia/Seoul&noAccessToProcedureBodies=true&allowPublicKeyRetrieval=true&useSSL=false&allowMultiQueries=true&useInformationSchema=true&autoReconnect=true
+    username: "redutec"
+    password: "readingocean2022"
 # Custom
 front-end-server: 127.0.0.1
+file:
+  baseUrl: http://localhost:28084
+  prefix: ./teaching-ocean/upload
+
+---
+# dev
+spring:
+  config:
+    activate:
+      on-profile: dev
+  datasource:
+    url: jdbc:log4jdbc:mysql://dev-readingocean-db-01.ccemsdd2ijls.ap-northeast-2.rds.amazonaws.com:3306/REDUTEC?characterEncoding=UTF-8&serverTimezone=Asia/Seoul&noAccessToProcedureBodies=true&useSSL=false&allowMultiQueries=true&useInformationSchema=true&autoReconnect=true
+    username: "redutec"
+    password: "readingocean2022"

@@ -126,6 +126,7 @@ public class TeacherServiceImpl implements TeacherService {
                 updateTeacherRequest.status(),
                 updateTeacherRequest.role(),
                 updateTeacherRequest.authenticationStatus(),
+                updateTeacherRequest.failedLoginAttempts(),
                 updateTeacherRequest.description(),
                 institute,
                 homeroom

@@ -39,6 +39,7 @@ public class TeacherMapper {
                 .email(createTeacherRequest.email())
                 .status(createTeacherRequest.status())
                 .authenticationStatus(createTeacherRequest.authenticationStatus())
+                .failedLoginAttempts(0)
                 .description(createTeacherRequest.description())
                 .institute(institute)
                 .homeroom(homeroom)
@@ -80,6 +81,7 @@ public class TeacherMapper {
                         t.getStatus(),
                         t.getRole(),
                         t.getAuthenticationStatus(),
+                        t.getFailedLoginAttempts(),
                         t.getLastLoginIp(),
                         t.getLastLoginAt(),
                         t.getDescription(),

@@ -141,6 +141,10 @@ public class TeacherDto {
             @Enumerated(EnumType.STRING)
             AuthenticationStatus authenticationStatus,
 
+            @Schema(description = "비밀번호를 잘못 입력한 횟수", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+            @PositiveOrZero
+            Integer failedLoginAttempts,
+
             @Schema(description = "비고", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
             String description,
 
@@ -163,6 +167,7 @@ public class TeacherDto {
             TeacherStatus status,
             TeacherRole role,
             AuthenticationStatus authenticationStatus,
+            Integer failedLoginAttempts,
             String lastLoginIp,
             LocalDateTime lastLoginAt,
             String description,

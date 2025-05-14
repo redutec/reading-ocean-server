@@ -3,12 +3,11 @@ package com.redutec.admin.config;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.redutec.admin.authentication.dto.AuthenticationDto;
-import com.redutec.core.entity.AdminUser;
 import com.redutec.core.entity.AdminMenu;
+import com.redutec.core.entity.AdminUser;
 import com.redutec.core.entity.RefreshToken;
 import com.redutec.core.meta.Domain;
 import com.redutec.core.repository.AdminMenuRepository;
-import com.redutec.core.repository.AdminUserRepository;
 import com.redutec.core.repository.RefreshTokenRepository;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -36,7 +35,6 @@ import java.util.Map;
 @Slf4j
 @Component
 public class JwtUtil {
-    private final AdminUserRepository adminUserRepository;
     private final AdminMenuRepository adminMenuRepository;
     private final RefreshTokenRepository refreshTokenRepository;
 
@@ -56,11 +54,9 @@ public class JwtUtil {
      * Secret Key를 생성하고 HMAC-SHA256 알고리즘을 사용합니다.
      */
     public JwtUtil(
-            AdminUserRepository adminUserRepository,
             AdminMenuRepository adminMenuRepository,
             RefreshTokenRepository refreshTokenRepository
     ) {
-        this.adminUserRepository = adminUserRepository;
         this.adminMenuRepository = adminMenuRepository;
         this.refreshTokenRepository = refreshTokenRepository;
         this.key = Keys.secretKeyFor(SignatureAlgorithm.HS256);

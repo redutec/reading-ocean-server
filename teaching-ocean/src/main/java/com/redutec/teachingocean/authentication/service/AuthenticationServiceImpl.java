@@ -1,16 +1,14 @@
 package com.redutec.teachingocean.authentication.service;
 
+import com.redutec.core.entity.*;
+import com.redutec.core.meta.AuthenticationStatus;
+import com.redutec.core.meta.Domain;
+import com.redutec.core.repository.RefreshTokenRepository;
+import com.redutec.core.repository.TeacherRepository;
+import com.redutec.core.repository.TeachingOceanMenuRepository;
 import com.redutec.teachingocean.authentication.dto.AuthenticationDto;
 import com.redutec.teachingocean.config.JwtUtil;
 import com.redutec.teachingocean.teacher.service.TeacherService;
-import com.redutec.core.entity.AdminMenu;
-import com.redutec.core.entity.AdminUser;
-import com.redutec.core.entity.RefreshToken;
-import com.redutec.core.meta.AuthenticationStatus;
-import com.redutec.core.meta.Domain;
-import com.redutec.core.repository.AdminMenuRepository;
-import com.redutec.core.repository.AdminUserRepository;
-import com.redutec.core.repository.RefreshTokenRepository;
 import jakarta.mail.MessagingException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -34,37 +32,37 @@ import java.util.Optional;
 import static com.redutec.core.meta.AuthenticationStatus.PASSWORD_RESET;
 
 /**
- * AuthenticationServiceImpl는 어드민 사용자 인증 및 권한 관련 로직을 처리하는 서비스 클래스입니다.
- * 어드민 사용자 로그인, 비밀번호 재설정, 토큰 발급 등의 기능을 제공합니다.
+ * AuthenticationServiceImpl는 교사 인증 및 권한 관련 로직을 처리하는 서비스 클래스입니다.
+ * 교사 로그인, 비밀번호 재설정, 토큰 발급 등의 기능을 제공합니다.
  */
 @Service
 @Slf4j
 @RequiredArgsConstructor
 public class AuthenticationServiceImpl implements AuthenticationService {
     private final JwtUtil jwtUtil;
-    private final AdminUserRepository adminUserRepository;
-    private final AdminUserService adminUserService;
+    private final TeacherRepository teacherRepository;
+    private final TeacherService teacherService;
     private final RefreshTokenRepository refreshTokenRepository;
     private final PasswordEncoder passwordEncoder;
-    private final AdminMenuRepository adminMenuRepository;
+    private final TeachingOceanMenuRepository teachingOceanMenuRepository;
 
     /**
-     * 어드민 사용자 로그인 처리
+     * 교사 로그인 처리
      *
      * @param loginRequest 로그인 요청 정보를 포함하는 데이터 전송 객체
      * @return Access Token 및 Refresh Token이 담긴 Map 객체
      */
     @Override
     public AuthenticationDto.LoginResponse login(AuthenticationDto.LoginRequest loginRequest) {
-        // 어드민 사용자 엔티티 조회
-        AdminUser adminUser = adminUserService.findByAccountId(loginRequest.accountId());
-        // 어드민 사용자 계정 상태 검증
-        validateAuthenticationStatus(adminUser);
+        // 교사 엔티티 조회
+        Teacher teacher = teacherService.findByAccountId(loginRequest.accountId());
+        // 교사 계정 상태 검증
+        validateAuthenticationStatus(teacher);
         // 비밀번호가 일치하는지 검증
-        Optional.of(adminUser)
+        Optional.of(teacher)
                 .filter(admin -> passwordEncoder.matches(loginRequest.password(), admin.getPassword()))
                 .orElseThrow(() -> {
-                    handleFailedLoginAttempt(adminUser);
+                    handleFailedLoginAttempt(teacher);
                     return new BadCredentialsException("로그인 이메일 또는 비밀번호를 확인해주세요.");
                 });
         // 현재 요청의 IP 주소를 Optional 체인으로 가져옴 (없으면 "unknown")
@@ -73,46 +71,54 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .map(HttpServletRequest::getRemoteAddr)
                 .orElse("unknown");
         // 로그인에 성공하면 마지막 로그인 일시와 IP 업데이트 후 실패 횟수 초기화
-        adminUser.setLastLoginAt(LocalDateTime.now());
-        adminUser.setLastLoginIp(ipAddress);
-        adminUser.setFailedLoginAttempts(0);
-        adminUserRepository.save(adminUser);
+        teacher.setLastLoginAt(LocalDateTime.now());
+        teacher.setLastLoginIp(ipAddress);
+        teacher.setFailedLoginAttempts(0);
+        teacherRepository.save(teacher);
         // AccessToken 생성
-        String accessToken = jwtUtil.generateAccessToken(adminUser);
+        String accessToken = jwtUtil.generateAccessToken(teacher, teacher.getInstitute(), teacher.getHomeroom());
         // RefreshToken 생성
-        String refreshToken = jwtUtil.generateRefreshToken(adminUser);
+        String refreshToken = jwtUtil.generateRefreshToken(teacher, teacher.getInstitute(), teacher.getHomeroom());
         // 생성한 RefreshToken을 DB에 저장
-        jwtUtil.saveRefreshToken(refreshToken, adminUser.getAccountId(), Domain.ADMIN);
+        jwtUtil.saveRefreshToken(refreshToken, teacher.getAccountId(), Domain.TEACHING_OCEAN);
         // 생성한 Token으로 로그인 응답 객체를 리턴
         return new AuthenticationDto.LoginResponse(accessToken, refreshToken);
     }
 
     /**
-     * 현재 로그인한 어드민 사용자 정보 조회
+     * 현재 로그인한 교사 정보 조회
      *
-     * @return 어드민 사용자 정보가 담긴 DTO
+     * @return 교사 정보가 담긴 DTO
      */
     @Override
     @Transactional(readOnly = true)
-    public AuthenticationDto.AuthenticatedAdminUser getAuthenticatedAdminUser() {
+    public AuthenticationDto.AuthenticatedTeacher getAuthenticatedTeacher() {
         // 현재 접속한 계정 정보를 가져오기
         var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         // 계정 정보에 담긴 이메일 정보 가져오기
         String accountId = (principal instanceof String)
                 ? (String) principal
                 : ((User) principal).getUsername();
-        // 이메일로 AdminUser 엔티티 조회
-        AdminUser adminUser = adminUserService.findByAccountId(accountId);
-        // 현재 로그인한 어드민 사용자 정보를 리턴
-        return new AuthenticationDto.AuthenticatedAdminUser(
-                adminUser.getId(),
+        // 이메일로 Teacher, Institute, Homeroom 엔티티 조회
+        Teacher teacher = teacherService.findByAccountId(accountId);
+        // 현재 로그인한 교사 정보를 리턴
+        return new AuthenticationDto.AuthenticatedTeacher(
+                teacher.getId(),
                 accountId,
-                adminUser.getEmail(),
-                adminUser.getNickname(),
-                adminMenuRepository.findAllByAccessibleRolesContains(adminUser.getRole()).stream()
-                        .map(AdminMenu::getId)
-                        .toList(),
-                adminUser.getRole()
+                teacher.getName(),
+                teacher.getPhoneNumber(),
+                teacher.getEmail(),
+                teacher.getStatus(),
+                teacher.getRole(),
+                teacher.getAuthenticationStatus(),
+                teacher.getFailedLoginAttempts(),
+                teacher.getInstitute() != null ? teacher.getInstitute().getId() : null,
+                teacher.getInstitute() != null ? teacher.getInstitute().getName() : null,
+                teacher.getHomeroom() != null ? teacher.getHomeroom().getId() : null,
+                teacher.getHomeroom() != null ? teacher.getHomeroom().getName() : null,
+                teachingOceanMenuRepository.findAllByAccessibleRolesContains(teacher.getRole()).stream()
+                        .map(TeachingOceanMenu::getId)
+                        .toList()
         );
     }
 
@@ -124,11 +130,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     @Transactional
     public void resetPassword(AuthenticationDto.ResetPasswordRequest resetPasswordRequest) throws MessagingException {
-        var adminUser = adminUserService.findByAccountId(resetPasswordRequest.accountId());
-        validateAuthenticationStatus(adminUser);
+        var teacher = teacherService.findByAccountId(resetPasswordRequest.accountId());
+        validateAuthenticationStatus(teacher);
         var newPasswordLength = 8;
         var newPassword = generateRandomPassword(newPasswordLength);
-        updatePasswordAndStatus(adminUser, newPassword, PASSWORD_RESET);
+        updatePasswordAndStatus(teacher, newPassword, PASSWORD_RESET);
         // TODO 메일 또는 알림톡 발송 기능 구현
     }
 
@@ -140,14 +146,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     @Transactional
     public void updatePassword(AuthenticationDto.UpdatePasswordRequest updatePasswordRequest) {
-        var adminUser = adminUserService.findByAccountId(updatePasswordRequest.accountId());
-        if (adminUser.getAuthenticationStatus() != PASSWORD_RESET) {
-            validateAuthenticationStatus(adminUser);
+        var teacher = teacherService.findByAccountId(updatePasswordRequest.accountId());
+        if (teacher.getAuthenticationStatus() != PASSWORD_RESET) {
+            validateAuthenticationStatus(teacher);
         }
-        if (!passwordEncoder.matches(updatePasswordRequest.password(), adminUser.getPassword())) {
+        if (!passwordEncoder.matches(updatePasswordRequest.password(), teacher.getPassword())) {
             throw new BadCredentialsException("로그인 이메일 또는 비밀번호를 확인해주세요");
         }
-        updatePasswordAndStatus(adminUser, updatePasswordRequest.newPassword(), AuthenticationStatus.ACTIVE);
+        updatePasswordAndStatus(teacher, updatePasswordRequest.newPassword(), AuthenticationStatus.ACTIVE);
     }
 
     /**
@@ -163,23 +169,23 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         RefreshToken refreshTokenEntity = refreshTokenRepository.findByToken(refreshToken)
                 .filter(RefreshToken::isExpired)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "유효하지 않거나 만료된 토큰입니다."));
-        // refreshTokenEntity에 있는 어드민 사용자 닉네임으로 어드민 사용자 엔티티 조회
-        AdminUser adminUser = adminUserRepository.findByAccountId(refreshTokenEntity.getUsername())
+        // refreshTokenEntity에 있는 교사 닉네임으로 교사 엔티티 조회
+        Teacher teacher = teacherRepository.findByAccountId(refreshTokenEntity.getUsername())
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 계정입니다. email = " + refreshTokenEntity.getUsername()));
         // 새로운 Access Token 생성 후 리턴
         return new AuthenticationDto.LoginResponse(
-                jwtUtil.generateAccessToken(adminUser),
+                jwtUtil.generateAccessToken(teacher, teacher.getInstitute(), teacher.getHomeroom()),
                 refreshToken
         );
     }
 
     /**
-     * 어드민 사용자 계정 상태 검증
+     * 교사 계정 상태 검증
      *
-     * @param adminUser 검증할 어드민 사용자 객체
+     * @param teacher 검증할 교사 객체
      */
-    public void validateAuthenticationStatus(AdminUser adminUser) {
-        switch (adminUser.getAuthenticationStatus()) {
+    public void validateAuthenticationStatus(Teacher teacher) {
+        switch (teacher.getAuthenticationStatus()) {
             case ACTIVE -> {}
             case INACTIVE, SUSPENDED ->
                     throw new ResponseStatusException(HttpStatus.FORBIDDEN, "계정이 활성화되어 있지 않습니다.");
@@ -197,32 +203,32 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     /**
      * 로그인 실패 처리
      *
-     * @param adminUser 로그인 실패한 어드민 사용자 객체
+     * @param teacher 로그인 실패한 교사 객체
      */
-    private void handleFailedLoginAttempt(AdminUser adminUser) {
+    private void handleFailedLoginAttempt(Teacher teacher) {
         // 비밀번호를 틀린 횟수 1회 추가
-        adminUser.setFailedLoginAttempts(adminUser.getFailedLoginAttempts() + 1);
+        teacher.setFailedLoginAttempts(teacher.getFailedLoginAttempts() + 1);
         // 비밀번호를 틀린 횟수가 5회 이상일 경우 계정 LOCKED
-        if (adminUser.getFailedLoginAttempts() >= 5) {
-            adminUser.setAuthenticationStatus(AuthenticationStatus.LOCKED);
-            adminUserRepository.save(adminUser);
+        if (teacher.getFailedLoginAttempts() >= 5) {
+            teacher.setAuthenticationStatus(AuthenticationStatus.LOCKED);
+            teacherRepository.save(teacher);
             throw new ResponseStatusException(HttpStatus.LOCKED, "비밀번호 입력 실패 횟수가 5회를 초과하여 계정이 잠금 처리되었습니다. 비밀번호를 재설정해 주세요.");
         }
-        adminUserRepository.saveAndFlush(adminUser);
+        teacherRepository.saveAndFlush(teacher);
     }
 
     /**
-     * 어드민 사용자 비밀번호 및 상태 업데이트
+     * 교사 비밀번호 및 상태 업데이트
      *
-     * @param adminUser 어드민 사용자 객체
+     * @param teacher 교사 객체
      * @param newPassword 새 비밀번호
      * @param newStatus 새 상태
      */
-    private void updatePasswordAndStatus(AdminUser adminUser, String newPassword, AuthenticationStatus newStatus) {
-        adminUser.setPassword(passwordEncoder.encode(newPassword));
-        adminUser.setAuthenticationStatus(newStatus);
-        adminUser.setFailedLoginAttempts(0);
-        adminUserRepository.save(adminUser);
+    private void updatePasswordAndStatus(Teacher teacher, String newPassword, AuthenticationStatus newStatus) {
+        teacher.setPassword(passwordEncoder.encode(newPassword));
+        teacher.setAuthenticationStatus(newStatus);
+        teacher.setFailedLoginAttempts(0);
+        teacherRepository.save(teacher);
     }
 
     /**

@@ -22,7 +22,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     private final AdminUserRepository adminUserRepository;
 
     /**
-     * 주어진 이메일을 사용하여 어드민 사용자의 세부 정보를 로드합니다.
+     * 주어진 로그인 아이디를 사용하여 어드민 사용자의 세부 정보를 로드합니다.
      *
      * @param accountId 어드민 사용자의 로그인 아이디
      * @return UserDetails 객체로, 어드민 사용자 인증 및 권한 부여에 사용됩니다.
@@ -30,7 +30,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
      */
     @Override
     public UserDetails loadUserByUsername(String accountId) throws UsernameNotFoundException {
-        // 암호화된 이메일로 어드민 사용자 정보 조회
+        // 로그인 아이디로 어드민 사용자 정보 조회
         var adminUser = adminUserRepository.findByAccountId(accountId)
                 .orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 어드민 사용자입니다. accountId: " + accountId));
         // 어드민 사용자의 역할을 GrantedAuthority로 변환하여 UserDetails 객체 생성

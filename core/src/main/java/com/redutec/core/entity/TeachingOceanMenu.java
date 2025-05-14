@@ -76,14 +76,15 @@ public class TeachingOceanMenu {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
-    public void updateAdminMenu (
+    public void updateTeachingOceanMenu (
             String name,
             String url,
             String description,
             Boolean available,
             List<TeacherRole> accessibleRoles,
             Integer depth,
-            TeachingOceanMenu parent
+            TeachingOceanMenu parent,
+            List<TeachingOceanMenu> children
     ) {
         this.name = Optional.ofNullable(name).orElse(this.name);
         this.url = Optional.ofNullable(url).orElse(this.url);
@@ -92,5 +93,6 @@ public class TeachingOceanMenu {
         this.accessibleRoles = Optional.ofNullable(accessibleRoles).orElse(this.accessibleRoles);
         this.depth = Optional.ofNullable(depth).orElse(this.depth);
         this.parent = Optional.ofNullable(parent).orElse(this.parent);
+        this.children = Optional.ofNullable(children).orElse(this.children);
     }
 }

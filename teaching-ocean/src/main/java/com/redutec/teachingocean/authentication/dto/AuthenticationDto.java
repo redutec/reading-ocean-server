@@ -21,6 +21,7 @@ public class AuthenticationDto {
             TeacherStatus status,
             TeacherRole role,
             AuthenticationStatus authenticationStatus,
+            Integer failedLoginAttempts,
             Long instituteId,
             String instituteName,
             Long homeroomId,

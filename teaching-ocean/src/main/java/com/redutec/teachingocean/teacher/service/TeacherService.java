@@ -1,7 +1,7 @@
 package com.redutec.teachingocean.teacher.service;
 
-import com.redutec.teachingocean.teacher.dto.TeacherDto;
 import com.redutec.core.entity.Teacher;
+import com.redutec.teachingocean.teacher.dto.TeacherDto;
 
 public interface TeacherService {
     /**
@@ -24,6 +24,13 @@ public interface TeacherService {
      * @return 특정 교사 응답 객체
      */
     TeacherDto.TeacherResponse findById(Long teacherId);
+
+    /**
+     * 특정 교사 엔티티 조회
+     * @param accountId 교사의 로그인 아이디
+     * @return 특정 교사 엔티티 객체
+     */
+    Teacher findByAccountId(String accountId);
 
     /**
      * 특정 교사 엔티티 조회

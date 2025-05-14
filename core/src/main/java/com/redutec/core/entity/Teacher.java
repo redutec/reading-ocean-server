@@ -35,6 +35,7 @@ public class Teacher {
 
     @Comment("비밀번호")
     @Column(nullable = false)
+    @Setter
     private String password;
 
     @Comment("교사명(AES256 암호화)")
@@ -68,7 +69,14 @@ public class Teacher {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     @Builder.Default
+    @Setter
     private AuthenticationStatus authenticationStatus = AuthenticationStatus.INACTIVE;
+
+    @Comment("비밀번호 틀린 횟수")
+    @Column(nullable = false)
+    @Builder.Default
+    @Setter
+    private Integer failedLoginAttempts = 0;
 
     @Comment("마지막 로그인 IP")
     @Column(length = 45)
@@ -111,6 +119,7 @@ public class Teacher {
             TeacherStatus status,
             TeacherRole role,
             AuthenticationStatus authenticationStatus,
+            Integer failedLoginAttempts,
             String description,
             Institute institute,
             Homeroom homeroom
@@ -123,6 +132,7 @@ public class Teacher {
         this.status = Optional.ofNullable(status).orElse(this.status);
         this.role = Optional.ofNullable(role).orElse(this.role);
         this.authenticationStatus = Optional.ofNullable(authenticationStatus).orElse(this.authenticationStatus);
+        this.failedLoginAttempts = Optional.ofNullable(failedLoginAttempts).orElse(this.failedLoginAttempts);
         this.description = Optional.ofNullable(description).orElse(this.description);
         this.institute = Optional.ofNullable(institute).orElse(this.institute);
         this.homeroom = Optional.ofNullable(homeroom).orElse(this.homeroom);

@@ -79,6 +79,17 @@ public class TeacherServiceImpl implements TeacherService {
 
     /**
      * 특정 교사 엔티티 조회
+     * @param accountId 교사의 로그인 아이디
+     * @return 특정 교사 엔티티 객체
+     */
+    @Override
+    public Teacher findByAccountId(String accountId) {
+        return teacherRepository.findByAccountId(accountId)
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 교사 계정입니다. accountId = " + accountId));
+    }
+
+    /**
+     * 특정 교사 엔티티 조회
      * @param teacherId 교사 고유번호
      * @return 특정 교사 엔티티 객체
      */
@@ -126,6 +137,7 @@ public class TeacherServiceImpl implements TeacherService {
                 updateTeacherRequest.status(),
                 updateTeacherRequest.role(),
                 updateTeacherRequest.authenticationStatus(),
+                updateTeacherRequest.failedLoginAttempts(),
                 updateTeacherRequest.description(),
                 institute,
                 homeroom

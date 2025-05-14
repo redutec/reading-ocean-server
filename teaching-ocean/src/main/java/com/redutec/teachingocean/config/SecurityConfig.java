@@ -79,7 +79,7 @@ public class SecurityConfig {
                             "/configuration/**",
                             "/auth/**",
                             "/account/list",
-                            "/academy/list")
+                            "/institute/list")
                     .permitAll()
                     .requestMatchers(HttpMethod.POST, "/auth/renew").permitAll()
                     .anyRequest().authenticated())
