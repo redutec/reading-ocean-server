@@ -1,8 +1,7 @@
-package com.redutec.admin.notice.service;
+package com.redutec.core.application.notice.service;
 
-import com.redutec.admin.notice.dto.NoticeDto;
-import com.redutec.admin.notice.mapper.NoticeMapper;
-import com.redutec.admin.notice.service.NoticeService;
+import com.redutec.core.application.notice.dto.NoticeDto;
+import com.redutec.core.application.notice.mapper.NoticeMapper;
 import com.redutec.core.config.FileUploadResult;
 import com.redutec.core.config.FileUtil;
 import com.redutec.core.entity.Notice;

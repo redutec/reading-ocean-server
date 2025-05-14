@@ -1,13 +1,16 @@
-package com.redutec.teachingocean.notice.mapper;
+package com.redutec.core.application.notice.mapper;
 
+import com.redutec.core.application.notice.dto.NoticeDto;
+import com.redutec.core.config.FileUploadResult;
+import com.redutec.core.config.FileUtil;
 import com.redutec.core.criteria.NoticeCriteria;
 import com.redutec.core.entity.Notice;
-import com.redutec.teachingocean.notice.dto.NoticeDto;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
+import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -15,6 +18,35 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Component
 public class NoticeMapper {
+    private final FileUtil fileUtil;
+
+    /**
+     * CreateNoticeRequest DTO를 기반으로 Notice 엔티티를 생성합니다.
+     *
+     * @param createNoticeRequest 공지사항 생성에 필요한 데이터를 담은 DTO
+     * @return 생성된 Notice 엔티티
+     */
+    public Notice toEntity(NoticeDto.CreateNoticeRequest createNoticeRequest) {
+        // 첨부 파일이 존재하는 경우 파일을 업로드하고 파일명을 가져오기(파일이 없으면 파일명은 null)
+        String attachedFileName = Optional.ofNullable(createNoticeRequest.attachedFile())
+                .filter(attachedFile -> !attachedFile.isEmpty())
+                .map(attachedFile -> {
+                    FileUploadResult result = fileUtil.uploadFile(attachedFile, "/notice");
+                    return Paths.get(result.filePath()).getFileName().toString();
+                })
+                .orElse(null);
+        // Notice 엔티티 Build
+        return Notice.builder()
+                .domain(createNoticeRequest.domain())
+                .title(createNoticeRequest.title())
+                .content(createNoticeRequest.content())
+                .attachedFileName(attachedFileName)
+                .visible(createNoticeRequest.visible())
+                .visibleStartAt(createNoticeRequest.visibleStartAt())
+                .visibleEndAt(createNoticeRequest.visibleEndAt())
+                .build();
+    }
+    
     /**
      * 이 메서드는 현재 FindNoticeRequest 객체를 기반으로
      * NoticeCriteria 객체를 생성합니다.

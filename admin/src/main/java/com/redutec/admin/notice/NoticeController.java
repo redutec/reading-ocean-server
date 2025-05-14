@@ -1,7 +1,7 @@
-package com.redutec.admin.notice.controller;
+package com.redutec.admin.notice;
 
-import com.redutec.admin.notice.dto.NoticeDto;
-import com.redutec.admin.notice.service.NoticeService;
+import com.redutec.core.application.notice.dto.NoticeDto;
+import com.redutec.core.application.notice.service.NoticeService;
 import com.redutec.core.config.ApiResponseBody;
 import com.redutec.core.config.ApiResponseManager;
 import io.swagger.v3.oas.annotations.Operation;

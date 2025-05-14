@@ -1,17 +1,19 @@
-package com.redutec.teachingocean.notice.controller;
+package com.redutec.teachingocean.notice;
 
-import com.redutec.teachingocean.notice.dto.NoticeDto;
-import com.redutec.teachingocean.notice.service.NoticeService;
+import com.redutec.core.application.notice.dto.NoticeDto;
+import com.redutec.core.application.notice.service.NoticeService;
 import com.redutec.core.config.ApiResponseBody;
 import com.redutec.core.config.ApiResponseManager;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
