@@ -24,35 +24,35 @@ public class BookController {
     @Operation(summary = "도서 등록", description = "도서 정보를 등록하는 API")
     @PostMapping
     public ResponseEntity<ApiResponseBody> create(@ParameterObject @Valid BookDto.CreateBookRequest createBookRequest) {
-        return apiResponseManager.success(bookService.create(createBookRequest));
+        return apiResponseManager.create(bookService.create(createBookRequest));
     }
 
     @Operation(summary = "조건에 맞는 도서 목록 조회", description = "조건에 맞는 도서 목록을 조회하는 API")
     @GetMapping
     public ResponseEntity<ApiResponseBody> find(@ParameterObject @Valid BookDto.FindBookRequest findBookRequest) {
-        return apiResponseManager.success(bookService.find(findBookRequest));
+        return apiResponseManager.read(bookService.find(findBookRequest));
     }
 
     @Operation(summary = "특정 도서 조회", description = "특정 도서를 조회하는 API")
     @GetMapping("/{bookId}")
     public ResponseEntity<ApiResponseBody> findById(@PathVariable Long bookId) {
-        return apiResponseManager.success(bookService.findById(bookId));
+        return apiResponseManager.read(bookService.findById(bookId));
     }
 
     @Operation(summary = "특정 도서 수정", description = "특정 도서를 수정하는 API")
     @PatchMapping("/{bookId}")
-    public ResponseEntity<ApiResponseBody> update(
+    public ResponseEntity<Void> update(
             @Parameter(description = "도서 ID") @PathVariable Long bookId,
             @ParameterObject @Valid BookDto.UpdateBookRequest updateBookRequest
     ) {
         bookService.update(bookId, updateBookRequest);
-        return apiResponseManager.success(null);
+        return apiResponseManager.update();
     }
 
     @Operation(summary = "특정 도서 삭제", description = "특정 도서를 삭제하는 API")
     @DeleteMapping("/{bookId}")
-    public ResponseEntity<ApiResponseBody> delete(@Parameter(description = "도서 ID") @PathVariable Long bookId) {
+    public ResponseEntity<Void> delete(@Parameter(description = "도서 ID") @PathVariable Long bookId) {
         bookService.delete(bookId);
-        return apiResponseManager.success(null);
+        return apiResponseManager.delete();
     }
 }

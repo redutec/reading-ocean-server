@@ -26,7 +26,7 @@ public class BookGroupController {
     public ResponseEntity<ApiResponseBody> create(
             @ParameterObject @Valid BookGroupDto.CreateBookGroupRequest createBookGroupRequest
     ) {
-        return apiResponseManager.success(bookGroupService.create(createBookGroupRequest));
+        return apiResponseManager.create(bookGroupService.create(createBookGroupRequest));
     }
 
     @Operation(summary = "조건에 맞는 도서 그룹 목록 조회", description = "조건에 맞는 도서 그룹 목록을 조회하는 API")
@@ -34,31 +34,31 @@ public class BookGroupController {
     public ResponseEntity<ApiResponseBody> find(
             @ParameterObject @Valid BookGroupDto.FindBookGroupRequest findBookGroupRequest
     ) {
-        return apiResponseManager.success(bookGroupService.find(findBookGroupRequest));
+        return apiResponseManager.read(bookGroupService.find(findBookGroupRequest));
     }
 
     @Operation(summary = "특정 도서 그룹 조회", description = "특정 도서 그룹를 조회하는 API")
     @GetMapping("/{bookGroupId}")
     public ResponseEntity<ApiResponseBody> findById(@PathVariable Long bookGroupId) {
-        return apiResponseManager.success(bookGroupService.findById(bookGroupId));
+        return apiResponseManager.read(bookGroupService.findById(bookGroupId));
     }
 
     @Operation(summary = "특정 도서 그룹 수정", description = "특정 도서 그룹를 수정하는 API")
     @PatchMapping("/{bookGroupId}")
-    public ResponseEntity<ApiResponseBody> update(
+    public ResponseEntity<Void> update(
             @Parameter(description = "도서 그룹 ID") @PathVariable Long bookGroupId,
             @ParameterObject @Valid BookGroupDto.UpdateBookGroupRequest updateBookGroupRequest
     ) {
         bookGroupService.update(bookGroupId, updateBookGroupRequest);
-        return apiResponseManager.success(null);
+        return apiResponseManager.update();
     }
 
     @Operation(summary = "특정 도서 그룹 삭제", description = "특정 도서 그룹를 삭제하는 API")
     @DeleteMapping("/{bookGroupId}")
-    public ResponseEntity<ApiResponseBody> delete(
+    public ResponseEntity<Void> delete(
             @Parameter(description = "도서 그룹 ID") @PathVariable Long bookGroupId
     ) {
         bookGroupService.delete(bookGroupId);
-        return apiResponseManager.success(null);
+        return apiResponseManager.delete();
     }
 }

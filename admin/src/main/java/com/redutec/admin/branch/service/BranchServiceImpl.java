@@ -42,7 +42,28 @@ public class BranchServiceImpl implements BranchService {
                 .map(managerTeacherId -> teacherRepository.findById(managerTeacherId)
                         .orElseThrow(() -> new EntityNotFoundException("지사장 교사를 찾을 수 없습니다. managerTeacherId = " + managerTeacherId)))
                 .orElse(null);
-        return branchMapper.toResponseDto(branchRepository.save(branchMapper.toEntity(createBranchRequest, managerTeacher)));
+        // 계약서 파일이 존재하는 경우 파일을 업로드하고 파일명을 가져오기(파일이 없으면 파일명은 null)
+        String contractFileName = Optional.ofNullable(createBranchRequest.contractFile())
+                .filter(file -> !file.isEmpty())
+                .map(file -> {
+                    FileUploadResult result = fileUtil.uploadFile(file, "/branch");
+                    return Paths.get(result.filePath()).getFileName().toString();
+                })
+                .orElse(null);
+        // Branch 엔티티 Build
+        Branch branch = Branch.builder()
+                .managerTeacher(managerTeacher)
+                .region(createBranchRequest.region())
+                .name(createBranchRequest.name())
+                .status(createBranchRequest.status())
+                .businessArea(createBranchRequest.businessArea())
+                .contractFileName(contractFileName)
+                .contractDate(createBranchRequest.contractDate())
+                .renewalDate(createBranchRequest.renewalDate())
+                .description(createBranchRequest.description())
+                .build();
+        // 신규 지사 INSERT 후 등록한 지사 정보를 응답 객체에 담아 리턴
+        return branchMapper.toResponseDto(branchRepository.save(branch));
     }
 
     /**

@@ -1,17 +1,13 @@
 package com.redutec.admin.branch.mapper;
 
 import com.redutec.admin.branch.dto.BranchDto;
-import com.redutec.core.config.FileUploadResult;
-import com.redutec.core.config.FileUtil;
 import com.redutec.core.criteria.BranchCriteria;
 import com.redutec.core.entity.Branch;
-import com.redutec.core.entity.Teacher;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
-import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -19,40 +15,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Component
 public class BranchMapper {
-    private final FileUtil fileUtil;
-
-    /**
-     * CreateBranchRequest DTO를 기반으로 Branch 엔티티를 생성합니다.
-     *
-     * @param createBranchRequest 지사 생성에 필요한 데이터를 담은 DTO
-     * @return 생성된 Branch 엔티티
-     */
-    public Branch toEntity(
-            BranchDto.CreateBranchRequest createBranchRequest,
-            Teacher managerTeacher
-    ) {
-        // 계약서 파일이 존재하는 경우 파일을 업로드하고 파일명을 가져오기(파일이 없으면 파일명은 null)
-        String contractFileName = Optional.ofNullable(createBranchRequest.contractFile())
-                .filter(file -> !file.isEmpty())
-                .map(file -> {
-                    FileUploadResult result = fileUtil.uploadFile(file, "/branch");
-                    return Paths.get(result.filePath()).getFileName().toString();
-                })
-                .orElse(null);
-        // Branch 엔티티 Build
-        return Branch.builder()
-                .managerTeacher(managerTeacher)
-                .region(createBranchRequest.region())
-                .name(createBranchRequest.name())
-                .status(createBranchRequest.status())
-                .businessArea(createBranchRequest.businessArea())
-                .contractFileName(contractFileName)
-                .contractDate(createBranchRequest.contractDate())
-                .renewalDate(createBranchRequest.renewalDate())
-                .description(createBranchRequest.description())
-                .build();
-    }
-    
     /**
      * 이 메서드는 현재 FindBranchRequest 객체를 기반으로
      * BranchCriteria 객체를 생성합니다.

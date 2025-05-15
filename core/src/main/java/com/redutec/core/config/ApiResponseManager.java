@@ -15,13 +15,45 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 public class ApiResponseManager {
     /**
-     * API를 정상 호출한 경우의 응답을 생성합니다.
+     * 리소스가 성공적으로 생성되었을 때 사용할 응답을 생성합니다.
+     * HTTP 상태 코드는 201 Created이며, 가능하면 Location 헤더에 생성된 리소스 URI를 포함해야 합니다.
      *
-     * @param data 리턴할 데이터
-     * @return 상태 코드와 메시지, 데이터를 포함한 응답 객체
+     * @param data 생성된 리소스의 표현(보통 DTO)
+     * @return 201 Created 상태와 메시지, 생성된 데이터가 담긴 ResponseEntity<ApiResponseBody>
      */
-    public ResponseEntity<ApiResponseBody> success(Object data) {
+    public ResponseEntity<ApiResponseBody> create(Object data) {
+        return buildResponse(HttpStatus.CREATED, HttpStatus.CREATED.getReasonPhrase(), data);
+    }
+
+    /**
+     * 리소스를 조회했을 때 사용할 응답을 생성합니다.
+     * HTTP 상태 코드는 200 OK이며, 응답 바디에 조회된 리소스 표현(보통 DTO)을 포함합니다.
+     *
+     * @param data 조회된 리소스의 표현(보통 DTO)
+     * @return 200 OK 상태와 메시지, 조회된 데이터가 담긴 ResponseEntity<ApiResponseBody>
+     */
+    public ResponseEntity<ApiResponseBody> read(Object data) {
         return buildResponse(HttpStatus.OK, HttpStatus.OK.getReasonPhrase(), data);
+    }
+
+    /**
+     * 리소스 업데이트 성공 시 응답을 생성합니다.
+     * HTTP 상태 코드는 204 No Content이며, 본문 없이 반환합니다.
+     *
+     * @return 204 No Content 상태의 ResponseEntity<Void>
+     */
+    public ResponseEntity<Void> update() {
+        return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * 리소스 삭제 성공 시 응답을 생성합니다.
+     * HTTP 상태 코드는 204 No Content이며, 본문 없이 반환합니다.
+     *
+     * @return 204 No Content 상태의 ResponseEntity<Void>
+     */
+    public ResponseEntity<Void> delete() {
+        return ResponseEntity.noContent().build();
     }
 
     /**
