@@ -18,18 +18,18 @@ public class BranchSpecification {
                     Optional.ofNullable(branchCriteria.branchIds())
                             .filter(branchIds -> !branchIds.isEmpty())
                             .map(branchIds -> root.get("id").in(branchIds)),
-                    Optional.ofNullable(branchCriteria.accountId())
-                            .filter(accountId -> !accountId.isEmpty())
-                            .map(accountId -> criteriaBuilder.like(root.get("accountId"), "%" + accountId + "%")),
                     Optional.ofNullable(branchCriteria.name())
                             .filter(name -> !name.isEmpty())
                             .map(name -> criteriaBuilder.like(root.get("name"), "%" + name + "%")),
                     Optional.ofNullable(branchCriteria.statuses())
                             .filter(statuses -> !statuses.isEmpty())
                             .map(statuses -> root.get("statuses").in(statuses)),
-                    Optional.ofNullable(branchCriteria.managerName())
-                            .filter(managerName -> !managerName.isEmpty())
-                            .map(managerName -> criteriaBuilder.like(root.get("managerName"), "%" + managerName + "%"))
+                    Optional.ofNullable(branchCriteria.managerTeacherName())
+                            .filter(managerTeacherName -> !managerTeacherName.isEmpty())
+                            .map(managerTeacherName -> criteriaBuilder.like(root.get("managerTeacher").get("name"), "%" + managerTeacherName + "%")),
+                    Optional.ofNullable(branchCriteria.managerTeacherAccountId())
+                            .filter(managerTeacherAccountId -> !managerTeacherAccountId.isEmpty())
+                            .map(managerTeacherAccountId -> criteriaBuilder.like(root.get("managerTeacher").get("accountId"), "%" + managerTeacherAccountId + "%"))
             );
             // 수집된 Predicate 들을 하나로 결합
             return combinePredicate(predicateStream, criteriaBuilder);

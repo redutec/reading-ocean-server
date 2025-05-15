@@ -45,10 +45,4 @@ public interface TeacherService {
      * @param updateTeacherRequest 교사 수정 요청 객체
      */
     void update(Long teacherId, TeacherDto.UpdateTeacherRequest updateTeacherRequest);
-
-    /**
-     * 특정 교사 삭제
-     * @param teacherId 삭제할 교사의 ID
-     */
-    void delete(Long teacherId);
 }

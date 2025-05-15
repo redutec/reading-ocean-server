@@ -96,17 +96,17 @@ public class InstituteServiceImpl implements InstituteService {
     @Override
     @Transactional(readOnly = true)
     public InstituteDto.InstituteResponse findById(Long instituteId) {
-        // 교육기관과 원장 교사, 지사 조회
+        // 교육기관 조회
         Institute institute = getInstitute(instituteId);
+        // 이 교육기관의 원장 교사 엔티티 조회
         Teacher chiefTeacher = teacherRepository.findByInstituteAndRole(institute, TeacherRole.CHIEF)
                 .orElse(null);
+        // 이 교육기관이 소속된 지사 엔티티 조회
         Branch branch = Optional.ofNullable(institute.getBranch())
                 .map(b -> branchService.getBranch(b.getId()))
                 .orElse(null);
-        return instituteMapper.toResponseDto(
-                institute,
-                chiefTeacher,
-                branch);
+        // 응답객체에 담아 리턴
+        return instituteMapper.toResponseDto(institute, chiefTeacher, branch);
     }
 
     /**

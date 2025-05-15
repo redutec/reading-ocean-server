@@ -6,8 +6,8 @@ import java.util.List;
 
 public record BranchCriteria(
     List<Long> branchIds,
-    String accountId,
     String name,
     List<BranchStatus> statuses,
-    String managerName
+    String managerTeacherName,
+    String managerTeacherAccountId
 ) {}

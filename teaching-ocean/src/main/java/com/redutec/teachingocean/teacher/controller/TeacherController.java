@@ -52,13 +52,4 @@ public class TeacherController {
         teacherService.update(teacherId, updateTeacherRequest);
         return apiResponseManager.success(null);
     }
-
-    @Operation(summary = "특정 교사 삭제", description = "특정 교사를 삭제하는 API")
-    @DeleteMapping("/{teacherId}")
-    public ResponseEntity<ApiResponseBody> delete(
-            @Parameter(description = "교사 ID") @PathVariable Long teacherId
-    ) {
-        teacherService.delete(teacherId);
-        return apiResponseManager.success(null);
-    }
 }

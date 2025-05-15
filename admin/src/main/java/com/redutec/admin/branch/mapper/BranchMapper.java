@@ -5,10 +5,10 @@ import com.redutec.core.config.FileUploadResult;
 import com.redutec.core.config.FileUtil;
 import com.redutec.core.criteria.BranchCriteria;
 import com.redutec.core.entity.Branch;
+import com.redutec.core.entity.Teacher;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.nio.file.Paths;
@@ -19,7 +19,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Component
 public class BranchMapper {
-    private final PasswordEncoder passwordEncoder;
     private final FileUtil fileUtil;
 
     /**
@@ -28,7 +27,10 @@ public class BranchMapper {
      * @param createBranchRequest 지사 생성에 필요한 데이터를 담은 DTO
      * @return 생성된 Branch 엔티티
      */
-    public Branch toEntity(BranchDto.CreateBranchRequest createBranchRequest) {
+    public Branch toEntity(
+            BranchDto.CreateBranchRequest createBranchRequest,
+            Teacher managerTeacher
+    ) {
         // 계약서 파일이 존재하는 경우 파일을 업로드하고 파일명을 가져오기(파일이 없으면 파일명은 null)
         String contractFileName = Optional.ofNullable(createBranchRequest.contractFile())
                 .filter(file -> !file.isEmpty())
@@ -39,15 +41,11 @@ public class BranchMapper {
                 .orElse(null);
         // Branch 엔티티 Build
         return Branch.builder()
-                .accountId(createBranchRequest.accountId())
-                .password(passwordEncoder.encode(createBranchRequest.password()))
+                .managerTeacher(managerTeacher)
                 .region(createBranchRequest.region())
                 .name(createBranchRequest.name())
                 .status(createBranchRequest.status())
                 .businessArea(createBranchRequest.businessArea())
-                .managerName(createBranchRequest.managerName())
-                .managerPhoneNumber(createBranchRequest.managerPhoneNumber())
-                .managerEmail(createBranchRequest.managerEmail())
                 .contractFileName(contractFileName)
                 .contractDate(createBranchRequest.contractDate())
                 .renewalDate(createBranchRequest.renewalDate())
@@ -65,10 +63,10 @@ public class BranchMapper {
     public BranchCriteria toCriteria(BranchDto.FindBranchRequest findBranchRequest) {
         return new BranchCriteria(
                 findBranchRequest.branchIds(),
-                findBranchRequest.accountId(),
                 findBranchRequest.name(),
                 findBranchRequest.statuses(),
-                findBranchRequest.managerName()
+                findBranchRequest.managerTeacherName(),
+                findBranchRequest.managerTeacherAccountId()
         );
     }
 
@@ -83,13 +81,15 @@ public class BranchMapper {
         return Optional.ofNullable(branch)
                 .map(br -> new BranchDto.BranchResponse(
                         br.getId(),
-                        br.getAccountId(),
+                        br.getManagerTeacher().getId(),
+                        br.getManagerTeacher().getAccountId(),
+                        br.getManagerTeacher().getName(),
+                        br.getManagerTeacher().getInstitute().getId(),
+                        br.getManagerTeacher().getInstitute().getName(),
+                        br.getRegion(),
                         br.getName(),
                         br.getStatus(),
                         br.getBusinessArea(),
-                        br.getManagerName(),
-                        br.getManagerPhoneNumber(),
-                        br.getManagerEmail(),
                         br.getContractFileName(),
                         br.getContractDate(),
                         br.getRenewalDate(),

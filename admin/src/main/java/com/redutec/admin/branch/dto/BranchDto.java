@@ -15,16 +15,9 @@ import java.util.List;
 public class BranchDto {
     @Schema(description = "지사 등록 요청 객체")
     public record CreateBranchRequest(
-            @Schema(description = "로그인 아이디", requiredMode = Schema.RequiredMode.REQUIRED)
-            @NotNull
-            @Size(max = 20)
-            String accountId,
-
-            @Schema(description = "비밀번호", requiredMode = Schema.RequiredMode.REQUIRED)
-            @NotNull
-            @Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*\\d)(?=.*[!@#$%^&*(),.?\":{}|<>]).{8,32}$",
-                    message = "비밀번호는 영문 대소문자, 숫자, 특수문자 중 최소 3가지 이상의 조합으로 최소 8자 이상, 최대 32자 이하이어야 합니다.")
-            String password,
+            @Schema(description = "지사장을 맡을 교사의 고유번호", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+            @Positive
+            Long managerTeacherId,
 
             @Schema(description = "권역", requiredMode = Schema.RequiredMode.REQUIRED)
             @NotNull
@@ -44,20 +37,6 @@ public class BranchDto {
             @Schema(description = "영업 구역", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
             String businessArea,
 
-            @Schema(description = "지사장 이름", requiredMode = Schema.RequiredMode.REQUIRED)
-            @NotNull
-            @Size(max = 20)
-            String managerName,
-
-            @Schema(description = "지사장 연락처", requiredMode = Schema.RequiredMode.REQUIRED)
-            @NotNull
-            @Pattern(regexp = "\\d{11}")
-            String managerPhoneNumber,
-
-            @Schema(description = "이메일", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-            @Email
-            String managerEmail,
-
             @Schema(description = "계약서 파일", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
             MultipartFile contractFile,
 
@@ -76,9 +55,6 @@ public class BranchDto {
             @Schema(description = "지사 ID", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
             List<@Positive Long> branchIds,
 
-            @Schema(description = "이메일", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-            String accountId,
-
             @Schema(description = "지사명", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
             @Size(max = 20)
             String name,
@@ -89,7 +65,10 @@ public class BranchDto {
             List<BranchStatus> statuses,
 
             @Schema(description = "지사장 이름", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-            String managerName,
+            String managerTeacherName,
+
+            @Schema(description = "지사장 로그인 아이디", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+            String managerTeacherAccountId,
 
             @Schema(description = "페이지 번호(0 이상의 정수)", requiredMode = Schema.RequiredMode.NOT_REQUIRED, example = "0")
             @PositiveOrZero
@@ -102,19 +81,9 @@ public class BranchDto {
 
     @Schema(description = "지사 수정 요청 객체")
     public record UpdateBranchRequest(
-            @Schema(description = "로그인 아이디", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-            @Size(max = 20)
-            String accountId,
-
-            @Schema(description = "기존 비밀번호", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-            @Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*\\d)(?=.*[!@#$%^&*(),.?\":{}|<>]).{8,32}$",
-                     message = "비밀번호는 영문 대소문자, 숫자, 특수문자 중 최소 3가지 이상의 조합으로 최소 8자 이상, 최대 32자 이하이어야 합니다.")
-            String currentPassword,
-
-            @Schema(description = "새로운 비밀번호", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-            @Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*\\d)(?=.*[!@#$%^&*(),.?\":{}|<>]).{8,32}$",
-                     message = "비밀번호는 영문 대소문자, 숫자, 특수문자 중 최소 3가지 이상의 조합으로 최소 8자 이상, 최대 32자 이하이어야 합니다.")
-            String newPassword,
+            @Schema(description = "지사장을 맡을 교사의 고유번호", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+            @Positive
+            Long managerTeacherId,
 
             @Schema(description = "권역", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
             @Size(max = 10)
@@ -130,18 +99,6 @@ public class BranchDto {
 
             @Schema(description = "영업 구역", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
             String businessArea,
-
-            @Schema(description = "지사장 이름", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-            @Size(max = 20)
-            String managerName,
-
-            @Schema(description = "지사장 연락처", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-            @Pattern(regexp = "\\d{11}")
-            String managerPhoneNumber,
-
-            @Schema(description = "이메일", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-            @Email
-            String managerEmail,
 
             @Schema(description = "계약서 파일", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
             MultipartFile contractFile,
@@ -159,13 +116,15 @@ public class BranchDto {
     @Schema(description = "지사 응답 객체")
     public record BranchResponse(
             Long branchId,
-            String accountId,
+            Long managerTeacherId,
+            String managerTeacherAccountId,
+            String managerTeacherName,
+            Long managerTeacherInstituteId,
+            String managerTeacherInstituteName,
+            String region,
             String name,
             BranchStatus status,
             String businessArea,
-            String managerName,
-            String managerPhoneNumber,
-            String managerEmail,
             String contractFileName,
             LocalDate contractDate,
             LocalDate renewalDate,

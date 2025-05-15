@@ -8,7 +8,6 @@ import com.redutec.core.repository.TeacherRepository;
 import com.redutec.core.repository.TeachingOceanMenuRepository;
 import com.redutec.teachingocean.authentication.dto.AuthenticationDto;
 import com.redutec.teachingocean.config.JwtUtil;
-import com.redutec.teachingocean.teacher.service.TeacherService;
 import jakarta.mail.MessagingException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -41,7 +40,6 @@ import static com.redutec.core.meta.AuthenticationStatus.PASSWORD_RESET;
 public class AuthenticationServiceImpl implements AuthenticationService {
     private final JwtUtil jwtUtil;
     private final TeacherRepository teacherRepository;
-    private final TeacherService teacherService;
     private final RefreshTokenRepository refreshTokenRepository;
     private final PasswordEncoder passwordEncoder;
     private final TeachingOceanMenuRepository teachingOceanMenuRepository;
@@ -55,7 +53,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public AuthenticationDto.LoginResponse login(AuthenticationDto.LoginRequest loginRequest) {
         // 교사 엔티티 조회
-        Teacher teacher = teacherService.findByAccountId(loginRequest.accountId());
+        Teacher teacher = teacherRepository.findByAccountId(loginRequest.accountId())
+                .orElseThrow(() -> new EntityNotFoundException("로그인 아이디 또는 비밀번호를 확인해주세요."));
         // 교사 계정 상태 검증
         validateAuthenticationStatus(teacher);
         // 비밀번호가 일치하는지 검증
@@ -63,7 +62,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .filter(admin -> passwordEncoder.matches(loginRequest.password(), admin.getPassword()))
                 .orElseThrow(() -> {
                     handleFailedLoginAttempt(teacher);
-                    return new BadCredentialsException("로그인 이메일 또는 비밀번호를 확인해주세요.");
+                    return new BadCredentialsException("로그인 아이디 또는 비밀번호를 확인해주세요.");
                 });
         // 현재 요청의 IP 주소를 Optional 체인으로 가져옴 (없으면 "unknown")
         String ipAddress = Optional.ofNullable((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
@@ -95,12 +94,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public AuthenticationDto.AuthenticatedTeacher getAuthenticatedTeacher() {
         // 현재 접속한 계정 정보를 가져오기
         var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        // 계정 정보에 담긴 이메일 정보 가져오기
+        // 계정 정보에 담긴 로그인 아이디 정보 가져오기
         String accountId = (principal instanceof String)
                 ? (String) principal
                 : ((User) principal).getUsername();
-        // 이메일로 Teacher, Institute, Homeroom 엔티티 조회
-        Teacher teacher = teacherService.findByAccountId(accountId);
+        // 로그인 아이디로 Teacher, Institute, Homeroom 엔티티 조회
+        Teacher teacher = teacherRepository.findByAccountId(accountId)
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 교사 계정입니다. accountId = " + accountId));
         // 현재 로그인한 교사 정보를 리턴
         return new AuthenticationDto.AuthenticatedTeacher(
                 teacher.getId(),
@@ -130,7 +130,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     @Transactional
     public void resetPassword(AuthenticationDto.ResetPasswordRequest resetPasswordRequest) throws MessagingException {
-        var teacher = teacherService.findByAccountId(resetPasswordRequest.accountId());
+        var teacher = teacherRepository.findByAccountId(resetPasswordRequest.accountId())
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 교사 계정입니다. accountId = " + resetPasswordRequest.accountId()));
         validateAuthenticationStatus(teacher);
         var newPasswordLength = 8;
         var newPassword = generateRandomPassword(newPasswordLength);
@@ -146,12 +147,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     @Transactional
     public void updatePassword(AuthenticationDto.UpdatePasswordRequest updatePasswordRequest) {
-        var teacher = teacherService.findByAccountId(updatePasswordRequest.accountId());
+        var teacher = teacherRepository.findByAccountId(updatePasswordRequest.accountId())
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 교사 계정입니다. accountId = " + updatePasswordRequest.accountId()));
         if (teacher.getAuthenticationStatus() != PASSWORD_RESET) {
             validateAuthenticationStatus(teacher);
         }
         if (!passwordEncoder.matches(updatePasswordRequest.password(), teacher.getPassword())) {
-            throw new BadCredentialsException("로그인 이메일 또는 비밀번호를 확인해주세요");
+            throw new BadCredentialsException("로그인 아이디 또는 비밀번호를 확인해주세요");
         }
         updatePasswordAndStatus(teacher, updatePasswordRequest.newPassword(), AuthenticationStatus.ACTIVE);
     }

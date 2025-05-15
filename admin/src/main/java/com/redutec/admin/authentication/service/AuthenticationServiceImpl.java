@@ -65,7 +65,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .filter(admin -> passwordEncoder.matches(loginRequest.password(), admin.getPassword()))
                 .orElseThrow(() -> {
                     handleFailedLoginAttempt(adminUser);
-                    return new BadCredentialsException("로그인 이메일 또는 비밀번호를 확인해주세요.");
+                    return new BadCredentialsException("로그인 아이디 또는 비밀번호를 확인해주세요.");
                 });
         // 현재 요청의 IP 주소를 Optional 체인으로 가져옴 (없으면 "unknown")
         String ipAddress = Optional.ofNullable((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
@@ -145,7 +145,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             validateAuthenticationStatus(adminUser);
         }
         if (!passwordEncoder.matches(updatePasswordRequest.password(), adminUser.getPassword())) {
-            throw new BadCredentialsException("로그인 이메일 또는 비밀번호를 확인해주세요");
+            throw new BadCredentialsException("로그인 아이디 또는 비밀번호를 확인해주세요");
         }
         updatePasswordAndStatus(adminUser, updatePasswordRequest.newPassword(), AuthenticationStatus.ACTIVE);
     }

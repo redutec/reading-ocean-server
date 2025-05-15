@@ -165,15 +165,10 @@ public class DatabaseInitializer {
             log.info("지사 테이블에 데이터가 존재하지 않습니다. 샘플 지사 데이터를 생성합니다.");
             var branches = Arrays.stream(SampleData.SampleBranch.values())
                     .map(branch -> Branch.builder()
-                            .accountId(branch.getAccountId())
-                            .password(passwordEncoder.encode(branch.getPassword()))
                             .region(branch.getRegion())
                             .name(branch.getName())
                             .status(branch.getStatus())
                             .businessArea(branch.getBusinessArea())
-                            .managerName(branch.getManagerName())
-                            .managerPhoneNumber(branch.getManagerPhoneNumber())
-                            .managerEmail(branch.getManagerEmail())
                             .contractFileName(branch.getContractFileName())
                             .contractDate(branch.getContractDate())
                             .renewalDate(branch.getRenewalDate())
@@ -211,6 +206,7 @@ public class DatabaseInitializer {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     protected void createSampleTeacher() {
+        // 샘플 교사 데이터 생성 후 INSERT
         if (teacherRepository.count() == 0) {
             log.info("교사 테이블에 데이터가 존재하지 않습니다. 샘플 교사 데이터를 생성합니다.");
             var teachers = Arrays.stream(SampleData.SampleTeacher.values())
@@ -229,5 +225,25 @@ public class DatabaseInitializer {
                     .toList();
             teacherRepository.saveAll(teachers);
         }
+        // 샘플 지사를 담당할 교사를 지정하여 지사 엔티티를 UPDATE
+        Arrays.stream(SampleData.SampleBranch.values())
+                .forEach(sampleBranch -> {
+                    var branch = branchRepository.findByName(sampleBranch.getName())
+                            .orElseThrow(() -> new EntityNotFoundException("지사 정보를 찾을 수 없습니다. branchName: " + sampleBranch.getName()));
+                    var managerTeacher = teacherRepository.findByAccountId(sampleBranch.getManagerAccountId())
+                            .orElseThrow(() -> new EntityNotFoundException("교사 정보를 찾을 수 없습니다. accountId: " + sampleBranch.getManagerAccountId()));
+                    branch.updateBranch(
+                            managerTeacher,   // managerTeacher
+                            null,             // region
+                            null,             // name
+                            null,             // status
+                            null,             // businessArea
+                            null,             // contractFileName
+                            null,             // contractDate
+                            null,             // renewalDate
+                            null              // description
+                    );
+                    branchRepository.save(branch);
+                });
     }
 }

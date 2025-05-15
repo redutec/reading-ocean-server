@@ -183,60 +183,44 @@ public class SampleData {
     @AllArgsConstructor
     public enum SampleBranch {
         SEONGNAM(
-                "seongnam",
-                "Redutec123!",
+                "seongnam_chief",
                 "경기",
                 "성남지사",
                 BranchStatus.ACTIVE,
                 "성남시, 하남시, 광주시",
-                "성남지사장",
-                "22233334444",
-                "edu_seongnam@redutec.co.kr",
                 "seongnam_contract_file.pdf",
                 LocalDate.of(2025, 2, 3),
                 LocalDate.of(2030, 2, 2),
                 "샘플"
         ),
         SEOUL(
-                "seoul",
-                "Redutec123!",
+                "seoul_chief",
                 "서울",
                 "서울지사",
                 BranchStatus.ACTIVE,
                 "서울시",
-                "서울지사장",
-                "11133334444",
-                "edu_seoul@redutec.co.kr",
                 "seoul_contract_file.pdf",
                 LocalDate.of(2025, 4, 1),
                 null,
                 "샘플"
         ),
         BUSAN(
-                "busan",
-                "Redutec123!",
+                "busan_chief",
                 "부산",
                 "부산지사",
                 BranchStatus.INACTIVE,
                 "부산시, 김해시, 기장시",
-                "부산지사장",
-                "00033334444",
-                "edu_busan@redutec.co.kr",
                 "busan_contract_file.pdf",
                 LocalDate.of(2025, 3, 2),
                 LocalDate.of(2026, 3, 1),
                 "샘플"
         );
 
-        private final String accountId;
-        private final String password;
+        private final String managerAccountId;
         private final String region;
         private final String name;
         private final BranchStatus status;
         private final String businessArea;
-        private final String managerName;
-        private final String managerPhoneNumber;
-        private final String managerEmail;
         private final String contractFileName;
         private final LocalDate contractDate;
         private final LocalDate renewalDate;

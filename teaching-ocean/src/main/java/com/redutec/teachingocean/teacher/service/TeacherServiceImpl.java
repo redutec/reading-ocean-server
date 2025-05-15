@@ -145,14 +145,4 @@ public class TeacherServiceImpl implements TeacherService {
         // 교사 엔티티 UPDATE
         teacherRepository.save(teacher);
     }
-
-    /**
-     * 특정 교사 삭제
-     * @param teacherId 삭제할 교사의 ID
-     */
-    @Override
-    @Transactional
-    public void delete(Long teacherId) {
-        teacherRepository.delete(getTeacher(teacherId));
-    }
 }

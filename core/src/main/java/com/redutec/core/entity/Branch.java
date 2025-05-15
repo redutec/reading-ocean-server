@@ -1,6 +1,5 @@
 package com.redutec.core.entity;
 
-import com.redutec.core.config.AesAttributeConverter;
 import com.redutec.core.meta.BranchStatus;
 import jakarta.persistence.*;
 import lombok.*;
@@ -28,13 +27,10 @@ public class Branch {
     @Comment("지사 고유번호")
     private Long id;
 
-    @Comment("로그인 아이디")
-    @Column(length = 20, nullable = false, unique = true)
-    private String accountId;
-
-    @Comment("비밀번호")
-    @Column(nullable = false)
-    private String password;
+    @Comment("지사장(교사 엔티티)")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn
+    private Teacher managerTeacher;
 
     @Comment("권역")
     @Column(length = 10)
@@ -52,21 +48,6 @@ public class Branch {
     @Comment("영업 구역")
     @Column(length = 200)
     private String businessArea;
-
-    @Comment("지사장 이름(AES256 암호화)")
-    @Convert(converter = AesAttributeConverter.class)
-    @Column
-    private String managerName;
-
-    @Comment("지사장 연락처(AES256 암호화)")
-    @Convert(converter = AesAttributeConverter.class)
-    @Column
-    private String managerPhoneNumber;
-
-    @Comment("지사장 이메일(AES256 암호화)")
-    @Convert(converter = AesAttributeConverter.class)
-    @Column
-    private String managerEmail;
 
     @Comment("계약서 파일명")
     @Column
@@ -93,29 +74,21 @@ public class Branch {
     private LocalDateTime updatedAt;
 
     public void updateBranch(
-            String accountId,
-            String password,
+            Teacher managerTeacher,
             String region,
             String name,
             BranchStatus status,
             String businessArea,
-            String managerName,
-            String managerPhoneNumber,
-            String managerEmail,
             String contractFileName,
             LocalDate contractDate,
             LocalDate renewalDate,
             String description
     ) {
-        this.accountId = Optional.ofNullable(accountId).orElse(this.accountId);
-        this.password = Optional.ofNullable(password).orElse(this.password);
+        this.managerTeacher = Optional.ofNullable(managerTeacher).orElse(this.managerTeacher);
         this.region = Optional.ofNullable(region).orElse(this.region);
         this.name = Optional.ofNullable(name).orElse(this.name);
         this.status = Optional.ofNullable(status).orElse(this.status);
         this.businessArea = Optional.ofNullable(businessArea).orElse(this.businessArea);
-        this.managerName = Optional.ofNullable(managerName).orElse(this.managerName);
-        this.managerPhoneNumber = Optional.ofNullable(managerPhoneNumber).orElse(this.managerPhoneNumber);
-        this.managerEmail = Optional.ofNullable(managerEmail).orElse(this.managerEmail);
         this.contractFileName = Optional.ofNullable(contractFileName).orElse(this.contractFileName);
         this.contractDate = Optional.ofNullable(contractDate).orElse(this.contractDate);
         this.renewalDate = Optional.ofNullable(renewalDate).orElse(this.renewalDate);

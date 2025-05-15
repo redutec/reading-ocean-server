@@ -5,14 +5,15 @@ import com.redutec.admin.branch.mapper.BranchMapper;
 import com.redutec.core.config.FileUploadResult;
 import com.redutec.core.config.FileUtil;
 import com.redutec.core.entity.Branch;
+import com.redutec.core.entity.Teacher;
 import com.redutec.core.repository.BranchRepository;
+import com.redutec.core.repository.TeacherRepository;
 import com.redutec.core.specification.BranchSpecification;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,7 +26,7 @@ import java.util.Optional;
 public class BranchServiceImpl implements BranchService {
     private final BranchMapper branchMapper;
     private final BranchRepository branchRepository;
-    private final PasswordEncoder passwordEncoder;
+    private final TeacherRepository teacherRepository;
     private final FileUtil fileUtil;
 
     /**
@@ -36,7 +37,12 @@ public class BranchServiceImpl implements BranchService {
     @Override
     @Transactional
     public BranchDto.BranchResponse create(BranchDto.CreateBranchRequest createBranchRequest) {
-        return branchMapper.toResponseDto(branchRepository.save(branchMapper.toEntity(createBranchRequest)));
+        // 등록 요청 객체에 교사 고유번호가 있으면 교사 엔티티 조회
+        Teacher managerTeacher = Optional.ofNullable(createBranchRequest.managerTeacherId())
+                .map(managerTeacherId -> teacherRepository.findById(managerTeacherId)
+                        .orElseThrow(() -> new EntityNotFoundException("지사장 교사를 찾을 수 없습니다. managerTeacherId = " + managerTeacherId)))
+                .orElse(null);
+        return branchMapper.toResponseDto(branchRepository.save(branchMapper.toEntity(createBranchRequest, managerTeacher)));
     }
 
     /**
@@ -74,7 +80,7 @@ public class BranchServiceImpl implements BranchService {
     @Transactional(readOnly = true)
     public Branch getBranch(Long branchId) {
         return branchRepository.findById(branchId)
-                .orElseThrow(() -> new EntityNotFoundException("지사를 찾을 수 없습니다. id = " + branchId));
+                .orElseThrow(() -> new EntityNotFoundException("지사를 찾을 수 없습니다. branchId = " + branchId));
     }
 
     /**
@@ -87,15 +93,6 @@ public class BranchServiceImpl implements BranchService {
     public void update(Long branchId, BranchDto.UpdateBranchRequest updateBranchRequest) {
         // 수정할 지사 엔티티 조회
         Branch branch = getBranch(branchId);
-        // 현재 비밀번호와 기존 비밀번호가 일치하면 진행. 다르다면 예외처리
-        Optional.of(updateBranchRequest.currentPassword())
-                .filter(pwd -> passwordEncoder.matches(pwd, branch.getPassword()))
-                .orElseThrow(() -> new IllegalArgumentException("현재 비밀번호가 일치하지 않습니다"));
-        // 새로운 비밀번호를 암호화
-        String encodedNewPassword = Optional.ofNullable(updateBranchRequest.newPassword())
-                .filter(pwd -> !pwd.isBlank())
-                .map(passwordEncoder::encode)
-                .orElse(null);
         // 업로드할 계약서 파일이 있는 경우 업로드하고 파일명을 생성
         String contractFileName = Optional.ofNullable(updateBranchRequest.contractFile())
                 .filter(contractFile -> !contractFile.isEmpty())
@@ -104,17 +101,18 @@ public class BranchServiceImpl implements BranchService {
                     return Paths.get(result.filePath()).getFileName().toString();
                 })
                 .orElse(null);
+        // 수정 요청 객체에 교사 고유번호가 있으면 교사 엔티티 조회
+        Teacher managerTeacher = Optional.ofNullable(updateBranchRequest.managerTeacherId())
+                .map(managerTeacherId -> teacherRepository.findById(managerTeacherId)
+                        .orElseThrow(() -> new EntityNotFoundException("지사장 교사를 찾을 수 없습니다. managerTeacherId = " + managerTeacherId)))
+                .orElse(null);
         // UPDATE 도메인 메서드로 변환
         branch.updateBranch(
-                updateBranchRequest.accountId(),
-                encodedNewPassword,
+                managerTeacher,
                 updateBranchRequest.region(),
                 updateBranchRequest.name(),
                 updateBranchRequest.status(),
                 updateBranchRequest.businessArea(),
-                updateBranchRequest.managerName(),
-                updateBranchRequest.managerPhoneNumber(),
-                updateBranchRequest.managerEmail(),
                 contractFileName,
                 updateBranchRequest.contractDate(),
                 updateBranchRequest.renewalDate(),
