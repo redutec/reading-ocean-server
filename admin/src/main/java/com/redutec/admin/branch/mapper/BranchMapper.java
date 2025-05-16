@@ -3,6 +3,7 @@ package com.redutec.admin.branch.mapper;
 import com.redutec.admin.branch.dto.BranchDto;
 import com.redutec.core.criteria.BranchCriteria;
 import com.redutec.core.entity.Branch;
+import com.redutec.core.entity.Teacher;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -15,6 +16,30 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Component
 public class BranchMapper {
+    /**
+     * CreateBranchRequest DTO를 기반으로 Branch 엔티티를 생성합니다.
+     *
+     * @param createBranchRequest 지사 생성에 필요한 데이터를 담은 DTO
+     * @return 생성된 Branch 엔티티
+     */
+    public Branch toCreateEntity(
+            BranchDto.CreateBranchRequest createBranchRequest,
+            Teacher managerTeacher,
+            String contractFileName
+    ) {
+        return Branch.builder()
+                .managerTeacher(managerTeacher)
+                .region(createBranchRequest.region())
+                .name(createBranchRequest.name())
+                .status(createBranchRequest.status())
+                .businessArea(createBranchRequest.businessArea())
+                .contractFileName(contractFileName)
+                .contractDate(createBranchRequest.contractDate())
+                .renewalDate(createBranchRequest.renewalDate())
+                .description(createBranchRequest.description())
+                .build();
+    }
+
     /**
      * 이 메서드는 현재 FindBranchRequest 객체를 기반으로
      * BranchCriteria 객체를 생성합니다.

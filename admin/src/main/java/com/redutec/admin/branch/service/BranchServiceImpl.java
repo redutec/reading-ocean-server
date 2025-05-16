@@ -50,20 +50,8 @@ public class BranchServiceImpl implements BranchService {
                     return Paths.get(result.filePath()).getFileName().toString();
                 })
                 .orElse(null);
-        // Branch 엔티티 Build
-        Branch branch = Branch.builder()
-                .managerTeacher(managerTeacher)
-                .region(createBranchRequest.region())
-                .name(createBranchRequest.name())
-                .status(createBranchRequest.status())
-                .businessArea(createBranchRequest.businessArea())
-                .contractFileName(contractFileName)
-                .contractDate(createBranchRequest.contractDate())
-                .renewalDate(createBranchRequest.renewalDate())
-                .description(createBranchRequest.description())
-                .build();
         // 신규 지사 INSERT 후 등록한 지사 정보를 응답 객체에 담아 리턴
-        return branchMapper.toResponseDto(branchRepository.save(branch));
+        return branchMapper.toResponseDto(branchMapper.toCreateEntity(createBranchRequest, managerTeacher, contractFileName));
     }
 
     /**
