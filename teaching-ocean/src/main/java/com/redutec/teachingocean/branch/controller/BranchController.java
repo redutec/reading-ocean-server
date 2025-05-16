@@ -22,6 +22,6 @@ public class BranchController {
     @Operation(summary = "현재 로그인한 지사장(교사)의 지사 정보 조회", description = "현재 로그인한 지사장(교사)의 지사 정보 조회 API")
     @GetMapping
     public ResponseEntity<ApiResponseBody> findBranch() {
-        return apiResponseManager.success(branchService.findBranch());
+        return apiResponseManager.ok(branchService.findBranch());
     }
 }

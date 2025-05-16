@@ -26,7 +26,7 @@ public class StudentController {
     public ResponseEntity<ApiResponseBody> create(
             @ParameterObject @Valid StudentDto.CreateStudentRequest createStudentRequest
     ) {
-        return apiResponseManager.success(studentService.create(createStudentRequest));
+        return apiResponseManager.create(studentService.create(createStudentRequest));
     }
 
     @Operation(summary = "조건에 맞는 학생 목록 조회", description = "조건에 맞는 학생 목록을 조회하는 API")
@@ -34,13 +34,13 @@ public class StudentController {
     public ResponseEntity<ApiResponseBody> find(
             @ParameterObject @Valid StudentDto.FindStudentRequest findStudentRequest
     ) {
-        return apiResponseManager.success(studentService.find(findStudentRequest));
+        return apiResponseManager.ok(studentService.find(findStudentRequest));
     }
 
     @Operation(summary = "특정 학생 조회", description = "특정 학생을 조회하는 API")
     @GetMapping("/{studentId}")
     public ResponseEntity<ApiResponseBody> findById(@PathVariable Long studentId) {
-        return apiResponseManager.success(studentService.findById(studentId));
+        return apiResponseManager.ok(studentService.findById(studentId));
     }
 
     @Operation(summary = "특정 학생 수정", description = "특정 학생을 수정하는 API")
@@ -50,7 +50,7 @@ public class StudentController {
             @ParameterObject @Valid StudentDto.UpdateStudentRequest updateStudentRequest
     ) {
         studentService.update(studentId, updateStudentRequest);
-        return apiResponseManager.success(null);
+        return apiResponseManager.noContent();
     }
 
     @Operation(summary = "특정 학생 삭제", description = "특정 학생을 삭제하는 API")
@@ -59,6 +59,6 @@ public class StudentController {
             @Parameter(description = "학생 ID") @PathVariable Long studentId
     ) {
         studentService.delete(studentId);
-        return apiResponseManager.success(null);
+        return apiResponseManager.noContent();
     }
 }

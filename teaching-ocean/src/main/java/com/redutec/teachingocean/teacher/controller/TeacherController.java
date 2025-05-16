@@ -26,7 +26,7 @@ public class TeacherController {
     public ResponseEntity<ApiResponseBody> create(
             @ParameterObject @Valid TeacherDto.CreateTeacherRequest createTeacherRequest
     ) {
-        return apiResponseManager.success(teacherService.create(createTeacherRequest));
+        return apiResponseManager.create(teacherService.create(createTeacherRequest));
     }
 
     @Operation(summary = "조건에 맞는 교사 목록 조회", description = "조건에 맞는 교사 목록을 조회하는 API")
@@ -34,13 +34,13 @@ public class TeacherController {
     public ResponseEntity<ApiResponseBody> find(
             @ParameterObject @Valid TeacherDto.FindTeacherRequest findTeacherRequest
     ) {
-        return apiResponseManager.success(teacherService.find(findTeacherRequest));
+        return apiResponseManager.ok(teacherService.find(findTeacherRequest));
     }
 
     @Operation(summary = "특정 교사 조회", description = "특정 교사를 조회하는 API")
     @GetMapping("/{teacherId}")
     public ResponseEntity<ApiResponseBody> findById(@PathVariable Long teacherId) {
-        return apiResponseManager.success(teacherService.findById(teacherId));
+        return apiResponseManager.ok(teacherService.findById(teacherId));
     }
 
     @Operation(summary = "특정 교사 수정", description = "특정 교사를 수정하는 API")
@@ -50,6 +50,6 @@ public class TeacherController {
             @ParameterObject @Valid TeacherDto.UpdateTeacherRequest updateTeacherRequest
     ) {
         teacherService.update(teacherId, updateTeacherRequest);
-        return apiResponseManager.success(null);
+        return apiResponseManager.noContent();
     }
 }

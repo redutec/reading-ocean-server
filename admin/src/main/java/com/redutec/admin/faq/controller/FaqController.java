@@ -24,19 +24,19 @@ public class FaqController {
     @Operation(summary = "이용안내 등록", description = "이용안내 정보를 등록하는 API")
     @PostMapping
     public ResponseEntity<ApiResponseBody> create(@ParameterObject @Valid FaqDto.CreateFaqRequest createFaqRequest) {
-        return apiResponseManager.success(faqService.create(createFaqRequest));
+        return apiResponseManager.create(faqService.create(createFaqRequest));
     }
 
     @Operation(summary = "조건에 맞는 이용안내 목록 조회", description = "조건에 맞는 이용안내 목록을 조회하는 API")
     @GetMapping
     public ResponseEntity<ApiResponseBody> find(@ParameterObject @Valid FaqDto.FindFaqRequest findFaqRequest) {
-        return apiResponseManager.success(faqService.find(findFaqRequest));
+        return apiResponseManager.ok(faqService.find(findFaqRequest));
     }
 
     @Operation(summary = "특정 이용안내 조회", description = "특정 이용안내를 조회하는 API")
     @GetMapping("/{faqId}")
     public ResponseEntity<ApiResponseBody> findById(@PathVariable Long faqId) {
-        return apiResponseManager.success(faqService.findById(faqId));
+        return apiResponseManager.ok(faqService.findById(faqId));
     }
 
     @Operation(summary = "특정 이용안내 수정", description = "특정 이용안내를 수정하는 API")
@@ -46,13 +46,13 @@ public class FaqController {
             @ParameterObject @Valid FaqDto.UpdateFaqRequest updateFaqRequest
     ) {
         faqService.update(faqId, updateFaqRequest);
-        return apiResponseManager.success(null);
+        return apiResponseManager.noContent();
     }
 
     @Operation(summary = "특정 이용안내 삭제", description = "특정 이용안내를 삭제하는 API")
     @DeleteMapping("/{faqId}")
     public ResponseEntity<ApiResponseBody> delete(@Parameter(description = "이용안내 ID") @PathVariable Long faqId) {
         faqService.delete(faqId);
-        return apiResponseManager.success(null);
+        return apiResponseManager.noContent();
     }
 }

@@ -24,19 +24,19 @@ public class SubscriptionStudentController {
     @Operation(summary = "구독(학생) 등록", description = "구독(학생) 정보를 등록하는 API")
     @PostMapping
     public ResponseEntity<ApiResponseBody> create(@ParameterObject @Valid SubscriptionStudentDto.CreateSubscriptionStudentRequest createSubscriptionStudentRequest) {
-        return apiResponseManager.success(subscriptionStudentService.create(createSubscriptionStudentRequest));
+        return apiResponseManager.create(subscriptionStudentService.create(createSubscriptionStudentRequest));
     }
 
     @Operation(summary = "조건에 맞는 구독(학생) 목록 조회", description = "조건에 맞는 구독(학생) 목록을 조회하는 API")
     @GetMapping
     public ResponseEntity<ApiResponseBody> find(@ParameterObject @Valid SubscriptionStudentDto.FindSubscriptionStudentRequest findSubscriptionStudentRequest) {
-        return apiResponseManager.success(subscriptionStudentService.find(findSubscriptionStudentRequest));
+        return apiResponseManager.ok(subscriptionStudentService.find(findSubscriptionStudentRequest));
     }
 
     @Operation(summary = "특정 구독(학생) 조회", description = "특정 구독(학생) 정보를 조회하는 API")
     @GetMapping("/{subscriptionStudentId}")
     public ResponseEntity<ApiResponseBody> findById(@PathVariable Long subscriptionStudentId) {
-        return apiResponseManager.success(subscriptionStudentService.findById(subscriptionStudentId));
+        return apiResponseManager.ok(subscriptionStudentService.findById(subscriptionStudentId));
     }
 
     @Operation(summary = "특정 구독(학생) 수정", description = "특정 구독(학생) 정보를 수정하는 API")
@@ -46,13 +46,13 @@ public class SubscriptionStudentController {
             @ParameterObject @Valid SubscriptionStudentDto.UpdateSubscriptionStudentRequest updateSubscriptionStudentRequest
     ) {
         subscriptionStudentService.update(subscriptionStudentId, updateSubscriptionStudentRequest);
-        return apiResponseManager.success(null);
+        return apiResponseManager.noContent();
     }
 
     @Operation(summary = "특정 구독(학생) 삭제", description = "특정 구독(학생) 정보를 삭제하는 API")
     @DeleteMapping("/{subscriptionStudentId}")
     public ResponseEntity<ApiResponseBody> delete(@Parameter(description = "구독(학생) ID") @PathVariable Long subscriptionStudentId) {
         subscriptionStudentService.delete(subscriptionStudentId);
-        return apiResponseManager.success(null);
+        return apiResponseManager.noContent();
     }
 }

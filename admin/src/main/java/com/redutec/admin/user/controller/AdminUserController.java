@@ -25,7 +25,7 @@ public class AdminUserController {
     public ResponseEntity<ApiResponseBody> create(
             @ParameterObject AdminUserDto.CreateAdminUserRequest createAdminUserRequest
     ) {
-        return apiResponseManager.success(adminUserService.create(createAdminUserRequest));
+        return apiResponseManager.create(adminUserService.create(createAdminUserRequest));
     }
 
     @Operation(summary = "조건에 맞는 어드민 사용자 목록 조회", description = "조건에 맞는 어드민 사용자 목록을 조회하는 API")
@@ -33,7 +33,7 @@ public class AdminUserController {
     public ResponseEntity<ApiResponseBody> find(
             @ParameterObject AdminUserDto.FindAdminUserRequest findAdminUserRequest
     ) {
-        return apiResponseManager.success(adminUserService.find(findAdminUserRequest));
+        return apiResponseManager.ok(adminUserService.find(findAdminUserRequest));
     }
 
     @Operation(summary = "어드민 사용자 정보 수정", description = "어드민 사용자 정보를 수정하는 API")
@@ -43,7 +43,7 @@ public class AdminUserController {
             @ParameterObject AdminUserDto.UpdateAdminUserRequest updateAdminUserRequest
     ) {
         adminUserService.update(adminUserId, updateAdminUserRequest);
-        return apiResponseManager.success(null);
+        return apiResponseManager.noContent();
     }
 
     @Operation(summary = "어드민 사용자 삭제", description = "어드민 사용자를 삭제하는 API")
@@ -52,6 +52,6 @@ public class AdminUserController {
             @Parameter(description = "어드민 사용자 ID") @PathVariable Long adminUserId
     ) {
         adminUserService.delete(adminUserId);
-        return apiResponseManager.success(null);
+        return apiResponseManager.noContent();
     }
 }

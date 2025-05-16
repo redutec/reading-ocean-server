@@ -26,7 +26,7 @@ public class InstituteController {
     public ResponseEntity<ApiResponseBody> create(
             @ParameterObject @Valid InstituteDto.CreateInstituteRequest createInstituteRequest
     ) {
-        return apiResponseManager.success(instituteService.create(createInstituteRequest));
+        return apiResponseManager.create(instituteService.create(createInstituteRequest));
     }
 
     @Operation(summary = "조건에 맞는 교육기관 목록 조회", description = "조건에 맞는 교육기관 목록을 조회하는 API")
@@ -34,13 +34,13 @@ public class InstituteController {
     public ResponseEntity<ApiResponseBody> find(
             @ParameterObject @Valid InstituteDto.FindInstituteRequest findInstituteRequest
     ) {
-        return apiResponseManager.success(instituteService.find(findInstituteRequest));
+        return apiResponseManager.ok(instituteService.find(findInstituteRequest));
     }
 
     @Operation(summary = "특정 교육기관 조회", description = "특정 교육기관를 조회하는 API")
     @GetMapping("/{instituteId}")
     public ResponseEntity<ApiResponseBody> findById(@PathVariable Long instituteId) {
-        return apiResponseManager.success(instituteService.findById(instituteId));
+        return apiResponseManager.ok(instituteService.findById(instituteId));
     }
 
     @Operation(summary = "특정 교육기관 수정", description = "특정 교육기관를 수정하는 API")
@@ -50,7 +50,7 @@ public class InstituteController {
             @ParameterObject @Valid InstituteDto.UpdateInstituteRequest updateInstituteRequest
     ) {
         instituteService.update(instituteId, updateInstituteRequest);
-        return apiResponseManager.success(null);
+        return apiResponseManager.noContent();
     }
 
     @Operation(summary = "특정 교육기관 삭제", description = "특정 교육기관를 삭제하는 API")
@@ -59,6 +59,6 @@ public class InstituteController {
             @Parameter(description = "교육기관 ID") @PathVariable Long instituteId
     ) {
         instituteService.delete(instituteId);
-        return apiResponseManager.success(null);
+        return apiResponseManager.noContent();
     }
 }

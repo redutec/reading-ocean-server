@@ -37,7 +37,7 @@ public class AuthenticationController {
     @Operation(summary = "로그인", description = "로그인 후 JWT Access Token과 Refresh Token을 발급하는 API")
     @PostMapping("/login")
     public ResponseEntity<ApiResponseBody> login(@ParameterObject AuthenticationDto.LoginRequest loginRequest) {
-        return apiResponseManager.success(authenticationService.login(loginRequest));
+        return apiResponseManager.ok(authenticationService.login(loginRequest));
     }
 
     /**
@@ -54,7 +54,7 @@ public class AuthenticationController {
             @Parameter(description = "Refresh Token") @RequestParam String refreshToken
     ) {
         // Refresh Token의 유효성 확인 및 Access Token 재발급
-        return apiResponseManager.success(authenticationService.refreshAccessToken(refreshToken));
+        return apiResponseManager.ok(authenticationService.refreshAccessToken(refreshToken));
     }
 
     /**
@@ -67,21 +67,19 @@ public class AuthenticationController {
     @SecurityRequirement(name = "bearerAuth")
     @GetMapping
     public ResponseEntity<ApiResponseBody> getAuthenticatedAdminUser() {
-        return apiResponseManager.success(authenticationService.getAuthenticatedAdminUser());
+        return apiResponseManager.ok(authenticationService.getAuthenticatedAdminUser());
     }
 
     /**
      * 로그아웃 API.
      * 로그아웃 후 JWT 토큰을 블랙리스트에 추가합니다.
      * 실제 로그아웃 처리는 SecurityConfig에 의해 CustomLogoutHandler에서 처리합니다.
-     *
-     * @return 로그아웃 결과
      */
     @Operation(summary = "로그아웃", description = "로그아웃 후 JWT 토큰을 블랙리스트에 추가하는 API")
     @SecurityRequirement(name = "bearerAuth")
     @PostMapping("/logout")
     public ResponseEntity<ApiResponseBody> logout() {
-        return apiResponseManager.success(null);
+        return apiResponseManager.noContent();
     }
 
     /**
@@ -89,7 +87,6 @@ public class AuthenticationController {
      * 사용자의 비밀번호를 초기화합니다.
      *
      * @param resetPasswordRequest 비밀번호 초기화 요청 데이터
-     * @return 초기화 결과
      */
     @Operation(summary = "비밀번호 초기화", description = "사용자의 비밀번호를 초기화하는 API")
     @PatchMapping("/reset-password")
@@ -97,7 +94,7 @@ public class AuthenticationController {
             @ParameterObject AuthenticationDto.ResetPasswordRequest resetPasswordRequest
     ) throws MessagingException {
         authenticationService.resetPassword(resetPasswordRequest);
-        return apiResponseManager.success(null);
+        return apiResponseManager.noContent();
     }
 
     /**
@@ -105,7 +102,6 @@ public class AuthenticationController {
      * 기존 계정 정보를 확인 후 새로운 비밀번호로 변경합니다.
      *
      * @param updatePasswordRequest 비밀번호 변경 요청 데이터
-     * @return 변경 결과
      */
     @Operation(summary = "비밀번호 변경", description = "기존 계정 정보를 확인 후 새로운 비밀번호로 변경하는 API")
     @PatchMapping("/update-password")
@@ -113,6 +109,6 @@ public class AuthenticationController {
             @ParameterObject AuthenticationDto.UpdatePasswordRequest updatePasswordRequest
     ) {
         authenticationService.updatePassword(updatePasswordRequest);
-        return apiResponseManager.success(null);
+        return apiResponseManager.noContent();
     }
 }

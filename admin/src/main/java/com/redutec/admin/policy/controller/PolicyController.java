@@ -26,7 +26,7 @@ public class PolicyController {
     public ResponseEntity<ApiResponseBody> create(
             @ParameterObject @Valid PolicyDto.CreatePolicyRequest createPolicyRequest
     ) {
-        return apiResponseManager.success(policyService.create(createPolicyRequest));
+        return apiResponseManager.create(policyService.create(createPolicyRequest));
     }
 
     @Operation(summary = "조건에 맞는 정책 목록 조회", description = "조건에 맞는 정책 목록을 조회하는 API")
@@ -34,13 +34,13 @@ public class PolicyController {
     public ResponseEntity<ApiResponseBody> find(
             @ParameterObject @Valid PolicyDto.FindPolicyRequest findPolicyRequest
     ) {
-        return apiResponseManager.success(policyService.find(findPolicyRequest));
+        return apiResponseManager.ok(policyService.find(findPolicyRequest));
     }
 
     @Operation(summary = "특정 정책 조회", description = "특정 정책을 조회하는 API")
     @GetMapping("/{policyId}")
     public ResponseEntity<ApiResponseBody> findById(@PathVariable Long policyId) {
-        return apiResponseManager.success(policyService.findById(policyId));
+        return apiResponseManager.ok(policyService.findById(policyId));
     }
 
     @Operation(summary = "특정 정책 수정", description = "특정 정책을 수정하는 API")
@@ -50,13 +50,13 @@ public class PolicyController {
             @ParameterObject @Valid PolicyDto.UpdatePolicyRequest updatePolicyRequest
     ) {
         policyService.update(policyId, updatePolicyRequest);
-        return apiResponseManager.success(null);
+        return apiResponseManager.noContent();
     }
 
     @Operation(summary = "특정 정책 삭제", description = "특정 정책을 삭제하는 API")
     @DeleteMapping("/{policyId}")
     public ResponseEntity<ApiResponseBody> delete(@Parameter(description = "정책 ID") @PathVariable Long policyId) {
         policyService.delete(policyId);
-        return apiResponseManager.success(null);
+        return apiResponseManager.noContent();
     }
 }

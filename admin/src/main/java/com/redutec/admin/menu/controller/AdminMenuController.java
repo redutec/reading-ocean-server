@@ -25,7 +25,7 @@ public class AdminMenuController {
     public ResponseEntity<ApiResponseBody> create(
             @ParameterObject AdminMenuDto.CreateAdminMenuRequest createAdminMenuRequest
     ) {
-        return apiResponseManager.success(adminMenuService.create(createAdminMenuRequest));
+        return apiResponseManager.create(adminMenuService.create(createAdminMenuRequest));
     }
 
     @Operation(summary = "조건에 맞는 어드민 메뉴 목록 조회", description = "조건에 맞는 어드민 메뉴 목록을 조회하는 API")
@@ -33,7 +33,7 @@ public class AdminMenuController {
     public ResponseEntity<ApiResponseBody> find(
             @ParameterObject AdminMenuDto.FindAdminMenuRequest findAdminMenuRequest
     ) {
-        return apiResponseManager.success(adminMenuService.find(findAdminMenuRequest));
+        return apiResponseManager.ok(adminMenuService.find(findAdminMenuRequest));
     }
 
     @Operation(summary = "어드민 메뉴 정보 수정", description = "어드민 메뉴 정보를 수정하는 API")
@@ -43,7 +43,7 @@ public class AdminMenuController {
             @ParameterObject AdminMenuDto.UpdateAdminMenuRequest updateAdminMenuRequest
     ) {
         adminMenuService.update(adminMenuId, updateAdminMenuRequest);
-        return apiResponseManager.success(null);
+        return apiResponseManager.noContent();
     }
 
     @Operation(summary = "어드민 메뉴 삭제", description = "어드민 메뉴를 삭제하는 API")
@@ -52,6 +52,6 @@ public class AdminMenuController {
             @Parameter(description = "어드민 메뉴 ID") @PathVariable Long adminMenuId
     ) {
         adminMenuService.delete(adminMenuId);
-        return apiResponseManager.success(null);
+        return apiResponseManager.noContent();
     }
 }

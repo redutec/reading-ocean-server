@@ -24,19 +24,19 @@ public class BannerController {
     @Operation(summary = "배너 등록", description = "배너 정보를 등록하는 API")
     @PostMapping
     public ResponseEntity<ApiResponseBody> create(@ParameterObject @Valid BannerDto.CreateBannerRequest createBannerRequest) {
-        return apiResponseManager.success(bannerService.create(createBannerRequest));
+        return apiResponseManager.create(bannerService.create(createBannerRequest));
     }
 
     @Operation(summary = "조건에 맞는 배너 목록 조회", description = "조건에 맞는 배너 목록을 조회하는 API")
     @GetMapping
     public ResponseEntity<ApiResponseBody> find(@ParameterObject @Valid BannerDto.FindBannerRequest findBannerRequest) {
-        return apiResponseManager.success(bannerService.find(findBannerRequest));
+        return apiResponseManager.ok(bannerService.find(findBannerRequest));
     }
 
     @Operation(summary = "특정 배너 조회", description = "특정 배너를 조회하는 API")
     @GetMapping("/{bannerId}")
     public ResponseEntity<ApiResponseBody> findById(@PathVariable Long bannerId) {
-        return apiResponseManager.success(bannerService.findById(bannerId));
+        return apiResponseManager.ok(bannerService.findById(bannerId));
     }
 
     @Operation(summary = "특정 배너 수정", description = "특정 배너를 수정하는 API")
@@ -46,13 +46,13 @@ public class BannerController {
             @ParameterObject @Valid BannerDto.UpdateBannerRequest updateBannerRequest
     ) {
         bannerService.update(bannerId, updateBannerRequest);
-        return apiResponseManager.success(null);
+        return apiResponseManager.noContent();
     }
 
     @Operation(summary = "특정 배너 삭제", description = "특정 배너를 삭제하는 API")
     @DeleteMapping("/{bannerId}")
     public ResponseEntity<ApiResponseBody> delete(@Parameter(description = "배너 ID") @PathVariable Long bannerId) {
         bannerService.delete(bannerId);
-        return apiResponseManager.success(null);
+        return apiResponseManager.noContent();
     }
 }

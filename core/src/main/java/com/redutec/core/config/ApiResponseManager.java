@@ -32,28 +32,18 @@ public class ApiResponseManager {
      * @param data 조회된 리소스의 표현(보통 DTO)
      * @return 200 OK 상태와 메시지, 조회된 데이터가 담긴 ResponseEntity<ApiResponseBody>
      */
-    public ResponseEntity<ApiResponseBody> read(Object data) {
+    public ResponseEntity<ApiResponseBody> ok(Object data) {
         return buildResponse(HttpStatus.OK, HttpStatus.OK.getReasonPhrase(), data);
     }
 
     /**
-     * 리소스 업데이트 성공 시 응답을 생성합니다.
+     * 리소스 업데이트 또는 삭제 성공 시 응답을 생성합니다.
      * HTTP 상태 코드는 204 No Content이며, 본문 없이 반환합니다.
      *
      * @return 204 No Content 상태의 ResponseEntity<Void>
      */
-    public ResponseEntity<Void> update() {
-        return ResponseEntity.noContent().build();
-    }
-
-    /**
-     * 리소스 삭제 성공 시 응답을 생성합니다.
-     * HTTP 상태 코드는 204 No Content이며, 본문 없이 반환합니다.
-     *
-     * @return 204 No Content 상태의 ResponseEntity<Void>
-     */
-    public ResponseEntity<Void> delete() {
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<ApiResponseBody> noContent() {
+        return buildResponse(HttpStatus.NO_CONTENT, HttpStatus.NO_CONTENT.getReasonPhrase(), null);
     }
 
     /**

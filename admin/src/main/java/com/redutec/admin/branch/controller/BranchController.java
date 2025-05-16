@@ -35,31 +35,31 @@ public class BranchController {
     public ResponseEntity<ApiResponseBody> find(
             @ParameterObject @Valid BranchDto.FindBranchRequest findBranchRequest
     ) {
-        return apiResponseManager.read(branchService.find(findBranchRequest));
+        return apiResponseManager.ok(branchService.find(findBranchRequest));
     }
 
     @Operation(summary = "특정 지사 조회", description = "특정 지사를 조회하는 API")
     @GetMapping("/{branchId}")
     public ResponseEntity<ApiResponseBody> findById(@PathVariable Long branchId) {
-        return apiResponseManager.read(branchService.findById(branchId));
+        return apiResponseManager.ok(branchService.findById(branchId));
     }
 
     @Operation(summary = "특정 지사 수정", description = "특정 지사를 수정하는 API")
     @PatchMapping(path = "/{branchId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Void> update(
+    public ResponseEntity<ApiResponseBody> update(
             @Parameter(description = "지사 ID") @PathVariable Long branchId,
             @ModelAttribute @Valid BranchDto.UpdateBranchRequest updateBranchRequest
     ) {
         branchService.update(branchId, updateBranchRequest);
-        return apiResponseManager.update();
+        return apiResponseManager.noContent();
     }
 
     @Operation(summary = "특정 지사 삭제", description = "특정 지사를 삭제하는 API")
     @DeleteMapping("/{branchId}")
-    public ResponseEntity<Void> delete(
+    public ResponseEntity<ApiResponseBody> delete(
             @Parameter(description = "지사 ID") @PathVariable Long branchId
     ) {
         branchService.delete(branchId);
-        return apiResponseManager.delete();
+        return apiResponseManager.noContent();
     }
 }

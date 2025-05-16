@@ -34,31 +34,31 @@ public class BookGroupController {
     public ResponseEntity<ApiResponseBody> find(
             @ParameterObject @Valid BookGroupDto.FindBookGroupRequest findBookGroupRequest
     ) {
-        return apiResponseManager.read(bookGroupService.find(findBookGroupRequest));
+        return apiResponseManager.ok(bookGroupService.find(findBookGroupRequest));
     }
 
     @Operation(summary = "특정 도서 그룹 조회", description = "특정 도서 그룹를 조회하는 API")
     @GetMapping("/{bookGroupId}")
     public ResponseEntity<ApiResponseBody> findById(@PathVariable Long bookGroupId) {
-        return apiResponseManager.read(bookGroupService.findById(bookGroupId));
+        return apiResponseManager.ok(bookGroupService.findById(bookGroupId));
     }
 
     @Operation(summary = "특정 도서 그룹 수정", description = "특정 도서 그룹를 수정하는 API")
     @PatchMapping("/{bookGroupId}")
-    public ResponseEntity<Void> update(
+    public ResponseEntity<ApiResponseBody> update(
             @Parameter(description = "도서 그룹 ID") @PathVariable Long bookGroupId,
             @ParameterObject @Valid BookGroupDto.UpdateBookGroupRequest updateBookGroupRequest
     ) {
         bookGroupService.update(bookGroupId, updateBookGroupRequest);
-        return apiResponseManager.update();
+        return apiResponseManager.noContent();
     }
 
     @Operation(summary = "특정 도서 그룹 삭제", description = "특정 도서 그룹를 삭제하는 API")
     @DeleteMapping("/{bookGroupId}")
-    public ResponseEntity<Void> delete(
+    public ResponseEntity<ApiResponseBody> delete(
             @Parameter(description = "도서 그룹 ID") @PathVariable Long bookGroupId
     ) {
         bookGroupService.delete(bookGroupId);
-        return apiResponseManager.delete();
+        return apiResponseManager.noContent();
     }
 }

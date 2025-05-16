@@ -24,19 +24,19 @@ public class ProductController {
     @Operation(summary = "판매상품 등록", description = "판매상품 정보를 등록하는 API")
     @PostMapping
     public ResponseEntity<ApiResponseBody> create(@ParameterObject @Valid ProductDto.CreateProductRequest createProductRequest) {
-        return apiResponseManager.success(productService.create(createProductRequest));
+        return apiResponseManager.create(productService.create(createProductRequest));
     }
 
     @Operation(summary = "조건에 맞는 판매상품 목록 조회", description = "조건에 맞는 판매상품 목록을 조회하는 API")
     @GetMapping
     public ResponseEntity<ApiResponseBody> find(@ParameterObject @Valid ProductDto.FindProductRequest findProductRequest) {
-        return apiResponseManager.success(productService.find(findProductRequest));
+        return apiResponseManager.ok(productService.find(findProductRequest));
     }
 
     @Operation(summary = "특정 판매상품 조회", description = "특정 판매상품을 조회하는 API")
     @GetMapping("/{productId}")
     public ResponseEntity<ApiResponseBody> findById(@PathVariable Long productId) {
-        return apiResponseManager.success(productService.findById(productId));
+        return apiResponseManager.ok(productService.findById(productId));
     }
 
     @Operation(summary = "특정 판매상품 수정", description = "특정 판매상품을 수정하는 API")
@@ -46,13 +46,13 @@ public class ProductController {
             @ParameterObject @Valid ProductDto.UpdateProductRequest updateProductRequest
     ) {
         productService.update(productId, updateProductRequest);
-        return apiResponseManager.success(null);
+        return apiResponseManager.noContent();
     }
 
     @Operation(summary = "특정 판매상품 삭제", description = "특정 판매상품을 삭제하는 API")
     @DeleteMapping("/{productId}")
     public ResponseEntity<ApiResponseBody> delete(@Parameter(description = "판매상품 ID") @PathVariable Long productId) {
         productService.delete(productId);
-        return apiResponseManager.success(null);
+        return apiResponseManager.noContent();
     }
 }

@@ -25,7 +25,7 @@ public class TeachingOceanMenuController {
     public ResponseEntity<ApiResponseBody> create(
             @ParameterObject TeachingOceanMenuDto.CreateTeachingOceanMenuRequest createTeachingOceanMenuRequest
     ) {
-        return apiResponseManager.success(teachingOceanMenuService.create(createTeachingOceanMenuRequest));
+        return apiResponseManager.create(teachingOceanMenuService.create(createTeachingOceanMenuRequest));
     }
 
     @Operation(summary = "조건에 맞는 티칭오션 메뉴 목록 조회", description = "조건에 맞는 티칭오션 메뉴 목록을 조회하는 API")
@@ -33,7 +33,7 @@ public class TeachingOceanMenuController {
     public ResponseEntity<ApiResponseBody> find(
             @ParameterObject TeachingOceanMenuDto.FindTeachingOceanMenuRequest findTeachingOceanMenuRequest
     ) {
-        return apiResponseManager.success(teachingOceanMenuService.find(findTeachingOceanMenuRequest));
+        return apiResponseManager.ok(teachingOceanMenuService.find(findTeachingOceanMenuRequest));
     }
 
     @Operation(summary = "티칭오션 메뉴 정보 수정", description = "티칭오션 메뉴 정보를 수정하는 API")
@@ -43,7 +43,7 @@ public class TeachingOceanMenuController {
             @ParameterObject TeachingOceanMenuDto.UpdateTeachingOceanMenuRequest updateTeachingOceanMenuRequest
     ) {
         teachingOceanMenuService.update(teachingOceanMenuId, updateTeachingOceanMenuRequest);
-        return apiResponseManager.success(null);
+        return apiResponseManager.noContent();
     }
 
     @Operation(summary = "티칭오션 메뉴 삭제", description = "티칭오션 메뉴를 삭제하는 API")
@@ -52,6 +52,6 @@ public class TeachingOceanMenuController {
             @Parameter(description = "티칭오션 메뉴 ID") @PathVariable Long teachingOceanMenuId
     ) {
         teachingOceanMenuService.delete(teachingOceanMenuId);
-        return apiResponseManager.success(null);
+        return apiResponseManager.noContent();
     }
 }

@@ -26,7 +26,7 @@ public class HomeroomController {
     public ResponseEntity<ApiResponseBody> create(
             @ParameterObject @Valid HomeroomDto.CreateHomeroomRequest createHomeroomRequest
     ) {
-        return apiResponseManager.success(homeroomService.create(createHomeroomRequest));
+        return apiResponseManager.create(homeroomService.create(createHomeroomRequest));
     }
 
     @Operation(summary = "조건에 맞는 학급 목록 조회", description = "조건에 맞는 학급 목록을 조회하는 API")
@@ -34,13 +34,13 @@ public class HomeroomController {
     public ResponseEntity<ApiResponseBody> find(
             @ParameterObject @Valid HomeroomDto.FindHomeroomRequest findHomeroomRequest
     ) {
-        return apiResponseManager.success(homeroomService.find(findHomeroomRequest));
+        return apiResponseManager.ok(homeroomService.find(findHomeroomRequest));
     }
 
     @Operation(summary = "특정 학급 조회", description = "특정 학급를 조회하는 API")
     @GetMapping("/{homeroomId}")
     public ResponseEntity<ApiResponseBody> findById(@PathVariable Long homeroomId) {
-        return apiResponseManager.success(homeroomService.findById(homeroomId));
+        return apiResponseManager.ok(homeroomService.findById(homeroomId));
     }
 
     @Operation(summary = "특정 학급 수정", description = "특정 학급를 수정하는 API")
@@ -50,7 +50,7 @@ public class HomeroomController {
             @ParameterObject @Valid HomeroomDto.UpdateHomeroomRequest updateHomeroomRequest
     ) {
         homeroomService.update(homeroomId, updateHomeroomRequest);
-        return apiResponseManager.success(null);
+        return apiResponseManager.noContent();
     }
 
     @Operation(summary = "특정 학급 삭제", description = "특정 학급를 삭제하는 API")
@@ -59,6 +59,6 @@ public class HomeroomController {
             @Parameter(description = "학급 ID") @PathVariable Long homeroomId
     ) {
         homeroomService.delete(homeroomId);
-        return apiResponseManager.success(null);
+        return apiResponseManager.noContent();
     }
 }
