@@ -1,6 +1,6 @@
 package com.redutec.admin.product.service;
 
-import com.redutec.admin.product.dto.ProductDto;
+import com.redutec.core.dto.ProductDto;
 import com.redutec.core.entity.Product;
 
 public interface ProductService {

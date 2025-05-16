@@ -18,7 +18,6 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 @Entity
 @Comment("고객문의")
@@ -61,7 +60,7 @@ public class Inquiry {
     @Comment("답변자")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
-    private AdminUser adminUser;
+    private AdminUser responder;
 
     @Comment("제목")
     @Column(nullable = false, length = 100)
@@ -85,26 +84,4 @@ public class Inquiry {
     @LastModifiedDate
     @Column(nullable = false)
     private LocalDateTime updatedAt;
-
-    public void updateInquiry(
-            Domain domain,
-            InquirerType inquirerType,
-            InquiryCategory category,
-            InquiryStatus status,
-            String inquirerEmail,
-            AdminUser adminUser,
-            String title,
-            String content,
-            String response
-    ) {
-        this.domain = Optional.ofNullable(domain).orElse(this.domain);
-        this.inquirerType = Optional.ofNullable(inquirerType).orElse(this.inquirerType);
-        this.category = Optional.ofNullable(category).orElse(this.category);
-        this.status = Optional.ofNullable(status).orElse(this.status);
-        this.inquirerEmail = Optional.ofNullable(inquirerEmail).orElse(this.inquirerEmail);
-        this.adminUser = Optional.ofNullable(adminUser).orElse(this.adminUser);
-        this.title = Optional.ofNullable(title).orElse(this.title);
-        this.content = Optional.ofNullable(content).orElse(this.content);
-        this.response = Optional.ofNullable(response).orElse(this.response);
-    }
 }

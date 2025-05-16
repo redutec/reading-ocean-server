@@ -1,6 +1,6 @@
 package com.redutec.admin.faq.service;
 
-import com.redutec.admin.faq.dto.FaqDto;
+import com.redutec.core.dto.FaqDto;
 import com.redutec.core.entity.Faq;
 
 public interface FaqService {

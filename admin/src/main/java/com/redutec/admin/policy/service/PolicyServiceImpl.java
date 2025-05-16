@@ -1,9 +1,8 @@
 package com.redutec.admin.policy.service;
 
-import com.redutec.admin.policy.dto.PolicyDto;
-import com.redutec.admin.policy.mapper.PolicyMapper;
-import com.redutec.core.config.FileUtil;
+import com.redutec.core.dto.PolicyDto;
 import com.redutec.core.entity.Policy;
+import com.redutec.core.mapper.PolicyMapper;
 import com.redutec.core.repository.PolicyRepository;
 import com.redutec.core.specification.PolicySpecification;
 import jakarta.persistence.EntityNotFoundException;
@@ -20,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class PolicyServiceImpl implements PolicyService {
     private final PolicyMapper policyMapper;
     private final PolicyRepository policyRepository;
-    private final FileUtil fileUtil;
 
     /**
      * 정책 등록
@@ -30,7 +28,7 @@ public class PolicyServiceImpl implements PolicyService {
     @Override
     @Transactional
     public PolicyDto.PolicyResponse create(PolicyDto.CreatePolicyRequest createPolicyRequest) {
-        return policyMapper.toResponseDto(policyRepository.save(policyMapper.toEntity(createPolicyRequest)));
+        return policyMapper.toResponseDto(policyRepository.save(policyMapper.toCreateEntity(createPolicyRequest)));
     }
 
     /**
@@ -68,11 +66,9 @@ public class PolicyServiceImpl implements PolicyService {
      */
     @Override
     @Transactional(readOnly = true)
-    public Policy getPolicy(
-            Long policyId
-    ) {
+    public Policy getPolicy(Long policyId) {
         return policyRepository.findById(policyId)
-                .orElseThrow(() -> new EntityNotFoundException("정책을 찾을 수 없습니다. id = " + policyId));
+                .orElseThrow(() -> new EntityNotFoundException("정책을 찾을 수 없습니다. policyId = " + policyId));
     }
 
     /**
@@ -83,20 +79,7 @@ public class PolicyServiceImpl implements PolicyService {
     @Override
     @Transactional
     public void update(Long policyId, PolicyDto.UpdatePolicyRequest updatePolicyRequest) {
-        // 수정할 정책 엔티티 조회
-        Policy policy = getPolicy(policyId);
-        // UPDATE 도메인 메서드로 변환
-        policy.updatePolicy(
-                updatePolicyRequest.domain(),
-                updatePolicyRequest.type(),
-                updatePolicyRequest.version(),
-                updatePolicyRequest.content(),
-                updatePolicyRequest.effectiveAt(),
-                updatePolicyRequest.expiresAt(),
-                updatePolicyRequest.available()
-        );
-        // 정책 엔티티 UPDATE
-        policyRepository.save(policy);
+        policyRepository.save(policyMapper.toUpdateEntity(getPolicy(policyId), updatePolicyRequest));
     }
 
     /**

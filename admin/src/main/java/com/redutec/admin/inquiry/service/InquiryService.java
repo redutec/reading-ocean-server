@@ -1,6 +1,6 @@
 package com.redutec.admin.inquiry.service;
 
-import com.redutec.admin.inquiry.dto.InquiryDto;
+import com.redutec.core.dto.InquiryDto;
 import com.redutec.core.entity.Inquiry;
 
 public interface InquiryService {

@@ -1,7 +1,7 @@
 package com.redutec.admin.menu.service;
 
-import com.redutec.admin.menu.dto.AdminMenuDto;
-import com.redutec.admin.menu.mapper.AdminMenuMapper;
+import com.redutec.core.dto.AdminMenuDto;
+import com.redutec.core.mapper.AdminMenuMapper;
 import com.redutec.core.entity.AdminMenu;
 import com.redutec.core.repository.AdminMenuRepository;
 import com.redutec.core.specification.AdminMenuSpecification;
@@ -31,26 +31,17 @@ public class AdminMenuServiceImpl implements AdminMenuService {
     @Override
     @Transactional
     public AdminMenuDto.AdminMenuResponse create(AdminMenuDto.CreateAdminMenuRequest createAdminMenuRequest) {
-        // 부모 메뉴 엔티티 조회
-        AdminMenu parentMenu = Optional.ofNullable(createAdminMenuRequest.parentMenuId())
-                .map(this::getAdminMenu)
-                .orElse(null);
-        // 자식 메뉴 엔티티 조회
-        List<AdminMenu> childrenMenus = Optional.ofNullable(createAdminMenuRequest.childrenMenuIds())
-                .orElse(List.of())
-                .stream()
-                .map(this::getAdminMenu)
-                .toList();
-        // 어드민 메뉴 등록 객체 생성 후 등록
-        return adminMenuMapper.toResponseDto(
-                adminMenuRepository.save(
-                        adminMenuMapper.toEntity(
-                                createAdminMenuRequest,
-                                parentMenu,
-                                childrenMenus
-                        )
-                )
-        );
+        return adminMenuMapper.toResponseDto(adminMenuRepository.save(adminMenuMapper.toCreateEntity(
+                createAdminMenuRequest,
+                Optional.ofNullable(createAdminMenuRequest.parentMenuId())
+                        .map(this::getAdminMenu)
+                        .orElse(null),
+                Optional.ofNullable(createAdminMenuRequest.childrenMenuIds())
+                        .orElse(List.of())
+                        .stream()
+                        .map(this::getAdminMenu)
+                        .toList()
+        )));
     }
 
     /**
@@ -88,7 +79,7 @@ public class AdminMenuServiceImpl implements AdminMenuService {
     @Transactional(readOnly = true)
     public AdminMenu getAdminMenu(Long adminMenuId) {
         return adminMenuRepository.findById(adminMenuId)
-                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 어드민 메뉴입니다. id = " + adminMenuId));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 어드민 메뉴입니다. adminMenuId = " + adminMenuId));
     }
 
     /**
@@ -99,31 +90,18 @@ public class AdminMenuServiceImpl implements AdminMenuService {
     @Override
     @Transactional
     public void update(Long adminMenuId, AdminMenuDto.UpdateAdminMenuRequest updateAdminMenuRequest) {
-        // 수정할 어드민 메뉴 엔티티 조회
-        AdminMenu adminMenu = getAdminMenu(adminMenuId);
-        // 부모 메뉴 엔티티 조회
-        AdminMenu parentMenu = Optional.ofNullable(updateAdminMenuRequest.parentMenuId())
-                .map(this::getAdminMenu)
-                .orElse(null);
-        // 자식 메뉴 엔티티 조회
-        List<AdminMenu> childrenMenus = Optional.ofNullable(updateAdminMenuRequest.childrenMenuIds())
-                .map(childrenMenuIds -> childrenMenuIds.stream()
+        adminMenuRepository.save(adminMenuMapper.toUpdateEntity(
+                getAdminMenu(adminMenuId),
+                updateAdminMenuRequest,
+                Optional.ofNullable(updateAdminMenuRequest.parentMenuId())
                         .map(this::getAdminMenu)
-                        .toList())
-                .orElse(null);
-        // UPDATE 도메인 메서드로 변환
-        adminMenu.updateAdminMenu(
-                updateAdminMenuRequest.name(),
-                updateAdminMenuRequest.url(),
-                updateAdminMenuRequest.description(),
-                updateAdminMenuRequest.available(),
-                updateAdminMenuRequest.accessibleRoles(),
-                updateAdminMenuRequest.depth(),
-                parentMenu,
-                childrenMenus
-        );
-        // 어드민 메뉴 엔티티 UPDATE
-        adminMenuRepository.save(adminMenu);
+                        .orElse(null),
+                Optional.ofNullable(updateAdminMenuRequest.childrenMenuIds())
+                        .map(childrenMenuIds -> childrenMenuIds.stream()
+                                .map(this::getAdminMenu)
+                                .toList())
+                        .orElse(null)
+        ));
     }
 
     /**

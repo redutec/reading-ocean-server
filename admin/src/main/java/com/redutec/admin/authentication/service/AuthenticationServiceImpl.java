@@ -1,6 +1,6 @@
 package com.redutec.admin.authentication.service;
 
-import com.redutec.admin.authentication.dto.AuthenticationDto;
+import com.redutec.core.dto.AdminAuthenticationDto;
 import com.redutec.admin.config.JwtUtil;
 import com.redutec.admin.user.service.AdminUserService;
 import com.redutec.core.entity.AdminMenu;
@@ -55,7 +55,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
      * @return Access Token 및 Refresh Token이 담긴 Map 객체
      */
     @Override
-    public AuthenticationDto.LoginResponse login(AuthenticationDto.LoginRequest loginRequest) {
+    public AdminAuthenticationDto.LoginResponse login(AdminAuthenticationDto.LoginRequest loginRequest) {
         // 어드민 사용자 엔티티 조회
         AdminUser adminUser = adminUserService.findByAccountId(loginRequest.accountId());
         // 어드민 사용자 계정 상태 검증
@@ -84,7 +84,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         // 생성한 RefreshToken을 DB에 저장
         jwtUtil.saveRefreshToken(refreshToken, adminUser.getAccountId(), Domain.ADMIN);
         // 생성한 Token으로 로그인 응답 객체를 리턴
-        return new AuthenticationDto.LoginResponse(accessToken, refreshToken);
+        return new AdminAuthenticationDto.LoginResponse(accessToken, refreshToken);
     }
 
     /**
@@ -94,7 +94,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
      */
     @Override
     @Transactional(readOnly = true)
-    public AuthenticationDto.AuthenticatedAdminUser getAuthenticatedAdminUser() {
+    public AdminAuthenticationDto.AuthenticatedAdminUser getAuthenticatedAdminUser() {
         // 현재 접속한 계정 정보를 가져오기
         var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         // 계정 정보에 담긴 이메일 정보 가져오기
@@ -104,7 +104,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         // 이메일로 AdminUser 엔티티 조회
         AdminUser adminUser = adminUserService.findByAccountId(accountId);
         // 현재 로그인한 어드민 사용자 정보를 리턴
-        return new AuthenticationDto.AuthenticatedAdminUser(
+        return new AdminAuthenticationDto.AuthenticatedAdminUser(
                 adminUser.getId(),
                 accountId,
                 adminUser.getEmail(),
@@ -123,7 +123,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
      */
     @Override
     @Transactional
-    public void resetPassword(AuthenticationDto.ResetPasswordRequest resetPasswordRequest) throws MessagingException {
+    public void resetPassword(AdminAuthenticationDto.ResetPasswordRequest resetPasswordRequest) throws MessagingException {
         var adminUser = adminUserService.findByAccountId(resetPasswordRequest.accountId());
         validateAuthenticationStatus(adminUser);
         var newPasswordLength = 8;
@@ -139,7 +139,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
      */
     @Override
     @Transactional
-    public void updatePassword(AuthenticationDto.UpdatePasswordRequest updatePasswordRequest) {
+    public void updatePassword(AdminAuthenticationDto.UpdatePasswordRequest updatePasswordRequest) {
         var adminUser = adminUserService.findByAccountId(updatePasswordRequest.accountId());
         if (adminUser.getAuthenticationStatus() != PASSWORD_RESET) {
             validateAuthenticationStatus(adminUser);
@@ -158,7 +158,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
      */
     @Override
     @Transactional
-    public AuthenticationDto.LoginResponse refreshAccessToken(String refreshToken) {
+    public AdminAuthenticationDto.LoginResponse refreshAccessToken(String refreshToken) {
         // 새로운 Access Token 발급을 요청한 Refresh Token 조회
         RefreshToken refreshTokenEntity = refreshTokenRepository.findByToken(refreshToken)
                 .filter(RefreshToken::isExpired)
@@ -167,7 +167,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         AdminUser adminUser = adminUserRepository.findByAccountId(refreshTokenEntity.getUsername())
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 계정입니다. email = " + refreshTokenEntity.getUsername()));
         // 새로운 Access Token 생성 후 리턴
-        return new AuthenticationDto.LoginResponse(
+        return new AdminAuthenticationDto.LoginResponse(
                 jwtUtil.generateAccessToken(adminUser),
                 refreshToken
         );

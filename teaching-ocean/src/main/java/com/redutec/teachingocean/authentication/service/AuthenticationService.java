@@ -1,6 +1,6 @@
 package com.redutec.teachingocean.authentication.service;
 
-import com.redutec.teachingocean.authentication.dto.AuthenticationDto;
+import com.redutec.core.dto.TeachingOceanAuthenticationDto;
 import com.redutec.core.entity.Teacher;
 import jakarta.mail.MessagingException;
 import org.springframework.web.server.ResponseStatusException;
@@ -16,28 +16,28 @@ public interface AuthenticationService {
      * @param loginRequest 로그인 요청 정보를 포함하는 데이터 전송 객체입니다. 이 객체에는 사용자 아이디와 비밀번호 등이 포함됩니다.
      * @return 로그인 성공 시 반환되는 맵 객체입니다. Access & Refresh Token이 반환됩니다.
      */
-    AuthenticationDto.LoginResponse login(AuthenticationDto.LoginRequest loginRequest);
+    TeachingOceanAuthenticationDto.LoginResponse login(TeachingOceanAuthenticationDto.LoginRequest loginRequest);
 
     /**
      * JWT 토큰을 사용하여 현재 로그인된 사용자의 정보를 조회합니다.
      *
      * @return 사용자 정보 객체입니다. 사용자의 아이디, 이름, 권한 등의 정보가 포함됩니다.
      */
-    AuthenticationDto.AuthenticatedTeacher getAuthenticatedTeacher();
+    TeachingOceanAuthenticationDto.AuthenticatedTeacher getAuthenticatedTeacher();
 
     /**
      * 사용자의 비밀번호를 초기화합니다.
      *
      * @param resetPasswordRequest 비밀번호 초기화를 위한 데이터 전송 객체입니다. 이 객체에는 초기화할 비밀번호와 관련된 정보가 포함됩니다.
      */
-    void resetPassword(AuthenticationDto.ResetPasswordRequest resetPasswordRequest) throws MessagingException;
+    void resetPassword(TeachingOceanAuthenticationDto.ResetPasswordRequest resetPasswordRequest) throws MessagingException;
 
     /**
      * 사용자의 비밀번호를 변경합니다.
      *
      * @param updatePasswordRequest 비밀번호 변경을 위한 데이터 전송 객체입니다. 이 객체에는 기존 비밀번호와 새 비밀번호가 포함됩니다.
      */
-    void updatePassword(AuthenticationDto.UpdatePasswordRequest updatePasswordRequest);
+    void updatePassword(TeachingOceanAuthenticationDto.UpdatePasswordRequest updatePasswordRequest);
 
     /**
      * Refresh Token을 사용하여 새로운 Access Token을 발급합니다.
@@ -49,7 +49,7 @@ public interface AuthenticationService {
      * @return 새로운 Access Token을 포함한 Map 객체
      * @throws ResponseStatusException Refresh Token이 유효하지 않거나 만료된 경우 발생
      */
-    AuthenticationDto.LoginResponse refreshAccessToken(String refreshToken);
+    TeachingOceanAuthenticationDto.LoginResponse refreshAccessToken(String refreshToken);
 
     /**
      * 교사 계정 상태 검증

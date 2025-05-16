@@ -1,7 +1,7 @@
 package com.redutec.admin.product.service;
 
-import com.redutec.admin.product.dto.ProductDto;
-import com.redutec.admin.product.mapper.ProductMapper;
+import com.redutec.core.dto.ProductDto;
+import com.redutec.core.mapper.ProductMapper;
 import com.redutec.core.config.FileUploadResult;
 import com.redutec.core.config.FileUtil;
 import com.redutec.core.entity.Product;
@@ -34,7 +34,16 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public ProductDto.ProductResponse create(ProductDto.CreateProductRequest createProductRequest) {
-        return productMapper.toResponseDto(productRepository.save(productMapper.toEntity(createProductRequest)));
+        return productMapper.toResponseDto(productRepository.save(productMapper.toCreateEntity(
+                createProductRequest,
+                Optional.ofNullable(createProductRequest.attachedFile())
+                        .filter(attachedFile -> !attachedFile.isEmpty())
+                        .map(attachedFile -> {
+                            FileUploadResult result = fileUtil.uploadFile(attachedFile, "/product");
+                            return Paths.get(result.filePath()).getFileName().toString();
+                        })
+                        .orElse(null)
+        )));
     }
 
     /**
@@ -44,9 +53,7 @@ public class ProductServiceImpl implements ProductService {
      */
     @Override
     @Transactional(readOnly = true)
-    public ProductDto.ProductPageResponse find(
-            ProductDto.FindProductRequest findProductRequest
-    ) {
+    public ProductDto.ProductPageResponse find(ProductDto.FindProductRequest findProductRequest) {
         return productMapper.toPageResponseDto(productRepository.findAll(
                 ProductSpecification.findWith(productMapper.toCriteria(findProductRequest)),
                 (findProductRequest.page() != null && findProductRequest.size() != null)
@@ -72,9 +79,7 @@ public class ProductServiceImpl implements ProductService {
      */
     @Override
     @Transactional(readOnly = true)
-    public Product getProduct(
-            Long productId
-    ) {
+    public Product getProduct(Long productId) {
         return productRepository.findById(productId)
                 .orElseThrow(() -> new EntityNotFoundException("판매상품를 찾을 수 없습니다. id = " + productId));
     }
@@ -87,28 +92,17 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public void update(Long productId, ProductDto.UpdateProductRequest updateProductRequest) {
-        // 수정할 판매상품 엔티티 조회
-        Product product = getProduct(productId);
-        // 업로드할 첨부 파일이 있는 경우 업로드하고 파일명을 생성
-        String attachedFileName = Optional.ofNullable(updateProductRequest.attachedFile())
-                .filter(attachedFile -> !attachedFile.isEmpty())
-                .map(attachedFile -> {
-                    FileUploadResult result = fileUtil.uploadFile(attachedFile, "/product");
-                    return Paths.get(result.filePath()).getFileName().toString();
-                })
-                .orElse(null);
-        // UPDATE 도메인 메서드로 변환
-        product.updateProduct(
-                updateProductRequest.name(),
-                updateProductRequest.details(),
-                updateProductRequest.price(),
-                updateProductRequest.discountPercentage(),
-                attachedFileName,
-                updateProductRequest.category(),
-                updateProductRequest.status()
-        );
-        // 판매상품 엔티티 UPDATE
-        productRepository.save(product);
+        productRepository.save(productMapper.toUpdateEntity(
+                getProduct(productId),
+                updateProductRequest,
+                Optional.ofNullable(updateProductRequest.attachedFile())
+                        .filter(attachedFile -> !attachedFile.isEmpty())
+                        .map(attachedFile -> {
+                            FileUploadResult result = fileUtil.uploadFile(attachedFile, "/product");
+                            return Paths.get(result.filePath()).getFileName().toString();
+                        })
+                        .orElse(null)
+        ));
     }
 
     /**

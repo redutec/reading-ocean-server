@@ -1,6 +1,6 @@
 package com.redutec.admin.banner.service;
 
-import com.redutec.admin.banner.dto.BannerDto;
+import com.redutec.core.dto.BannerDto;
 import com.redutec.core.entity.Banner;
 
 public interface BannerService {

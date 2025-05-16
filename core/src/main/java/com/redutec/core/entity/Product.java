@@ -16,7 +16,6 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 @Entity
 @Comment("판매상품")
@@ -72,22 +71,4 @@ public class Product {
     @LastModifiedDate
     @Column(nullable = false)
     private LocalDateTime updatedAt;
-
-    public void updateProduct(
-            String name,
-            String details,
-            Integer price,
-            Integer discountPercentage,
-            String attachedFileName,
-            ProductCategory category,
-            ProductStatus status
-    ) {
-        this.name = Optional.ofNullable(name).orElse(this.name);
-        this.details = Optional.ofNullable(details).orElse(this.details);
-        this.price = Optional.ofNullable(price).orElse(this.price);
-        this.discountPercentage = Optional.ofNullable(discountPercentage).orElse(this.discountPercentage);
-        this.attachedFileName = Optional.ofNullable(attachedFileName).orElse(this.attachedFileName);
-        this.category = Optional.ofNullable(category).orElse(this.category);
-        this.status = Optional.ofNullable(status).orElse(this.status);
-    }
 }

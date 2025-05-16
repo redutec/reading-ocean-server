@@ -18,7 +18,6 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 @Entity
 @Comment("배너")
@@ -84,26 +83,4 @@ public class Banner {
     @LastModifiedDate
     @Column(nullable = false)
     private LocalDateTime updatedAt;
-
-    public void updateBanner(
-            Domain domain,
-            String title,
-            String content,
-            String attachedFileName,
-            String linkUrl,
-            Integer priority,
-            Boolean visible,
-            LocalDateTime visibleStartAt,
-            LocalDateTime visibleEndAt
-    ) {
-        this.domain = Optional.ofNullable(domain).orElse(this.domain);
-        this.title = Optional.ofNullable(title).orElse(this.title);
-        this.content = Optional.ofNullable(content).orElse(this.content);
-        this.linkUrl = Optional.ofNullable(linkUrl).orElse(this.linkUrl);
-        this.attachedFileName = Optional.ofNullable(attachedFileName).orElse(this.attachedFileName);
-        this.priority = Optional.ofNullable(priority).orElse(this.priority);
-        this.visible = Optional.ofNullable(visible).orElse(this.visible);
-        this.visibleStartAt = Optional.ofNullable(visibleStartAt).orElse(this.visibleStartAt);
-        this.visibleEndAt = Optional.ofNullable(visibleEndAt).orElse(this.visibleEndAt);
-    }
 }

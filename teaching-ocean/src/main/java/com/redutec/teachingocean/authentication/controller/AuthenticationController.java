@@ -1,6 +1,6 @@
 package com.redutec.teachingocean.authentication.controller;
 
-import com.redutec.teachingocean.authentication.dto.AuthenticationDto;
+import com.redutec.core.dto.TeachingOceanAuthenticationDto;
 import com.redutec.teachingocean.authentication.service.AuthenticationService;
 import com.redutec.core.config.ApiResponseBody;
 import com.redutec.core.config.ApiResponseManager;
@@ -36,7 +36,7 @@ public class AuthenticationController {
      */
     @Operation(summary = "로그인", description = "로그인 후 JWT Access Token과 Refresh Token을 발급하는 API")
     @PostMapping("/login")
-    public ResponseEntity<ApiResponseBody> login(@ParameterObject AuthenticationDto.LoginRequest loginRequest) {
+    public ResponseEntity<ApiResponseBody> login(@ParameterObject TeachingOceanAuthenticationDto.LoginRequest loginRequest) {
         return apiResponseManager.ok(authenticationService.login(loginRequest));
     }
 
@@ -91,7 +91,7 @@ public class AuthenticationController {
     @Operation(summary = "비밀번호 초기화", description = "사용자의 비밀번호를 초기화하는 API")
     @PatchMapping("/reset-password")
     public ResponseEntity<ApiResponseBody> resetPassword(
-            @ParameterObject AuthenticationDto.ResetPasswordRequest resetPasswordRequest
+            @ParameterObject TeachingOceanAuthenticationDto.ResetPasswordRequest resetPasswordRequest
     ) throws MessagingException {
         authenticationService.resetPassword(resetPasswordRequest);
         return apiResponseManager.noContent();
@@ -106,7 +106,7 @@ public class AuthenticationController {
     @Operation(summary = "비밀번호 변경", description = "기존 계정 정보를 확인 후 새로운 비밀번호로 변경하는 API")
     @PatchMapping("/update-password")
     public ResponseEntity<ApiResponseBody> updatePassword(
-            @ParameterObject AuthenticationDto.UpdatePasswordRequest updatePasswordRequest
+            @ParameterObject TeachingOceanAuthenticationDto.UpdatePasswordRequest updatePasswordRequest
     ) {
         authenticationService.updatePassword(updatePasswordRequest);
         return apiResponseManager.noContent();

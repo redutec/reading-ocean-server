@@ -1,6 +1,6 @@
 package com.redutec.admin.homeroom.controller;
 
-import com.redutec.admin.homeroom.dto.HomeroomDto;
+import com.redutec.core.dto.HomeroomDto;
 import com.redutec.admin.homeroom.service.HomeroomService;
 import com.redutec.core.config.ApiResponseBody;
 import com.redutec.core.config.ApiResponseManager;

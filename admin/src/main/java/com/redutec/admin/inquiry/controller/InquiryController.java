@@ -1,6 +1,6 @@
 package com.redutec.admin.inquiry.controller;
 
-import com.redutec.admin.inquiry.dto.InquiryDto;
+import com.redutec.core.dto.InquiryDto;
 import com.redutec.admin.inquiry.service.InquiryService;
 import com.redutec.core.config.ApiResponseBody;
 import com.redutec.core.config.ApiResponseManager;

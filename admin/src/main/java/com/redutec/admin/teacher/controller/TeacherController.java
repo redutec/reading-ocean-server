@@ -1,6 +1,6 @@
 package com.redutec.admin.teacher.controller;
 
-import com.redutec.admin.teacher.dto.TeacherDto;
+import com.redutec.core.dto.TeacherDto;
 import com.redutec.admin.teacher.service.TeacherService;
 import com.redutec.core.config.ApiResponseBody;
 import com.redutec.core.config.ApiResponseManager;

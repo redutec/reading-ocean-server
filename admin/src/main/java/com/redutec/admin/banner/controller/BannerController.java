@@ -1,6 +1,6 @@
 package com.redutec.admin.banner.controller;
 
-import com.redutec.admin.banner.dto.BannerDto;
+import com.redutec.core.dto.BannerDto;
 import com.redutec.admin.banner.service.BannerService;
 import com.redutec.core.config.ApiResponseBody;
 import com.redutec.core.config.ApiResponseManager;
@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,8 +23,10 @@ public class BannerController {
     private final BannerService bannerService;
 
     @Operation(summary = "배너 등록", description = "배너 정보를 등록하는 API")
-    @PostMapping
-    public ResponseEntity<ApiResponseBody> create(@ParameterObject @Valid BannerDto.CreateBannerRequest createBannerRequest) {
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ApiResponseBody> create(
+            @ModelAttribute @Valid BannerDto.CreateBannerRequest createBannerRequest
+    ) {
         return apiResponseManager.create(bannerService.create(createBannerRequest));
     }
 
@@ -40,10 +43,10 @@ public class BannerController {
     }
 
     @Operation(summary = "특정 배너 수정", description = "특정 배너를 수정하는 API")
-    @PatchMapping("/{bannerId}")
+    @PatchMapping(path = "/{bannerId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponseBody> update(
             @Parameter(description = "배너 ID") @PathVariable Long bannerId,
-            @ParameterObject @Valid BannerDto.UpdateBannerRequest updateBannerRequest
+            @ModelAttribute @Valid BannerDto.UpdateBannerRequest updateBannerRequest
     ) {
         bannerService.update(bannerId, updateBannerRequest);
         return apiResponseManager.noContent();

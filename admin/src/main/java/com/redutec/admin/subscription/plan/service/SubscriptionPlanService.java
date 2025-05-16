@@ -1,6 +1,6 @@
 package com.redutec.admin.subscription.plan.service;
 
-import com.redutec.admin.subscription.plan.dto.SubscriptionPlanDto;
+import com.redutec.core.dto.SubscriptionPlanDto;
 import com.redutec.core.entity.SubscriptionPlan;
 
 public interface SubscriptionPlanService {

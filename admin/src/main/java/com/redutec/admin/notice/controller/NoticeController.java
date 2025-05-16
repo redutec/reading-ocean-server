@@ -1,6 +1,6 @@
 package com.redutec.admin.notice.controller;
 
-import com.redutec.admin.notice.dto.NoticeDto;
+import com.redutec.core.dto.NoticeDto;
 import com.redutec.admin.notice.service.NoticeService;
 import com.redutec.core.config.ApiResponseBody;
 import com.redutec.core.config.ApiResponseManager;

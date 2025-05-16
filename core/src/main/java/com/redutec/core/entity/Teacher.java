@@ -13,7 +13,6 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 @Entity
 @Comment("교사")
@@ -43,15 +42,15 @@ public class Teacher {
     @Column(nullable = false)
     private String name;
 
-    @Comment("연락처(AES256 암호화)")
-    @Convert(converter = AesAttributeConverter.class)
-    @Column(nullable = false)
-    private String phoneNumber;
-
     @Comment("이메일(AES256 암호화)")
     @Convert(converter = AesAttributeConverter.class)
     @Column
     private String email;
+
+    @Comment("연락처(AES256 암호화)")
+    @Convert(converter = AesAttributeConverter.class)
+    @Column(nullable = false)
+    private String phoneNumber;
 
     @Comment("상태")
     @Column(nullable = false)
@@ -109,32 +108,4 @@ public class Teacher {
     @LastModifiedDate
     @Column(nullable = false)
     private LocalDateTime updatedAt;
-
-    public void updateTeacher(
-            String accountId,
-            String password,
-            String name,
-            String phoneNumber,
-            String email,
-            TeacherStatus status,
-            TeacherRole role,
-            AuthenticationStatus authenticationStatus,
-            Integer failedLoginAttempts,
-            String description,
-            Institute institute,
-            Homeroom homeroom
-    ) {
-        this.accountId = Optional.ofNullable(accountId).orElse(this.accountId);
-        this.password = Optional.ofNullable(password).orElse(this.password);
-        this.name = Optional.ofNullable(name).orElse(this.name);
-        this.phoneNumber = Optional.ofNullable(phoneNumber).orElse(this.phoneNumber);
-        this.email = Optional.ofNullable(email).orElse(this.email);
-        this.status = Optional.ofNullable(status).orElse(this.status);
-        this.role = Optional.ofNullable(role).orElse(this.role);
-        this.authenticationStatus = Optional.ofNullable(authenticationStatus).orElse(this.authenticationStatus);
-        this.failedLoginAttempts = Optional.ofNullable(failedLoginAttempts).orElse(this.failedLoginAttempts);
-        this.description = Optional.ofNullable(description).orElse(this.description);
-        this.institute = Optional.ofNullable(institute).orElse(this.institute);
-        this.homeroom = Optional.ofNullable(homeroom).orElse(this.homeroom);
-    }
 }

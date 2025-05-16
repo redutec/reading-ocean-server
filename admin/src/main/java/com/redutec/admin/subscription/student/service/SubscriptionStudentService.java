@@ -1,6 +1,6 @@
 package com.redutec.admin.subscription.student.service;
 
-import com.redutec.admin.subscription.student.dto.SubscriptionStudentDto;
+import com.redutec.core.dto.SubscriptionStudentDto;
 import com.redutec.core.entity.SubscriptionStudent;
 
 public interface SubscriptionStudentService {

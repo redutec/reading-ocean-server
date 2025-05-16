@@ -2,8 +2,8 @@ package com.redutec.admin.subscription.student.service;
 
 import com.redutec.admin.student.service.StudentService;
 import com.redutec.admin.subscription.plan.service.SubscriptionPlanService;
-import com.redutec.admin.subscription.student.dto.SubscriptionStudentDto;
-import com.redutec.admin.subscription.student.mapper.SubscriptionStudentMapper;
+import com.redutec.core.dto.SubscriptionStudentDto;
+import com.redutec.core.mapper.SubscriptionStudentMapper;
 import com.redutec.core.entity.SubscriptionStudent;
 import com.redutec.core.repository.SubscriptionStudentRepository;
 import com.redutec.core.specification.SubscriptionStudentSpecification;

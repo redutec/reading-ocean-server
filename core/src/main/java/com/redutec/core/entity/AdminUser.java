@@ -4,6 +4,7 @@ import com.redutec.core.config.AesAttributeConverter;
 import com.redutec.core.meta.AdminUserRole;
 import com.redutec.core.meta.AuthenticationStatus;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Pattern;
 import lombok.*;
 import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.DynamicUpdate;
@@ -12,7 +13,6 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 /**
  * AdminUser 엔티티 클래스는 시스템 내에서 어드민 사용자의 정보를 나타냅니다.
@@ -36,19 +36,25 @@ public class AdminUser {
     @Column(length = 20, nullable = false, unique = true)
     private String accountId;
 
-    @Comment("이메일(AES256 암호화)")
-    @Convert(converter = AesAttributeConverter.class)
-    @Column(nullable = false, unique = true)
-    private String email;
+    @Comment("비밀번호")
+    @Column(nullable = false, length = 60)
+    @Setter
+    private String password;
 
     @Comment("닉네임")
     @Column(length = 20)
     private String nickname;
 
-    @Comment("비밀번호")
-    @Column(nullable = false, length = 60)
-    @Setter
-    private String password;
+    @Comment("이메일(AES256 암호화)")
+    @Convert(converter = AesAttributeConverter.class)
+    @Column(nullable = false, unique = true)
+    private String email;
+
+    @Comment("연락처(AES256 암호화)")
+    @Convert(converter = AesAttributeConverter.class)
+    @Column
+    @Pattern(regexp = "^[0-9]{1,11}$", message = "연락처는 숫자로만 구성되어야 합니다.")
+    private String phoneNumber;
 
     @Comment("권한")
     @Column(nullable = false)
@@ -85,24 +91,4 @@ public class AdminUser {
     @LastModifiedDate
     @Column(nullable = false)
     private LocalDateTime updatedAt;
-
-    public void updateAdminUser(
-            String email,
-            String password,
-            String nickname,
-            AdminUserRole role,
-            AuthenticationStatus authenticationStatus,
-            Integer failedLoginAttempts,
-            String lastLoginIp,
-            LocalDateTime lastLoginAt
-    ) {
-        this.email = Optional.ofNullable(email).orElse(this.email);
-        this.password = Optional.ofNullable(password).orElse(this.password);
-        this.nickname = Optional.ofNullable(nickname).orElse(this.nickname);
-        this.role = Optional.ofNullable(role).orElse(this.role);
-        this.authenticationStatus = Optional.ofNullable(authenticationStatus).orElse(this.authenticationStatus);
-        this.failedLoginAttempts = Optional.ofNullable(failedLoginAttempts).orElse(this.failedLoginAttempts);
-        this.lastLoginIp = Optional.ofNullable(lastLoginIp).orElse(this.lastLoginIp);
-        this.lastLoginAt = Optional.ofNullable(lastLoginAt).orElse(this.lastLoginAt);
-    }
 }

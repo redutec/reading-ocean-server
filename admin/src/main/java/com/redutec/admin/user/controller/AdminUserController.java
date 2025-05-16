@@ -1,6 +1,6 @@
 package com.redutec.admin.user.controller;
 
-import com.redutec.admin.user.dto.AdminUserDto;
+import com.redutec.core.dto.AdminUserDto;
 import com.redutec.admin.user.service.AdminUserService;
 import com.redutec.core.config.ApiResponseBody;
 import com.redutec.core.config.ApiResponseManager;

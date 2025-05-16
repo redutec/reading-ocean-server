@@ -1,7 +1,7 @@
 package com.redutec.admin.menu.teachingocean.service;
 
-import com.redutec.admin.menu.teachingocean.dto.TeachingOceanMenuDto;
-import com.redutec.admin.menu.teachingocean.mapper.TeachingOceanMenuMapper;
+import com.redutec.core.dto.TeachingOceanMenuDto;
+import com.redutec.core.mapper.TeachingOceanMenuMapper;
 import com.redutec.core.entity.TeachingOceanMenu;
 import com.redutec.core.repository.TeachingOceanMenuRepository;
 import com.redutec.core.specification.TeachingOceanMenuSpecification;
@@ -33,26 +33,17 @@ public class TeachingOceanMenuServiceImpl implements TeachingOceanMenuService {
     public TeachingOceanMenuDto.TeachingOceanMenuResponse create(
             TeachingOceanMenuDto.CreateTeachingOceanMenuRequest createTeachingOceanMenuRequest
     ) {
-        // 부모 메뉴 엔티티 조회
-        TeachingOceanMenu parentMenu = Optional.ofNullable(createTeachingOceanMenuRequest.parentMenuId())
-                .map(this::getTeachingOceanMenu)
-                .orElse(null);
-        // 자식 메뉴 엔티티 조회
-        List<TeachingOceanMenu> childrenMenus = Optional.ofNullable(createTeachingOceanMenuRequest.childrenMenuIds())
-                .orElse(List.of())
-                .stream()
-                .map(this::getTeachingOceanMenu)
-                .toList();
-        // 티칭오션 메뉴 등록 객체 생성 후 등록
-        return teachingOceanMenuMapper.toResponseDto(
-                teachingOceanMenuRepository.save(
-                        teachingOceanMenuMapper.toEntity(
-                                createTeachingOceanMenuRequest,
-                                parentMenu,
-                                childrenMenus
-                        )
-                )
-        );
+        return teachingOceanMenuMapper.toResponseDto(teachingOceanMenuRepository.save(teachingOceanMenuMapper.toCreateEntity(
+                createTeachingOceanMenuRequest,
+                Optional.ofNullable(createTeachingOceanMenuRequest.parentMenuId())
+                        .map(this::getTeachingOceanMenu)
+                        .orElse(null),
+                Optional.ofNullable(createTeachingOceanMenuRequest.childrenMenuIds())
+                        .orElse(List.of())
+                        .stream()
+                        .map(this::getTeachingOceanMenu)
+                        .toList()
+        )));
     }
 
     /**
@@ -106,31 +97,18 @@ public class TeachingOceanMenuServiceImpl implements TeachingOceanMenuService {
             Long teachingOceanMenuId,
             TeachingOceanMenuDto.UpdateTeachingOceanMenuRequest updateTeachingOceanMenuRequest
     ) {
-        // 수정할 티칭오션 메뉴 엔티티 조회
-        TeachingOceanMenu teachingOceanMenu = getTeachingOceanMenu(teachingOceanMenuId);
-        // 부모 메뉴 엔티티 조회
-        TeachingOceanMenu parentMenu = Optional.ofNullable(updateTeachingOceanMenuRequest.parentMenuId())
-                .map(this::getTeachingOceanMenu)
-                .orElse(null);
-        // 자식 메뉴 엔티티 조회
-        List<TeachingOceanMenu> childrenMenus = Optional.ofNullable(updateTeachingOceanMenuRequest.childrenMenuIds())
-                .map(childrenMenuIds -> childrenMenuIds.stream()
+        teachingOceanMenuRepository.save(teachingOceanMenuMapper.toUpdateEntity(
+                getTeachingOceanMenu(teachingOceanMenuId),
+                updateTeachingOceanMenuRequest,
+                Optional.ofNullable(updateTeachingOceanMenuRequest.parentMenuId())
                         .map(this::getTeachingOceanMenu)
-                        .toList())
-                .orElse(null);
-        // UPDATE 도메인 메서드로 변환
-        teachingOceanMenu.updateTeachingOceanMenu(
-                updateTeachingOceanMenuRequest.name(),
-                updateTeachingOceanMenuRequest.url(),
-                updateTeachingOceanMenuRequest.description(),
-                updateTeachingOceanMenuRequest.available(),
-                updateTeachingOceanMenuRequest.accessibleRoles(),
-                updateTeachingOceanMenuRequest.depth(),
-                parentMenu,
-                childrenMenus
-        );
-        // 티칭오션 메뉴 엔티티 UPDATE
-        teachingOceanMenuRepository.save(teachingOceanMenu);
+                        .orElse(null),
+                Optional.ofNullable(updateTeachingOceanMenuRequest.childrenMenuIds())
+                        .map(childrenMenuIds -> childrenMenuIds.stream()
+                                .map(this::getTeachingOceanMenu)
+                                .toList())
+                        .orElse(null)
+        ));
     }
 
     /**

@@ -19,7 +19,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Entity
 @Comment("도서")
@@ -81,7 +80,7 @@ public class Book {
     @Comment("오디오북 제공 여부")
     @Column(nullable = false)
     @ColumnDefault("false")
-    private Boolean audiobookAvailable = false;
+    private Boolean audioBookAvailable = false;
 
     @Comment("노출 여부")
     @Column(nullable = false)
@@ -169,64 +168,4 @@ public class Book {
     @LastModifiedDate
     @Column(nullable = false)
     private LocalDateTime updatedAt;
-
-    public void updateBook(
-            String isbn,
-            String title,
-            String author,
-            String publisher,
-            String translator,
-            String illustrator,
-            LocalDate publicationDate,
-            String coverImageFileName,
-            Boolean recommended,
-            Boolean ebookAvailable,
-            Boolean audiobookAvailable,
-            Boolean visible,
-            Boolean enabled,
-            Integer pageCount,
-            SchoolGrade schoolGrade,
-            BookGenre genre,
-            BookSubGenre subGenre,
-            Integer bookPoints,
-            Integer raq,
-            ReadingLevel readingLevel,
-            BookMbti bookMbti,
-            String subject,
-            String content,
-            String awardHistory,
-            String includedBookName,
-            String institutionRecommendations,
-            String educationOfficeRecommendations,
-            List<String> tags
-    ) {
-        this.isbn = Optional.ofNullable(isbn).orElse(this.isbn);
-        this.title = Optional.ofNullable(title).orElse(this.title);
-        this.author = Optional.ofNullable(author).orElse(this.author);
-        this.publisher = Optional.ofNullable(publisher).orElse(this.publisher);
-        this.translator = Optional.ofNullable(translator).orElse(this.translator);
-        this.illustrator = Optional.ofNullable(illustrator).orElse(this.illustrator);
-        this.publicationDate = Optional.ofNullable(publicationDate).orElse(this.publicationDate);
-        this.coverImageFileName = Optional.ofNullable(coverImageFileName).orElse(this.coverImageFileName);
-        this.recommended = Optional.ofNullable(recommended).orElse(this.recommended);
-        this.ebookAvailable = Optional.ofNullable(ebookAvailable).orElse(this.ebookAvailable);
-        this.audiobookAvailable = Optional.ofNullable(audiobookAvailable).orElse(this.audiobookAvailable);
-        this.visible = Optional.ofNullable(visible).orElse(this.visible);
-        this.enabled = Optional.ofNullable(enabled).orElse(this.enabled);
-        this.pageCount = Optional.ofNullable(pageCount).orElse(this.pageCount);
-        this.schoolGrade = Optional.ofNullable(schoolGrade).orElse(this.schoolGrade);
-        this.genre = Optional.ofNullable(genre).orElse(this.genre);
-        this.subGenre = Optional.ofNullable(subGenre).orElse(this.subGenre);
-        this.bookPoints = Optional.ofNullable(bookPoints).orElse(this.bookPoints);
-        this.raq = Optional.ofNullable(raq).orElse(this.raq);
-        this.readingLevel = Optional.ofNullable(readingLevel).orElse(this.readingLevel);
-        this.bookMbti = Optional.ofNullable(bookMbti).orElse(this.bookMbti);
-        this.subject = Optional.ofNullable(subject).orElse(this.subject);
-        this.content = Optional.ofNullable(content).orElse(this.content);
-        this.awardHistory = Optional.ofNullable(awardHistory).orElse(this.awardHistory);
-        this.includedBookName = Optional.ofNullable(includedBookName).orElse(this.includedBookName);
-        this.institutionRecommendations = Optional.ofNullable(institutionRecommendations).orElse(this.institutionRecommendations);
-        this.educationOfficeRecommendations = Optional.ofNullable(educationOfficeRecommendations).orElse(this.educationOfficeRecommendations);
-        this.tags = Optional.ofNullable(tags).orElse(this.tags);
-    }
 }

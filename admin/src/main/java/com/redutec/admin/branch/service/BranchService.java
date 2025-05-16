@@ -1,6 +1,6 @@
 package com.redutec.admin.branch.service;
 
-import com.redutec.admin.branch.dto.BranchDto;
+import com.redutec.core.dto.BranchDto;
 import com.redutec.core.entity.Branch;
 
 public interface BranchService {

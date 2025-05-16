@@ -1,6 +1,6 @@
 package com.redutec.admin.bookgroup.controller;
 
-import com.redutec.admin.bookgroup.dto.BookGroupDto;
+import com.redutec.core.dto.BookGroupDto;
 import com.redutec.admin.bookgroup.service.BookGroupService;
 import com.redutec.core.config.ApiResponseBody;
 import com.redutec.core.config.ApiResponseManager;

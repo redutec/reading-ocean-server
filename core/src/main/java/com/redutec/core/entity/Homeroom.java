@@ -13,7 +13,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Entity
 @Comment("학급")
@@ -57,14 +56,4 @@ public class Homeroom {
     @LastModifiedDate
     @Column(nullable = false)
     private LocalDateTime updatedAt;
-
-    public void updateHomeroom(
-            String name,
-            Institute institute,
-            String description
-    ) {
-        this.name = Optional.ofNullable(name).orElse(this.name);
-        this.institute = Optional.ofNullable(institute).orElse(this.institute);
-        this.description = Optional.ofNullable(description).orElse(this.description);
-    }
 }

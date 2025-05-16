@@ -1,6 +1,6 @@
 package com.redutec.admin.menu.teachingocean.service;
 
-import com.redutec.admin.menu.teachingocean.dto.TeachingOceanMenuDto;
+import com.redutec.core.dto.TeachingOceanMenuDto;
 import com.redutec.core.entity.TeachingOceanMenu;
 
 public interface TeachingOceanMenuService {

@@ -15,7 +15,6 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 @Entity
 @Comment("이용안내")
@@ -58,16 +57,4 @@ public class Faq {
     @LastModifiedDate
     @Column(nullable = false)
     private LocalDateTime updatedAt;
-
-    public void updateFaq(
-            Domain domain,
-            String title,
-            String content,
-            Boolean visible
-    ) {
-        this.domain = Optional.ofNullable(domain).orElse(this.domain);
-        this.title = Optional.ofNullable(title).orElse(this.title);
-        this.content = Optional.ofNullable(content).orElse(this.content);
-        this.visible = Optional.ofNullable(visible).orElse(this.visible);
-    }
 }

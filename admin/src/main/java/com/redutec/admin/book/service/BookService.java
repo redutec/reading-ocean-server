@@ -1,6 +1,6 @@
 package com.redutec.admin.book.service;
 
-import com.redutec.admin.book.dto.BookDto;
+import com.redutec.core.dto.BookDto;
 import com.redutec.core.entity.Book;
 
 public interface BookService {

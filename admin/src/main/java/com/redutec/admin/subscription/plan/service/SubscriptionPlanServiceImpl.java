@@ -1,7 +1,7 @@
 package com.redutec.admin.subscription.plan.service;
 
-import com.redutec.admin.subscription.plan.dto.SubscriptionPlanDto;
-import com.redutec.admin.subscription.plan.mapper.SubscriptionPlanMapper;
+import com.redutec.core.dto.SubscriptionPlanDto;
+import com.redutec.core.mapper.SubscriptionPlanMapper;
 import com.redutec.core.entity.SubscriptionPlan;
 import com.redutec.core.repository.SubscriptionPlanRepository;
 import com.redutec.core.specification.SubscriptionPlanSpecification;

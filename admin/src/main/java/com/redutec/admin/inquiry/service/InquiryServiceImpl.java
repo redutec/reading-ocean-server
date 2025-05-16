@@ -1,10 +1,9 @@
 package com.redutec.admin.inquiry.service;
 
-import com.redutec.admin.inquiry.dto.InquiryDto;
-import com.redutec.admin.inquiry.mapper.InquiryMapper;
 import com.redutec.admin.user.service.AdminUserService;
-import com.redutec.core.entity.AdminUser;
+import com.redutec.core.dto.InquiryDto;
 import com.redutec.core.entity.Inquiry;
+import com.redutec.core.mapper.InquiryMapper;
 import com.redutec.core.repository.InquiryRepository;
 import com.redutec.core.specification.InquirySpecification;
 import jakarta.persistence.EntityNotFoundException;
@@ -33,12 +32,12 @@ public class InquiryServiceImpl implements InquiryService {
     @Override
     @Transactional
     public InquiryDto.InquiryResponse create(InquiryDto.CreateInquiryRequest createInquiryRequest) {
-        // 고객문의 등록 요청 객체에 답변자 로그인 아이디가 있다면 해당 어드민 사용자 엔티티를 조회
-        AdminUser adminUser = Optional.ofNullable(createInquiryRequest.responderNickname())
-                .map(adminUserService::findByNickname)
-                .orElse(null);
-        // 고객문의 등록
-        return inquiryMapper.toResponseDto(inquiryRepository.save(inquiryMapper.toEntity(createInquiryRequest, adminUser)));
+        return inquiryMapper.toResponseDto(inquiryRepository.save(inquiryMapper.toCreateEntity(
+                createInquiryRequest,
+                Optional.ofNullable(createInquiryRequest.responderAccountId())
+                        .map(adminUserService::findByAccountId)
+                        .orElse(null)
+        )));
     }
 
     /**
@@ -48,9 +47,7 @@ public class InquiryServiceImpl implements InquiryService {
      */
     @Override
     @Transactional(readOnly = true)
-    public InquiryDto.InquiryPageResponse find(
-            InquiryDto.FindInquiryRequest findInquiryRequest
-    ) {
+    public InquiryDto.InquiryPageResponse find(InquiryDto.FindInquiryRequest findInquiryRequest) {
         return inquiryMapper.toPageResponseDto(inquiryRepository.findAll(
                 InquirySpecification.findWith(inquiryMapper.toCriteria(findInquiryRequest)),
                 (findInquiryRequest.page() != null && findInquiryRequest.size() != null)
@@ -76,11 +73,9 @@ public class InquiryServiceImpl implements InquiryService {
      */
     @Override
     @Transactional(readOnly = true)
-    public Inquiry getInquiry(
-            Long inquiryId
-    ) {
+    public Inquiry getInquiry(Long inquiryId) {
         return inquiryRepository.findById(inquiryId)
-                .orElseThrow(() -> new EntityNotFoundException("고객문의를 찾을 수 없습니다. id = " + inquiryId));
+                .orElseThrow(() -> new EntityNotFoundException("고객문의를 찾을 수 없습니다. inquiryId = " + inquiryId));
     }
 
     /**
@@ -91,26 +86,13 @@ public class InquiryServiceImpl implements InquiryService {
     @Override
     @Transactional
     public void update(Long inquiryId, InquiryDto.UpdateInquiryRequest updateInquiryRequest) {
-        // 수정할 고객문의 엔티티 조회
-        Inquiry inquiry = getInquiry(inquiryId);
-        // 고객문의의 답변자가 존재하면 어드민 사용자 엔티티 조회
-        AdminUser adminUser = Optional.ofNullable(updateInquiryRequest.responderNickname())
-                .map(adminUserService::findByNickname)
-                .orElse(null);
-        // UPDATE 도메인 메서드로 변환
-        inquiry.updateInquiry(
-                updateInquiryRequest.domain(),
-                updateInquiryRequest.inquirerType(),
-                updateInquiryRequest.category(),
-                updateInquiryRequest.status(),
-                updateInquiryRequest.inquirerEmail(),
-                adminUser,
-                updateInquiryRequest.title(),
-                updateInquiryRequest.content(),
-                updateInquiryRequest.response()
-        );
-        // 고객문의 엔티티 UPDATE
-        inquiryRepository.save(inquiry);
+        inquiryRepository.save(inquiryMapper.toUpdateEntity(
+                getInquiry(inquiryId),
+                updateInquiryRequest,
+                Optional.ofNullable(updateInquiryRequest.responderAccountId())
+                        .map(adminUserService::findByAccountId)
+                        .orElse(null)
+        ));
     }
 
     /**

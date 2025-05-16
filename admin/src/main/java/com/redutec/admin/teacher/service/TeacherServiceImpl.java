@@ -2,8 +2,8 @@ package com.redutec.admin.teacher.service;
 
 import com.redutec.admin.homeroom.service.HomeroomService;
 import com.redutec.admin.institute.service.InstituteService;
-import com.redutec.admin.teacher.dto.TeacherDto;
-import com.redutec.admin.teacher.mapper.TeacherMapper;
+import com.redutec.core.dto.TeacherDto;
+import com.redutec.core.mapper.TeacherMapper;
 import com.redutec.core.entity.Homeroom;
 import com.redutec.core.entity.Institute;
 import com.redutec.core.entity.Teacher;
@@ -38,17 +38,15 @@ public class TeacherServiceImpl implements TeacherService {
     @Override
     @Transactional
     public TeacherDto.TeacherResponse create(TeacherDto.CreateTeacherRequest createTeacherRequest) {
-        return teacherMapper.toResponseDto(
-                teacherRepository.save(
-                        teacherMapper.toEntity(
-                                createTeacherRequest,
-                                instituteService.getInstitute(createTeacherRequest.instituteId()),
-                                Optional.ofNullable(createTeacherRequest.homeroomId())
-                                        .map(homeroomService::getHomeroom)
-                                        .orElse(null)
-                        )
-                )
-        );
+        return teacherMapper.toResponseDto(teacherRepository.save(teacherMapper.toCreateEntity(
+                createTeacherRequest,
+                Optional.ofNullable(createTeacherRequest.instituteId())
+                        .map(instituteService::getInstitute)
+                        .orElse(null),
+                Optional.ofNullable(createTeacherRequest.homeroomId())
+                        .map(homeroomService::getHomeroom)
+                        .orElse(null)
+        )));
     }
 
     /**
@@ -86,7 +84,7 @@ public class TeacherServiceImpl implements TeacherService {
     @Transactional(readOnly = true)
     public Teacher getTeacher(Long teacherId) {
         return teacherRepository.findById(teacherId)
-                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 교사입니다. id = " + teacherId));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 교사입니다. teacherId = " + teacherId));
     }
 
     /**
@@ -107,32 +105,21 @@ public class TeacherServiceImpl implements TeacherService {
         Homeroom homeroom = Optional.ofNullable(updateTeacherRequest.homeroomId())
                 .map(homeroomService::getHomeroom)
                 .orElse(null);
-        // 현재 비밀번호와 기존 비밀번호가 일치하면 진행. 다르다면 예외처리
-        Optional.of(updateTeacherRequest.currentPassword())
-                .filter(pwd -> passwordEncoder.matches(pwd, teacher.getPassword()))
-                .orElseThrow(() -> new IllegalArgumentException("현재 비밀번호가 일치하지 않습니다."));
-        // 새로운 비밀번호를 암호화
-        String encodedNewPassword = Optional.ofNullable(updateTeacherRequest.newPassword())
-                .filter(pwd -> !pwd.isBlank())
-                .map(passwordEncoder::encode)
-                .orElse(null);
-        // UPDATE 도메인 메서드로 변환
-        teacher.updateTeacher(
-                updateTeacherRequest.accountId(),
-                encodedNewPassword,
-                updateTeacherRequest.name(),
-                updateTeacherRequest.phoneNumber(),
-                updateTeacherRequest.email(),
-                updateTeacherRequest.status(),
-                updateTeacherRequest.role(),
-                updateTeacherRequest.authenticationStatus(),
-                updateTeacherRequest.failedLoginAttempts(),
-                updateTeacherRequest.description(),
-                institute,
-                homeroom
-        );
-        // 교사 엔티티 UPDATE
-        teacherRepository.save(teacher);
+        // 수정 요청 객체에 newPassword가 존재한다면 현재 비밀번호와 currentPassword가 일치하는지 검증
+        Optional.ofNullable(updateTeacherRequest.newPassword())
+                .filter(newPassword -> !newPassword.isBlank())
+                .ifPresent(newPassword -> {
+                    // currentPassword 미입력 시 예외
+                    Optional.ofNullable(updateTeacherRequest.currentPassword())
+                            .filter(currentPassword -> !currentPassword.isBlank())
+                            .orElseThrow(() -> new IllegalArgumentException("비밀번호를 변경하려면 현재 비밀번호를 입력해야 합니다."));
+                    // currentPassword 불일치 시 예외
+                    Optional.of(updateTeacherRequest.currentPassword())
+                            .filter(currentPassword -> passwordEncoder.matches(currentPassword, teacher.getPassword()))
+                            .orElseThrow(() -> new IllegalArgumentException("현재 비밀번호가 일치하지 않습니다."));
+                });
+        // 교사 정보 수정 엔티티 빌드 후 UPDATE
+        teacherRepository.save(teacherMapper.toUpdateEntity(teacher, updateTeacherRequest, institute, homeroom));
     }
 
     /**

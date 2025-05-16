@@ -1,8 +1,8 @@
 package com.redutec.admin.subscription.institute.service;
 
 import com.redutec.admin.institute.service.InstituteService;
-import com.redutec.admin.subscription.institute.dto.SubscriptionInstituteDto;
-import com.redutec.admin.subscription.institute.mapper.SubscriptionInstituteMapper;
+import com.redutec.core.dto.SubscriptionInstituteDto;
+import com.redutec.core.mapper.SubscriptionInstituteMapper;
 import com.redutec.admin.subscription.plan.service.SubscriptionPlanService;
 import com.redutec.core.entity.SubscriptionInstitute;
 import com.redutec.core.repository.SubscriptionInstituteRepository;

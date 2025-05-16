@@ -20,12 +20,15 @@ public class AdminUserSpecification {
                     Optional.ofNullable(adminUserCriteria.adminUserIds())
                             .filter(adminUserIds -> !adminUserIds.isEmpty())
                             .map(adminUserIds -> root.get("id").in(adminUserIds)),
-                    Optional.ofNullable(adminUserCriteria.email())
-                            .filter(email -> !email.isEmpty())
-                            .map(email -> criteriaBuilder.equal(root.get("email"), email)),
+                    Optional.ofNullable(adminUserCriteria.accountId())
+                            .filter(accountId -> !accountId.isEmpty())
+                            .map(accountId -> criteriaBuilder.like(root.get("accountId"), "%" + accountId + "%")),
                     Optional.ofNullable(adminUserCriteria.nickname())
                             .filter(nickname -> !nickname.isEmpty())
                             .map(nickname -> criteriaBuilder.like(root.get("nickname"), "%" + nickname + "%")),
+                    Optional.ofNullable(adminUserCriteria.email())
+                            .filter(email -> !email.isEmpty())
+                            .map(email -> criteriaBuilder.equal(root.get("email"), email)),
                     Optional.ofNullable(adminUserCriteria.roles())
                             .filter(roles -> !roles.isEmpty())
                             .map(roles -> root.get("roles").in(roles)),

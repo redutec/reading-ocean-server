@@ -1,7 +1,7 @@
 package com.redutec.admin.menu.controller;
 
 import com.redutec.admin.menu.service.AdminMenuService;
-import com.redutec.admin.menu.dto.AdminMenuDto;
+import com.redutec.core.dto.AdminMenuDto;
 import com.redutec.core.config.ApiResponseBody;
 import com.redutec.core.config.ApiResponseManager;
 import io.swagger.v3.oas.annotations.Operation;

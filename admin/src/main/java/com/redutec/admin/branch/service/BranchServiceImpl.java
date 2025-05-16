@@ -1,7 +1,7 @@
 package com.redutec.admin.branch.service;
 
-import com.redutec.admin.branch.dto.BranchDto;
-import com.redutec.admin.branch.mapper.BranchMapper;
+import com.redutec.core.dto.BranchDto;
+import com.redutec.core.mapper.BranchMapper;
 import com.redutec.core.config.FileUploadResult;
 import com.redutec.core.config.FileUtil;
 import com.redutec.core.entity.Branch;
@@ -115,20 +115,8 @@ public class BranchServiceImpl implements BranchService {
                 .map(managerTeacherId -> teacherRepository.findById(managerTeacherId)
                         .orElseThrow(() -> new EntityNotFoundException("지사장 교사를 찾을 수 없습니다. managerTeacherId = " + managerTeacherId)))
                 .orElse(null);
-        // UPDATE 도메인 메서드로 변환
-        branch.updateBranch(
-                managerTeacher,
-                updateBranchRequest.region(),
-                updateBranchRequest.name(),
-                updateBranchRequest.status(),
-                updateBranchRequest.businessArea(),
-                contractFileName,
-                updateBranchRequest.contractDate(),
-                updateBranchRequest.renewalDate(),
-                updateBranchRequest.description()
-        );
-        // 지사 엔티티 UPDATE
-        branchRepository.save(branch);
+        // 지사 수정 엔티티 빌드 후 UPDATE
+        branchRepository.save(branchMapper.toUpdateEntity(branch, updateBranchRequest, managerTeacher, contractFileName));
     }
 
     /**

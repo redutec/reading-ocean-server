@@ -7,7 +7,7 @@ import com.redutec.core.meta.Domain;
 import com.redutec.core.repository.RefreshTokenRepository;
 import com.redutec.core.repository.TeacherRepository;
 import com.redutec.core.repository.TeachingOceanMenuRepository;
-import com.redutec.teachingocean.authentication.dto.AuthenticationDto;
+import com.redutec.core.dto.TeachingOceanAuthenticationDto;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -86,7 +86,7 @@ public class JwtUtil {
      * @return JWT Claims 맵 객체
      */
     @Transactional(readOnly = true)
-    protected AuthenticationDto.AuthenticatedTeacher buildJwtClaims(
+    protected TeachingOceanAuthenticationDto.AuthenticatedTeacher buildJwtClaims(
             Teacher teacher,
             Institute institute,
             Homeroom homeroom
@@ -100,7 +100,7 @@ public class JwtUtil {
         Long homeroomId = homeroom != null ? homeroom.getId() : null;
         String homeroomName = homeroom != null ? homeroom.getName() : null;
         // 현재 로그인한 교사의 정보를 JWT Claims 응답 객체로 변환하여 리턴
-        return new AuthenticationDto.AuthenticatedTeacher(
+        return new TeachingOceanAuthenticationDto.AuthenticatedTeacher(
                 teacher.getId(),
                 teacher.getAccountId(),
                 teacher.getName(),

@@ -1,6 +1,6 @@
 package com.redutec.admin.institute.controller;
 
-import com.redutec.admin.institute.dto.InstituteDto;
+import com.redutec.core.dto.InstituteDto;
 import com.redutec.admin.institute.service.InstituteService;
 import com.redutec.core.config.ApiResponseBody;
 import com.redutec.core.config.ApiResponseManager;

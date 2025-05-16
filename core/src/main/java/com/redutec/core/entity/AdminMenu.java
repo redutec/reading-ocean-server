@@ -10,7 +10,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * 어드민 메뉴 정보를 저장하는 엔티티 클래스입니다.
@@ -72,24 +71,4 @@ public class AdminMenu {
 
     @LastModifiedDate
     private LocalDateTime updatedAt;
-
-    public void updateAdminMenu (
-            String name,
-            String url,
-            String description,
-            Boolean available,
-            List<AdminUserRole> accessibleRoles,
-            Integer depth,
-            AdminMenu parent,
-            List<AdminMenu> children
-    ) {
-        this.name = Optional.ofNullable(name).orElse(this.name);
-        this.url = Optional.ofNullable(url).orElse(this.url);
-        this.description = Optional.ofNullable(description).orElse(this.description);
-        this.available = Optional.ofNullable(available).orElse(this.available);
-        this.accessibleRoles = Optional.ofNullable(accessibleRoles).orElse(this.accessibleRoles);
-        this.depth = Optional.ofNullable(depth).orElse(this.depth);
-        this.parent = Optional.ofNullable(parent).orElse(this.parent);
-        this.children = Optional.ofNullable(children).orElse(this.children);
-    }
 }

@@ -1,7 +1,7 @@
 package com.redutec.admin.faq.service;
 
-import com.redutec.admin.faq.dto.FaqDto;
-import com.redutec.admin.faq.mapper.FaqMapper;
+import com.redutec.core.dto.FaqDto;
+import com.redutec.core.mapper.FaqMapper;
 import com.redutec.core.entity.Faq;
 import com.redutec.core.repository.FaqRepository;
 import com.redutec.core.specification.FaqSpecification;
@@ -28,7 +28,7 @@ public class FaqServiceImpl implements FaqService {
     @Override
     @Transactional
     public FaqDto.FaqResponse create(FaqDto.CreateFaqRequest createFaqRequest) {
-        return faqMapper.toResponseDto(faqRepository.save(faqMapper.toEntity(createFaqRequest)));
+        return faqMapper.toResponseDto(faqRepository.save(faqMapper.toCreateEntity(createFaqRequest)));
     }
 
     /**
@@ -38,9 +38,7 @@ public class FaqServiceImpl implements FaqService {
      */
     @Override
     @Transactional(readOnly = true)
-    public FaqDto.FaqPageResponse find(
-            FaqDto.FindFaqRequest findFaqRequest
-    ) {
+    public FaqDto.FaqPageResponse find(FaqDto.FindFaqRequest findFaqRequest) {
         return faqMapper.toPageResponseDto(faqRepository.findAll(
                 FaqSpecification.findWith(faqMapper.toCriteria(findFaqRequest)),
                 (findFaqRequest.page() != null && findFaqRequest.size() != null)
@@ -66,11 +64,9 @@ public class FaqServiceImpl implements FaqService {
      */
     @Override
     @Transactional(readOnly = true)
-    public Faq getFaq(
-            Long faqId
-    ) {
+    public Faq getFaq(Long faqId) {
         return faqRepository.findById(faqId)
-                .orElseThrow(() -> new EntityNotFoundException("이용안내를 찾을 수 없습니다. id = " + faqId));
+                .orElseThrow(() -> new EntityNotFoundException("이용안내를 찾을 수 없습니다. faqId = " + faqId));
     }
 
     /**
@@ -81,17 +77,10 @@ public class FaqServiceImpl implements FaqService {
     @Override
     @Transactional
     public void update(Long faqId, FaqDto.UpdateFaqRequest updateFaqRequest) {
-        // 수정할 이용안내 엔티티 조회
-        Faq faq = getFaq(faqId);
-        // UPDATE 도메인 메서드로 변환
-        faq.updateFaq(
-                updateFaqRequest.domain(),
-                updateFaqRequest.title(),
-                updateFaqRequest.content(),
-                updateFaqRequest.visible()
-        );
-        // 이용안내 엔티티 UPDATE
-        faqRepository.save(faq);
+        faqRepository.save(faqMapper.toUpdateEntity(
+                getFaq(faqId),
+                updateFaqRequest
+        ));
     }
 
     /**

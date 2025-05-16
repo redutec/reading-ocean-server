@@ -1,7 +1,7 @@
 package com.redutec.admin.banner.service;
 
-import com.redutec.admin.banner.dto.BannerDto;
-import com.redutec.admin.banner.mapper.BannerMapper;
+import com.redutec.core.dto.BannerDto;
+import com.redutec.core.mapper.BannerMapper;
 import com.redutec.core.config.FileUploadResult;
 import com.redutec.core.config.FileUtil;
 import com.redutec.core.entity.Banner;
@@ -34,7 +34,18 @@ public class BannerServiceImpl implements BannerService {
     @Override
     @Transactional
     public BannerDto.BannerResponse create(BannerDto.CreateBannerRequest createBannerRequest) {
-        return bannerMapper.toResponseDto(bannerRepository.save(bannerMapper.toEntity(createBannerRequest)));
+        // 첨부 파일이 존재하는 경우 파일을 업로드하고 파일명을 가져오기(파일이 없으면 파일명은 null)
+        String attachedFileName = Optional.ofNullable(createBannerRequest.attachedFile())
+                .filter(attachedFile -> !attachedFile.isEmpty())
+                .map(attachedFile -> {
+                    FileUploadResult result = fileUtil.uploadFile(attachedFile, "/banner");
+                    return Paths.get(result.filePath()).getFileName().toString();
+                })
+                .orElse(null);
+        return bannerMapper.toResponseDto(bannerRepository.save(bannerMapper.toCreateEntity(
+                createBannerRequest,
+                attachedFileName
+        )));
     }
 
     /**
@@ -44,9 +55,7 @@ public class BannerServiceImpl implements BannerService {
      */
     @Override
     @Transactional(readOnly = true)
-    public BannerDto.BannerPageResponse find(
-            BannerDto.FindBannerRequest findBannerRequest
-    ) {
+    public BannerDto.BannerPageResponse find(BannerDto.FindBannerRequest findBannerRequest) {
         return bannerMapper.toPageResponseDto(bannerRepository.findAll(
                 BannerSpecification.findWith(bannerMapper.toCriteria(findBannerRequest)),
                 (findBannerRequest.page() != null && findBannerRequest.size() != null)
@@ -72,11 +81,9 @@ public class BannerServiceImpl implements BannerService {
      */
     @Override
     @Transactional(readOnly = true)
-    public Banner getBanner(
-            Long bannerId
-    ) {
+    public Banner getBanner(Long bannerId) {
         return bannerRepository.findById(bannerId)
-                .orElseThrow(() -> new EntityNotFoundException("배너를 찾을 수 없습니다. id = " + bannerId));
+                .orElseThrow(() -> new EntityNotFoundException("배너를 찾을 수 없습니다. bannerId = " + bannerId));
     }
 
     /**
@@ -87,30 +94,17 @@ public class BannerServiceImpl implements BannerService {
     @Override
     @Transactional
     public void update(Long bannerId, BannerDto.UpdateBannerRequest updateBannerRequest) {
-        // 수정할 배너 엔티티 조회
-        Banner banner = getBanner(bannerId);
-        // 업로드할 첨부 파일이 있는 경우 업로드하고 파일명을 생성
-        String attachedFileName = Optional.ofNullable(updateBannerRequest.attachedFile())
-                .filter(attachedFile -> !attachedFile.isEmpty())
-                .map(attachedFile -> {
-                    FileUploadResult result = fileUtil.uploadFile(attachedFile, "/banner");
-                    return Paths.get(result.filePath()).getFileName().toString();
-                })
-                .orElse(null);
-        // UPDATE 도메인 메서드로 변환
-        banner.updateBanner(
-                updateBannerRequest.domain(),
-                updateBannerRequest.title(),
-                updateBannerRequest.content(),
-                updateBannerRequest.linkUrl(),
-                attachedFileName,
-                updateBannerRequest.priority(),
-                updateBannerRequest.visible(),
-                updateBannerRequest.visibleStartAt(),
-                updateBannerRequest.visibleEndAt()
-        );
-        // 배너 엔티티 UPDATE
-        bannerRepository.save(banner);
+        bannerRepository.save(bannerMapper.toUpdateEntity(
+                getBanner(bannerId),
+                updateBannerRequest,
+                Optional.ofNullable(updateBannerRequest.attachedFile())
+                        .filter(attachedFile -> !attachedFile.isEmpty())
+                        .map(attachedFile -> {
+                            FileUploadResult result = fileUtil.uploadFile(attachedFile, "/banner");
+                            return Paths.get(result.filePath()).getFileName().toString();
+                        })
+                        .orElse(null)
+        ));
     }
 
     /**

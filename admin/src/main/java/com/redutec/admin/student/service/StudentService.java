@@ -1,6 +1,6 @@
 package com.redutec.admin.student.service;
 
-import com.redutec.admin.student.dto.StudentDto;
+import com.redutec.core.dto.StudentDto;
 import com.redutec.core.entity.Student;
 
 public interface StudentService {

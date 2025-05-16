@@ -1,8 +1,7 @@
 package com.redutec.admin.notice.service;
 
-import com.redutec.admin.notice.dto.NoticeDto;
-import com.redutec.admin.notice.mapper.NoticeMapper;
-import com.redutec.admin.notice.service.NoticeService;
+import com.redutec.core.dto.NoticeDto;
+import com.redutec.core.mapper.NoticeMapper;
 import com.redutec.core.config.FileUploadResult;
 import com.redutec.core.config.FileUtil;
 import com.redutec.core.entity.Notice;
@@ -35,7 +34,16 @@ public class NoticeServiceImpl implements NoticeService {
     @Override
     @Transactional
     public NoticeDto.NoticeResponse create(NoticeDto.CreateNoticeRequest createNoticeRequest) {
-        return noticeMapper.toResponseDto(noticeRepository.save(noticeMapper.toEntity(createNoticeRequest)));
+        return noticeMapper.toResponseDto(noticeRepository.save(noticeMapper.toCreateEntity(
+                createNoticeRequest,
+                Optional.ofNullable(createNoticeRequest.attachedFile())
+                        .filter(attachedFile -> !attachedFile.isEmpty())
+                        .map(attachedFile -> {
+                            FileUploadResult result = fileUtil.uploadFile(attachedFile, "/notice");
+                            return Paths.get(result.filePath()).getFileName().toString();
+                        })
+                        .orElse(null)
+        )));
     }
 
     /**
@@ -45,9 +53,7 @@ public class NoticeServiceImpl implements NoticeService {
      */
     @Override
     @Transactional(readOnly = true)
-    public NoticeDto.NoticePageResponse find(
-            NoticeDto.FindNoticeRequest findNoticeRequest
-    ) {
+    public NoticeDto.NoticePageResponse find(NoticeDto.FindNoticeRequest findNoticeRequest) {
         return noticeMapper.toPageResponseDto(noticeRepository.findAll(
                 NoticeSpecification.findWith(noticeMapper.toCriteria(findNoticeRequest)),
                 (findNoticeRequest.page() != null && findNoticeRequest.size() != null)
@@ -73,11 +79,9 @@ public class NoticeServiceImpl implements NoticeService {
      */
     @Override
     @Transactional(readOnly = true)
-    public Notice getNotice(
-            Long noticeId
-    ) {
+    public Notice getNotice(Long noticeId) {
         return noticeRepository.findById(noticeId)
-                .orElseThrow(() -> new EntityNotFoundException("공지사항을 찾을 수 없습니다. id = " + noticeId));
+                .orElseThrow(() -> new EntityNotFoundException("공지사항을 찾을 수 없습니다. noticeId = " + noticeId));
     }
 
     /**
@@ -88,28 +92,17 @@ public class NoticeServiceImpl implements NoticeService {
     @Override
     @Transactional
     public void update(Long noticeId, NoticeDto.UpdateNoticeRequest updateNoticeRequest) {
-        // 수정할 공지사항 엔티티 조회
-        Notice notice = getNotice(noticeId);
-        // 업로드할 첨부 파일이 있는 경우 업로드하고 파일명을 생성
-        String attachedFileName = Optional.ofNullable(updateNoticeRequest.attachedFile())
-                .filter(attachedFile -> !attachedFile.isEmpty())
-                .map(attachedFile -> {
-                    FileUploadResult result = fileUtil.uploadFile(attachedFile, "/notice");
-                    return Paths.get(result.filePath()).getFileName().toString();
-                })
-                .orElse(null);
-        // UPDATE 도메인 메서드로 변환
-        notice.updateNotice(
-                updateNoticeRequest.domain(),
-                updateNoticeRequest.title(),
-                updateNoticeRequest.content(),
-                attachedFileName,
-                updateNoticeRequest.visible(),
-                updateNoticeRequest.visibleStartAt(),
-                updateNoticeRequest.visibleEndAt()
-        );
-        // 공지사항 엔티티 UPDATE
-        noticeRepository.save(notice);
+        noticeRepository.save(noticeMapper.toUpdateEntity(
+                getNotice(noticeId),
+                updateNoticeRequest,
+                Optional.ofNullable(updateNoticeRequest.attachedFile())
+                        .filter(attachedFile -> !attachedFile.isEmpty())
+                        .map(attachedFile -> {
+                            FileUploadResult result = fileUtil.uploadFile(attachedFile, "/notice");
+                            return Paths.get(result.filePath()).getFileName().toString();
+                        })
+                        .orElse(null)
+        ));
     }
 
     /**

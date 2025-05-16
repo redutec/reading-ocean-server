@@ -1,6 +1,6 @@
 package com.redutec.admin.policy.service;
 
-import com.redutec.admin.policy.dto.PolicyDto;
+import com.redutec.core.dto.PolicyDto;
 import com.redutec.core.entity.Policy;
 
 public interface PolicyService {

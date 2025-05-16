@@ -1,8 +1,8 @@
 package com.redutec.admin.user.service;
 
-import com.redutec.admin.user.dto.AdminUserDto;
-import com.redutec.admin.user.mapper.AdminUserMapper;
+import com.redutec.core.dto.AdminUserDto;
 import com.redutec.core.entity.AdminUser;
+import com.redutec.core.mapper.AdminUserMapper;
 import com.redutec.core.repository.AdminUserRepository;
 import com.redutec.core.specification.AdminUserSpecification;
 import jakarta.persistence.EntityNotFoundException;
@@ -13,6 +13,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -30,13 +32,7 @@ public class AdminUserServiceImpl implements AdminUserService {
     @Override
     @Transactional
     public AdminUserDto.AdminUserResponse create(AdminUserDto.CreateAdminUserRequest createAdminUserRequest) {
-        return adminUserMapper.toResponseDto(
-                adminUserRepository.save(
-                        adminUserMapper.toEntity(
-                                createAdminUserRequest
-                        )
-                )
-        );
+        return adminUserMapper.toResponseDto(adminUserRepository.save(adminUserMapper.toCreateEntity(createAdminUserRequest)));
     }
 
     /**
@@ -79,18 +75,6 @@ public class AdminUserServiceImpl implements AdminUserService {
 
     /**
      * 특정 어드민 사용자 엔티티 조회
-     * @param nickname 어드민 사용자 닉네임
-     * @return 특정 어드민 사용자 엔티티 객체
-     */
-    @Override
-    @Transactional(readOnly = true)
-    public AdminUser findByNickname(String nickname) {
-        return adminUserRepository.findByNickname(nickname)
-                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 어드민 사용자입니다. nickname = " + nickname));
-    }
-
-    /**
-     * 특정 어드민 사용자 엔티티 조회
      * @param adminUserId 어드민 사용자 고유번호
      * @return 특정 어드민 사용자 엔티티 객체
      */
@@ -98,7 +82,7 @@ public class AdminUserServiceImpl implements AdminUserService {
     @Transactional(readOnly = true)
     public AdminUser getAdminUser(Long adminUserId) {
         return adminUserRepository.findById(adminUserId)
-                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 어드민 사용자입니다. id = " + adminUserId));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 어드민 사용자입니다. adminUserId = " + adminUserId));
     }
 
     /**
@@ -111,19 +95,21 @@ public class AdminUserServiceImpl implements AdminUserService {
     public void update(Long adminUserId, AdminUserDto.UpdateAdminUserRequest updateAdminUserRequest) {
         // 수정할 어드민 사용자 엔티티 조회
         AdminUser adminUser = getAdminUser(adminUserId);
-        // UPDATE 도메인 메서드로 변환
-        adminUser.updateAdminUser(
-                updateAdminUserRequest.email(),
-                passwordEncoder.encode(updateAdminUserRequest.password()),
-                updateAdminUserRequest.nickname(),
-                updateAdminUserRequest.role(),
-                updateAdminUserRequest.authenticationStatus(),
-                updateAdminUserRequest.failedLoginAttempts(),
-                updateAdminUserRequest.lastLoginIp(),
-                updateAdminUserRequest.lastLoginAt()
-        );
-        // 어드민 사용자 엔티티 UPDATE
-        adminUserRepository.save(adminUser);
+        // 수정 요청 객체에 newPassword가 존재한다면 현재 비밀번호와 currentPassword가 일치하는지 검증
+        Optional.ofNullable(updateAdminUserRequest.newPassword())
+                .filter(newPassword -> !newPassword.isBlank())
+                .ifPresent(newPassword -> {
+                    // currentPassword 미입력 시 예외
+                    Optional.ofNullable(updateAdminUserRequest.currentPassword())
+                            .filter(currentPassword -> !currentPassword.isBlank())
+                            .orElseThrow(() -> new IllegalArgumentException("비밀번호를 변경하려면 현재 비밀번호를 입력해야 합니다."));
+                    // currentPassword 불일치 시 예외
+                    Optional.of(updateAdminUserRequest.currentPassword())
+                            .filter(currentPassword -> passwordEncoder.matches(currentPassword, adminUser.getPassword()))
+                            .orElseThrow(() -> new IllegalArgumentException("현재 비밀번호가 일치하지 않습니다."));
+                });
+        // 어드민 사용자 수정 엔티티 빌드 후 UPDATE
+        adminUserRepository.save(adminUserMapper.toUpdateEntity(adminUser, updateAdminUserRequest));
     }
 
     /**

@@ -6,7 +6,7 @@ import com.redutec.core.meta.Domain;
 import com.redutec.core.repository.RefreshTokenRepository;
 import com.redutec.core.repository.TeacherRepository;
 import com.redutec.core.repository.TeachingOceanMenuRepository;
-import com.redutec.teachingocean.authentication.dto.AuthenticationDto;
+import com.redutec.core.dto.TeachingOceanAuthenticationDto;
 import com.redutec.teachingocean.config.JwtUtil;
 import jakarta.mail.MessagingException;
 import jakarta.persistence.EntityNotFoundException;
@@ -51,7 +51,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
      * @return Access Token 및 Refresh Token이 담긴 Map 객체
      */
     @Override
-    public AuthenticationDto.LoginResponse login(AuthenticationDto.LoginRequest loginRequest) {
+    public TeachingOceanAuthenticationDto.LoginResponse login(TeachingOceanAuthenticationDto.LoginRequest loginRequest) {
         // 교사 엔티티 조회
         Teacher teacher = teacherRepository.findByAccountId(loginRequest.accountId())
                 .orElseThrow(() -> new EntityNotFoundException("로그인 아이디 또는 비밀번호를 확인해주세요."));
@@ -81,7 +81,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         // 생성한 RefreshToken을 DB에 저장
         jwtUtil.saveRefreshToken(refreshToken, teacher.getAccountId(), Domain.TEACHING_OCEAN);
         // 생성한 Token으로 로그인 응답 객체를 리턴
-        return new AuthenticationDto.LoginResponse(accessToken, refreshToken);
+        return new TeachingOceanAuthenticationDto.LoginResponse(accessToken, refreshToken);
     }
 
     /**
@@ -91,7 +91,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
      */
     @Override
     @Transactional(readOnly = true)
-    public AuthenticationDto.AuthenticatedTeacher getAuthenticatedTeacher() {
+    public TeachingOceanAuthenticationDto.AuthenticatedTeacher getAuthenticatedTeacher() {
         // 현재 접속한 계정 정보를 가져오기
         var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         // 계정 정보에 담긴 로그인 아이디 정보 가져오기
@@ -102,7 +102,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         Teacher teacher = teacherRepository.findByAccountId(accountId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 교사 계정입니다. accountId = " + accountId));
         // 현재 로그인한 교사 정보를 리턴
-        return new AuthenticationDto.AuthenticatedTeacher(
+        return new TeachingOceanAuthenticationDto.AuthenticatedTeacher(
                 teacher.getId(),
                 accountId,
                 teacher.getName(),
@@ -129,7 +129,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
      */
     @Override
     @Transactional
-    public void resetPassword(AuthenticationDto.ResetPasswordRequest resetPasswordRequest) throws MessagingException {
+    public void resetPassword(TeachingOceanAuthenticationDto.ResetPasswordRequest resetPasswordRequest) throws MessagingException {
         var teacher = teacherRepository.findByAccountId(resetPasswordRequest.accountId())
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 교사 계정입니다. accountId = " + resetPasswordRequest.accountId()));
         validateAuthenticationStatus(teacher);
@@ -146,7 +146,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
      */
     @Override
     @Transactional
-    public void updatePassword(AuthenticationDto.UpdatePasswordRequest updatePasswordRequest) {
+    public void updatePassword(TeachingOceanAuthenticationDto.UpdatePasswordRequest updatePasswordRequest) {
         var teacher = teacherRepository.findByAccountId(updatePasswordRequest.accountId())
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 교사 계정입니다. accountId = " + updatePasswordRequest.accountId()));
         if (teacher.getAuthenticationStatus() != PASSWORD_RESET) {
@@ -166,7 +166,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
      */
     @Override
     @Transactional
-    public AuthenticationDto.LoginResponse refreshAccessToken(String refreshToken) {
+    public TeachingOceanAuthenticationDto.LoginResponse refreshAccessToken(String refreshToken) {
         // 새로운 Access Token 발급을 요청한 Refresh Token 조회
         RefreshToken refreshTokenEntity = refreshTokenRepository.findByToken(refreshToken)
                 .filter(RefreshToken::isExpired)
@@ -175,7 +175,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         Teacher teacher = teacherRepository.findByAccountId(refreshTokenEntity.getUsername())
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 계정입니다. email = " + refreshTokenEntity.getUsername()));
         // 새로운 Access Token 생성 후 리턴
-        return new AuthenticationDto.LoginResponse(
+        return new TeachingOceanAuthenticationDto.LoginResponse(
                 jwtUtil.generateAccessToken(teacher, teacher.getInstitute(), teacher.getHomeroom()),
                 refreshToken
         );

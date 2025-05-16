@@ -1,7 +1,7 @@
 package com.redutec.admin.policy.controller;
 
 import com.redutec.admin.policy.service.PolicyService;
-import com.redutec.admin.policy.dto.PolicyDto;
+import com.redutec.core.dto.PolicyDto;
 import com.redutec.core.config.ApiResponseBody;
 import com.redutec.core.config.ApiResponseManager;
 import io.swagger.v3.oas.annotations.Operation;

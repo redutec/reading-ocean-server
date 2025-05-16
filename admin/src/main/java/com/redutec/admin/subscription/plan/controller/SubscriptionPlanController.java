@@ -1,6 +1,6 @@
 package com.redutec.admin.subscription.plan.controller;
 
-import com.redutec.admin.subscription.plan.dto.SubscriptionPlanDto;
+import com.redutec.core.dto.SubscriptionPlanDto;
 import com.redutec.admin.subscription.plan.service.SubscriptionPlanService;
 import com.redutec.core.config.ApiResponseBody;
 import com.redutec.core.config.ApiResponseManager;

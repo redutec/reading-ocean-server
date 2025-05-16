@@ -1,6 +1,6 @@
 package com.redutec.admin.homeroom.service;
 
-import com.redutec.admin.homeroom.dto.HomeroomDto;
+import com.redutec.core.dto.HomeroomDto;
 import com.redutec.core.entity.Homeroom;
 
 public interface HomeroomService {

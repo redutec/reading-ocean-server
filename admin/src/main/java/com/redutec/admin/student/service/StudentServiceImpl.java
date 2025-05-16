@@ -2,8 +2,8 @@ package com.redutec.admin.student.service;
 
 import com.redutec.admin.homeroom.service.HomeroomService;
 import com.redutec.admin.institute.service.InstituteService;
-import com.redutec.admin.student.dto.StudentDto;
-import com.redutec.admin.student.mapper.StudentMapper;
+import com.redutec.core.dto.StudentDto;
+import com.redutec.core.mapper.StudentMapper;
 import com.redutec.core.entity.Homeroom;
 import com.redutec.core.entity.Institute;
 import com.redutec.core.entity.Student;

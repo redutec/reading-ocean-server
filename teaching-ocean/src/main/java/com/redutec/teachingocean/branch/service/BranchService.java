@@ -1,7 +1,7 @@
 package com.redutec.teachingocean.branch.service;
 
 import com.redutec.core.entity.Branch;
-import com.redutec.teachingocean.branch.dto.BranchDto;
+import com.redutec.core.dto.BranchDto;
 
 public interface BranchService {
     /**

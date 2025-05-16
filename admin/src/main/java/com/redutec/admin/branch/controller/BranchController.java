@@ -1,6 +1,6 @@
 package com.redutec.admin.branch.controller;
 
-import com.redutec.admin.branch.dto.BranchDto;
+import com.redutec.core.dto.BranchDto;
 import com.redutec.admin.branch.service.BranchService;
 import com.redutec.core.config.ApiResponseBody;
 import com.redutec.core.config.ApiResponseManager;

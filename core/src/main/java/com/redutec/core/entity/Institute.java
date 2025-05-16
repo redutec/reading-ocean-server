@@ -1,5 +1,6 @@
 package com.redutec.core.entity;
 
+import com.redutec.core.config.AesAttributeConverter;
 import com.redutec.core.meta.InstituteManagementType;
 import com.redutec.core.meta.InstituteOperationStatus;
 import com.redutec.core.meta.InstituteStatus;
@@ -17,7 +18,6 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 @Entity
 @Comment("교육기관")
@@ -50,8 +50,9 @@ public class Institute {
     @Pattern(regexp = "^[0-9]{5}", message = "우편번호는 5자리의 숫자로만 구성되어야 합니다.")
     private String postalCode;
 
-    @Comment("연락처")
-    @Column(length = 11)
+    @Comment("연락처(AES256 암호화)")
+    @Convert(converter = AesAttributeConverter.class)
+    @Column
     @Pattern(regexp = "^[0-9]{1,11}$", message = "연락처는 숫자로만 구성되어야 합니다.")
     private String phoneNumber;
 
@@ -97,32 +98,4 @@ public class Institute {
     @LastModifiedDate
     @Column(nullable = false)
     private LocalDateTime updatedAt;
-
-    public void updateInstitute(
-            String name,
-            String businessRegistrationName,
-            String address,
-            String postalCode,
-            String phoneNumber,
-            String url,
-            String naverPlaceUrl,
-            InstituteType type,
-            InstituteManagementType managementType,
-            InstituteStatus status,
-            InstituteOperationStatus operationStatus,
-            Branch branch
-    ) {
-        this.name = Optional.ofNullable(name).orElse(this.name);
-        this.businessRegistrationName = Optional.ofNullable(businessRegistrationName).orElse(this.businessRegistrationName);
-        this.address = Optional.ofNullable(address).orElse(this.address);
-        this.postalCode = Optional.ofNullable(postalCode).orElse(this.postalCode);
-        this.phoneNumber = Optional.ofNullable(phoneNumber).orElse(this.phoneNumber);
-        this.url = Optional.ofNullable(url).orElse(this.url);
-        this.naverPlaceUrl = Optional.ofNullable(naverPlaceUrl).orElse(this.naverPlaceUrl);
-        this.type = Optional.ofNullable(type).orElse(this.type);
-        this.managementType = Optional.ofNullable(managementType).orElse(this.managementType);
-        this.status = Optional.ofNullable(status).orElse(this.status);
-        this.operationStatus = Optional.ofNullable(operationStatus).orElse(this.operationStatus);
-        this.branch = Optional.ofNullable(branch).orElse(this.branch);
-    }
 }

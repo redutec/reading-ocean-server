@@ -1,6 +1,6 @@
 package com.redutec.admin.book.controller;
 
-import com.redutec.admin.book.dto.BookDto;
+import com.redutec.core.dto.BookDto;
 import com.redutec.admin.book.service.BookService;
 import com.redutec.core.config.ApiResponseBody;
 import com.redutec.core.config.ApiResponseManager;

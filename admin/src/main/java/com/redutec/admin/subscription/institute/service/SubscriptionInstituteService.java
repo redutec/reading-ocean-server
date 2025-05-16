@@ -1,6 +1,6 @@
 package com.redutec.admin.subscription.institute.service;
 
-import com.redutec.admin.subscription.institute.dto.SubscriptionInstituteDto;
+import com.redutec.core.dto.SubscriptionInstituteDto;
 import com.redutec.core.entity.SubscriptionInstitute;
 
 public interface SubscriptionInstituteService {

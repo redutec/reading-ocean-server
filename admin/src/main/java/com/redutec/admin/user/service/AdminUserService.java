@@ -1,7 +1,7 @@
 package com.redutec.admin.user.service;
 
 
-import com.redutec.admin.user.dto.AdminUserDto;
+import com.redutec.core.dto.AdminUserDto;
 import com.redutec.core.entity.AdminUser;
 
 public interface AdminUserService {
@@ -32,13 +32,6 @@ public interface AdminUserService {
      * @return 특정 어드민 사용자 엔티티 객체
      */
     AdminUser findByAccountId(String accountId);
-
-    /**
-     * 특정 어드민 사용자 엔티티 조회
-     * @param nickname 어드민 사용자 닉네임
-     * @return 특정 어드민 사용자 엔티티 객체
-     */
-    AdminUser findByNickname(String nickname);
 
     /**
      * 특정 어드민 사용자 엔티티 조회

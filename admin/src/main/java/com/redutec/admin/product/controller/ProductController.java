@@ -1,6 +1,6 @@
 package com.redutec.admin.product.controller;
 
-import com.redutec.admin.product.dto.ProductDto;
+import com.redutec.core.dto.ProductDto;
 import com.redutec.admin.product.service.ProductService;
 import com.redutec.core.config.ApiResponseBody;
 import com.redutec.core.config.ApiResponseManager;

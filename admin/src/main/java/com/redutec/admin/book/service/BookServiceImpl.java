@@ -1,7 +1,7 @@
 package com.redutec.admin.book.service;
 
-import com.redutec.admin.book.dto.BookDto;
-import com.redutec.admin.book.mapper.BookMapper;
+import com.redutec.core.dto.BookDto;
+import com.redutec.core.mapper.BookMapper;
 import com.redutec.core.config.FileUploadResult;
 import com.redutec.core.config.FileUtil;
 import com.redutec.core.entity.Book;
@@ -34,7 +34,16 @@ public class BookServiceImpl implements BookService {
     @Override
     @Transactional
     public BookDto.BookResponse create(BookDto.CreateBookRequest createBookRequest) {
-        return bookMapper.toResponseDto(bookRepository.save(bookMapper.toEntity(createBookRequest)));
+        return bookMapper.toResponseDto(bookRepository.save(bookMapper.toCreateEntity(
+                createBookRequest,
+                Optional.ofNullable(createBookRequest.coverImageFile())
+                        .filter(coverImageFile -> !coverImageFile.isEmpty())
+                        .map(coverImageFile -> {
+                            FileUploadResult result = fileUtil.uploadFile(coverImageFile, "/book");
+                            return Paths.get(result.filePath()).getFileName().toString();
+                        })
+                        .orElse(null)
+        )));
     }
 
     /**
@@ -44,9 +53,7 @@ public class BookServiceImpl implements BookService {
      */
     @Override
     @Transactional(readOnly = true)
-    public BookDto.BookPageResponse find(
-            BookDto.FindBookRequest findBookRequest
-    ) {
+    public BookDto.BookPageResponse find(BookDto.FindBookRequest findBookRequest) {
         return bookMapper.toPageResponseDto(bookRepository.findAll(
                 BookSpecification.findWith(bookMapper.toCriteria(findBookRequest)),
                 (findBookRequest.page() != null && findBookRequest.size() != null)
@@ -72,11 +79,9 @@ public class BookServiceImpl implements BookService {
      */
     @Override
     @Transactional(readOnly = true)
-    public Book getBook(
-            Long bookId
-    ) {
+    public Book getBook(Long bookId) {
         return bookRepository.findById(bookId)
-                .orElseThrow(() -> new EntityNotFoundException("도서를 찾을 수 없습니다. id = " + bookId));
+                .orElseThrow(() -> new EntityNotFoundException("도서를 찾을 수 없습니다. bookId = " + bookId));
     }
 
     /**
@@ -87,49 +92,17 @@ public class BookServiceImpl implements BookService {
     @Override
     @Transactional
     public void update(Long bookId, BookDto.UpdateBookRequest updateBookRequest) {
-        // 수정할 도서 엔티티 조회
-        Book book = getBook(bookId);
-        // 업로드할 커버 이미지 파일이 있는 경우 업로드하고 파일명을 생성
-        String coverImageFileName = Optional.ofNullable(updateBookRequest.coverImageFile())
-                .filter(coverImageFile -> !coverImageFile.isEmpty())
-                .map(coverImageFile -> {
-                    FileUploadResult result = fileUtil.uploadFile(coverImageFile, "/book");
-                    return Paths.get(result.filePath()).getFileName().toString();
-                })
-                .orElse(null);
-        // UPDATE 도메인 메서드로 변환
-        book.updateBook(
-                updateBookRequest.isbn(),
-                updateBookRequest.title(),
-                updateBookRequest.author(),
-                updateBookRequest.publisher(),
-                updateBookRequest.translator(),
-                updateBookRequest.illustrator(),
-                updateBookRequest.publicationDate(),
-                coverImageFileName,
-                updateBookRequest.recommended(),
-                updateBookRequest.ebookAvailable(),
-                updateBookRequest.audiobookAvalable(),
-                updateBookRequest.visible(),
-                updateBookRequest.enabled(),
-                updateBookRequest.pageCount(),
-                updateBookRequest.schoolGrade(),
-                updateBookRequest.genre(),
-                updateBookRequest.subGenre(),
-                updateBookRequest.bookPoints(),
-                updateBookRequest.raq(),
-                updateBookRequest.readingLevel(),
-                updateBookRequest.bookMbti(),
-                updateBookRequest.subject(),
-                updateBookRequest.content(),
-                updateBookRequest.awardHistory(),
-                updateBookRequest.includedBookName(),
-                updateBookRequest.institutionRecommendations(),
-                updateBookRequest.educationOfficeRecommendations(),
-                updateBookRequest.tags()
-        );
-        // 도서 엔티티 UPDATE
-        bookRepository.save(book);
+        bookRepository.save(bookMapper.toUpdateEntity(
+                getBook(bookId),
+                updateBookRequest,
+                Optional.ofNullable(updateBookRequest.coverImageFile())
+                        .filter(coverImageFile -> !coverImageFile.isEmpty())
+                        .map(coverImageFile -> {
+                            FileUploadResult result = fileUtil.uploadFile(coverImageFile, "/book");
+                            return Paths.get(result.filePath()).getFileName().toString();
+                        })
+                        .orElse(null)
+        ));
     }
 
     /**

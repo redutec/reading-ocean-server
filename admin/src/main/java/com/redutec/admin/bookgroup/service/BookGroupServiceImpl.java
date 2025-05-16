@@ -1,10 +1,9 @@
 package com.redutec.admin.bookgroup.service;
 
 import com.redutec.admin.book.service.BookService;
-import com.redutec.admin.bookgroup.dto.BookGroupDto;
-import com.redutec.admin.bookgroup.mapper.BookGroupMapper;
-import com.redutec.core.entity.Book;
+import com.redutec.core.dto.BookGroupDto;
 import com.redutec.core.entity.BookGroup;
+import com.redutec.core.mapper.BookGroupMapper;
 import com.redutec.core.repository.BookGroupRepository;
 import com.redutec.core.specification.BookGroupSpecification;
 import jakarta.persistence.EntityNotFoundException;
@@ -16,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -36,20 +34,14 @@ public class BookGroupServiceImpl implements BookGroupService {
     @Override
     @Transactional
     public BookGroupDto.BookGroupResponse create(BookGroupDto.CreateBookGroupRequest createBookGroupRequest) {
-        // 도서 그룹에 등록할 도서 리스트 조회
-        List<Book> books = Optional.ofNullable(createBookGroupRequest.bookIds())
-                .orElse(Collections.emptyList())
-                .stream()
-                .map(bookService::getBook)
-                .collect(Collectors.toList());
-        return bookGroupMapper.toResponseDto(
-                bookGroupRepository.save(
-                        bookGroupMapper.toEntity(
-                                createBookGroupRequest,
-                                books
-                        )
-                )
-        );
+        return bookGroupMapper.toResponseDto(bookGroupRepository.save(bookGroupMapper.toCreateEntity(
+                createBookGroupRequest,
+                Optional.ofNullable(createBookGroupRequest.bookIds())
+                        .orElse(Collections.emptyList())
+                        .stream()
+                        .map(bookService::getBook)
+                        .collect(Collectors.toList()))
+        ));
     }
 
     /**
@@ -87,7 +79,7 @@ public class BookGroupServiceImpl implements BookGroupService {
     @Transactional(readOnly = true)
     public BookGroup getBookGroup(Long bookGroupId) {
         return bookGroupRepository.findById(bookGroupId)
-                .orElseThrow(() -> new EntityNotFoundException("도서 그룹을 찾을 수 없습니다. id = " + bookGroupId));
+                .orElseThrow(() -> new EntityNotFoundException("도서 그룹을 찾을 수 없습니다. bookGroupId = " + bookGroupId));
     }
 
     /**
@@ -98,24 +90,15 @@ public class BookGroupServiceImpl implements BookGroupService {
     @Override
     @Transactional
     public void update(Long bookGroupId, BookGroupDto.UpdateBookGroupRequest updateBookGroupRequest) {
-        // 수정할 도서 그룹 엔티티 조회
-        BookGroup bookGroup = getBookGroup(bookGroupId);
-        // 도서 그룹에 포함될 도서 엔티티들을 조회
-        List<Book> books = Optional.ofNullable(updateBookGroupRequest.bookIds())
-                .orElse(Collections.emptyList())
-                .stream()
-                .map(bookService::getBook)
-                .collect(Collectors.toList());
-        // UPDATE 도메인 메서드로 변환
-        bookGroup.updateBookGroup(
-                updateBookGroupRequest.name(),
-                updateBookGroupRequest.yearMonth(),
-                updateBookGroupRequest.type(),
-                updateBookGroupRequest.schoolGrade(),
-                books
-        );
-        // 도서 그룹 엔티티 UPDATE
-        bookGroupRepository.save(bookGroup);
+        bookGroupRepository.save(bookGroupMapper.toUpdateEntity(
+                getBookGroup(bookGroupId),
+                updateBookGroupRequest,
+                Optional.ofNullable(updateBookGroupRequest.bookIds())
+                        .orElse(Collections.emptyList())
+                        .stream()
+                        .map(bookService::getBook)
+                        .collect(Collectors.toList())
+        ));
     }
 
     /**

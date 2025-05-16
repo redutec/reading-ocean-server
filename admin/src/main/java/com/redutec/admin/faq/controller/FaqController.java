@@ -1,6 +1,6 @@
 package com.redutec.admin.faq.controller;
 
-import com.redutec.admin.faq.dto.FaqDto;
+import com.redutec.core.dto.FaqDto;
 import com.redutec.admin.faq.service.FaqService;
 import com.redutec.core.config.ApiResponseBody;
 import com.redutec.core.config.ApiResponseManager;

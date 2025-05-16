@@ -2,7 +2,7 @@ package com.redutec.admin.config;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.redutec.admin.authentication.dto.AuthenticationDto;
+import com.redutec.core.dto.AdminAuthenticationDto;
 import com.redutec.core.entity.AdminMenu;
 import com.redutec.core.entity.AdminUser;
 import com.redutec.core.entity.RefreshToken;
@@ -83,13 +83,13 @@ public class JwtUtil {
      * @return JWT Claims 맵 객체
      */
     @Transactional(readOnly = true)
-    protected AuthenticationDto.AuthenticatedAdminUser buildJwtClaims(AdminUser adminUser) {
+    protected AdminAuthenticationDto.AuthenticatedAdminUser buildJwtClaims(AdminUser adminUser) {
         // 현재 접속한 어드민 사용자가 접근할 수 있는 메뉴 목록 조회
         List<Long> accessibleMenus = adminMenuRepository.findAllByAccessibleRolesContains(adminUser.getRole()).stream()
                 .map(AdminMenu::getId)
                 .toList();
         // 현재 로그인한 어드민 사용자의 정보를 JWT Claims 응답 객체로 변환하여 리턴
-        return new AuthenticationDto.AuthenticatedAdminUser(
+        return new AdminAuthenticationDto.AuthenticatedAdminUser(
                 adminUser.getId(),
                 adminUser.getAccountId(),
                 adminUser.getEmail(),

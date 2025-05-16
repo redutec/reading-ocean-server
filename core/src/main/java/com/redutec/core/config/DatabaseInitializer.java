@@ -1,6 +1,8 @@
 package com.redutec.core.config;
 
+import com.redutec.core.dto.BranchDto;
 import com.redutec.core.entity.*;
+import com.redutec.core.mapper.BranchMapper;
 import com.redutec.core.meta.SampleData;
 import com.redutec.core.repository.*;
 import jakarta.annotation.PostConstruct;
@@ -30,6 +32,7 @@ public class DatabaseInitializer {
     private final InstituteRepository instituteRepository;
     private final TeacherRepository teacherRepository;
     private final PasswordEncoder passwordEncoder;
+    private final BranchMapper branchMapper;
 
     @PostConstruct
     @Transactional
@@ -232,18 +235,23 @@ public class DatabaseInitializer {
                             .orElseThrow(() -> new EntityNotFoundException("지사 정보를 찾을 수 없습니다. branchName: " + sampleBranch.getName()));
                     var managerTeacher = teacherRepository.findByAccountId(sampleBranch.getManagerAccountId())
                             .orElseThrow(() -> new EntityNotFoundException("교사 정보를 찾을 수 없습니다. accountId: " + sampleBranch.getManagerAccountId()));
-                    branch.updateBranch(
-                            managerTeacher,   // managerTeacher
-                            null,             // region
-                            null,             // name
-                            null,             // status
-                            null,             // businessArea
-                            null,             // contractFileName
-                            null,             // contractDate
-                            null,             // renewalDate
-                            null              // description
-                    );
-                    branchRepository.save(branch);
+                    var updateBranchRequest = new BranchDto.UpdateBranchRequest(
+                            managerTeacher.getId(),
+                            sampleBranch.getRegion(),
+                            sampleBranch.getName(),
+                            sampleBranch.getStatus(),
+                            sampleBranch.getBusinessArea(),
+                            null,
+                            sampleBranch.getContractDate(),
+                            sampleBranch.getRenewalDate(),
+                            sampleBranch.getDescription()
+                            );
+                    branchRepository.save(branchMapper.toUpdateEntity(
+                            branch,
+                            updateBranchRequest,
+                            managerTeacher,
+                            sampleBranch.getContractFileName()
+                    ));
                 });
     }
 }

@@ -33,9 +33,9 @@ public class InquirySpecification {
                     Optional.ofNullable(inquiryCriteria.inquirerEmail())
                             .filter(inquirerEmail -> !inquirerEmail.isEmpty())
                             .map(inquirerEmail -> criteriaBuilder.equal(root.get("inquirerEmail"), inquirerEmail)),
-                    Optional.ofNullable(inquiryCriteria.responderNickname())
-                            .filter(responderNickname -> !responderNickname.isEmpty())
-                            .map(responderNickname -> criteriaBuilder.like(root.get("adminUser").get("nickname"), "%" + responderNickname + "%")),
+                    Optional.ofNullable(inquiryCriteria.responderAccountId())
+                            .filter(responderAccountId -> !responderAccountId.isEmpty())
+                            .map(responderAccountId -> criteriaBuilder.like(root.get("responder").get("accountId"), "%" + responderAccountId + "%")),
                     Optional.ofNullable(inquiryCriteria.title())
                             .filter(title -> !title.isEmpty())
                             .map(title -> criteriaBuilder.like(root.get("title"), "%" + title + "%")),

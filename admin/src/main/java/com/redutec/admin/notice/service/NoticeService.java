@@ -1,6 +1,6 @@
 package com.redutec.admin.notice.service;
 
-import com.redutec.admin.notice.dto.NoticeDto;
+import com.redutec.core.dto.NoticeDto;
 import com.redutec.core.entity.Notice;
 
 public interface NoticeService {

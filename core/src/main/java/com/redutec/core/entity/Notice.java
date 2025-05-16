@@ -15,7 +15,6 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 @Entity
 @Comment("공지사항")
@@ -70,22 +69,4 @@ public class Notice {
     @LastModifiedDate
     @Column(nullable = false)
     private LocalDateTime updatedAt;
-
-    public void updateNotice(
-            Domain domain,
-            String title,
-            String content,
-            String attachedFileName,
-            Boolean visible,
-            LocalDateTime visibleStartAt,
-            LocalDateTime visibleEndAt
-    ) {
-        this.domain = Optional.ofNullable(domain).orElse(this.domain);
-        this.title = Optional.ofNullable(title).orElse(this.title);
-        this.content = Optional.ofNullable(content).orElse(this.content);
-        this.attachedFileName = Optional.ofNullable(attachedFileName).orElse(this.attachedFileName);
-        this.visible = Optional.ofNullable(visible).orElse(this.visible);
-        this.visibleStartAt = Optional.ofNullable(visibleStartAt).orElse(this.visibleStartAt);
-        this.visibleEndAt = Optional.ofNullable(visibleEndAt).orElse(this.visibleEndAt);
-    }
 }

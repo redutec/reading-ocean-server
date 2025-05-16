@@ -17,7 +17,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Entity
 @Comment("도서 그룹")
@@ -74,18 +73,4 @@ public class BookGroup {
     @LastModifiedDate
     @Column(nullable = false)
     private LocalDateTime updatedAt;
-
-    public void updateBookGroup(
-            String name,
-            String yearMonth,
-            BookGroupType type,
-            SchoolGrade schoolGrade,
-            List<Book> books
-    ) {
-        this.name = Optional.ofNullable(name).orElse(this.name);
-        this.type = Optional.ofNullable(type).orElse(this.type);
-        this.schoolGrade = Optional.ofNullable(schoolGrade).orElse(this.schoolGrade);
-        this.yearMonth = Optional.ofNullable(yearMonth).orElse(this.yearMonth);
-        this.books = Optional.ofNullable(books).orElse(this.books);
-    }
 }
