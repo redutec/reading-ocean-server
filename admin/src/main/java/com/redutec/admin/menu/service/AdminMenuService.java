@@ -26,13 +26,6 @@ public interface AdminMenuService {
     AdminMenuDto.AdminMenuResponse findById(Long adminMenuId);
 
     /**
-     * 특정 어드민 메뉴 엔티티 조회
-     * @param adminMenuId 어드민 메뉴 고유번호
-     * @return 특정 어드민 메뉴 엔티티 객체
-     */
-    AdminMenu getAdminMenu(Long adminMenuId);
-
-    /**
      * 어드민 메뉴 수정
      * @param adminMenuId 수정할 어드민 메뉴의 ID
      * @param updateAdminMenuRequest 어드민 메뉴 수정 요청 객체

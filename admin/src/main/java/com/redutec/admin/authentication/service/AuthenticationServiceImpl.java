@@ -1,8 +1,7 @@
 package com.redutec.admin.authentication.service;
 
-import com.redutec.core.dto.AdminAuthenticationDto;
 import com.redutec.admin.config.JwtUtil;
-import com.redutec.admin.user.service.AdminUserService;
+import com.redutec.core.dto.AdminAuthenticationDto;
 import com.redutec.core.entity.AdminMenu;
 import com.redutec.core.entity.AdminUser;
 import com.redutec.core.entity.RefreshToken;
@@ -19,7 +18,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,10 +41,9 @@ import static com.redutec.core.meta.AuthenticationStatus.PASSWORD_RESET;
 public class AuthenticationServiceImpl implements AuthenticationService {
     private final JwtUtil jwtUtil;
     private final AdminUserRepository adminUserRepository;
-    private final AdminUserService adminUserService;
+    private final AdminMenuRepository adminMenuRepository;
     private final RefreshTokenRepository refreshTokenRepository;
     private final PasswordEncoder passwordEncoder;
-    private final AdminMenuRepository adminMenuRepository;
 
     /**
      * 어드민 사용자 로그인 처리
@@ -57,7 +54,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public AdminAuthenticationDto.LoginResponse login(AdminAuthenticationDto.LoginRequest loginRequest) {
         // 어드민 사용자 엔티티 조회
-        AdminUser adminUser = adminUserService.findByAccountId(loginRequest.accountId());
+        AdminUser adminUser = adminUserRepository.findByAccountId(loginRequest.accountId())
+                .orElseThrow(() -> new BadCredentialsException("로그인 아이디 또는 비밀번호를 확인해주세요."));
         // 어드민 사용자 계정 상태 검증
         validateAuthenticationStatus(adminUser);
         // 비밀번호가 일치하는지 검증
@@ -96,13 +94,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Transactional(readOnly = true)
     public AdminAuthenticationDto.AuthenticatedAdminUser getAuthenticatedAdminUser() {
         // 현재 접속한 계정 정보를 가져오기
-        var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        // 계정 정보에 담긴 이메일 정보 가져오기
-        String accountId = (principal instanceof String)
-                ? (String) principal
-                : ((User) principal).getUsername();
-        // 이메일로 AdminUser 엔티티 조회
-        AdminUser adminUser = adminUserService.findByAccountId(accountId);
+        var accountId = SecurityContextHolder.getContext().getAuthentication().getName();
+        // 로그인 아이디로 AdminUser 엔티티 조회
+        AdminUser adminUser = adminUserRepository.findByAccountId(accountId)
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 어드민 사용자입니다. accountId = " + accountId));
         // 현재 로그인한 어드민 사용자 정보를 리턴
         return new AdminAuthenticationDto.AuthenticatedAdminUser(
                 adminUser.getId(),
@@ -124,7 +119,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     @Transactional
     public void resetPassword(AdminAuthenticationDto.ResetPasswordRequest resetPasswordRequest) throws MessagingException {
-        var adminUser = adminUserService.findByAccountId(resetPasswordRequest.accountId());
+        var adminUser = adminUserRepository.findByAccountId(resetPasswordRequest.accountId())
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 어드민 사용자입니다. accountId = " + resetPasswordRequest.accountId()));
         validateAuthenticationStatus(adminUser);
         var newPasswordLength = 8;
         var newPassword = generateRandomPassword(newPasswordLength);
@@ -140,12 +136,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     @Transactional
     public void updatePassword(AdminAuthenticationDto.UpdatePasswordRequest updatePasswordRequest) {
-        var adminUser = adminUserService.findByAccountId(updatePasswordRequest.accountId());
+        var adminUser = adminUserRepository.findByAccountId(updatePasswordRequest.accountId())
+                .orElseThrow(() -> new BadCredentialsException("로그인 아이디 또는 비밀번호를 확인해주세요."));
         if (adminUser.getAuthenticationStatus() != PASSWORD_RESET) {
             validateAuthenticationStatus(adminUser);
         }
         if (!passwordEncoder.matches(updatePasswordRequest.password(), adminUser.getPassword())) {
-            throw new BadCredentialsException("로그인 아이디 또는 비밀번호를 확인해주세요");
+            throw new BadCredentialsException("로그인 아이디 또는 비밀번호를 확인해주세요.");
         }
         updatePasswordAndStatus(adminUser, updatePasswordRequest.newPassword(), AuthenticationStatus.ACTIVE);
     }

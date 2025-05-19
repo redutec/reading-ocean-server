@@ -1,7 +1,6 @@
 package com.redutec.admin.inquiry.service;
 
 import com.redutec.core.dto.InquiryDto;
-import com.redutec.core.entity.Inquiry;
 
 public interface InquiryService {
     /**
@@ -24,13 +23,6 @@ public interface InquiryService {
      * @return 특정 고객문의 응답 객체
      */
     InquiryDto.InquiryResponse findById(Long inquiryId);
-
-    /**
-     * 특정 고객문의 엔티티 조회
-     * @param inquiryId 고객문의 고유번호
-     * @return 특정 고객문의 엔티티 객체
-     */
-    Inquiry getInquiry(Long inquiryId);
 
     /**
      * 특정 고객문의 수정

@@ -60,18 +60,6 @@ public class PolicyServiceImpl implements PolicyService {
     }
 
     /**
-     * 특정 정책 엔티티 조회
-     * @param policyId 정책 고유번호
-     * @return 특정 정책 엔티티 객체
-     */
-    @Override
-    @Transactional(readOnly = true)
-    public Policy getPolicy(Long policyId) {
-        return policyRepository.findById(policyId)
-                .orElseThrow(() -> new EntityNotFoundException("정책을 찾을 수 없습니다. policyId = " + policyId));
-    }
-
-    /**
      * 특정 정책 수정
      * @param policyId 수정할 정책의 ID
      * @param updatePolicyRequest 수정할 정보를 담은 DTO
@@ -90,5 +78,16 @@ public class PolicyServiceImpl implements PolicyService {
     @Transactional
     public void delete(Long policyId) {
         policyRepository.delete(getPolicy(policyId));
+    }
+
+    /**
+     * 특정 정책 엔티티 조회
+     * @param policyId 정책 고유번호
+     * @return 특정 정책 엔티티 객체
+     */
+    @Transactional(readOnly = true)
+    public Policy getPolicy(Long policyId) {
+        return policyRepository.findById(policyId)
+                .orElseThrow(() -> new EntityNotFoundException("정책을 찾을 수 없습니다. policyId = " + policyId));
     }
 }

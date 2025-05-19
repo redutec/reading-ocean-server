@@ -58,18 +58,6 @@ public class PopupServiceImpl implements PopupService {
     }
 
     /**
-     * 특정 팝업 엔티티 조회
-     * @param popupId 팝업 고유번호
-     * @return 특정 팝업 엔티티 객체
-     */
-    @Override
-    @Transactional(readOnly = true)
-    public Popup getPopup(Long popupId) {
-        return popupRepository.findById(popupId)
-                .orElseThrow(() -> new EntityNotFoundException("팝업을 찾을 수 없습니다. popupId = " + popupId));
-    }
-
-    /**
      * 특정 팝업 수정
      * @param popupId 수정할 팝업의 ID
      * @param updatePopupRequest 수정할 정보를 담은 DTO
@@ -88,5 +76,16 @@ public class PopupServiceImpl implements PopupService {
     @Transactional
     public void delete(Long popupId) {
         popupRepository.delete(getPopup(popupId));
+    }
+
+    /**
+     * 특정 팝업 엔티티 조회
+     * @param popupId 팝업 고유번호
+     * @return 특정 팝업 엔티티 객체
+     */
+    @Transactional(readOnly = true)
+    public Popup getPopup(Long popupId) {
+        return popupRepository.findById(popupId)
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 팝업입니다. popupId = " + popupId));
     }
 }

@@ -1,7 +1,6 @@
 package com.redutec.admin.book.service;
 
 import com.redutec.core.dto.BookDto;
-import com.redutec.core.entity.Book;
 
 public interface BookService {
     /**
@@ -24,13 +23,6 @@ public interface BookService {
      * @return 특정 도서 응답 객체
      */
     BookDto.BookResponse findById(Long bookId);
-
-    /**
-     * 특정 도서 엔티티 조회
-     * @param bookId 도서 고유번호
-     * @return 특정 도서 엔티티 객체
-     */
-    Book getBook(Long bookId);
 
     /**
      * 특정 도서 수정

@@ -1,11 +1,12 @@
 package com.redutec.admin.institute.service;
 
-import com.redutec.admin.branch.service.BranchService;
 import com.redutec.core.dto.InstituteDto;
+import com.redutec.core.entity.Branch;
 import com.redutec.core.entity.Institute;
 import com.redutec.core.entity.Teacher;
 import com.redutec.core.mapper.InstituteMapper;
 import com.redutec.core.meta.TeacherRole;
+import com.redutec.core.repository.BranchRepository;
 import com.redutec.core.repository.InstituteRepository;
 import com.redutec.core.repository.TeacherRepository;
 import com.redutec.core.specification.InstituteSpecification;
@@ -28,7 +29,7 @@ import java.util.stream.Collectors;
 public class InstituteServiceImpl implements InstituteService {
     private final InstituteMapper instituteMapper;
     private final InstituteRepository instituteRepository;
-    private final BranchService branchService;
+    private final BranchRepository branchRepository;
     private final TeacherRepository teacherRepository;
 
     /**
@@ -39,12 +40,16 @@ public class InstituteServiceImpl implements InstituteService {
     @Override
     @Transactional
     public InstituteDto.InstituteResponse create(InstituteDto.CreateInstituteRequest createInstituteRequest) {
-        return instituteMapper.toResponseDto(instituteRepository.save(instituteMapper.toCreateEntity(
-                createInstituteRequest,
-                Optional.ofNullable(createInstituteRequest.branchId())
-                        .map(branchService::getBranch)
-                        .orElse(null))),
-                null);
+        // 등록 요청 객체에 지사 고유번호가 존재한다면 지사 엔티티를 조회
+        Branch branch = Optional.ofNullable(createInstituteRequest.branchId())
+                .map(branchId -> branchRepository.findById(branchId)
+                        .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 지사입니다. branchId = " + branchId)))
+                .orElse(null);
+        // 교육기관 등록
+        return instituteMapper.toResponseDto(
+                instituteRepository.save(instituteMapper.toCreateEntity(createInstituteRequest, branch)),
+                null
+        );
     }
 
     /**
@@ -80,25 +85,12 @@ public class InstituteServiceImpl implements InstituteService {
     @Override
     @Transactional(readOnly = true)
     public InstituteDto.InstituteResponse findById(Long instituteId) {
-        // 교육기관 조회
+        // 교육기관 엔티티 조회
         Institute institute = getInstitute(instituteId);
+        // 교육기관의 원장 교사 엔티티 조회
+        Teacher chiefTeacher = teacherRepository.findByInstituteAndRole(institute, TeacherRole.CHIEF).orElse(null);
         // 응답객체에 담아 리턴
-        return instituteMapper.toResponseDto(
-                institute,
-                teacherRepository.findByInstituteAndRole(institute, TeacherRole.CHIEF).orElse(null)
-        );
-    }
-
-    /**
-     * 특정 교육기관 엔티티 조회
-     * @param instituteId 교육기관 고유번호
-     * @return 특정 교육기관 엔티티 객체
-     */
-    @Override
-    @Transactional(readOnly = true)
-    public Institute getInstitute(Long instituteId) {
-        return instituteRepository.findById(instituteId)
-                .orElseThrow(() -> new EntityNotFoundException("교육기관이 존재하지 않습니다. instituteId = " + instituteId));
+        return instituteMapper.toResponseDto(institute, chiefTeacher);
     }
 
     /**
@@ -109,12 +101,16 @@ public class InstituteServiceImpl implements InstituteService {
     @Override
     @Transactional
     public void update(Long instituteId, InstituteDto.UpdateInstituteRequest updateInstituteRequest) {
+        // 수정 요청 객체에 지사 고유번호가 존재하면 지사 엔티티를 조회
+        Branch branch = Optional.ofNullable(updateInstituteRequest.branchId())
+                .map(branchId -> branchRepository.findById(branchId)
+                        .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 지사입니다. branchId = " + branchId)))
+                .orElse(null);
+        // 교육기관 수정
         instituteRepository.save(instituteMapper.toUpdateEntity(
                 getInstitute(instituteId),
                 updateInstituteRequest,
-                Optional.ofNullable(updateInstituteRequest.branchId())
-                        .map(branchService::getBranch)
-                        .orElse(null)
+                branch
         ));
     }
 
@@ -126,5 +122,16 @@ public class InstituteServiceImpl implements InstituteService {
     @Transactional
     public void delete(Long instituteId) {
         instituteRepository.delete(getInstitute(instituteId));
+    }
+
+    /**
+     * 특정 교육기관 엔티티 조회
+     * @param instituteId 교육기관 고유번호
+     * @return 특정 교육기관 엔티티 객체
+     */
+    @Transactional(readOnly = true)
+    public Institute getInstitute(Long instituteId) {
+        return instituteRepository.findById(instituteId)
+                .orElseThrow(() -> new EntityNotFoundException("교육기관이 존재하지 않습니다. instituteId = " + instituteId));
     }
 }

@@ -1,7 +1,6 @@
 package com.redutec.admin.faq.service;
 
 import com.redutec.core.dto.FaqDto;
-import com.redutec.core.entity.Faq;
 
 public interface FaqService {
     /**
@@ -24,13 +23,6 @@ public interface FaqService {
      * @return 특정 이용안내 응답 객체
      */
     FaqDto.FaqResponse findById(Long faqId);
-
-    /**
-     * 특정 이용안내 엔티티 조회
-     * @param faqId 이용안내 고유번호
-     * @return 특정 이용안내 엔티티 객체
-     */
-    Faq getFaq(Long faqId);
 
     /**
      * 특정 이용안내 수정

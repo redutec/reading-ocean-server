@@ -67,18 +67,6 @@ public class InquiryServiceImpl implements InquiryService {
     }
 
     /**
-     * 특정 고객문의 엔티티 조회
-     * @param inquiryId 고객문의 고유번호
-     * @return 특정 고객문의 엔티티 객체
-     */
-    @Override
-    @Transactional(readOnly = true)
-    public Inquiry getInquiry(Long inquiryId) {
-        return inquiryRepository.findById(inquiryId)
-                .orElseThrow(() -> new EntityNotFoundException("고객문의를 찾을 수 없습니다. inquiryId = " + inquiryId));
-    }
-
-    /**
      * 특정 고객문의 수정
      * @param inquiryId 수정할 고객문의의 ID
      * @param updateInquiryRequest 수정할 정보를 담은 DTO
@@ -103,5 +91,16 @@ public class InquiryServiceImpl implements InquiryService {
     @Transactional
     public void delete(Long inquiryId) {
         inquiryRepository.delete(getInquiry(inquiryId));
+    }
+
+    /**
+     * 특정 고객문의 엔티티 조회
+     * @param inquiryId 고객문의 고유번호
+     * @return 특정 고객문의 엔티티 객체
+     */
+    @Transactional(readOnly = true)
+    public Inquiry getInquiry(Long inquiryId) {
+        return inquiryRepository.findById(inquiryId)
+                .orElseThrow(() -> new EntityNotFoundException("고객문의를 찾을 수 없습니다. inquiryId = " + inquiryId));
     }
 }

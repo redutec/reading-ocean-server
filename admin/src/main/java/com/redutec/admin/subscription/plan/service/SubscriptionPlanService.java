@@ -1,7 +1,6 @@
 package com.redutec.admin.subscription.plan.service;
 
 import com.redutec.core.dto.SubscriptionPlanDto;
-import com.redutec.core.entity.SubscriptionPlan;
 
 public interface SubscriptionPlanService {
     /**
@@ -24,13 +23,6 @@ public interface SubscriptionPlanService {
      * @return 특정 구독 상품 응답 객체
      */
     SubscriptionPlanDto.SubscriptionPlanResponse findById(Long subscriptionPlanId);
-
-    /**
-     * 특정 구독 상품 엔티티 조회
-     * @param subscriptionPlanId 구독 상품 고유번호
-     * @return 특정 구독 상품 엔티티 객체
-     */
-    SubscriptionPlan getSubscriptionPlan(Long subscriptionPlanId);
 
     /**
      * 특정 구독 상품 수정

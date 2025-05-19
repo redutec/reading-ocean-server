@@ -1,7 +1,6 @@
 package com.redutec.admin.student.service;
 
 import com.redutec.core.dto.StudentDto;
-import com.redutec.core.entity.Student;
 
 public interface StudentService {
     /**
@@ -24,13 +23,6 @@ public interface StudentService {
      * @return 특정 학생 응답 객체
      */
     StudentDto.StudentResponse findById(Long studentId);
-
-    /**
-     * 특정 학생 엔티티 조회
-     * @param studentId 학생 고유번호
-     * @return 특정 학생 엔티티 객체
-     */
-    Student getStudent(Long studentId);
 
     /**
      * 특정 학생 수정

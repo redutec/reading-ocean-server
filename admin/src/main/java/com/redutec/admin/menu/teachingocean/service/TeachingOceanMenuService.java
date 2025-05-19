@@ -1,7 +1,6 @@
 package com.redutec.admin.menu.teachingocean.service;
 
 import com.redutec.core.dto.TeachingOceanMenuDto;
-import com.redutec.core.entity.TeachingOceanMenu;
 
 public interface TeachingOceanMenuService {
     /**
@@ -24,13 +23,6 @@ public interface TeachingOceanMenuService {
      * @return 특정 티칭오션 메뉴 응답 객체
      */
     TeachingOceanMenuDto.TeachingOceanMenuResponse findById(Long teachingOceanMenuId);
-
-    /**
-     * 특정 티칭오션 메뉴 엔티티 조회
-     * @param teachingOceanMenuId 티칭오션 메뉴 고유번호
-     * @return 특정 티칭오션 메뉴 엔티티 객체
-     */
-    TeachingOceanMenu getTeachingOceanMenu(Long teachingOceanMenuId);
 
     /**
      * 티칭오션 메뉴 수정

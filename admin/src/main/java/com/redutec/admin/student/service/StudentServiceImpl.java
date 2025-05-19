@@ -1,12 +1,12 @@
 package com.redutec.admin.student.service;
 
-import com.redutec.admin.institute.service.InstituteService;
 import com.redutec.core.dto.StudentDto;
 import com.redutec.core.entity.Homeroom;
 import com.redutec.core.entity.Institute;
 import com.redutec.core.entity.Student;
 import com.redutec.core.mapper.StudentMapper;
 import com.redutec.core.repository.HomeroomRepository;
+import com.redutec.core.repository.InstituteRepository;
 import com.redutec.core.repository.StudentRepository;
 import com.redutec.core.specification.StudentSpecification;
 import jakarta.persistence.EntityNotFoundException;
@@ -26,9 +26,9 @@ import java.util.Optional;
 public class StudentServiceImpl implements StudentService {
     private final StudentMapper studentMapper;
     private final StudentRepository studentRepository;
-    private final PasswordEncoder passwordEncoder;
-    private final InstituteService instituteService;
+    private final InstituteRepository instituteRepository;
     private final HomeroomRepository homeroomRepository;
+    private final PasswordEncoder passwordEncoder;
 
     /**
      * 학생 등록
@@ -38,19 +38,19 @@ public class StudentServiceImpl implements StudentService {
     @Override
     @Transactional
     public StudentDto.StudentResponse create(StudentDto.CreateStudentRequest createStudentRequest) {
-        return studentMapper.toResponseDto(
-                studentRepository.save(
-                        studentMapper.toCreateEntity(
-                                createStudentRequest,
-                                Optional.ofNullable(createStudentRequest.instituteId())
-                                        .map(instituteService::getInstitute)
-                                        .orElse(null),
-                                Optional.ofNullable(createStudentRequest.homeroomId())
-                                        .flatMap(homeroomRepository::findById)
-                                        .orElse(null)
-                        )
-                )
-        );
+        // 등록 요청 객체에 교육기관 고유번호가 있다면 교육기관 엔티티 조회
+        Institute institute = Optional.ofNullable(createStudentRequest.instituteId())
+                .flatMap(instituteRepository::findById)
+                .orElse(null);
+        // 등록 요청 객체에 학급 고유번호가 있다면 학급 엔티티 조회
+        Homeroom homeroom = Optional.ofNullable(createStudentRequest.homeroomId())
+                .flatMap(homeroomRepository::findById)
+                .orElse(null);
+        return studentMapper.toResponseDto(studentRepository.save(studentMapper.toCreateEntity(
+                createStudentRequest,
+                institute,
+                homeroom
+        )));
     }
 
     /**
@@ -80,18 +80,6 @@ public class StudentServiceImpl implements StudentService {
     }
 
     /**
-     * 특정 학생 엔티티 조회
-     * @param studentId 학생 고유번호
-     * @return 특정 학생 엔티티 객체
-     */
-    @Override
-    @Transactional(readOnly = true)
-    public Student getStudent(Long studentId) {
-        return studentRepository.findById(studentId)
-                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 학생입니다. studentId = " + studentId));
-    }
-
-    /**
      * 특정 학생 수정
      * @param studentId 수정할 학생의 ID
      * @param updateStudentRequest 수정할 정보를 담은 DTO
@@ -103,7 +91,7 @@ public class StudentServiceImpl implements StudentService {
         Student student = getStudent(studentId);
         // 수정 요청 객체에 학원 ID가 있다면 학원 엔티티 조회(없으면 Null)
         Institute institute = Optional.ofNullable(updateStudentRequest.instituteId())
-                .map(instituteService::getInstitute)
+                .flatMap(instituteRepository::findById)
                 .orElse(null);
         // 수정 요청 객체에 학급 ID가 있다면 학급 엔티티 조회(없으면 Null)
         Homeroom homeroom = Optional.ofNullable(updateStudentRequest.homeroomId())
@@ -133,5 +121,16 @@ public class StudentServiceImpl implements StudentService {
     @Transactional
     public void delete(Long studentId) {
         studentRepository.delete(getStudent(studentId));
+    }
+
+    /**
+     * 특정 학생 엔티티 조회
+     * @param studentId 학생 고유번호
+     * @return 특정 학생 엔티티 객체
+     */
+    @Transactional(readOnly = true)
+    public Student getStudent(Long studentId) {
+        return studentRepository.findById(studentId)
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 학생입니다. studentId = " + studentId));
     }
 }

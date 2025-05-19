@@ -1,12 +1,15 @@
 package com.redutec.admin.homeroom.service;
 
-import com.redutec.admin.institute.service.InstituteService;
-import com.redutec.admin.student.service.StudentService;
-import com.redutec.admin.teacher.service.TeacherService;
 import com.redutec.core.dto.HomeroomDto;
 import com.redutec.core.entity.Homeroom;
+import com.redutec.core.entity.Institute;
+import com.redutec.core.entity.Student;
+import com.redutec.core.entity.Teacher;
 import com.redutec.core.mapper.HomeroomMapper;
 import com.redutec.core.repository.HomeroomRepository;
+import com.redutec.core.repository.InstituteRepository;
+import com.redutec.core.repository.StudentRepository;
+import com.redutec.core.repository.TeacherRepository;
 import com.redutec.core.specification.HomeroomSpecification;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
@@ -16,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -24,9 +28,9 @@ import java.util.Optional;
 public class HomeroomServiceImpl implements HomeroomService {
     private final HomeroomMapper homeroomMapper;
     private final HomeroomRepository homeroomRepository;
-    private final InstituteService instituteService;
-    private final StudentService studentService;
-    private final TeacherService teacherService;
+    private final InstituteRepository instituteRepository;
+    private final TeacherRepository teacherRepository;
+    private final StudentRepository studentRepository;
 
     /**
      * 학급 등록
@@ -36,19 +40,27 @@ public class HomeroomServiceImpl implements HomeroomService {
     @Override
     @Transactional
     public HomeroomDto.HomeroomResponse create(HomeroomDto.CreateHomeroomRequest createHomeroomRequest) {
+        // 등록 요청 객체에 교육기관이 존재한다면 교육기관 엔티티를 조회
+        Institute institute = instituteRepository.findById(createHomeroomRequest.instituteId())
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 교육기관입니다. instituteId = " + createHomeroomRequest.instituteId()));
+        // 등록 요청 객체에 학급에 소속될 교사 목록이 있다면 교사 엔티티 리스트 조회
+        List<Teacher> teachers = Optional.ofNullable(createHomeroomRequest.teacherIds())
+                .map(teacherIds -> teacherIds.stream()
+                        .flatMap(teacherId -> teacherRepository.findById(teacherId).stream())
+                        .toList())
+                .orElse(null);
+        // 등록 요청 객체에 학급에 소속될 학생 목록이 있다면 학생 엔티티 리스트 조회
+        List<Student> students = Optional.ofNullable(createHomeroomRequest.studentIds())
+                .map(studentIds -> studentIds.stream()
+                        .flatMap(studentId -> studentRepository.findById(studentId).stream())
+                        .toList())
+                .orElse(null);
+        // 학급 등록 및 등록한 정보를 응답 객체로 리턴
         return homeroomMapper.toResponseDto(homeroomRepository.save(homeroomMapper.toCreateEntity(
                 createHomeroomRequest,
-                instituteService.getInstitute(createHomeroomRequest.instituteId()),
-                Optional.ofNullable(createHomeroomRequest.studentIds())
-                        .map(studentIds -> studentIds.stream()
-                                .map(studentService::getStudent)
-                                .toList())
-                        .orElse(null),
-                Optional.ofNullable(createHomeroomRequest.teacherIds())
-                        .map(teacherIds -> teacherIds.stream()
-                                .map(teacherService::getTeacher)
-                                .toList())
-                        .orElse(null)
+                institute,
+                teachers,
+                students
         )));
     }
 
@@ -98,22 +110,32 @@ public class HomeroomServiceImpl implements HomeroomService {
     @Override
     @Transactional
     public void update(Long homeroomId, HomeroomDto.UpdateHomeroomRequest updateHomeroomRequest) {
+        // 수정할 학급 조회
+        Homeroom homeroom = homeroomRepository.findById(homeroomId)
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 학급입니다. homeroomId = " + homeroomId));
+        // 수정 요청 객체에 교육기관 고유번호가 있다면 교육기관 엔티티 조회
+        Institute institute = Optional.ofNullable(updateHomeroomRequest.instituteId())
+                .flatMap(instituteRepository::findById)
+                .orElse(null);
+        // 수정 요청 객체에 학급에 소속될 교사 목록이 있다면 교사 엔티티 리스트 조회
+        List<Teacher> teachers = Optional.ofNullable(updateHomeroomRequest.teacherIds())
+                .map(teacherIds -> teacherIds.stream()
+                        .flatMap(teacherId -> teacherRepository.findById(teacherId).stream())
+                        .toList())
+                .orElse(null);
+        // 수정 요청 객체에 학급에 소속될 학생 목록이 있다면 학생 엔티티 리스트 조회
+        List<Student> students = Optional.ofNullable(updateHomeroomRequest.studentIds())
+                .map(studentIds -> studentIds.stream()
+                        .flatMap(studentId -> studentRepository.findById(studentId).stream())
+                        .toList())
+                .orElse(null);
+        // 학급 정보 수정
         homeroomRepository.save(homeroomMapper.toUpdateEntity(
-                getHomeroom(homeroomId),
+                homeroom,
                 updateHomeroomRequest,
-                Optional.ofNullable(updateHomeroomRequest.instituteId())
-                        .map(instituteService::getInstitute)
-                        .orElse(null),
-                Optional.ofNullable(updateHomeroomRequest.studentIds())
-                        .map(studentIds -> studentIds.stream()
-                                .map(studentService::getStudent)
-                                .toList())
-                        .orElse(null),
-                Optional.ofNullable(updateHomeroomRequest.teacherIds())
-                        .map(teacherIds -> teacherIds.stream()
-                                .map(teacherService::getTeacher)
-                                .toList())
-                        .orElse(null)
+                institute,
+                teachers,
+                students
         ));
     }
 

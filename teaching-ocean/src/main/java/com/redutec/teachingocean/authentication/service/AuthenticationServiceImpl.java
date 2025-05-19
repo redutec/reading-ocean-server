@@ -1,12 +1,13 @@
 package com.redutec.teachingocean.authentication.service;
 
+import com.redutec.core.dto.TeachingOceanAuthenticationDto;
 import com.redutec.core.entity.*;
 import com.redutec.core.meta.AuthenticationStatus;
 import com.redutec.core.meta.Domain;
+import com.redutec.core.meta.TeacherRole;
 import com.redutec.core.repository.RefreshTokenRepository;
 import com.redutec.core.repository.TeacherRepository;
 import com.redutec.core.repository.TeachingOceanMenuRepository;
-import com.redutec.core.dto.TeachingOceanAuthenticationDto;
 import com.redutec.teachingocean.config.JwtUtil;
 import jakarta.mail.MessagingException;
 import jakarta.persistence.EntityNotFoundException;
@@ -16,7 +17,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,7 +26,9 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.redutec.core.meta.AuthenticationStatus.PASSWORD_RESET;
 
@@ -93,14 +95,35 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Transactional(readOnly = true)
     public TeachingOceanAuthenticationDto.AuthenticatedTeacher getAuthenticatedTeacher() {
         // 현재 접속한 계정 정보를 가져오기
-        var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        // 계정 정보에 담긴 로그인 아이디 정보 가져오기
-        String accountId = (principal instanceof String)
-                ? (String) principal
-                : ((User) principal).getUsername();
-        // 로그인 아이디로 Teacher, Institute, Homeroom 엔티티 조회
+        var accountId = SecurityContextHolder.getContext().getAuthentication().getName();
+        // 교사 정보 조회
         Teacher teacher = teacherRepository.findByAccountId(accountId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 교사 계정입니다. accountId = " + accountId));
+        // 소속 교육기관 정보
+        Institute institute = teacher.getInstitute();
+        Long instituteId = Optional.ofNullable(institute)
+                .map(Institute::getId)
+                .orElse(null);
+        String instituteName = Optional.ofNullable(institute)
+                .map(Institute::getName)
+                .orElse(null);
+        // 담임 학급 정보
+        Homeroom homeroom = teacher.getHomeroom();
+        Long homeroomId = Optional.ofNullable(homeroom)
+                .map(Homeroom::getId)
+                .orElse(null);
+        String homeroomName = Optional.ofNullable(homeroom)
+                .map(Homeroom::getName)
+                .orElse(null);
+        // 원장 교사 ID 조회
+        Long chiefTeacherId = teacherRepository.findByInstituteAndRole(institute, TeacherRole.CHIEF)
+                .map(Teacher::getId)
+                .orElse(null);
+        // 접근 가능한 메뉴 목록
+        List<Long> accessibleMenuIds = teachingOceanMenuRepository.findAllByAccessibleRolesContains(teacher.getRole())
+                .stream()
+                .map(TeachingOceanMenu::getId)
+                .collect(Collectors.toList());
         // 현재 로그인한 교사 정보를 리턴
         return new TeachingOceanAuthenticationDto.AuthenticatedTeacher(
                 teacher.getId(),
@@ -112,13 +135,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 teacher.getRole(),
                 teacher.getAuthenticationStatus(),
                 teacher.getFailedLoginAttempts(),
-                teacher.getInstitute() != null ? teacher.getInstitute().getId() : null,
-                teacher.getInstitute() != null ? teacher.getInstitute().getName() : null,
-                teacher.getHomeroom() != null ? teacher.getHomeroom().getId() : null,
-                teacher.getHomeroom() != null ? teacher.getHomeroom().getName() : null,
-                teachingOceanMenuRepository.findAllByAccessibleRolesContains(teacher.getRole()).stream()
-                        .map(TeachingOceanMenu::getId)
-                        .toList()
+                instituteId,
+                instituteName,
+                homeroomId,
+                homeroomName,
+                accessibleMenuIds,
+                chiefTeacherId
         );
     }
 

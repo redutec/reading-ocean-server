@@ -1,7 +1,6 @@
 package com.redutec.admin.policy.service;
 
 import com.redutec.core.dto.PolicyDto;
-import com.redutec.core.entity.Policy;
 
 public interface PolicyService {
     /**
@@ -24,13 +23,6 @@ public interface PolicyService {
      * @return 특정 정책 응답 객체
      */
     PolicyDto.PolicyResponse findById(Long policyId);
-
-    /**
-     * 특정 정책 엔티티 조회
-     * @param policyId 정책 고유번호
-     * @return 특정 정책 엔티티 객체
-     */
-    Policy getPolicy(Long policyId);
 
     /**
      * 특정 정책 수정

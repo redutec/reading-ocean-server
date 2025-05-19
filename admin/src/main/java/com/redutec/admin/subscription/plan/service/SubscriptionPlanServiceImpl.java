@@ -66,18 +66,6 @@ public class SubscriptionPlanServiceImpl implements SubscriptionPlanService {
     }
 
     /**
-     * 특정 구독 상품 엔티티 조회
-     * @param subscriptionPlanId 구독 상품 고유번호
-     * @return 특정 구독 상품 엔티티 객체
-     */
-    @Override
-    @Transactional(readOnly = true)
-    public SubscriptionPlan getSubscriptionPlan(Long subscriptionPlanId) {
-        return subscriptionPlanRepository.findById(subscriptionPlanId)
-                .orElseThrow(() -> new EntityNotFoundException("구독 상품를 찾을 수 없습니다. subscriptionPlanId = " + subscriptionPlanId));
-    }
-
-    /**
      * 특정 구독 상품 수정
      * @param subscriptionPlanId 수정할 구독 상품의 ID
      * @param updateSubscriptionPlanRequest 수정할 정보를 담은 DTO
@@ -102,5 +90,16 @@ public class SubscriptionPlanServiceImpl implements SubscriptionPlanService {
     @Transactional
     public void delete(Long subscriptionPlanId) {
         subscriptionPlanRepository.delete(getSubscriptionPlan(subscriptionPlanId));
+    }
+
+    /**
+     * 특정 구독 상품 엔티티 조회
+     * @param subscriptionPlanId 구독 상품 고유번호
+     * @return 특정 구독 상품 엔티티 객체
+     */
+    @Transactional(readOnly = true)
+    public SubscriptionPlan getSubscriptionPlan(Long subscriptionPlanId) {
+        return subscriptionPlanRepository.findById(subscriptionPlanId)
+                .orElseThrow(() -> new EntityNotFoundException("구독 상품를 찾을 수 없습니다. subscriptionPlanId = " + subscriptionPlanId));
     }
 }

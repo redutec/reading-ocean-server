@@ -75,18 +75,6 @@ public class BannerServiceImpl implements BannerService {
     }
 
     /**
-     * 특정 배너 엔티티 조회
-     * @param bannerId 배너 고유번호
-     * @return 특정 배너 엔티티 객체
-     */
-    @Override
-    @Transactional(readOnly = true)
-    public Banner getBanner(Long bannerId) {
-        return bannerRepository.findById(bannerId)
-                .orElseThrow(() -> new EntityNotFoundException("배너를 찾을 수 없습니다. bannerId = " + bannerId));
-    }
-
-    /**
      * 특정 배너 수정
      * @param bannerId 수정할 배너의 ID
      * @param updateBannerRequest 수정할 정보를 담은 DTO
@@ -115,5 +103,16 @@ public class BannerServiceImpl implements BannerService {
     @Transactional
     public void delete(Long bannerId) {
         bannerRepository.delete(getBanner(bannerId));
+    }
+
+    /**
+     * 특정 배너 엔티티 조회
+     * @param bannerId 배너 고유번호
+     * @return 특정 배너 엔티티 객체
+     */
+    @Transactional(readOnly = true)
+    public Banner getBanner(Long bannerId) {
+        return bannerRepository.findById(bannerId)
+                .orElseThrow(() -> new EntityNotFoundException("배너를 찾을 수 없습니다. bannerId = " + bannerId));
     }
 }

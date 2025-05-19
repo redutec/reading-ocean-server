@@ -1,7 +1,6 @@
 package com.redutec.admin.bookgroup.service;
 
 import com.redutec.core.dto.BookGroupDto;
-import com.redutec.core.entity.BookGroup;
 
 public interface BookGroupService {
     /**
@@ -24,13 +23,6 @@ public interface BookGroupService {
      * @return 특정 도서 그룹 응답 객체
      */
     BookGroupDto.BookGroupResponse findById(Long bookGroupId);
-
-    /**
-     * 특정 도서 그룹 엔티티 조회
-     * @param bookGroupId 도서 그룹 고유번호
-     * @return 특정 도서 그룹 엔티티 객체
-     */
-    BookGroup getBookGroup(Long bookGroupId);
 
     /**
      * 특정 도서 그룹 수정

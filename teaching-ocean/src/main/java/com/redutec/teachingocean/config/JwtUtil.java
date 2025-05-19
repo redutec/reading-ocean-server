@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.redutec.core.entity.*;
 import com.redutec.core.meta.Domain;
+import com.redutec.core.meta.TeacherRole;
 import com.redutec.core.repository.RefreshTokenRepository;
 import com.redutec.core.repository.TeacherRepository;
 import com.redutec.core.repository.TeachingOceanMenuRepository;
@@ -99,6 +100,10 @@ public class JwtUtil {
         String instituteName = institute != null ? institute.getName() : null;
         Long homeroomId = homeroom != null ? homeroom.getId() : null;
         String homeroomName = homeroom != null ? homeroom.getName() : null;
+        // 원장 교사 ID 조회
+        Long chiefTeacherId = teacherRepository.findByInstituteAndRole(institute, TeacherRole.CHIEF)
+                .map(Teacher::getId)
+                .orElse(null);
         // 현재 로그인한 교사의 정보를 JWT Claims 응답 객체로 변환하여 리턴
         return new TeachingOceanAuthenticationDto.AuthenticatedTeacher(
                 teacher.getId(),
@@ -114,7 +119,8 @@ public class JwtUtil {
                 instituteName,
                 homeroomId,
                 homeroomName,
-                accessibleMenus
+                accessibleMenus,
+                chiefTeacherId
         );
     }
 

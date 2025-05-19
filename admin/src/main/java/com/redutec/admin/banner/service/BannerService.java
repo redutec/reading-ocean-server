@@ -1,7 +1,6 @@
 package com.redutec.admin.banner.service;
 
 import com.redutec.core.dto.BannerDto;
-import com.redutec.core.entity.Banner;
 
 public interface BannerService {
     /**
@@ -24,13 +23,6 @@ public interface BannerService {
      * @return 특정 배너 응답 객체
      */
     BannerDto.BannerResponse findById(Long bannerId);
-
-    /**
-     * 특정 배너 엔티티 조회
-     * @param bannerId 배너 고유번호
-     * @return 특정 배너 엔티티 객체
-     */
-    Banner getBanner(Long bannerId);
 
     /**
      * 특정 배너 수정

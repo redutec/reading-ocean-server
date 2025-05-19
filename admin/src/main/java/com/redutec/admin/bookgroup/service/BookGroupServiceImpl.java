@@ -1,10 +1,11 @@
 package com.redutec.admin.bookgroup.service;
 
-import com.redutec.admin.book.service.BookService;
 import com.redutec.core.dto.BookGroupDto;
+import com.redutec.core.entity.Book;
 import com.redutec.core.entity.BookGroup;
 import com.redutec.core.mapper.BookGroupMapper;
 import com.redutec.core.repository.BookGroupRepository;
+import com.redutec.core.repository.BookRepository;
 import com.redutec.core.specification.BookGroupSpecification;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -24,7 +26,7 @@ import java.util.stream.Collectors;
 public class BookGroupServiceImpl implements BookGroupService {
     private final BookGroupMapper bookGroupMapper;
     private final BookGroupRepository bookGroupRepository;
-    private final BookService bookService;
+    private final BookRepository bookRepository;
 
     /**
      * 도서 그룹 등록
@@ -34,14 +36,17 @@ public class BookGroupServiceImpl implements BookGroupService {
     @Override
     @Transactional
     public BookGroupDto.BookGroupResponse create(BookGroupDto.CreateBookGroupRequest createBookGroupRequest) {
+        // 도서 그룹 등록 요청 객체에 도서 고유번호 목록이 있다면 도서 엔티티 리스트를 조회
+        List<Book> books = Optional.ofNullable(createBookGroupRequest.bookIds())
+                .orElse(Collections.emptyList())
+                .stream()
+                .flatMap(bookId -> bookRepository.findById(bookId).stream())
+                .collect(Collectors.toList());
+        // 도서 그룹 등록
         return bookGroupMapper.toResponseDto(bookGroupRepository.save(bookGroupMapper.toCreateEntity(
                 createBookGroupRequest,
-                Optional.ofNullable(createBookGroupRequest.bookIds())
-                        .orElse(Collections.emptyList())
-                        .stream()
-                        .map(bookService::getBook)
-                        .collect(Collectors.toList()))
-        ));
+                books
+        )));
     }
 
     /**
@@ -71,18 +76,6 @@ public class BookGroupServiceImpl implements BookGroupService {
     }
 
     /**
-     * 특정 도서 그룹 엔티티 조회
-     * @param bookGroupId 도서 그룹 고유번호
-     * @return 특정 도서 그룹 엔티티 객체
-     */
-    @Override
-    @Transactional(readOnly = true)
-    public BookGroup getBookGroup(Long bookGroupId) {
-        return bookGroupRepository.findById(bookGroupId)
-                .orElseThrow(() -> new EntityNotFoundException("도서 그룹을 찾을 수 없습니다. bookGroupId = " + bookGroupId));
-    }
-
-    /**
      * 특정 도서 그룹 수정
      * @param bookGroupId 수정할 도서 그룹의 ID
      * @param updateBookGroupRequest 수정할 정보를 담은 DTO
@@ -90,14 +83,17 @@ public class BookGroupServiceImpl implements BookGroupService {
     @Override
     @Transactional
     public void update(Long bookGroupId, BookGroupDto.UpdateBookGroupRequest updateBookGroupRequest) {
+        // 도서 그룹 수정 요청 객체에 도서 고유번호 목록이 있다면 도서 엔티티 리스트를 조회
+        List<Book> books = Optional.ofNullable(updateBookGroupRequest.bookIds())
+                .orElse(Collections.emptyList())
+                .stream()
+                .flatMap(bookId -> bookRepository.findById(bookId).stream())
+                .collect(Collectors.toList());
+        // 도서 그룹 수정
         bookGroupRepository.save(bookGroupMapper.toUpdateEntity(
                 getBookGroup(bookGroupId),
                 updateBookGroupRequest,
-                Optional.ofNullable(updateBookGroupRequest.bookIds())
-                        .orElse(Collections.emptyList())
-                        .stream()
-                        .map(bookService::getBook)
-                        .collect(Collectors.toList())
+                books
         ));
     }
 
@@ -109,5 +105,16 @@ public class BookGroupServiceImpl implements BookGroupService {
     @Transactional
     public void delete(Long bookGroupId) {
         bookGroupRepository.delete(getBookGroup(bookGroupId));
+    }
+
+    /**
+     * 특정 도서 그룹 엔티티 조회
+     * @param bookGroupId 도서 그룹 고유번호
+     * @return 특정 도서 그룹 엔티티 객체
+     */
+    @Transactional(readOnly = true)
+    public BookGroup getBookGroup(Long bookGroupId) {
+        return bookGroupRepository.findById(bookGroupId)
+                .orElseThrow(() -> new EntityNotFoundException("도서 그룹을 찾을 수 없습니다. bookGroupId = " + bookGroupId));
     }
 }

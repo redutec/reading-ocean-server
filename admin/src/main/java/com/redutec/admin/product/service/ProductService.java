@@ -26,13 +26,6 @@ public interface ProductService {
     ProductDto.ProductResponse findById(Long productId);
 
     /**
-     * 특정 판매상품 엔티티 조회
-     * @param productId 판매상품 고유번호
-     * @return 특정 판매상품 엔티티 객체
-     */
-    Product getProduct(Long productId);
-
-    /**
      * 특정 판매상품 수정
      * @param productId 수정할 판매상품의 ID
      * @param updateProductRequest 판매상품 수정 요청 객체

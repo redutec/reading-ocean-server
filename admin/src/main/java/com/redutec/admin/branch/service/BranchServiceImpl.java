@@ -51,7 +51,11 @@ public class BranchServiceImpl implements BranchService {
                 })
                 .orElse(null);
         // 신규 지사 INSERT 후 등록한 지사 정보를 응답 객체에 담아 리턴
-        return branchMapper.toResponseDto(branchMapper.toCreateEntity(createBranchRequest, managerTeacher, contractFileName));
+        return branchMapper.toResponseDto(branchMapper.toCreateEntity(
+                createBranchRequest,
+                managerTeacher,
+                contractFileName
+        ));
     }
 
     /**
@@ -81,18 +85,6 @@ public class BranchServiceImpl implements BranchService {
     }
 
     /**
-     * 특정 지사 엔티티 조회
-     * @param branchId 지사 고유번호
-     * @return 특정 지사 엔티티 객체
-     */
-    @Override
-    @Transactional(readOnly = true)
-    public Branch getBranch(Long branchId) {
-        return branchRepository.findById(branchId)
-                .orElseThrow(() -> new EntityNotFoundException("지사를 찾을 수 없습니다. branchId = " + branchId));
-    }
-
-    /**
      * 특정 지사 수정
      * @param branchId 수정할 지사의 ID
      * @param updateBranchRequest 수정할 정보를 담은 DTO
@@ -116,7 +108,12 @@ public class BranchServiceImpl implements BranchService {
                         .orElseThrow(() -> new EntityNotFoundException("지사장 교사를 찾을 수 없습니다. managerTeacherId = " + managerTeacherId)))
                 .orElse(null);
         // 지사 수정 엔티티 빌드 후 UPDATE
-        branchRepository.save(branchMapper.toUpdateEntity(branch, updateBranchRequest, managerTeacher, contractFileName));
+        branchRepository.save(branchMapper.toUpdateEntity(
+                branch,
+                updateBranchRequest,
+                managerTeacher,
+                contractFileName
+        ));
     }
 
     /**
@@ -127,5 +124,16 @@ public class BranchServiceImpl implements BranchService {
     @Transactional
     public void delete(Long branchId) {
         branchRepository.delete(getBranch(branchId));
+    }
+
+    /**
+     * 특정 지사 엔티티 조회
+     * @param branchId 지사 고유번호
+     * @return 특정 지사 엔티티 객체
+     */
+    @Transactional(readOnly = true)
+    public Branch getBranch(Long branchId) {
+        return branchRepository.findById(branchId)
+                .orElseThrow(() -> new EntityNotFoundException("지사를 찾을 수 없습니다. branchId = " + branchId));
     }
 }

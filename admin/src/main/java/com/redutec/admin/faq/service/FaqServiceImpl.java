@@ -58,18 +58,6 @@ public class FaqServiceImpl implements FaqService {
     }
 
     /**
-     * 특정 이용안내 엔티티 조회
-     * @param faqId 이용안내 고유번호
-     * @return 특정 이용안내 엔티티 객체
-     */
-    @Override
-    @Transactional(readOnly = true)
-    public Faq getFaq(Long faqId) {
-        return faqRepository.findById(faqId)
-                .orElseThrow(() -> new EntityNotFoundException("이용안내를 찾을 수 없습니다. faqId = " + faqId));
-    }
-
-    /**
      * 특정 이용안내 수정
      * @param faqId 수정할 이용안내의 ID
      * @param updateFaqRequest 수정할 정보를 담은 DTO
@@ -77,10 +65,7 @@ public class FaqServiceImpl implements FaqService {
     @Override
     @Transactional
     public void update(Long faqId, FaqDto.UpdateFaqRequest updateFaqRequest) {
-        faqRepository.save(faqMapper.toUpdateEntity(
-                getFaq(faqId),
-                updateFaqRequest
-        ));
+        faqRepository.save(faqMapper.toUpdateEntity(getFaq(faqId), updateFaqRequest));
     }
 
     /**
@@ -91,5 +76,16 @@ public class FaqServiceImpl implements FaqService {
     @Transactional
     public void delete(Long faqId) {
         faqRepository.delete(getFaq(faqId));
+    }
+
+    /**
+     * 특정 이용안내 엔티티 조회
+     * @param faqId 이용안내 고유번호
+     * @return 특정 이용안내 엔티티 객체
+     */
+    @Transactional(readOnly = true)
+    public Faq getFaq(Long faqId) {
+        return faqRepository.findById(faqId)
+                .orElseThrow(() -> new EntityNotFoundException("이용안내를 찾을 수 없습니다. faqId = " + faqId));
     }
 }

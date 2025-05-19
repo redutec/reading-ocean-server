@@ -26,13 +26,6 @@ public interface TeacherService {
     TeacherDto.TeacherResponse findById(Long teacherId);
 
     /**
-     * 특정 교사 엔티티 조회
-     * @param teacherId 교사 고유번호
-     * @return 특정 교사 엔티티 객체
-     */
-    Teacher getTeacher(Long teacherId);
-
-    /**
      * 특정 교사 수정
      * @param teacherId 수정할 교사의 ID
      * @param updateTeacherRequest 교사 수정 요청 객체

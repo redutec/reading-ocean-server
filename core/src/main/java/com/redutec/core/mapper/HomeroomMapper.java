@@ -27,15 +27,15 @@ public class HomeroomMapper {
      *
      * @param createHomeroomRequest 학급 등록에 필요한 데이터를 담은 DTO
      * @param institute 등록할 학급이 속할 교육기관 엔티티
-     * @param students 등록할 학급에 속할 학생 엔티티 목록
      * @param teachers 등록할 학급에 속할 교사 엔티티 목록
+     * @param students 등록할 학급에 속할 학생 엔티티 목록
      * @return 생성된 Homeroom 등록 엔티티
      */
     public Homeroom toCreateEntity(
             HomeroomDto.CreateHomeroomRequest createHomeroomRequest,
             Institute institute,
-            List<Student> students,
-            List<Teacher> teachers
+            List<Teacher> teachers,
+            List<Student> students
     ) {
         return Homeroom.builder()
                 .name(createHomeroomRequest.name())
@@ -51,16 +51,16 @@ public class HomeroomMapper {
      *
      * @param updateHomeroomRequest 학급 수정에 필요한 데이터를 담은 DTO
      * @param institute 등록할 학급이 속할 교육기관 엔티티
-     * @param students 등록할 학급에 속할 학생 엔티티 목록
      * @param teachers 등록할 학급에 속할 교사 엔티티 목록
+     * @param students 등록할 학급에 속할 학생 엔티티 목록
      * @return 생성된 Homeroom 수정 엔티티
      */
     public Homeroom toUpdateEntity(
             Homeroom homeroom,
             HomeroomDto.UpdateHomeroomRequest updateHomeroomRequest,
             Institute institute,
-            List<Student> students,
-            List<Teacher> teachers
+            List<Teacher> teachers,
+            List<Student> students
     ) {
         return Homeroom.builder()
                 .id(homeroom.getId())

@@ -26,13 +26,6 @@ public interface InstituteService {
     InstituteDto.InstituteResponse findById(Long instituteId);
 
     /**
-     * 특정 교육기관 엔티티 조회
-     * @param instituteId 교육기관 고유번호
-     * @return 특정 교육기관 엔티티 객체
-     */
-    Institute getInstitute(Long instituteId);
-
-    /**
      * 특정 교육기관 수정
      * @param instituteId 수정할 교육기관의 ID
      * @param updateInstituteRequest 교육기관 수정 요청 객체

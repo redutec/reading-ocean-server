@@ -31,16 +31,21 @@ public class AdminMenuServiceImpl implements AdminMenuService {
     @Override
     @Transactional
     public AdminMenuDto.AdminMenuResponse create(AdminMenuDto.CreateAdminMenuRequest createAdminMenuRequest) {
+        // 등록 요청 객체에 상위 메뉴 고유번호가 있다면 상위 메뉴 엔티티 조회
+        AdminMenu parentMenu = Optional.ofNullable(createAdminMenuRequest.parentMenuId())
+                .map(this::getAdminMenu)
+                .orElse(null);
+        // 등록 요청 객체에 하위 메뉴 고유번호 목록이 있다면 하위 메뉴 엔티티들을 조회
+        List<AdminMenu> childrenMenus = Optional.ofNullable(createAdminMenuRequest.childrenMenuIds())
+                .orElse(List.of())
+                .stream()
+                .map(this::getAdminMenu)
+                .toList();
+        // 어드민 메뉴 등록
         return adminMenuMapper.toResponseDto(adminMenuRepository.save(adminMenuMapper.toCreateEntity(
                 createAdminMenuRequest,
-                Optional.ofNullable(createAdminMenuRequest.parentMenuId())
-                        .map(this::getAdminMenu)
-                        .orElse(null),
-                Optional.ofNullable(createAdminMenuRequest.childrenMenuIds())
-                        .orElse(List.of())
-                        .stream()
-                        .map(this::getAdminMenu)
-                        .toList()
+                parentMenu,
+                childrenMenus
         )));
     }
 
@@ -71,18 +76,6 @@ public class AdminMenuServiceImpl implements AdminMenuService {
     }
 
     /**
-     * 특정 어드민 메뉴 엔티티 조회
-     * @param adminMenuId 어드민 메뉴 고유번호
-     * @return 특정 어드민 메뉴 엔티티 객체
-     */
-    @Override
-    @Transactional(readOnly = true)
-    public AdminMenu getAdminMenu(Long adminMenuId) {
-        return adminMenuRepository.findById(adminMenuId)
-                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 어드민 메뉴입니다. adminMenuId = " + adminMenuId));
-    }
-
-    /**
      * 어드민 메뉴 수정
      * @param adminMenuId 수정할 어드민 메뉴의 ID
      * @param updateAdminMenuRequest 수정할 정보를 담은 DTO
@@ -90,17 +83,22 @@ public class AdminMenuServiceImpl implements AdminMenuService {
     @Override
     @Transactional
     public void update(Long adminMenuId, AdminMenuDto.UpdateAdminMenuRequest updateAdminMenuRequest) {
+        // 수정 요청 객체에 상위 메뉴 고유번호가 있다면 상위 메뉴 엔티티 조회
+        AdminMenu parentMenu = Optional.ofNullable(updateAdminMenuRequest.parentMenuId())
+                .map(this::getAdminMenu)
+                .orElse(null);
+        // 수정 요청 객체에 하위 메뉴 고유번호 목록이 있다면 하위 메뉴 엔티티들을 조회
+        List<AdminMenu> childrenMenus = Optional.ofNullable(updateAdminMenuRequest.childrenMenuIds())
+                .map(childrenMenuIds -> childrenMenuIds.stream()
+                        .map(this::getAdminMenu)
+                        .toList())
+                .orElse(null);
+        // 어드민 메뉴 수정
         adminMenuRepository.save(adminMenuMapper.toUpdateEntity(
                 getAdminMenu(adminMenuId),
                 updateAdminMenuRequest,
-                Optional.ofNullable(updateAdminMenuRequest.parentMenuId())
-                        .map(this::getAdminMenu)
-                        .orElse(null),
-                Optional.ofNullable(updateAdminMenuRequest.childrenMenuIds())
-                        .map(childrenMenuIds -> childrenMenuIds.stream()
-                                .map(this::getAdminMenu)
-                                .toList())
-                        .orElse(null)
+                parentMenu,
+                childrenMenus
         ));
     }
 
@@ -112,5 +110,16 @@ public class AdminMenuServiceImpl implements AdminMenuService {
     @Transactional
     public void delete(Long adminMenuId) {
         adminMenuRepository.delete(getAdminMenu(adminMenuId));
+    }
+
+    /**
+     * 특정 어드민 메뉴 엔티티 조회
+     * @param adminMenuId 어드민 메뉴 고유번호
+     * @return 특정 어드민 메뉴 엔티티 객체
+     */
+    @Transactional(readOnly = true)
+    public AdminMenu getAdminMenu(Long adminMenuId) {
+        return adminMenuRepository.findById(adminMenuId)
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 어드민 메뉴입니다. adminMenuId = " + adminMenuId));
     }
 }

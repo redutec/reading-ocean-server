@@ -2,7 +2,6 @@ package com.redutec.admin.user.service;
 
 
 import com.redutec.core.dto.AdminUserDto;
-import com.redutec.core.entity.AdminUser;
 
 public interface AdminUserService {
     /**
@@ -25,20 +24,6 @@ public interface AdminUserService {
      * @return 특정 어드민 사용자 응답 객체
      */
     AdminUserDto.AdminUserResponse findById(Long adminUserId);
-
-    /**
-     * 특정 어드민 사용자 엔티티 조회
-     * @param accountId 어드민 사용자의 로그인 아이디
-     * @return 특정 어드민 사용자 엔티티 객체
-     */
-    AdminUser findByAccountId(String accountId);
-
-    /**
-     * 특정 어드민 사용자 엔티티 조회
-     * @param adminUserId 어드민 사용자 고유번호
-     * @return 특정 어드민 사용자 엔티티 객체
-     */
-    AdminUser getAdminUser(Long adminUserId);
 
     /**
      * 어드민 사용자 수정

@@ -62,30 +62,6 @@ public class AdminUserServiceImpl implements AdminUserService {
     }
 
     /**
-     * 특정 어드민 사용자 엔티티 조회(로그인 아이디로 조회)
-     * @param accountId 어드민 사용자의 로그인 아이디
-     * @return 특정 어드민 사용자 엔티티 객체
-     */
-    @Override
-    @Transactional(readOnly = true)
-    public AdminUser findByAccountId(String accountId) {
-        return adminUserRepository.findByAccountId(accountId)
-                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 어드민 사용자입니다. accountId = " + accountId));
-    }
-
-    /**
-     * 특정 어드민 사용자 엔티티 조회
-     * @param adminUserId 어드민 사용자 고유번호
-     * @return 특정 어드민 사용자 엔티티 객체
-     */
-    @Override
-    @Transactional(readOnly = true)
-    public AdminUser getAdminUser(Long adminUserId) {
-        return adminUserRepository.findById(adminUserId)
-                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 어드민 사용자입니다. adminUserId = " + adminUserId));
-    }
-
-    /**
      * 어드민 사용자 수정
      * @param adminUserId 수정할 어드민 사용자의 ID
      * @param updateAdminUserRequest 수정할 정보를 담은 DTO
@@ -120,5 +96,17 @@ public class AdminUserServiceImpl implements AdminUserService {
     @Transactional
     public void delete(Long adminUserId) {
         adminUserRepository.delete(getAdminUser(adminUserId));
+    }
+
+
+    /**
+     * 특정 어드민 사용자 엔티티 조회
+     * @param adminUserId 어드민 사용자 고유번호
+     * @return 특정 어드민 사용자 엔티티 객체
+     */
+    @Transactional(readOnly = true)
+    public AdminUser getAdminUser(Long adminUserId) {
+        return adminUserRepository.findById(adminUserId)
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 어드민 사용자입니다. adminUserId = " + adminUserId));
     }
 }

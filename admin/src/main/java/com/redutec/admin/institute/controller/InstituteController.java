@@ -37,13 +37,13 @@ public class InstituteController {
         return apiResponseManager.ok(instituteService.find(findInstituteRequest));
     }
 
-    @Operation(summary = "특정 교육기관 조회", description = "특정 교육기관를 조회하는 API")
+    @Operation(summary = "특정 교육기관 조회", description = "특정 교육기관을 조회하는 API")
     @GetMapping("/{instituteId}")
     public ResponseEntity<ApiResponseBody> findById(@PathVariable Long instituteId) {
         return apiResponseManager.ok(instituteService.findById(instituteId));
     }
 
-    @Operation(summary = "특정 교육기관 수정", description = "특정 교육기관를 수정하는 API")
+    @Operation(summary = "특정 교육기관 수정", description = "특정 교육기관을 수정하는 API")
     @PatchMapping("/{instituteId}")
     public ResponseEntity<ApiResponseBody> update(
             @Parameter(description = "교육기관 ID") @PathVariable Long instituteId,
@@ -53,7 +53,7 @@ public class InstituteController {
         return apiResponseManager.noContent();
     }
 
-    @Operation(summary = "특정 교육기관 삭제", description = "특정 교육기관를 삭제하는 API")
+    @Operation(summary = "특정 교육기관 삭제", description = "특정 교육기관을 삭제하는 API")
     @DeleteMapping("/{instituteId}")
     public ResponseEntity<ApiResponseBody> delete(
             @Parameter(description = "교육기관 ID") @PathVariable Long instituteId

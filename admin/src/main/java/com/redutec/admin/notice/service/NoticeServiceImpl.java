@@ -34,15 +34,18 @@ public class NoticeServiceImpl implements NoticeService {
     @Override
     @Transactional
     public NoticeDto.NoticeResponse create(NoticeDto.CreateNoticeRequest createNoticeRequest) {
+        // 등록 요청 객체에 첨부 파일이 존재하면 업로드 및 파일명을 가져오기
+        String attachedFileName = Optional.ofNullable(createNoticeRequest.attachedFile())
+                .filter(attachedFile -> !attachedFile.isEmpty())
+                .map(attachedFile -> {
+                    FileUploadResult result = fileUtil.uploadFile(attachedFile, "/notice");
+                    return Paths.get(result.filePath()).getFileName().toString();
+                })
+                .orElse(null);
+        // 공지사항 등록
         return noticeMapper.toResponseDto(noticeRepository.save(noticeMapper.toCreateEntity(
                 createNoticeRequest,
-                Optional.ofNullable(createNoticeRequest.attachedFile())
-                        .filter(attachedFile -> !attachedFile.isEmpty())
-                        .map(attachedFile -> {
-                            FileUploadResult result = fileUtil.uploadFile(attachedFile, "/notice");
-                            return Paths.get(result.filePath()).getFileName().toString();
-                        })
-                        .orElse(null)
+                attachedFileName
         )));
     }
 
@@ -73,18 +76,6 @@ public class NoticeServiceImpl implements NoticeService {
     }
 
     /**
-     * 특정 공지사항 엔티티 조회
-     * @param noticeId 공지사항 고유번호
-     * @return 특정 공지사항 엔티티 객체
-     */
-    @Override
-    @Transactional(readOnly = true)
-    public Notice getNotice(Long noticeId) {
-        return noticeRepository.findById(noticeId)
-                .orElseThrow(() -> new EntityNotFoundException("공지사항을 찾을 수 없습니다. noticeId = " + noticeId));
-    }
-
-    /**
      * 특정 공지사항 수정
      * @param noticeId 수정할 공지사항의 ID
      * @param updateNoticeRequest 수정할 정보를 담은 DTO
@@ -92,16 +83,19 @@ public class NoticeServiceImpl implements NoticeService {
     @Override
     @Transactional
     public void update(Long noticeId, NoticeDto.UpdateNoticeRequest updateNoticeRequest) {
+        // 등록 요청 객체에 첨부 파일이 존재하면 업로드 및 파일명을 가져오기
+        String attachedFileName = Optional.ofNullable(updateNoticeRequest.attachedFile())
+                .filter(attachedFile -> !attachedFile.isEmpty())
+                .map(attachedFile -> {
+                    FileUploadResult result = fileUtil.uploadFile(attachedFile, "/notice");
+                    return Paths.get(result.filePath()).getFileName().toString();
+                })
+                .orElse(null);
+        // 공지사항 수정
         noticeRepository.save(noticeMapper.toUpdateEntity(
                 getNotice(noticeId),
                 updateNoticeRequest,
-                Optional.ofNullable(updateNoticeRequest.attachedFile())
-                        .filter(attachedFile -> !attachedFile.isEmpty())
-                        .map(attachedFile -> {
-                            FileUploadResult result = fileUtil.uploadFile(attachedFile, "/notice");
-                            return Paths.get(result.filePath()).getFileName().toString();
-                        })
-                        .orElse(null)
+                attachedFileName
         ));
     }
 
@@ -113,5 +107,16 @@ public class NoticeServiceImpl implements NoticeService {
     @Transactional
     public void delete(Long noticeId) {
         noticeRepository.delete(getNotice(noticeId));
+    }
+
+    /**
+     * 특정 공지사항 엔티티 조회
+     * @param noticeId 공지사항 고유번호
+     * @return 특정 공지사항 엔티티 객체
+     */
+    @Transactional(readOnly = true)
+    public Notice getNotice(Long noticeId) {
+        return noticeRepository.findById(noticeId)
+                .orElseThrow(() -> new EntityNotFoundException("공지사항을 찾을 수 없습니다. noticeId = " + noticeId));
     }
 }

@@ -26,7 +26,8 @@ public class TeachingOceanAuthenticationDto {
             String instituteName,
             Long homeroomId,
             String homeroomName,
-            List<Long> accessibleMenus
+            List<Long> accessibleMenus,
+            Long chiefTeacherId
     ) {}
 
     @Schema(description = "교사 로그인 요청 객체")

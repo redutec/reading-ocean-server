@@ -1,7 +1,6 @@
 package com.redutec.admin.notice.service;
 
 import com.redutec.core.dto.NoticeDto;
-import com.redutec.core.entity.Notice;
 
 public interface NoticeService {
     /**
@@ -24,13 +23,6 @@ public interface NoticeService {
      * @return 특정 공지사항 응답 객체
      */
     NoticeDto.NoticeResponse findById(Long noticeId);
-
-    /**
-     * 특정 공지사항 엔티티 조회
-     * @param noticeId 공지사항 고유번호
-     * @return 특정 공지사항 엔티티 객체
-     */
-    Notice getNotice(Long noticeId);
 
     /**
      * 특정 공지사항 수정

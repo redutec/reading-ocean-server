@@ -1,7 +1,6 @@
 package com.redutec.admin.branch.service;
 
 import com.redutec.core.dto.BranchDto;
-import com.redutec.core.entity.Branch;
 
 public interface BranchService {
     /**
@@ -24,13 +23,6 @@ public interface BranchService {
      * @return 특정 지사 응답 객체
      */
     BranchDto.BranchResponse findById(Long branchId);
-
-    /**
-     * 특정 지사 엔티티 조회
-     * @param branchId 지사 고유번호
-     * @return 특정 지사 엔티티 객체
-     */
-    Branch getBranch(Long branchId);
 
     /**
      * 특정 지사 수정

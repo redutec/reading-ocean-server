@@ -1,8 +1,8 @@
 package com.redutec.admin.menu.teachingocean.service;
 
 import com.redutec.core.dto.TeachingOceanMenuDto;
-import com.redutec.core.mapper.TeachingOceanMenuMapper;
 import com.redutec.core.entity.TeachingOceanMenu;
+import com.redutec.core.mapper.TeachingOceanMenuMapper;
 import com.redutec.core.repository.TeachingOceanMenuRepository;
 import com.redutec.core.specification.TeachingOceanMenuSpecification;
 import jakarta.persistence.EntityNotFoundException;
@@ -33,16 +33,21 @@ public class TeachingOceanMenuServiceImpl implements TeachingOceanMenuService {
     public TeachingOceanMenuDto.TeachingOceanMenuResponse create(
             TeachingOceanMenuDto.CreateTeachingOceanMenuRequest createTeachingOceanMenuRequest
     ) {
+        // 등록 요청 객체에 상위 메뉴 고유번호가 존재하면 상위 메뉴 엔티티를 조회
+        TeachingOceanMenu parentMenu = Optional.ofNullable(createTeachingOceanMenuRequest.parentMenuId())
+                .map(this::getTeachingOceanMenu)
+                .orElse(null);
+        // 등록 요청 객체에 하위 메뉴 고유번호 목록이 존재하면 하위 메뉴 엔티티들을 조회
+        List<TeachingOceanMenu> childrenMenus = Optional.ofNullable(createTeachingOceanMenuRequest.childrenMenuIds())
+                .orElse(List.of())
+                .stream()
+                .map(this::getTeachingOceanMenu)
+                .toList();
+        // 티칭오션 메뉴 등록
         return teachingOceanMenuMapper.toResponseDto(teachingOceanMenuRepository.save(teachingOceanMenuMapper.toCreateEntity(
                 createTeachingOceanMenuRequest,
-                Optional.ofNullable(createTeachingOceanMenuRequest.parentMenuId())
-                        .map(this::getTeachingOceanMenu)
-                        .orElse(null),
-                Optional.ofNullable(createTeachingOceanMenuRequest.childrenMenuIds())
-                        .orElse(List.of())
-                        .stream()
-                        .map(this::getTeachingOceanMenu)
-                        .toList()
+                parentMenu,
+                childrenMenus
         )));
     }
 
@@ -75,18 +80,6 @@ public class TeachingOceanMenuServiceImpl implements TeachingOceanMenuService {
     }
 
     /**
-     * 특정 티칭오션 메뉴 엔티티 조회
-     * @param teachingOceanMenuId 티칭오션 메뉴 고유번호
-     * @return 특정 티칭오션 메뉴 엔티티 객체
-     */
-    @Override
-    @Transactional(readOnly = true)
-    public TeachingOceanMenu getTeachingOceanMenu(Long teachingOceanMenuId) {
-        return teachingOceanMenuRepository.findById(teachingOceanMenuId)
-                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 티칭오션 메뉴입니다. teachingOceanMenuId = " + teachingOceanMenuId));
-    }
-
-    /**
      * 티칭오션 메뉴 수정
      * @param teachingOceanMenuId 수정할 티칭오션 메뉴의 ID
      * @param updateTeachingOceanMenuRequest 수정할 정보를 담은 DTO
@@ -97,17 +90,22 @@ public class TeachingOceanMenuServiceImpl implements TeachingOceanMenuService {
             Long teachingOceanMenuId,
             TeachingOceanMenuDto.UpdateTeachingOceanMenuRequest updateTeachingOceanMenuRequest
     ) {
+        // 수정 요청 객체에 상위 메뉴 고유번호가 존재하면 상위 메뉴 엔티티 조회
+        TeachingOceanMenu parentMenu = Optional.ofNullable(updateTeachingOceanMenuRequest.parentMenuId())
+                .map(this::getTeachingOceanMenu)
+                .orElse(null);
+        // 수정 요청 객체에 하위 메뉴 고유번호 목록이 존재하면 하위 메뉴 엔티티들을 조회
+        List<TeachingOceanMenu> childrenMenus = Optional.ofNullable(updateTeachingOceanMenuRequest.childrenMenuIds())
+                .map(childrenMenuIds -> childrenMenuIds.stream()
+                        .map(this::getTeachingOceanMenu)
+                        .toList())
+                .orElse(null);
+        // 티칭오션 메뉴 수정
         teachingOceanMenuRepository.save(teachingOceanMenuMapper.toUpdateEntity(
                 getTeachingOceanMenu(teachingOceanMenuId),
                 updateTeachingOceanMenuRequest,
-                Optional.ofNullable(updateTeachingOceanMenuRequest.parentMenuId())
-                        .map(this::getTeachingOceanMenu)
-                        .orElse(null),
-                Optional.ofNullable(updateTeachingOceanMenuRequest.childrenMenuIds())
-                        .map(childrenMenuIds -> childrenMenuIds.stream()
-                                .map(this::getTeachingOceanMenu)
-                                .toList())
-                        .orElse(null)
+                parentMenu,
+                childrenMenus
         ));
     }
 
@@ -119,5 +117,16 @@ public class TeachingOceanMenuServiceImpl implements TeachingOceanMenuService {
     @Transactional
     public void delete(Long teachingOceanMenuId) {
         teachingOceanMenuRepository.delete(getTeachingOceanMenu(teachingOceanMenuId));
+    }
+
+    /**
+     * 특정 티칭오션 메뉴 엔티티 조회
+     * @param teachingOceanMenuId 티칭오션 메뉴 고유번호
+     * @return 특정 티칭오션 메뉴 엔티티 객체
+     */
+    @Transactional(readOnly = true)
+    public TeachingOceanMenu getTeachingOceanMenu(Long teachingOceanMenuId) {
+        return teachingOceanMenuRepository.findById(teachingOceanMenuId)
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 티칭오션 메뉴입니다. teachingOceanMenuId = " + teachingOceanMenuId));
     }
 }

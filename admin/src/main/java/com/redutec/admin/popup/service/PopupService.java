@@ -1,7 +1,6 @@
 package com.redutec.admin.popup.service;
 
 import com.redutec.core.dto.PopupDto;
-import com.redutec.core.entity.Popup;
 
 public interface PopupService {
     /**
@@ -24,13 +23,6 @@ public interface PopupService {
      * @return 특정 팝업 응답 객체
      */
     PopupDto.PopupResponse findById(Long popupId);
-
-    /**
-     * 특정 팝업 엔티티 조회
-     * @param popupId 팝업 고유번호
-     * @return 특정 팝업 엔티티 객체
-     */
-    Popup getPopup(Long popupId);
 
     /**
      * 특정 팝업 수정
