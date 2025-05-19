@@ -87,7 +87,7 @@ public class HomeroomServiceImpl implements HomeroomService {
     @Transactional(readOnly = true)
     public Homeroom getHomeroom(Long homeroomId) {
         return homeroomRepository.findById(homeroomId)
-                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 학급입니다. id = " + homeroomId));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 학급입니다. homeroomId = " + homeroomId));
     }
 
     /**

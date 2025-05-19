@@ -34,7 +34,7 @@ public class InstituteServiceImpl implements InstituteService {
     /**
      * 교육기관 등록
      * @param createInstituteRequest 교육기관 등록 정보를 담은 DTO
-     * @return 등록된 교육기관 정보
+     * @return 등록한 교육기관 정보
      */
     @Override
     @Transactional
@@ -85,8 +85,7 @@ public class InstituteServiceImpl implements InstituteService {
         // 응답객체에 담아 리턴
         return instituteMapper.toResponseDto(
                 institute,
-                teacherRepository.findByInstituteAndRole(institute, TeacherRole.CHIEF)
-                        .orElse(null)
+                teacherRepository.findByInstituteAndRole(institute, TeacherRole.CHIEF).orElse(null)
         );
     }
 
@@ -99,7 +98,7 @@ public class InstituteServiceImpl implements InstituteService {
     @Transactional(readOnly = true)
     public Institute getInstitute(Long instituteId) {
         return instituteRepository.findById(instituteId)
-                .orElseThrow(() -> new EntityNotFoundException("교육기관이 존재하지 않습니다. id = " + instituteId));
+                .orElseThrow(() -> new EntityNotFoundException("교육기관이 존재하지 않습니다. instituteId = " + instituteId));
     }
 
     /**

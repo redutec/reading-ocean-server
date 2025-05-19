@@ -18,14 +18,14 @@ import java.util.stream.Collectors;
 @Component
 public class SubscriptionStudentMapper {
     /**
-     * CreateSubscriptionStudentRequest DTO를 기반으로 SubscriptionStudent 엔티티를 생성합니다.
+     * CreateSubscriptionStudentRequest DTO를 기반으로 SubscriptionStudent 등록 엔티티를 생성합니다.
      *
-     * @param createSubscriptionStudentRequest 구독(학생) 생성에 필요한 데이터를 담은 DTO
+     * @param createSubscriptionStudentRequest 구독(학생) 등록에 필요한 데이터를 담은 DTO
      * @param subscriptionPlan 구독 상품 엔티티
-     * @param student 학생 엔티티
-     * @return 생성된 SubscriptionStudent 엔티티
+     * @param student 구독 서비스를 신청한 학생 엔티티
+     * @return 등록할 SubscriptionStudent 엔티티
      */
-    public SubscriptionStudent toEntity(
+    public SubscriptionStudent toCreateEntity(
             SubscriptionStudentDto.CreateSubscriptionStudentRequest createSubscriptionStudentRequest,
             SubscriptionPlan subscriptionPlan,
             Student student
@@ -36,6 +36,31 @@ public class SubscriptionStudentMapper {
                 .endedAt(createSubscriptionStudentRequest.endedAt())
                 .nextPaymentAt(createSubscriptionStudentRequest.nextPaymentAt())
                 .student(student)
+                .build();
+    }
+
+    /**
+     * UpdateSubscriptionStudentRequest DTO를 기반으로 SubscriptionStudent 수정 엔티티를 생성합니다.
+     *
+     * @param subscriptionStudent 수정할 SubscriptionStudent 엔티티
+     * @param updateSubscriptionStudentRequest 구독(학생) 수정에 필요한 데이터를 담은 DTO
+     * @param subscriptionPlan 구독 상품 엔티티
+     * @param student 구독 서비스를 신청한 학생 엔티티
+     * @return 수정할 SubscriptionStudent 엔티티
+     */
+    public SubscriptionStudent toUpdateEntity(
+            SubscriptionStudent subscriptionStudent,
+            SubscriptionStudentDto.UpdateSubscriptionStudentRequest updateSubscriptionStudentRequest,
+            SubscriptionPlan subscriptionPlan,
+            Student student
+    ) {
+        return SubscriptionStudent.builder()
+                .id(subscriptionStudent.getId())
+                .subscriptionPlan(Optional.ofNullable(subscriptionPlan).orElse(subscriptionStudent.getSubscriptionPlan()))
+                .startedAt(Optional.ofNullable(updateSubscriptionStudentRequest.startedAt()).orElse(subscriptionStudent.getStartedAt()))
+                .endedAt(Optional.ofNullable(updateSubscriptionStudentRequest.endedAt()).orElse(subscriptionStudent.getEndedAt()))
+                .nextPaymentAt(Optional.ofNullable(updateSubscriptionStudentRequest.nextPaymentAt()).orElse(subscriptionStudent.getNextPaymentAt()))
+                .student(Optional.ofNullable(student).orElse(subscriptionStudent.getStudent()))
                 .build();
     }
     

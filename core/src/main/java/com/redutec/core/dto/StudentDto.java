@@ -61,10 +61,6 @@ public class StudentDto {
             @Enumerated(EnumType.STRING)
             SchoolGrade schoolGrade,
 
-            @Schema(description = "도서 포인트", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-            @PositiveOrZero
-            Integer bookPoints,
-
             @Schema(description = "도서 MBTI", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
             @Enumerated(EnumType.STRING)
             BookMbti bookMbti,
@@ -170,10 +166,6 @@ public class StudentDto {
             @Enumerated(EnumType.STRING)
             SchoolGrade schoolGrade,
 
-            @Schema(description = "도서 포인트", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-            @PositiveOrZero
-            Integer bookPoints,
-
             @Schema(description = "도서 MBTI", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
             @Enumerated(EnumType.STRING)
             BookMbti bookMbti,
@@ -208,7 +200,6 @@ public class StudentDto {
             ReadingLevel readingLevel,
             Integer raq,
             SchoolGrade schoolGrade,
-            Integer bookPoints,
             BookMbti bookMbti,
             String lastLoginIp,
             LocalDateTime lastLoginAt,

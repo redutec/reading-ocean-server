@@ -1,7 +1,7 @@
 package com.redutec.teachingocean.teacher.service;
 
 import com.redutec.core.entity.Teacher;
-import com.redutec.teachingocean.teacher.dto.TeacherDto;
+import com.redutec.core.dto.TeacherDto;
 
 public interface TeacherService {
     /**

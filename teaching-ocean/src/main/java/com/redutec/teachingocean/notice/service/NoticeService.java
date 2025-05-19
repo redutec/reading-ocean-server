@@ -1,6 +1,6 @@
 package com.redutec.teachingocean.notice.service;
 
-import com.redutec.teachingocean.notice.dto.NoticeDto;
+import com.redutec.core.dto.NoticeDto;
 
 public interface NoticeService {
     /**

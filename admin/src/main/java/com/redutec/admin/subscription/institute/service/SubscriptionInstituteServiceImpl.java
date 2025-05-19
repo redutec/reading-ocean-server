@@ -1,10 +1,10 @@
 package com.redutec.admin.subscription.institute.service;
 
 import com.redutec.admin.institute.service.InstituteService;
-import com.redutec.core.dto.SubscriptionInstituteDto;
-import com.redutec.core.mapper.SubscriptionInstituteMapper;
 import com.redutec.admin.subscription.plan.service.SubscriptionPlanService;
+import com.redutec.core.dto.SubscriptionInstituteDto;
 import com.redutec.core.entity.SubscriptionInstitute;
+import com.redutec.core.mapper.SubscriptionInstituteMapper;
 import com.redutec.core.repository.SubscriptionInstituteRepository;
 import com.redutec.core.specification.SubscriptionInstituteSpecification;
 import jakarta.persistence.EntityNotFoundException;
@@ -38,7 +38,7 @@ public class SubscriptionInstituteServiceImpl implements SubscriptionInstituteSe
     ) {
         return subscriptionInstituteMapper.toResponseDto(
                 subscriptionInstituteRepository.save(
-                        subscriptionInstituteMapper.toEntity(
+                        subscriptionInstituteMapper.toCreateEntity(
                                 createSubscriptionInstituteRequest,
                                 subscriptionPlanService.getSubscriptionPlan(createSubscriptionInstituteRequest.subscriptionPlanId()),
                                 instituteService.getInstitute(createSubscriptionInstituteRequest.instituteId())
@@ -84,7 +84,7 @@ public class SubscriptionInstituteServiceImpl implements SubscriptionInstituteSe
     @Transactional(readOnly = true)
     public SubscriptionInstitute getSubscriptionInstitute(Long subscriptionInstituteId) {
         return subscriptionInstituteRepository.findById(subscriptionInstituteId)
-                .orElseThrow(() -> new EntityNotFoundException("구독(교육기관)를 찾을 수 없습니다. id = " + subscriptionInstituteId));
+                .orElseThrow(() -> new EntityNotFoundException("구독(교육기관)를 찾을 수 없습니다. subscriptionInstituteId = " + subscriptionInstituteId));
     }
 
     /**
@@ -100,20 +100,16 @@ public class SubscriptionInstituteServiceImpl implements SubscriptionInstituteSe
     ) {
         // 수정할 구독(교육기관) 엔티티 조회
         SubscriptionInstitute subscriptionInstitute = getSubscriptionInstitute(subscriptionInstituteId);
-        // UPDATE 도메인 메서드로 변환
-        subscriptionInstitute.updateSubscriptionInstitute(
+        subscriptionInstituteRepository.save(subscriptionInstituteMapper.toUpdateEntity(
+                subscriptionInstitute,
+                updateSubscriptionInstituteRequest,
                 Optional.ofNullable(updateSubscriptionInstituteRequest.subscriptionPlanId())
                         .map(subscriptionPlanService::getSubscriptionPlan)
                         .orElse(null),
-                updateSubscriptionInstituteRequest.startedAt(),
-                updateSubscriptionInstituteRequest.endedAt(),
-                updateSubscriptionInstituteRequest.nextPaymentAt(),
                 Optional.ofNullable(updateSubscriptionInstituteRequest.instituteId())
                         .map(instituteService::getInstitute)
                         .orElse(null)
-        );
-        // 구독(교육기관) 엔티티 UPDATE
-        subscriptionInstituteRepository.save(subscriptionInstitute);
+        ));
     }
 
     /**

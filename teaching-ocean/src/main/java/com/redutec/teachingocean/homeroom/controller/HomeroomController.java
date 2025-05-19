@@ -1,6 +1,6 @@
 package com.redutec.teachingocean.homeroom.controller;
 
-import com.redutec.teachingocean.homeroom.dto.HomeroomDto;
+import com.redutec.core.dto.HomeroomDto;
 import com.redutec.teachingocean.homeroom.service.HomeroomService;
 import com.redutec.core.config.ApiResponseBody;
 import com.redutec.core.config.ApiResponseManager;

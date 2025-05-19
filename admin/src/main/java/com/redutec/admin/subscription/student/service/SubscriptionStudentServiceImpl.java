@@ -3,8 +3,8 @@ package com.redutec.admin.subscription.student.service;
 import com.redutec.admin.student.service.StudentService;
 import com.redutec.admin.subscription.plan.service.SubscriptionPlanService;
 import com.redutec.core.dto.SubscriptionStudentDto;
-import com.redutec.core.mapper.SubscriptionStudentMapper;
 import com.redutec.core.entity.SubscriptionStudent;
+import com.redutec.core.mapper.SubscriptionStudentMapper;
 import com.redutec.core.repository.SubscriptionStudentRepository;
 import com.redutec.core.specification.SubscriptionStudentSpecification;
 import jakarta.persistence.EntityNotFoundException;
@@ -38,7 +38,7 @@ public class SubscriptionStudentServiceImpl implements SubscriptionStudentServic
     ) {
         return subscriptionStudentMapper.toResponseDto(
                 subscriptionStudentRepository.save(
-                        subscriptionStudentMapper.toEntity(
+                        subscriptionStudentMapper.toCreateEntity(
                                 createSubscriptionStudentRequest,
                                 subscriptionPlanService.getSubscriptionPlan(createSubscriptionStudentRequest.subscriptionPlanId()),
                                 studentService.getStudent(createSubscriptionStudentRequest.studentId())
@@ -84,7 +84,7 @@ public class SubscriptionStudentServiceImpl implements SubscriptionStudentServic
     @Transactional(readOnly = true)
     public SubscriptionStudent getSubscriptionStudent(Long subscriptionStudentId) {
         return subscriptionStudentRepository.findById(subscriptionStudentId)
-                .orElseThrow(() -> new EntityNotFoundException("구독(학생)를 찾을 수 없습니다. id = " + subscriptionStudentId));
+                .orElseThrow(() -> new EntityNotFoundException("구독(학생)를 찾을 수 없습니다. subscriptionStudentId = " + subscriptionStudentId));
     }
 
     /**
@@ -98,22 +98,16 @@ public class SubscriptionStudentServiceImpl implements SubscriptionStudentServic
             Long subscriptionStudentId,
             SubscriptionStudentDto.UpdateSubscriptionStudentRequest updateSubscriptionStudentRequest
     ) {
-        // 수정할 구독(학생) 엔티티 조회
-        SubscriptionStudent subscriptionStudent = getSubscriptionStudent(subscriptionStudentId);
-        // UPDATE 도메인 메서드로 변환
-        subscriptionStudent.updateSubscriptionStudent(
+        subscriptionStudentRepository.save(subscriptionStudentMapper.toUpdateEntity(
+                getSubscriptionStudent(subscriptionStudentId),
+                updateSubscriptionStudentRequest,
                 Optional.ofNullable(updateSubscriptionStudentRequest.subscriptionPlanId())
                         .map(subscriptionPlanService::getSubscriptionPlan)
                         .orElse(null),
-                updateSubscriptionStudentRequest.startedAt(),
-                updateSubscriptionStudentRequest.endedAt(),
-                updateSubscriptionStudentRequest.nextPaymentAt(),
                 Optional.ofNullable(updateSubscriptionStudentRequest.studentId())
                         .map(studentService::getStudent)
                         .orElse(null)
-        );
-        // 구독(학생) 엔티티 UPDATE
-        subscriptionStudentRepository.save(subscriptionStudent);
+        ));
     }
 
     /**

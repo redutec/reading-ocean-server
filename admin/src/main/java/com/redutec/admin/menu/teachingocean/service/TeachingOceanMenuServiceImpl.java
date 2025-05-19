@@ -83,7 +83,7 @@ public class TeachingOceanMenuServiceImpl implements TeachingOceanMenuService {
     @Transactional(readOnly = true)
     public TeachingOceanMenu getTeachingOceanMenu(Long teachingOceanMenuId) {
         return teachingOceanMenuRepository.findById(teachingOceanMenuId)
-                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 티칭오션 메뉴입니다. id = " + teachingOceanMenuId));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 티칭오션 메뉴입니다. teachingOceanMenuId = " + teachingOceanMenuId));
     }
 
     /**

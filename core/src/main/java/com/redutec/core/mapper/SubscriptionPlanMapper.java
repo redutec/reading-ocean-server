@@ -16,12 +16,14 @@ import java.util.stream.Collectors;
 @Component
 public class SubscriptionPlanMapper {
     /**
-     * CreateSubscriptionPlanRequest DTO를 기반으로 SubscriptionPlan 엔티티를 생성합니다.
+     * CreateSubscriptionPlanRequest DTO를 기반으로 SubscriptionPlan 등록 엔티티를 생성합니다.
      *
-     * @param createSubscriptionPlanRequest 구독 상품 생성에 필요한 데이터를 담은 DTO
-     * @return 생성된 SubscriptionPlan 엔티티
+     * @param createSubscriptionPlanRequest 구독 상품 등록에 필요한 데이터를 담은 DTO
+     * @return 등록할 SubscriptionPlan 엔티티
      */
-    public SubscriptionPlan toEntity(SubscriptionPlanDto.CreateSubscriptionPlanRequest createSubscriptionPlanRequest) {
+    public SubscriptionPlan toCreateEntity(
+            SubscriptionPlanDto.CreateSubscriptionPlanRequest createSubscriptionPlanRequest
+    ) {
         return SubscriptionPlan.builder()
                 .name(createSubscriptionPlanRequest.name())
                 .details(createSubscriptionPlanRequest.details())
@@ -30,6 +32,29 @@ public class SubscriptionPlanMapper {
                 .durationDays(createSubscriptionPlanRequest.durationDays())
                 .status(createSubscriptionPlanRequest.status())
                 .autoRenew(createSubscriptionPlanRequest.autoRenew())
+                .build();
+    }
+
+    /**
+     * UpdateSubscriptionPlanRequest DTO를 기반으로 SubscriptionPlan 수정 엔티티를 생성합니다.
+     *
+     * @param subscriptionPlan 수정할 SubscriptionPlan 엔티티
+     * @param updateSubscriptionPlanRequest 구독 상품 수정에 필요한 데이터를 담은 DTO
+     * @return 수정할 SubscriptionPlan 엔티티
+     */
+    public SubscriptionPlan toUpdateEntity(
+            SubscriptionPlan subscriptionPlan,
+            SubscriptionPlanDto.UpdateSubscriptionPlanRequest updateSubscriptionPlanRequest
+    ) {
+        return SubscriptionPlan.builder()
+                .id(subscriptionPlan.getId())
+                .name(Optional.ofNullable(updateSubscriptionPlanRequest.name()).orElse(subscriptionPlan.getName()))
+                .details(Optional.ofNullable(updateSubscriptionPlanRequest.details()).orElse(subscriptionPlan.getDetails()))
+                .price(Optional.ofNullable(updateSubscriptionPlanRequest.price()).orElse(subscriptionPlan.getPrice()))
+                .discountPercentage(Optional.ofNullable(updateSubscriptionPlanRequest.discountPercentage()).orElse(subscriptionPlan.getDiscountPercentage()))
+                .durationDays(Optional.ofNullable(updateSubscriptionPlanRequest.durationDays()).orElse(subscriptionPlan.getDurationDays()))
+                .status(Optional.ofNullable(updateSubscriptionPlanRequest.status()).orElse(subscriptionPlan.getStatus()))
+                .autoRenew(Optional.ofNullable(updateSubscriptionPlanRequest.autoRenew()).orElse(subscriptionPlan.getAutoRenew()))
                 .build();
     }
     

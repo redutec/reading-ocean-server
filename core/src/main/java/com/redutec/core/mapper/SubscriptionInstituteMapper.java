@@ -1,7 +1,7 @@
 package com.redutec.core.mapper;
 
-import com.redutec.core.dto.SubscriptionInstituteDto;
 import com.redutec.core.criteria.SubscriptionInstituteCriteria;
+import com.redutec.core.dto.SubscriptionInstituteDto;
 import com.redutec.core.entity.Institute;
 import com.redutec.core.entity.SubscriptionInstitute;
 import com.redutec.core.entity.SubscriptionPlan;
@@ -18,14 +18,14 @@ import java.util.stream.Collectors;
 @Component
 public class SubscriptionInstituteMapper {
     /**
-     * CreateSubscriptionInstituteRequest DTO를 기반으로 SubscriptionInstitute 엔티티를 생성합니다.
+     * CreateSubscriptionInstituteRequest DTO를 기반으로 SubscriptionInstitute 등록 엔티티를 생성합니다.
      *
-     * @param createSubscriptionInstituteRequest 구독(교육기관) 생성에 필요한 데이터를 담은 DTO
+     * @param createSubscriptionInstituteRequest 구독(교육기관) 등록에 필요한 데이터를 담은 DTO
      * @param subscriptionPlan 구독 상품 엔티티
-     * @param institute 교육기관 엔티티
-     * @return 생성된 SubscriptionInstitute 엔티티
+     * @param institute 구독 서비스를 신청한 교육기관 엔티티
+     * @return 등록할 SubscriptionInstitute 엔티티
      */
-    public SubscriptionInstitute toEntity(
+    public SubscriptionInstitute toCreateEntity(
             SubscriptionInstituteDto.CreateSubscriptionInstituteRequest createSubscriptionInstituteRequest,
             SubscriptionPlan subscriptionPlan,
             Institute institute
@@ -36,6 +36,31 @@ public class SubscriptionInstituteMapper {
                 .endedAt(createSubscriptionInstituteRequest.endedAt())
                 .nextPaymentAt(createSubscriptionInstituteRequest.nextPaymentAt())
                 .institute(institute)
+                .build();
+    }
+
+    /**
+     * UpdateSubscriptionInstituteRequest DTO를 기반으로 SubscriptionInstitute 수정 엔티티를 생성합니다.
+     *
+     * @param subscriptionInstitute 수정할 SubscriptionInstitute 엔티티
+     * @param updateSubscriptionInstituteRequest 구독(교육기관) 수정에 필요한 데이터를 담은 DTO
+     * @param subscriptionPlan 구독 상품 엔티티
+     * @param institute 구독 서비스를 신청한 교육기관 엔티티
+     * @return 수정할 SubscriptionInstitute 엔티티
+     */
+    public SubscriptionInstitute toUpdateEntity(
+            SubscriptionInstitute subscriptionInstitute,
+            SubscriptionInstituteDto.UpdateSubscriptionInstituteRequest updateSubscriptionInstituteRequest,
+            SubscriptionPlan subscriptionPlan,
+            Institute institute
+    ) {
+        return SubscriptionInstitute.builder()
+                .id(subscriptionInstitute.getId())
+                .subscriptionPlan(Optional.ofNullable(subscriptionPlan).orElse(subscriptionInstitute.getSubscriptionPlan()))
+                .startedAt(Optional.ofNullable(updateSubscriptionInstituteRequest.startedAt()).orElse(subscriptionInstitute.getStartedAt()))
+                .endedAt(Optional.ofNullable(updateSubscriptionInstituteRequest.endedAt()).orElse(subscriptionInstitute.getEndedAt()))
+                .nextPaymentAt(Optional.ofNullable(updateSubscriptionInstituteRequest.nextPaymentAt()).orElse(subscriptionInstitute.getNextPaymentAt()))
+                .institute(Optional.ofNullable(institute).orElse(subscriptionInstitute.getInstitute()))
                 .build();
     }
     

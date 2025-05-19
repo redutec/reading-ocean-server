@@ -1,12 +1,12 @@
 package com.redutec.admin.teacher.service;
 
-import com.redutec.admin.homeroom.service.HomeroomService;
 import com.redutec.admin.institute.service.InstituteService;
 import com.redutec.core.dto.TeacherDto;
-import com.redutec.core.mapper.TeacherMapper;
 import com.redutec.core.entity.Homeroom;
 import com.redutec.core.entity.Institute;
 import com.redutec.core.entity.Teacher;
+import com.redutec.core.mapper.TeacherMapper;
+import com.redutec.core.repository.HomeroomRepository;
 import com.redutec.core.repository.TeacherRepository;
 import com.redutec.core.specification.TeacherSpecification;
 import jakarta.persistence.EntityNotFoundException;
@@ -28,7 +28,7 @@ public class TeacherServiceImpl implements TeacherService {
     private final TeacherRepository teacherRepository;
     private final PasswordEncoder passwordEncoder;
     private final InstituteService instituteService;
-    private final HomeroomService homeroomService;
+    private final HomeroomRepository homeroomRepository;
 
     /**
      * 교사 등록
@@ -44,7 +44,7 @@ public class TeacherServiceImpl implements TeacherService {
                         .map(instituteService::getInstitute)
                         .orElse(null),
                 Optional.ofNullable(createTeacherRequest.homeroomId())
-                        .map(homeroomService::getHomeroom)
+                        .flatMap(homeroomRepository::findById)
                         .orElse(null)
         )));
     }
@@ -103,7 +103,7 @@ public class TeacherServiceImpl implements TeacherService {
                 .orElse(null);
         // 수정 요청 객체에 학급 ID가 있다면 학급 엔티티 조회(없으면 Null)
         Homeroom homeroom = Optional.ofNullable(updateTeacherRequest.homeroomId())
-                .map(homeroomService::getHomeroom)
+                .flatMap(homeroomRepository::findById)
                 .orElse(null);
         // 수정 요청 객체에 newPassword가 존재한다면 현재 비밀번호와 currentPassword가 일치하는지 검증
         Optional.ofNullable(updateTeacherRequest.newPassword())

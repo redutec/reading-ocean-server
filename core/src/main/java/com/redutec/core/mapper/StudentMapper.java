@@ -21,12 +21,14 @@ public class StudentMapper {
     private final PasswordEncoder passwordEncoder;
 
     /**
-     * CreateStudentRequest DTO를 기반으로 Student 엔티티를 생성합니다.
+     * CreateStudentRequest DTO를 기반으로 Student 등록 엔티티를 생성합니다.
      *
-     * @param createStudentRequest 학생 생성에 필요한 데이터를 담은 DTO
-     * @return 생성된 Student 엔티티
+     * @param createStudentRequest 학생 등록에 필요한 데이터를 담은 DTO
+     * @param institute 학생이 소속될 교육기관 엔티티
+     * @param homeroom 학생이 소속될 학급 엔티티
+     * @return 등록할 Student 엔티티
      */
-    public Student toEntity(
+    public Student toCreateEntity(
             StudentDto.CreateStudentRequest createStudentRequest,
             Institute institute,
             Homeroom homeroom
@@ -43,11 +45,46 @@ public class StudentMapper {
                 .readingLevel(createStudentRequest.readingLevel())
                 .raq(createStudentRequest.raq())
                 .schoolGrade(createStudentRequest.schoolGrade())
-                .bookPoints(createStudentRequest.bookPoints())
                 .description(createStudentRequest.description())
                 .domain(createStudentRequest.domain())
                 .institute(institute)
                 .homeroom(homeroom)
+                .build();
+    }
+
+    /**
+     * CreateStudentRequest DTO를 기반으로 Student 수정 엔티티를 생성합니다.
+     *
+     * @param student 수정할 Student 엔티티
+     * @param updateStudentRequest 학생 수정에 필요한 데이터를 담은 DTO
+     * @param institute 학생이 소속될 교육기관 엔티티
+     * @param homeroom 학생이 소속될 학급 엔티티
+     * @return 수정할 Student 엔티티
+     */
+    public Student toUpdateEntity(
+            Student student,
+            StudentDto.UpdateStudentRequest updateStudentRequest,
+            Institute institute,
+            Homeroom homeroom
+    ) {
+        return Student.builder()
+                .id(student.getId())
+                .accountId(Optional.ofNullable(updateStudentRequest.accountId()).orElse(student.getAccountId()))
+                .password(Optional.ofNullable(passwordEncoder.encode(updateStudentRequest.newPassword())).orElse(student.getPassword()))
+                .name(Optional.ofNullable(updateStudentRequest.name()).orElse(student.getName()))
+                .phoneNumber(Optional.ofNullable(updateStudentRequest.phoneNumber()).orElse(student.getPhoneNumber()))
+                .email(Optional.ofNullable(updateStudentRequest.email()).orElse(student.getEmail()))
+                .birthday(Optional.ofNullable(updateStudentRequest.birthday()).orElse(student.getBirthday()))
+                .status(Optional.ofNullable(updateStudentRequest.status()).orElse(student.getStatus()))
+                .authenticationStatus(Optional.ofNullable(updateStudentRequest.authenticationStatus()).orElse(student.getAuthenticationStatus()))
+                .readingLevel(Optional.ofNullable(updateStudentRequest.readingLevel()).orElse(student.getReadingLevel()))
+                .raq(Optional.ofNullable(updateStudentRequest.raq()).orElse(student.getRaq()))
+                .schoolGrade(Optional.ofNullable(updateStudentRequest.schoolGrade()).orElse(student.getSchoolGrade()))
+                .bookMbti(Optional.ofNullable(updateStudentRequest.bookMbti()).orElse(student.getBookMbti()))
+                .description(Optional.ofNullable(updateStudentRequest.description()).orElse(student.getDescription()))
+                .domain(Optional.ofNullable(updateStudentRequest.domain()).orElse(student.getDomain()))
+                .institute(Optional.ofNullable(institute).orElse(student.getInstitute()))
+                .homeroom(Optional.ofNullable(homeroom).orElse(student.getHomeroom()))
                 .build();
     }
     
@@ -89,7 +126,6 @@ public class StudentMapper {
                         s.getReadingLevel(),
                         s.getRaq(),
                         s.getSchoolGrade(),
-                        s.getBookPoints(),
                         s.getBookMbti(),
                         s.getLastLoginIp(),
                         s.getLastLoginAt(),

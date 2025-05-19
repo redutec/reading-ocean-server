@@ -16,7 +16,6 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 @Entity
 @Comment("구독 상품")
@@ -73,22 +72,4 @@ public class SubscriptionPlan {
     @LastModifiedDate
     @Column(nullable = false)
     private LocalDateTime updatedAt;
-
-    public void updateSubscriptionPlan(
-            String name,
-            String details,
-            Integer price,
-            Integer discountPercentage,
-            Integer durationDays,
-            SubscriptionPlanStatus status,
-            Boolean autoRenew
-    ) {
-        this.name = Optional.ofNullable(name).orElse(this.name);
-        this.details = Optional.ofNullable(details).orElse(this.details);
-        this.price = Optional.ofNullable(price).orElse(this.price);
-        this.discountPercentage = Optional.ofNullable(discountPercentage).orElse(this.discountPercentage);
-        this.durationDays = Optional.ofNullable(durationDays).orElse(this.durationDays);
-        this.status = Optional.ofNullable(status).orElse(this.status);
-        this.autoRenew = Optional.ofNullable(autoRenew).orElse(this.autoRenew);
-    }
 }

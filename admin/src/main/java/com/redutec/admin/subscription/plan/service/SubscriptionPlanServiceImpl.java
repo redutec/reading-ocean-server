@@ -32,7 +32,7 @@ public class SubscriptionPlanServiceImpl implements SubscriptionPlanService {
     ) {
         return subscriptionPlanMapper.toResponseDto(
                 subscriptionPlanRepository.save(
-                        subscriptionPlanMapper.toEntity(createSubscriptionPlanRequest)
+                        subscriptionPlanMapper.toCreateEntity(createSubscriptionPlanRequest)
                 )
         );
     }
@@ -74,7 +74,7 @@ public class SubscriptionPlanServiceImpl implements SubscriptionPlanService {
     @Transactional(readOnly = true)
     public SubscriptionPlan getSubscriptionPlan(Long subscriptionPlanId) {
         return subscriptionPlanRepository.findById(subscriptionPlanId)
-                .orElseThrow(() -> new EntityNotFoundException("구독 상품를 찾을 수 없습니다. id = " + subscriptionPlanId));
+                .orElseThrow(() -> new EntityNotFoundException("구독 상품를 찾을 수 없습니다. subscriptionPlanId = " + subscriptionPlanId));
     }
 
     /**
@@ -88,20 +88,10 @@ public class SubscriptionPlanServiceImpl implements SubscriptionPlanService {
             Long subscriptionPlanId,
             SubscriptionPlanDto.UpdateSubscriptionPlanRequest updateSubscriptionPlanRequest
     ) {
-        // 수정할 구독 상품 엔티티 조회
-        SubscriptionPlan subscriptionPlan = getSubscriptionPlan(subscriptionPlanId);
-        // UPDATE 도메인 메서드로 변환
-        subscriptionPlan.updateSubscriptionPlan(
-                updateSubscriptionPlanRequest.name(),
-                updateSubscriptionPlanRequest.details(),
-                updateSubscriptionPlanRequest.price(),
-                updateSubscriptionPlanRequest.discountPercentage(),
-                updateSubscriptionPlanRequest.durationDays(),
-                updateSubscriptionPlanRequest.status(),
-                updateSubscriptionPlanRequest.autoRenew()
-        );
-        // 구독 상품 엔티티 UPDATE
-        subscriptionPlanRepository.save(subscriptionPlan);
+        subscriptionPlanRepository.save(subscriptionPlanMapper.toUpdateEntity(
+                getSubscriptionPlan(subscriptionPlanId),
+                updateSubscriptionPlanRequest
+        ));
     }
 
     /**

@@ -1,11 +1,13 @@
 package com.redutec.teachingocean.homeroom.service;
 
+import com.redutec.core.dto.HomeroomDto;
 import com.redutec.core.entity.Homeroom;
+import com.redutec.core.mapper.HomeroomMapper;
 import com.redutec.core.repository.HomeroomRepository;
 import com.redutec.core.specification.HomeroomSpecification;
-import com.redutec.teachingocean.homeroom.dto.HomeroomDto;
-import com.redutec.teachingocean.homeroom.mapper.HomeroomMapper;
 import com.redutec.teachingocean.institute.service.InstituteService;
+import com.redutec.teachingocean.student.service.StudentService;
+import com.redutec.teachingocean.teacher.service.TeacherService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +25,8 @@ public class HomeroomServiceImpl implements HomeroomService {
     private final HomeroomMapper homeroomMapper;
     private final HomeroomRepository homeroomRepository;
     private final InstituteService instituteService;
+    private final TeacherService teacherService;
+    private final StudentService studentService;
 
     /**
      * 학급 등록
@@ -32,11 +36,19 @@ public class HomeroomServiceImpl implements HomeroomService {
     @Override
     @Transactional
     public HomeroomDto.HomeroomResponse create(HomeroomDto.CreateHomeroomRequest createHomeroomRequest) {
-        return homeroomMapper.toResponseDto(
-                homeroomRepository.save(
-                        homeroomMapper.toEntity(
-                                createHomeroomRequest,
-                                instituteService.getInstitute(createHomeroomRequest.instituteId())
+        return homeroomMapper.toResponseDto(homeroomRepository.save(homeroomMapper.toCreateEntity(
+                createHomeroomRequest,
+                instituteService.getInstitute(createHomeroomRequest.instituteId()),
+                        Optional.ofNullable(createHomeroomRequest.studentIds())
+                                .map(studentIds -> studentIds.stream()
+                                        .map(studentService::getStudent)
+                                        .toList())
+                                .orElse(null),
+                        Optional.ofNullable(createHomeroomRequest.teacherIds())
+                                .map(teacherIds -> teacherIds.stream()
+                                        .map(teacherService::getTeacher)
+                                        .toList())
+                                .orElse(null)
                         )
                 )
         );
@@ -77,7 +89,7 @@ public class HomeroomServiceImpl implements HomeroomService {
     @Transactional(readOnly = true)
     public Homeroom getHomeroom(Long homeroomId) {
         return homeroomRepository.findById(homeroomId)
-                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 학급입니다. id = " + homeroomId));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 학급입니다. homeroomId = " + homeroomId));
     }
 
     /**
@@ -88,18 +100,23 @@ public class HomeroomServiceImpl implements HomeroomService {
     @Override
     @Transactional
     public void update(Long homeroomId, HomeroomDto.UpdateHomeroomRequest updateHomeroomRequest) {
-        // 수정할 학급 엔티티 조회
-        Homeroom homeroom = getHomeroom(homeroomId);
-        // UPDATE 도메인 메서드로 변환
-        homeroom.updateHomeroom(
-                updateHomeroomRequest.name(),
+        homeroomRepository.save(homeroomMapper.toUpdateEntity(
+                getHomeroom(homeroomId),
+                updateHomeroomRequest,
                 Optional.ofNullable(updateHomeroomRequest.instituteId())
                         .map(instituteService::getInstitute)
                         .orElse(null),
-                updateHomeroomRequest.description()
-        );
-        // 학급 엔티티 UPDATE
-        homeroomRepository.save(homeroom);
+                Optional.ofNullable(updateHomeroomRequest.studentIds())
+                        .map(studentIds -> studentIds.stream()
+                                .map(studentService::getStudent)
+                                .toList())
+                        .orElse(null),
+                Optional.ofNullable(updateHomeroomRequest.teacherIds())
+                        .map(teacherIds -> teacherIds.stream()
+                                .map(teacherService::getTeacher)
+                                .toList())
+                        .orElse(null)
+        ));
     }
 
     /**

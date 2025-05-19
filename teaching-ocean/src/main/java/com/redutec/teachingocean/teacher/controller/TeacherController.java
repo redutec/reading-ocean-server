@@ -1,6 +1,6 @@
 package com.redutec.teachingocean.teacher.controller;
 
-import com.redutec.teachingocean.teacher.dto.TeacherDto;
+import com.redutec.core.dto.TeacherDto;
 import com.redutec.teachingocean.teacher.service.TeacherService;
 import com.redutec.core.config.ApiResponseBody;
 import com.redutec.core.config.ApiResponseManager;

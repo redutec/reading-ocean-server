@@ -1,6 +1,6 @@
 package com.redutec.teachingocean.homeroom.service;
 
-import com.redutec.teachingocean.homeroom.dto.HomeroomDto;
+import com.redutec.core.dto.HomeroomDto;
 import com.redutec.core.entity.Homeroom;
 
 public interface HomeroomService {

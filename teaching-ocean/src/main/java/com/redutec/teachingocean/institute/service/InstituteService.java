@@ -1,6 +1,6 @@
 package com.redutec.teachingocean.institute.service;
 
-import com.redutec.teachingocean.institute.dto.InstituteDto;
+import com.redutec.core.dto.InstituteDto;
 import com.redutec.core.entity.Institute;
 
 public interface InstituteService {

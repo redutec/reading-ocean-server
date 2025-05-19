@@ -2,8 +2,8 @@ package com.redutec.teachingocean.notice.service;
 
 import com.redutec.core.repository.NoticeRepository;
 import com.redutec.core.specification.NoticeSpecification;
-import com.redutec.teachingocean.notice.dto.NoticeDto;
-import com.redutec.teachingocean.notice.mapper.NoticeMapper;
+import com.redutec.core.dto.NoticeDto;
+import com.redutec.core.mapper.NoticeMapper;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -46,6 +46,6 @@ public class NoticeServiceImpl implements NoticeService {
     public NoticeDto.NoticeResponse findById(Long noticeId) {
         return noticeMapper.toResponseDto(
                 noticeRepository.findById(noticeId)
-                        .orElseThrow(() -> new EntityNotFoundException("공지사항을 찾을 수 없습니다. id = " + noticeId)));
+                        .orElseThrow(() -> new EntityNotFoundException("공지사항을 찾을 수 없습니다. noticeId = " + noticeId)));
     }
 }

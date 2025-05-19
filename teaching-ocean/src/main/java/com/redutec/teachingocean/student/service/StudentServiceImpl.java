@@ -1,6 +1,5 @@
-package com.redutec.admin.student.service;
+package com.redutec.teachingocean.student.service;
 
-import com.redutec.admin.institute.service.InstituteService;
 import com.redutec.core.dto.StudentDto;
 import com.redutec.core.entity.Homeroom;
 import com.redutec.core.entity.Institute;
@@ -9,6 +8,7 @@ import com.redutec.core.mapper.StudentMapper;
 import com.redutec.core.repository.HomeroomRepository;
 import com.redutec.core.repository.StudentRepository;
 import com.redutec.core.specification.StudentSpecification;
+import com.redutec.teachingocean.institute.service.InstituteService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -123,15 +123,5 @@ public class StudentServiceImpl implements StudentService {
                             .orElseThrow(() -> new IllegalArgumentException("현재 비밀번호가 일치하지 않습니다."));
                 });
         studentRepository.save(studentMapper.toUpdateEntity(student, updateStudentRequest, institute, homeroom));
-    }
-
-    /**
-     * 특정 학생 삭제
-     * @param studentId 삭제할 학생의 ID
-     */
-    @Override
-    @Transactional
-    public void delete(Long studentId) {
-        studentRepository.delete(getStudent(studentId));
     }
 }

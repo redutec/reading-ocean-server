@@ -2,7 +2,7 @@ package com.redutec.teachingocean.notice.controller;
 
 import com.redutec.core.config.ApiResponseBody;
 import com.redutec.core.config.ApiResponseManager;
-import com.redutec.teachingocean.notice.dto.NoticeDto;
+import com.redutec.core.dto.NoticeDto;
 import com.redutec.teachingocean.notice.service.NoticeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
