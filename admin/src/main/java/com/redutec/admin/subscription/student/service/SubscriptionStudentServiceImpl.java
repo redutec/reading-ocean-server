@@ -106,10 +106,10 @@ public class SubscriptionStudentServiceImpl implements SubscriptionStudentServic
                 getSubscriptionStudent(subscriptionStudentId),
                 updateSubscriptionStudentRequest,
                 Optional.ofNullable(updateSubscriptionStudentRequest.subscriptionPlanId())
-                        .map(subscriptionPlanService::getSubscriptionPlan)
+                        .flatMap(subscriptionPlanRepository::findById)
                         .orElse(null),
                 Optional.ofNullable(updateSubscriptionStudentRequest.studentId())
-                        .map(studentService::getStudent)
+                        .flatMap(studentRepository::findById)
                         .orElse(null)
         ));
     }
