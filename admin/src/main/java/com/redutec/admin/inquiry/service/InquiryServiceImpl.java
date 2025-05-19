@@ -2,8 +2,10 @@ package com.redutec.admin.inquiry.service;
 
 import com.redutec.admin.user.service.AdminUserService;
 import com.redutec.core.dto.InquiryDto;
+import com.redutec.core.entity.AdminUser;
 import com.redutec.core.entity.Inquiry;
 import com.redutec.core.mapper.InquiryMapper;
+import com.redutec.core.repository.AdminUserRepository;
 import com.redutec.core.repository.InquiryRepository;
 import com.redutec.core.specification.InquirySpecification;
 import jakarta.persistence.EntityNotFoundException;
@@ -22,7 +24,7 @@ import java.util.Optional;
 public class InquiryServiceImpl implements InquiryService {
     private final InquiryMapper inquiryMapper;
     private final InquiryRepository inquiryRepository;
-    private final AdminUserService adminUserService;
+    private final AdminUserRepository adminUserRepository;
 
     /**
      * 고객문의 등록
@@ -32,11 +34,14 @@ public class InquiryServiceImpl implements InquiryService {
     @Override
     @Transactional
     public InquiryDto.InquiryResponse create(InquiryDto.CreateInquiryRequest createInquiryRequest) {
+        // 등록 요청 객체에 답변자 아이디가 존재한다면 어드민 사용자 엔티티 조회
+        AdminUser responder = Optional.ofNullable(createInquiryRequest.responderAccountId())
+                .flatMap(adminUserRepository::findByAccountId)
+                .orElse(null);
+        // 고객문의 등록
         return inquiryMapper.toResponseDto(inquiryRepository.save(inquiryMapper.toCreateEntity(
                 createInquiryRequest,
-                Optional.ofNullable(createInquiryRequest.responderAccountId())
-                        .map(adminUserService::findByAccountId)
-                        .orElse(null)
+                responder
         )));
     }
 
@@ -74,12 +79,15 @@ public class InquiryServiceImpl implements InquiryService {
     @Override
     @Transactional
     public void update(Long inquiryId, InquiryDto.UpdateInquiryRequest updateInquiryRequest) {
+        // 수정 요청 객체에 답변자 아이디가 존재한다면 어드민 사용자 엔티티 조회
+        AdminUser responder = Optional.ofNullable(updateInquiryRequest.responderAccountId())
+                .flatMap(adminUserRepository::findByAccountId)
+                .orElse(null);
+        // 고객문의 수정
         inquiryRepository.save(inquiryMapper.toUpdateEntity(
                 getInquiry(inquiryId),
                 updateInquiryRequest,
-                Optional.ofNullable(updateInquiryRequest.responderAccountId())
-                        .map(adminUserService::findByAccountId)
-                        .orElse(null)
+                responder
         ));
     }
 

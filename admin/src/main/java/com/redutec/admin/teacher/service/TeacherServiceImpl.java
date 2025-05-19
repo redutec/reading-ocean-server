@@ -7,6 +7,7 @@ import com.redutec.core.entity.Institute;
 import com.redutec.core.entity.Teacher;
 import com.redutec.core.mapper.TeacherMapper;
 import com.redutec.core.repository.HomeroomRepository;
+import com.redutec.core.repository.InstituteRepository;
 import com.redutec.core.repository.TeacherRepository;
 import com.redutec.core.specification.TeacherSpecification;
 import jakarta.persistence.EntityNotFoundException;
@@ -26,9 +27,9 @@ import java.util.Optional;
 public class TeacherServiceImpl implements TeacherService {
     private final TeacherMapper teacherMapper;
     private final TeacherRepository teacherRepository;
-    private final PasswordEncoder passwordEncoder;
-    private final InstituteService instituteService;
+    private final InstituteRepository instituteRepository;
     private final HomeroomRepository homeroomRepository;
+    private final PasswordEncoder passwordEncoder;
 
     /**
      * 교사 등록
@@ -38,14 +39,19 @@ public class TeacherServiceImpl implements TeacherService {
     @Override
     @Transactional
     public TeacherDto.TeacherResponse create(TeacherDto.CreateTeacherRequest createTeacherRequest) {
+        // 등록 요청 객체에 교사가 소속한 교육기관 고유번호가 존재하면 교육기관 엔티티 조회
+        Institute institute = Optional.ofNullable(createTeacherRequest.instituteId())
+                .flatMap(instituteRepository::findById)
+                .orElse(null);
+        // 등록 요청 객체에 교사가 소속한 학급 고유번호가 존재하면 학급 엔티티 조회
+        Homeroom homeroom = Optional.ofNullable(createTeacherRequest.homeroomId())
+                .flatMap(homeroomRepository::findById)
+                .orElse(null);
+        // 교사 등록
         return teacherMapper.toResponseDto(teacherRepository.save(teacherMapper.toCreateEntity(
                 createTeacherRequest,
-                Optional.ofNullable(createTeacherRequest.instituteId())
-                        .map(instituteService::getInstitute)
-                        .orElse(null),
-                Optional.ofNullable(createTeacherRequest.homeroomId())
-                        .flatMap(homeroomRepository::findById)
-                        .orElse(null)
+                institute,
+                homeroom
         )));
     }
 
@@ -85,11 +91,11 @@ public class TeacherServiceImpl implements TeacherService {
     public void update(Long teacherId, TeacherDto.UpdateTeacherRequest updateTeacherRequest) {
         // 수정할 교사 엔티티 조회
         Teacher teacher = getTeacher(teacherId);
-        // 수정 요청 객체에 학원 ID가 있다면 학원 엔티티 조회(없으면 Null)
+        // 수정 요청 객체에 교육기관 고유번호가 있다면 교육기관 엔티티 조회(없으면 Null)
         Institute institute = Optional.ofNullable(updateTeacherRequest.instituteId())
-                .map(instituteService::getInstitute)
+                .flatMap(instituteRepository::findById)
                 .orElse(null);
-        // 수정 요청 객체에 학급 ID가 있다면 학급 엔티티 조회(없으면 Null)
+        // 수정 요청 객체에 학급 고유번호가 있다면 학급 엔티티 조회(없으면 Null)
         Homeroom homeroom = Optional.ofNullable(updateTeacherRequest.homeroomId())
                 .flatMap(homeroomRepository::findById)
                 .orElse(null);
@@ -107,7 +113,12 @@ public class TeacherServiceImpl implements TeacherService {
                             .orElseThrow(() -> new IllegalArgumentException("현재 비밀번호가 일치하지 않습니다."));
                 });
         // 교사 정보 수정 엔티티 빌드 후 UPDATE
-        teacherRepository.save(teacherMapper.toUpdateEntity(teacher, updateTeacherRequest, institute, homeroom));
+        teacherRepository.save(teacherMapper.toUpdateEntity(
+                teacher,
+                updateTeacherRequest,
+                institute,
+                homeroom
+        ));
     }
 
     /**
