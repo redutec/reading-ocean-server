@@ -1,7 +1,7 @@
-package com.redutec.teachingocean.homeroom.controller;
+package com.redutec.teachingocean.institute.homeroom.controller;
 
 import com.redutec.core.dto.HomeroomDto;
-import com.redutec.teachingocean.homeroom.service.HomeroomService;
+import com.redutec.teachingocean.institute.homeroom.service.HomeroomService;
 import com.redutec.core.config.ApiResponseBody;
 import com.redutec.core.config.ApiResponseManager;
 import io.swagger.v3.oas.annotations.Operation;

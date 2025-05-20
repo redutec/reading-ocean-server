@@ -1,4 +1,4 @@
-package com.redutec.teachingocean.student.service;
+package com.redutec.teachingocean.institute.student.service;
 
 import com.redutec.core.dto.StudentDto;
 import com.redutec.core.entity.Homeroom;

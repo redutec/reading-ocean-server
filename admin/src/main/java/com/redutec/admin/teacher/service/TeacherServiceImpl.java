@@ -1,6 +1,5 @@
 package com.redutec.admin.teacher.service;
 
-import com.redutec.admin.institute.service.InstituteService;
 import com.redutec.core.dto.TeacherDto;
 import com.redutec.core.entity.Homeroom;
 import com.redutec.core.entity.Institute;
@@ -91,14 +90,6 @@ public class TeacherServiceImpl implements TeacherService {
     public void update(Long teacherId, TeacherDto.UpdateTeacherRequest updateTeacherRequest) {
         // 수정할 교사 엔티티 조회
         Teacher teacher = getTeacher(teacherId);
-        // 수정 요청 객체에 교육기관 고유번호가 있다면 교육기관 엔티티 조회(없으면 Null)
-        Institute institute = Optional.ofNullable(updateTeacherRequest.instituteId())
-                .flatMap(instituteRepository::findById)
-                .orElse(null);
-        // 수정 요청 객체에 학급 고유번호가 있다면 학급 엔티티 조회(없으면 Null)
-        Homeroom homeroom = Optional.ofNullable(updateTeacherRequest.homeroomId())
-                .flatMap(homeroomRepository::findById)
-                .orElse(null);
         // 수정 요청 객체에 newPassword가 존재한다면 현재 비밀번호와 currentPassword가 일치하는지 검증
         Optional.ofNullable(updateTeacherRequest.newPassword())
                 .filter(newPassword -> !newPassword.isBlank())
@@ -112,6 +103,14 @@ public class TeacherServiceImpl implements TeacherService {
                             .filter(currentPassword -> passwordEncoder.matches(currentPassword, teacher.getPassword()))
                             .orElseThrow(() -> new IllegalArgumentException("현재 비밀번호가 일치하지 않습니다."));
                 });
+        // 수정 요청 객체에 교육기관 고유번호가 있다면 교육기관 엔티티 조회(없으면 Null)
+        Institute institute = Optional.ofNullable(updateTeacherRequest.instituteId())
+                .flatMap(instituteRepository::findById)
+                .orElse(null);
+        // 수정 요청 객체에 학급 고유번호가 있다면 학급 엔티티 조회(없으면 Null)
+        Homeroom homeroom = Optional.ofNullable(updateTeacherRequest.homeroomId())
+                .flatMap(homeroomRepository::findById)
+                .orElse(null);
         // 교사 정보 수정 엔티티 빌드 후 UPDATE
         teacherRepository.save(teacherMapper.toUpdateEntity(
                 teacher,

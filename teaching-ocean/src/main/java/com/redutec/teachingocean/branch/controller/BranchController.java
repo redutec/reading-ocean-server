@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -23,5 +24,17 @@ public class BranchController {
     @GetMapping
     public ResponseEntity<ApiResponseBody> findBranch() {
         return apiResponseManager.ok(branchService.findBranch());
+    }
+
+    @Operation(summary = "현재 로그인한 지사장(교사)의 지사에 속한 특정 교육기관 조회", description = "현재 로그인한 지사장(교사)의 지사에 속한 특정 교육기관 조회 API")
+    @GetMapping("/institute/{instituteId}")
+    public ResponseEntity<ApiResponseBody> findInstitute(@PathVariable Long instituteId) {
+        return apiResponseManager.ok(branchService.findInstitute(instituteId));
+    }
+
+    @Operation(summary = "현재 로그인한 지사장(교사)의 지사에 속한 교육기관 조회", description = "현재 로그인한 지사장(교사)의 지사에 속한 교육기관 조회 API")
+    @GetMapping("/institute")
+    public ResponseEntity<ApiResponseBody> findInstitutes() {
+        return apiResponseManager.ok(branchService.findInstitutes());
     }
 }

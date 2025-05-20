@@ -1,6 +1,6 @@
-package com.redutec.teachingocean.student.controller;
+package com.redutec.teachingocean.institute.student.controller;
 
-import com.redutec.teachingocean.student.service.StudentService;
+import com.redutec.teachingocean.institute.student.service.StudentService;
 import com.redutec.core.config.ApiResponseBody;
 import com.redutec.core.config.ApiResponseManager;
 import com.redutec.core.dto.StudentDto;
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/student")
+@RequestMapping("/institute/student")
 @Tag(name = "학생 관리 API", description = "학생 관리 API 모음")
 public class StudentController {
     private final ApiResponseManager apiResponseManager;

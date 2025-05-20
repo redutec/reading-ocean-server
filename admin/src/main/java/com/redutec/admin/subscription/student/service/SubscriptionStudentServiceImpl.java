@@ -98,19 +98,19 @@ public class SubscriptionStudentServiceImpl implements SubscriptionStudentServic
             SubscriptionStudentDto.UpdateSubscriptionStudentRequest updateSubscriptionStudentRequest
     ) {
         // 수정 요청 객체에 구독상품 고유번호가 있다면 구독상품 엔티티 조회
-        
+        SubscriptionPlan subscriptionPlan = Optional.ofNullable(updateSubscriptionStudentRequest.subscriptionPlanId())
+                .flatMap(subscriptionPlanRepository::findById)
+                .orElse(null);
         // 수정 요청 객체에 구독상품을 구독할 학생 고유번호가 있다면 학생 엔티티 조회
-
+        Student student = Optional.ofNullable(updateSubscriptionStudentRequest.studentId())
+                .flatMap(studentRepository::findById)
+                .orElse(null);
         // 구독정보(학생) 수정
         subscriptionStudentRepository.save(subscriptionStudentMapper.toUpdateEntity(
                 getSubscriptionStudent(subscriptionStudentId),
                 updateSubscriptionStudentRequest,
-                Optional.ofNullable(updateSubscriptionStudentRequest.subscriptionPlanId())
-                        .flatMap(subscriptionPlanRepository::findById)
-                        .orElse(null),
-                Optional.ofNullable(updateSubscriptionStudentRequest.studentId())
-                        .flatMap(studentRepository::findById)
-                        .orElse(null)
+                subscriptionPlan,
+                student
         ));
     }
 

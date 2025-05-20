@@ -1,9 +1,9 @@
-package com.redutec.teachingocean.teacher.controller;
+package com.redutec.teachingocean.institute.teacher.controller;
 
-import com.redutec.core.dto.TeacherDto;
-import com.redutec.teachingocean.teacher.service.TeacherService;
 import com.redutec.core.config.ApiResponseBody;
 import com.redutec.core.config.ApiResponseManager;
+import com.redutec.core.dto.TeacherDto;
+import com.redutec.teachingocean.institute.teacher.service.TeacherService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -15,13 +15,13 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/teacher")
+@RequestMapping("/institute/teacher")
 @Tag(name = "교사 관리 API", description = "교사 관리 API 모음")
 public class TeacherController {
     private final ApiResponseManager apiResponseManager;
     private final TeacherService teacherService;
 
-    @Operation(summary = "교사 등록", description = "교사를 등록하는 API")
+    @Operation(summary = "학사관리 - 교사관리 - 신규 교사 등록", description = "현재 로그인한 교사가 속한 교육기관에 신규 교사 등록")
     @PostMapping
     public ResponseEntity<ApiResponseBody> create(
             @ParameterObject @Valid TeacherDto.CreateTeacherRequest createTeacherRequest
@@ -29,7 +29,7 @@ public class TeacherController {
         return apiResponseManager.create(teacherService.create(createTeacherRequest));
     }
 
-    @Operation(summary = "조건에 맞는 교사 목록 조회", description = "조건에 맞는 교사 목록을 조회하는 API")
+    @Operation(summary = "학사관리 - 교사관리 - 교사 목록 조회", description = "현재 로그인한 교사가 속한 교육기관의 교사 목록 조회")
     @GetMapping
     public ResponseEntity<ApiResponseBody> find(
             @ParameterObject @Valid TeacherDto.FindTeacherRequest findTeacherRequest
@@ -37,13 +37,13 @@ public class TeacherController {
         return apiResponseManager.ok(teacherService.find(findTeacherRequest));
     }
 
-    @Operation(summary = "특정 교사 조회", description = "특정 교사를 조회하는 API")
+    @Operation(summary = "학사관리 - 교사관리 - 특정 교사 조회", description = "현재 로그인한 교사가 속한 교육기관의 특정 교사 조회")
     @GetMapping("/{teacherId}")
     public ResponseEntity<ApiResponseBody> findById(@PathVariable Long teacherId) {
         return apiResponseManager.ok(teacherService.findById(teacherId));
     }
 
-    @Operation(summary = "특정 교사 수정", description = "특정 교사를 수정하는 API")
+    @Operation(summary = "학사관리 - 교사관리 - 특정 교사 수정", description = "현재 로그인한 교사가 속한 교육기관의 특정 교사 수정")
     @PatchMapping("/{teacherId}")
     public ResponseEntity<ApiResponseBody> update(
             @Parameter(description = "교사 ID") @PathVariable Long teacherId,
