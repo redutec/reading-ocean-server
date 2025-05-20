@@ -1,7 +1,6 @@
 package com.redutec.admin.menu.service;
 
 import com.redutec.core.dto.AdminMenuDto;
-import com.redutec.core.entity.AdminMenu;
 
 public interface AdminMenuService {
     /**

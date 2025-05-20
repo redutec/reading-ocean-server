@@ -1,6 +1,5 @@
 package com.redutec.admin.inquiry.service;
 
-import com.redutec.admin.user.service.AdminUserService;
 import com.redutec.core.dto.InquiryDto;
 import com.redutec.core.entity.AdminUser;
 import com.redutec.core.entity.Inquiry;

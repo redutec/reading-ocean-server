@@ -93,7 +93,8 @@ public class TeacherMapper {
                 findTeacherRequest.accountId(),
                 findTeacherRequest.name(),
                 findTeacherRequest.instituteName(),
-                findTeacherRequest.statuses()
+                findTeacherRequest.statuses(),
+                findTeacherRequest.roles()
         );
     }
 

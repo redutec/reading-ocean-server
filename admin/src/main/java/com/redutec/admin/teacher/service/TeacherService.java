@@ -1,7 +1,6 @@
 package com.redutec.admin.teacher.service;
 
 import com.redutec.core.dto.TeacherDto;
-import com.redutec.core.entity.Teacher;
 
 public interface TeacherService {
     /**

@@ -98,7 +98,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         var accountId = SecurityContextHolder.getContext().getAuthentication().getName();
         // 교사 정보 조회
         Teacher teacher = teacherRepository.findByAccountId(accountId)
-                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 교사 계정입니다. accountId = " + accountId));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 교사 계정입니다. accountId: " + accountId));
         // 소속 교육기관 정보
         Institute institute = teacher.getInstitute();
         Long instituteId = Optional.ofNullable(institute)

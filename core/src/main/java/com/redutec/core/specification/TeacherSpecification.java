@@ -29,7 +29,10 @@ public class TeacherSpecification {
                             .map(instituteName -> criteriaBuilder.like(root.get("institute").get("name"), "%" + instituteName + "%")),
                     Optional.ofNullable(teacherCriteria.statuses())
                             .filter(statuses -> !statuses.isEmpty())
-                            .map(statuses -> root.get("status").in(statuses))
+                            .map(statuses -> root.get("status").in(statuses)),
+                    Optional.ofNullable(teacherCriteria.roles())
+                            .filter(roles -> !roles.isEmpty())
+                            .map(roles -> root.get("roles").in(roles))
             );
             // 수집된 Predicate 들을 하나로 결합
             return combinePredicate(predicateStream, criteriaBuilder);
