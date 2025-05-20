@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,14 +23,18 @@ public class ProductController {
     private final ProductService productService;
 
     @Operation(summary = "판매상품 등록", description = "판매상품 정보를 등록하는 API")
-    @PostMapping
-    public ResponseEntity<ApiResponseBody> create(@ParameterObject @Valid ProductDto.CreateProductRequest createProductRequest) {
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ApiResponseBody> create(
+            @ModelAttribute @Valid ProductDto.CreateProductRequest createProductRequest
+    ) {
         return apiResponseManager.create(productService.create(createProductRequest));
     }
 
     @Operation(summary = "조건에 맞는 판매상품 목록 조회", description = "조건에 맞는 판매상품 목록을 조회하는 API")
     @GetMapping
-    public ResponseEntity<ApiResponseBody> find(@ParameterObject @Valid ProductDto.FindProductRequest findProductRequest) {
+    public ResponseEntity<ApiResponseBody> find(
+            @ParameterObject @Valid ProductDto.FindProductRequest findProductRequest
+    ) {
         return apiResponseManager.ok(productService.find(findProductRequest));
     }
 
@@ -40,10 +45,10 @@ public class ProductController {
     }
 
     @Operation(summary = "특정 판매상품 수정", description = "특정 판매상품을 수정하는 API")
-    @PatchMapping("/{productId}")
+    @PatchMapping(path = "/{productId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponseBody> update(
             @Parameter(description = "판매상품 ID") @PathVariable Long productId,
-            @ParameterObject @Valid ProductDto.UpdateProductRequest updateProductRequest
+            @ModelAttribute @Valid ProductDto.UpdateProductRequest updateProductRequest
     ) {
         productService.update(productId, updateProductRequest);
         return apiResponseManager.noContent();

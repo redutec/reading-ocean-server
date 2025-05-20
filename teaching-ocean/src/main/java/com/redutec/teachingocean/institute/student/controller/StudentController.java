@@ -21,7 +21,7 @@ public class StudentController {
     private final ApiResponseManager apiResponseManager;
     private final StudentService studentService;
 
-    @Operation(summary = "학생 등록", description = "학생을 등록하는 API")
+    @Operation(summary = "학사관리 - 학생 관리 - 신규 학생 등록", description = "현재 로그인한 교사가 속한 교육기관에 신규 학생 등록")
     @PostMapping
     public ResponseEntity<ApiResponseBody> create(
             @ParameterObject @Valid StudentDto.CreateStudentRequest createStudentRequest
@@ -29,7 +29,7 @@ public class StudentController {
         return apiResponseManager.create(studentService.create(createStudentRequest));
     }
 
-    @Operation(summary = "조건에 맞는 학생 목록 조회", description = "조건에 맞는 학생 목록을 조회하는 API")
+    @Operation(summary = "학사관리 - 학생 관리 - 학생 목록 조회", description = "현재 로그인한 교사가 속한 교육기관의 학생들을 조회")
     @GetMapping
     public ResponseEntity<ApiResponseBody> find(
             @ParameterObject @Valid StudentDto.FindStudentRequest findStudentRequest
@@ -37,13 +37,13 @@ public class StudentController {
         return apiResponseManager.ok(studentService.find(findStudentRequest));
     }
 
-    @Operation(summary = "특정 학생 조회", description = "특정 학생을 조회하는 API")
+    @Operation(summary = "학사관리 - 학생 관리 - 특정 학생 조회", description = "현재 로그인한 교사가 속한 교육기관의 특정 학생 조회")
     @GetMapping("/{studentId}")
     public ResponseEntity<ApiResponseBody> findById(@PathVariable Long studentId) {
         return apiResponseManager.ok(studentService.findById(studentId));
     }
 
-    @Operation(summary = "특정 학생 수정", description = "특정 학생을 수정하는 API")
+    @Operation(summary = "학사관리 - 학생 관리 - 특정 학생 수정", description = "현재 로그인한 교사가 속한 교육기관의 특정 학생 수정")
     @PatchMapping("/{studentId}")
     public ResponseEntity<ApiResponseBody> update(
             @Parameter(description = "학생 ID") @PathVariable Long studentId,

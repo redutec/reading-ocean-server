@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,8 +23,8 @@ public class BookController {
     private final BookService bookService;
 
     @Operation(summary = "도서 등록", description = "도서 정보를 등록하는 API")
-    @PostMapping
-    public ResponseEntity<ApiResponseBody> create(@ParameterObject @Valid BookDto.CreateBookRequest createBookRequest) {
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ApiResponseBody> create(@ModelAttribute @Valid BookDto.CreateBookRequest createBookRequest) {
         return apiResponseManager.create(bookService.create(createBookRequest));
     }
 
@@ -40,10 +41,10 @@ public class BookController {
     }
 
     @Operation(summary = "특정 도서 수정", description = "특정 도서를 수정하는 API")
-    @PatchMapping("/{bookId}")
+    @PatchMapping(path = "/{bookId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponseBody> update(
             @Parameter(description = "도서 ID") @PathVariable Long bookId,
-            @ParameterObject @Valid BookDto.UpdateBookRequest updateBookRequest
+            @ModelAttribute @Valid BookDto.UpdateBookRequest updateBookRequest
     ) {
         bookService.update(bookId, updateBookRequest);
         return apiResponseManager.noContent();
