@@ -70,7 +70,10 @@ public class StudentMapper {
         return Student.builder()
                 .id(student.getId())
                 .accountId(Optional.ofNullable(updateStudentRequest.accountId()).orElse(student.getAccountId()))
-                .password(Optional.ofNullable(passwordEncoder.encode(updateStudentRequest.newPassword())).orElse(student.getPassword()))
+                .password(Optional.ofNullable(updateStudentRequest.newPassword())
+                        .filter(newPassword -> !newPassword.isBlank())
+                        .map(passwordEncoder::encode)
+                        .orElse(student.getPassword()))
                 .name(Optional.ofNullable(updateStudentRequest.name()).orElse(student.getName()))
                 .phoneNumber(Optional.ofNullable(updateStudentRequest.phoneNumber()).orElse(student.getPhoneNumber()))
                 .email(Optional.ofNullable(updateStudentRequest.email()).orElse(student.getEmail()))
@@ -113,32 +116,44 @@ public class StudentMapper {
      * @return Student 엔티티의 데이터를 담은 StudentResponse DTO, student가 null이면 null 반환
      */
     public StudentDto.StudentResponse toResponseDto(Student student) {
-        return Optional.ofNullable(student)
-                .map(s -> new StudentDto.StudentResponse(
-                        s.getId(),
-                        s.getAccountId(),
-                        s.getName(),
-                        s.getPhoneNumber(),
-                        s.getEmail(),
-                        s.getBirthday(),
-                        s.getStatus(),
-                        s.getAuthenticationStatus(),
-                        s.getReadingLevel(),
-                        s.getRaq(),
-                        s.getSchoolGrade(),
-                        s.getBookMbti(),
-                        s.getLastLoginIp(),
-                        s.getLastLoginAt(),
-                        s.getDescription(),
-                        s.getDomain(),
-                        s.getInstitute().getId(),
-                        s.getInstitute().getName(),
-                        s.getHomeroom().getId(),
-                        s.getHomeroom().getName(),
-                        s.getCreatedAt(),
-                        s.getUpdatedAt()
-                ))
+        // 교육기관 정보 담기
+        Long instituteId = Optional.ofNullable(student.getInstitute())
+                .map(Institute::getId)
                 .orElse(null);
+        String instituteName = Optional.ofNullable(student.getInstitute())
+                .map(Institute::getName)
+                .orElse(null);
+        // 학급 정보 담기
+        Long homeroomId = Optional.ofNullable(student.getHomeroom())
+                .map(Homeroom::getId)
+                .orElse(null);
+        String homeroomName = Optional.ofNullable(student.getHomeroom())
+                .map(Homeroom::getName)
+                .orElse(null);
+        return new StudentDto.StudentResponse(
+                student.getId(),
+                student.getAccountId(),
+                student.getName(),
+                student.getPhoneNumber(),
+                student.getEmail(),
+                student.getBirthday(),
+                student.getStatus(),
+                student.getAuthenticationStatus(),
+                student.getReadingLevel(),
+                student.getRaq(),
+                student.getSchoolGrade(),
+                student.getBookMbti(),
+                student.getLastLoginIp(),
+                student.getLastLoginAt(),
+                student.getDescription(),
+                student.getDomain(),
+                instituteId,
+                instituteName,
+                homeroomId,
+                homeroomName,
+                student.getCreatedAt(),
+                student.getUpdatedAt()
+        );
     }
 
     /**

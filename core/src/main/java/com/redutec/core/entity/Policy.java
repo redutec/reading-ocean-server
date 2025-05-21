@@ -15,7 +15,6 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 @Entity
 @DynamicUpdate
@@ -74,22 +73,4 @@ public class Policy {
     @Column(nullable = false)
     @Comment("수정일시")
     private LocalDateTime updatedAt;
-
-    public void updatePolicy(
-            Domain domain,
-            PolicyType type,
-            String version,
-            String content,
-            LocalDateTime effectiveAt,
-            LocalDateTime expiresAt,
-            Boolean available
-    ) {
-        this.domain = Optional.ofNullable(domain).orElse(this.domain);
-        this.type = Optional.ofNullable(type).orElse(this.type);
-        this.version = Optional.ofNullable(version).orElse(this.version);
-        this.content = Optional.ofNullable(content).orElse(this.content);
-        this.effectiveAt = Optional.ofNullable(effectiveAt).orElse(this.effectiveAt);
-        this.expiresAt = Optional.ofNullable(expiresAt).orElse(this.expiresAt);
-        this.available = Optional.ofNullable(available).orElse(this.available);
-    }
 }

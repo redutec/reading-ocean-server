@@ -129,13 +129,11 @@ public class StudentDto {
                     message = "비밀번호는 영문 대소문자, 숫자, 특수문자 중 최소 3가지 이상의 조합으로 최소 8자 이상, 최대 32자 이하이어야 합니다.")
             String newPassword,
 
-            @Schema(description = "이름", requiredMode = Schema.RequiredMode.REQUIRED)
-            @NotNull
+            @Schema(description = "이름", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
             @Size(max = 4)
             String name,
 
-            @Schema(description = "연락처", requiredMode = Schema.RequiredMode.REQUIRED)
-            @NotNull
+            @Schema(description = "연락처", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
             @Pattern(regexp = "\\d{11}")
             String phoneNumber,
 
@@ -143,7 +141,7 @@ public class StudentDto {
             @Email
             String email,
 
-            @Schema(description = "생년월일", requiredMode = Schema.RequiredMode.REQUIRED)
+            @Schema(description = "생년월일", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
             @Pattern(regexp = "^[0-9]{8}$", message = "생년월일은 8자리의 숫자로만 구성되어야 합니다.")
             String birthday,
 
@@ -177,8 +175,7 @@ public class StudentDto {
             @Enumerated(EnumType.STRING)
             Domain domain,
 
-            @Schema(description = "소속된 교육기관 ID", requiredMode = Schema.RequiredMode.REQUIRED)
-            @NotNull
+            @Schema(description = "소속된 교육기관 ID", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
             @Positive
             Long instituteId,
 

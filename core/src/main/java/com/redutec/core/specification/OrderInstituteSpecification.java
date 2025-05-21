@@ -19,7 +19,7 @@ public class OrderInstituteSpecification {
                             .filter(orderInstituteIds -> !orderInstituteIds.isEmpty())
                             .map(orderInstituteIds -> root.get("id").in(orderInstituteIds)),
                     Optional.ofNullable(orderInstituteCriteria.hasDeliveryFee())
-                            .map(hasFee -> hasFee
+                            .map(hasDeliveryFee -> hasDeliveryFee
                                     ? criteriaBuilder.greaterThan(root.get("deliveryFee"), 0)
                                     : criteriaBuilder.equal(root.get("deliveryFee"), 0)),
                     Optional.ofNullable(orderInstituteCriteria.statuses())

@@ -1,27 +1,67 @@
 package com.redutec.core.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.Comment;
-import org.hibernate.annotations.DynamicUpdate;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import static jakarta.persistence.FetchType.LAZY;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
+/**
+ * 학생 당 1:1 매핑된 장바구니.
+ * Student를 곧바로 PK로 사용하도록 변경
+ */
 @Entity
 @Comment("장바구니(학생)")
-@DiscriminatorValue("STUDENT")
-@DynamicUpdate
-@Getter
-@SuperBuilder
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(name = "cart_student")
 @EntityListeners(AuditingEntityListener.class)
-public class CartStudent extends Cart {
-    @Comment("장바구니 소유자(학생)")
-    @ManyToOne(fetch = LAZY, optional = false)
-    @JoinColumn(nullable = false)
+@Getter
+@NoArgsConstructor
+@SuperBuilder
+public class CartStudent {
+    /**
+     * Student를 PK로 사용.
+     */
+    @Id
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "student_id")
     private Student student;
+
+    @ElementCollection
+    @CollectionTable(
+            name = "cart_item",
+            joinColumns = @JoinColumn(name = "student_id", referencedColumnName = "student_id")
+    )
+    @Comment("장바구니에 담긴 상품 목록")
+    private List<CartItem> items = new ArrayList<>();
+
+    @CreatedDate
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
+    @LastModifiedDate
+    @Column(nullable = false)
+    private LocalDateTime updatedAt;
+
+    public void addItem(Product product, int quantity) {
+        items.stream()
+                .filter(cs -> cs.getProduct().getId().equals(product.getId()))
+                .findFirst()
+                .ifPresentOrElse(
+                        cs -> cs.changeQuantity(cs.getQuantity() + quantity),
+                        () -> items.add(
+                                CartItem.builder()
+                                        .product(product)
+                                        .quantity(quantity)
+                                        .unitPrice(product.getPrice() * (100 - product.getDiscountPercentage()) / 100)
+                                        .build()
+                        )
+                );
+    }
 }

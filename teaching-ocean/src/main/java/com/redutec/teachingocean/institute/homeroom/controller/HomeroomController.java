@@ -18,7 +18,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/institute/homeroom")
-@Tag(name = "학급 관리 API", description = "학급 관리 API 모음")
+@Tag(name = "학급 API", description = "학급 API 모음")
 public class HomeroomController {
     private final ApiResponseManager apiResponseManager;
     private final HomeroomService homeroomService;

@@ -26,12 +26,10 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-@Table(
-        uniqueConstraints = {
-                @UniqueConstraint(name = "uk_group_year_month_type_grade",
-                        columnNames = {"year_month", "group_type", "school_grade"})
-        }
-)
+@Table(uniqueConstraints = {
+        @UniqueConstraint(name = "uk_group_year_month_type_grade",
+        columnNames = {"year_month", "group_type", "school_grade"})
+})
 public class BookGroup {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

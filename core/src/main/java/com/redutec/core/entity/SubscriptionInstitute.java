@@ -12,9 +12,6 @@ import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.LocalDateTime;
-import java.util.Optional;
-
 import static jakarta.persistence.FetchType.LAZY;
 
 @Entity
@@ -29,15 +26,4 @@ public class SubscriptionInstitute extends Subscription {
     @ManyToOne(fetch = LAZY, optional = false)
     @JoinColumn
     private Institute institute;
-
-    public void updateSubscriptionInstitute(
-            SubscriptionPlan subscriptionPlan,
-            LocalDateTime startedAt,
-            LocalDateTime endedAt,
-            LocalDateTime nextPaymentAt,
-            Institute institute
-    ) {
-        super.updateSubscription(subscriptionPlan, startedAt, endedAt, nextPaymentAt);
-        this.institute = Optional.ofNullable(institute).orElse(this.institute);
-    }
 }

@@ -11,7 +11,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 @Entity
 @Comment("지사")
@@ -72,26 +71,4 @@ public class Branch {
     @LastModifiedDate
     @Column(nullable = false)
     private LocalDateTime updatedAt;
-
-    public void updateBranch(
-            Teacher managerTeacher,
-            String region,
-            String name,
-            BranchStatus status,
-            String businessArea,
-            String contractFileName,
-            LocalDate contractDate,
-            LocalDate renewalDate,
-            String description
-    ) {
-        this.managerTeacher = Optional.ofNullable(managerTeacher).orElse(this.managerTeacher);
-        this.region = Optional.ofNullable(region).orElse(this.region);
-        this.name = Optional.ofNullable(name).orElse(this.name);
-        this.status = Optional.ofNullable(status).orElse(this.status);
-        this.businessArea = Optional.ofNullable(businessArea).orElse(this.businessArea);
-        this.contractFileName = Optional.ofNullable(contractFileName).orElse(this.contractFileName);
-        this.contractDate = Optional.ofNullable(contractDate).orElse(this.contractDate);
-        this.renewalDate = Optional.ofNullable(renewalDate).orElse(this.renewalDate);
-        this.description = Optional.ofNullable(description).orElse(this.description);
-    }
 }

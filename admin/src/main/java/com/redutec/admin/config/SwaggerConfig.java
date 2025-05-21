@@ -69,6 +69,7 @@ public class SwaggerConfig {
 			ApiResponses apiResponses = operation.getResponses();
 			apiResponses.addApiResponse("200", createApiResponse("OK - 요청이 성공적으로 처리됨"));
 			apiResponses.addApiResponse("201", createApiResponse("Created - 리소스가 성공적으로 생성됨"));
+			apiResponses.addApiResponse("204", createApiResponse("No Content - 리소스가 성공적으로 변경됨"));
 			apiResponses.addApiResponse("400", createApiResponse("Bad Request - 잘못된 요청 파라미터"));
 			apiResponses.addApiResponse("401", createApiResponse("Unauthorized - 인증이 필요함"));
 			apiResponses.addApiResponse("403", createApiResponse("Forbidden - 접근이 거부됨"));

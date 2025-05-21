@@ -23,13 +23,13 @@ public class InstituteController {
     private final ApiResponseManager apiResponseManager;
     private final InstituteService instituteService;
 
-    @Operation(summary = "현재 로그인한 교사가 속한 교육기관 조회", description = "마이페이지에서 교육기관 정보를 조회할 때 사용")
+    @Operation(summary = "마이페이지 - 교육기관 조회", description = "현재 로그인한 교사가 속한 교육기관 조회")
     @GetMapping
-    public ResponseEntity<ApiResponseBody> findInstitute() {
-        return apiResponseManager.ok(instituteService.findInstitute());
+    public ResponseEntity<ApiResponseBody> findOne() {
+        return apiResponseManager.ok(instituteService.findOne());
     }
 
-    @Operation(summary = "현재 로그인한 교사가 속한 교육기관 수정", description = "마이페이지에서 교육기관 정보를 수정할 때 사용")
+    @Operation(summary = "마이페이지 - 교육기관 수정", description = "현재 로그인한 교사가 속한 교육기관 수정")
     @PatchMapping
     public ResponseEntity<ApiResponseBody> update(
             @ParameterObject @Valid InstituteDto.UpdateInstituteRequest updateInstituteRequest

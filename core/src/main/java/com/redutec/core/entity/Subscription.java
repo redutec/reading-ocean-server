@@ -10,7 +10,6 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 import static jakarta.persistence.FetchType.LAZY;
 
@@ -48,16 +47,4 @@ public abstract class Subscription {
     @LastModifiedDate
     @Column(nullable = false)
     private LocalDateTime updatedAt;
-
-    protected void updateSubscription(
-            SubscriptionPlan subscriptionPlan,
-            LocalDateTime startedAt,
-            LocalDateTime endedAt,
-            LocalDateTime nextPaymentAt
-    ) {
-        this.subscriptionPlan = Optional.ofNullable(subscriptionPlan).orElse(this.subscriptionPlan);
-        this.startedAt = Optional.ofNullable(startedAt).orElse(this.startedAt);
-        this.endedAt = Optional.ofNullable(endedAt).orElse(this.endedAt);
-        this.nextPaymentAt = Optional.ofNullable(nextPaymentAt).orElse(this.nextPaymentAt);
-    }
 }
