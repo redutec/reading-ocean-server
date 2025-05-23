@@ -24,9 +24,15 @@ import java.util.List;
 @NoArgsConstructor
 @SuperBuilder
 public class InstituteCart {
+    /** 실제 PK 컬럼 */
     @Id
+    @Column
+    private Long instituteId;
+
+    /** PK를 공유하도록 MapsId */
     @OneToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "institute_id")
+    @MapsId
+    @JoinColumn
     private Institute institute;
 
     @ElementCollection

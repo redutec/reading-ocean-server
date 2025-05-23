@@ -24,12 +24,15 @@ import java.util.List;
 @NoArgsConstructor
 @SuperBuilder
 public class StudentCart {
-    /**
-     * Student를 PK로 사용.
-     */
+    /** 실제 PK 컬럼 */
     @Id
+    @Column
+    private Long studentId;
+
+    /** PK를 공유하도록 MapsId */
     @OneToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "student_id")
+    @MapsId
+    @JoinColumn
     private Student student;
 
     @ElementCollection
