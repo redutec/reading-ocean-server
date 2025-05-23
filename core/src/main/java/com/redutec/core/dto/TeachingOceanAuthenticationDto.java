@@ -51,7 +51,7 @@ public class TeachingOceanAuthenticationDto {
 
     @Schema(description = "교사 계정 비밀번호 초기화 요청 객체")
     public record ResetPasswordRequest(
-            @Schema(description = "비밀번호를 초기화 할 교사 계정의 이메일", requiredMode = Schema.RequiredMode.REQUIRED)
+            @Schema(description = "비밀번호를 초기화 할 교사 계정의 로그인 아이디", requiredMode = Schema.RequiredMode.REQUIRED)
             @NotNull
             @Size(min = 1, max = 20)
             String accountId
