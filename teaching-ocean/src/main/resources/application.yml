@@ -69,7 +69,7 @@ spring:
     activate:
       on-profile: local
   datasource:
-    url: jdbc:log4jdbc:mysql://127.0.0.1:3306/REDUTEC?characterEncoding=UTF-8&serverTimezone=Asia/Seoul&noAccessToProcedureBodies=true&allowPublicKeyRetrieval=true&useSSL=false&allowMultiQueries=true&useInformationSchema=true&autoReconnect=true
+    url: jdbc:log4jdbc:mysql://127.0.0.1:3306/redutec?characterEncoding=UTF-8&serverTimezone=Asia/Seoul&noAccessToProcedureBodies=true&allowPublicKeyRetrieval=true&useSSL=false&allowMultiQueries=true&useInformationSchema=true&autoReconnect=true
     username: "redutec"
     password: "readingocean2022"
 # Custom
@@ -85,6 +85,6 @@ spring:
     activate:
       on-profile: dev
   datasource:
-    url: jdbc:log4jdbc:mysql://dev-readingocean-db-01.ccemsdd2ijls.ap-northeast-2.rds.amazonaws.com:3306/REDUTEC?characterEncoding=UTF-8&serverTimezone=Asia/Seoul&noAccessToProcedureBodies=true&useSSL=false&allowMultiQueries=true&useInformationSchema=true&autoReconnect=true
-    username: "redutec"
+    url: jdbc:log4jdbc:mysql://dev-readingocean-db-01.ccemsdd2ijls.ap-northeast-2.rds.amazonaws.com:3306/redutec?characterEncoding=UTF-8&serverTimezone=Asia/Seoul&noAccessToProcedureBodies=true&useSSL=false&allowMultiQueries=true&useInformationSchema=true&autoReconnect=true
+    username: "root"
     password: "readingocean2022"
