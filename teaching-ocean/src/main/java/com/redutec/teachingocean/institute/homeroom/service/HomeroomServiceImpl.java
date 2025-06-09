@@ -44,7 +44,7 @@ public class HomeroomServiceImpl implements HomeroomService {
     public HomeroomDto.HomeroomResponse create(HomeroomDto.CreateHomeroomRequest createHomeroomRequest) {
         // 현재 로그인한 교사가 속한 교육기관을 조회
         var institute = instituteRepository.findById(authenticationService.getAuthenticatedTeacher().instituteId())
-                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 교육기관입니다. instituteId: " + authenticationService.getAuthenticatedTeacher().instituteId()));
+                .orElseThrow(() -> new EntityNotFoundException("교육기관이 존재하지 않습니다. instituteId: " + authenticationService.getAuthenticatedTeacher().instituteId()));
         // 등록 요청 객체의 학급명이 동일한 교육기관 내에 존재한다면 예외 처리
         homeroomRepository.findByNameAndInstitute(createHomeroomRequest.name(), institute)
                 .ifPresent(homeroom -> {
@@ -54,14 +54,14 @@ public class HomeroomServiceImpl implements HomeroomService {
         List<Teacher> teachers = Optional.ofNullable(createHomeroomRequest.teacherIds())
                 .map(teacherIds -> teacherIds.stream()
                         .map(teacherId -> teacherRepository.findById(teacherId)
-                                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 교사입니다. teacherId: " + teacherId)))
+                                .orElseThrow(() -> new EntityNotFoundException("교사가 존재하지 않습니다. teacherId: " + teacherId)))
                         .toList())
                 .orElse(null);
         // 등록 요청 객체에 학급에 소속될 학생 목록이 있다면 학생 엔티티 리스트 조회
         List<Student> students = Optional.ofNullable(createHomeroomRequest.studentIds())
                 .map(studentIds -> studentIds.stream()
                         .map(studentId -> studentRepository.findById(studentId)
-                                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 학생입니다. studentId: " + studentId)))
+                                .orElseThrow(() -> new EntityNotFoundException("학생이 존재하지 않습니다. studentId: " + studentId)))
                         .toList())
                 .orElse(null);
         // 학급 등록 및 등록한 정보를 응답 객체로 리턴

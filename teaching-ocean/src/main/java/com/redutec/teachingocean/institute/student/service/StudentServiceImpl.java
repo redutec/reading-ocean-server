@@ -108,11 +108,11 @@ public class StudentServiceImpl implements StudentService {
         // 수정 요청 객체에 학원 ID가 있다면 학원 엔티티 조회(없으면 Null)
         Institute institute = Optional.ofNullable(updateStudentRequest.instituteId())
                 .flatMap(instituteRepository::findById)
-                .orElse(null);
+                .orElseGet(student::getInstitute);
         // 수정 요청 객체에 학급 ID가 있다면 학급 엔티티 조회(없으면 Null)
         Homeroom homeroom = Optional.ofNullable(updateStudentRequest.homeroomId())
                 .flatMap(homeroomRepository::findById)
-                .orElse(null);
+                .orElseGet(student::getHomeroom);
         studentRepository.save(studentMapper.toUpdateEntity(student, updateStudentRequest, institute, homeroom));
     }
 
@@ -128,6 +128,6 @@ public class StudentServiceImpl implements StudentService {
                 .orElseThrow(EntityNotFoundException::new);
         // 위에서 조회한 교육기관에 속하고 파라미터로 들어온 학생 고유번호와 일치하는 학생 엔티티 조회
         return studentRepository.findByInstituteAndId(institute, studentId)
-                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 학생입니다. studentId = " + studentId));
+                .orElseThrow(() -> new EntityNotFoundException("학생이 존재하지 않습니다. studentId: " + studentId));
     }
 }

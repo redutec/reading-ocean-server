@@ -52,6 +52,6 @@ public class InstituteServiceImpl implements InstituteService {
      */
     public Institute getInstitute(Long instituteId) {
         return instituteRepository.findById(instituteId)
-                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 교육기관입니다. instituteId = " + instituteId));
+                .orElseThrow(() -> new EntityNotFoundException("교육기관이 존재하지 않습니다. instituteId: " + instituteId));
     }
 }
