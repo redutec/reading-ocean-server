@@ -83,6 +83,8 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public void update(Long productId, ProductDto.UpdateProductRequest updateProductRequest) {
+        // 수정할 판매상품 엔티티 조회
+        Product product = getProduct(productId);
         // 수정 요청 객체에 첨부 파일이 존재한다면 업로드 후 파일명을 가져오기
         String attachedFileName = Optional.ofNullable(updateProductRequest.attachedFile())
                 .filter(attachedFile -> !attachedFile.isEmpty())
@@ -90,10 +92,10 @@ public class ProductServiceImpl implements ProductService {
                     FileUploadResult result = fileUtil.uploadFile(attachedFile, "/product");
                     return Paths.get(result.filePath()).getFileName().toString();
                 })
-                .orElse(null);
+                .orElseGet(product::getAttachedFileName);
         // 판매상품 수정
         productRepository.save(productMapper.toUpdateEntity(
-                getProduct(productId),
+                product,
                 updateProductRequest,
                 attachedFileName
         ));

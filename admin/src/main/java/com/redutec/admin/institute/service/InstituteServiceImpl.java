@@ -43,7 +43,7 @@ public class InstituteServiceImpl implements InstituteService {
         // 등록 요청 객체에 지사 고유번호가 존재한다면 지사 엔티티를 조회
         Branch branch = Optional.ofNullable(createInstituteRequest.branchId())
                 .map(branchId -> branchRepository.findById(branchId)
-                        .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 지사입니다. branchId = " + branchId)))
+                        .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 지사입니다. branchId: " + branchId)))
                 .orElse(null);
         // 교육기관 등록
         return instituteMapper.toResponseDto(
@@ -101,14 +101,16 @@ public class InstituteServiceImpl implements InstituteService {
     @Override
     @Transactional
     public void update(Long instituteId, InstituteDto.UpdateInstituteRequest updateInstituteRequest) {
+        // 수정할 교육기관 엔티티 조회
+        Institute institute = getInstitute(instituteId);
         // 수정 요청 객체에 지사 고유번호가 존재하면 지사 엔티티를 조회
         Branch branch = Optional.ofNullable(updateInstituteRequest.branchId())
                 .map(branchId -> branchRepository.findById(branchId)
-                        .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 지사입니다. branchId = " + branchId)))
-                .orElse(null);
+                        .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 지사입니다. branchId: " + branchId)))
+                .orElseGet(institute::getBranch);
         // 교육기관 수정
         instituteRepository.save(instituteMapper.toUpdateEntity(
-                getInstitute(instituteId),
+                institute,
                 updateInstituteRequest,
                 branch
         ));
@@ -132,6 +134,6 @@ public class InstituteServiceImpl implements InstituteService {
     @Transactional(readOnly = true)
     public Institute getInstitute(Long instituteId) {
         return instituteRepository.findById(instituteId)
-                .orElseThrow(() -> new EntityNotFoundException("교육기관이 존재하지 않습니다. instituteId = " + instituteId));
+                .orElseThrow(() -> new EntityNotFoundException("교육기관이 존재하지 않습니다. instituteId: " + instituteId));
     }
 }

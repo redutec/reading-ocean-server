@@ -1,7 +1,6 @@
 package com.redutec.admin.homeroom.service;
 
 import com.redutec.core.dto.HomeroomDto;
-import com.redutec.core.entity.Homeroom;
 
 public interface HomeroomService {
     /**
@@ -24,13 +23,6 @@ public interface HomeroomService {
      * @return 특정 학급 응답 객체
      */
     HomeroomDto.HomeroomResponse findById(Long homeroomId);
-
-    /**
-     * 특정 학급 엔티티 조회
-     * @param homeroomId 학급 고유번호
-     * @return 특정 학급 엔티티 객체
-     */
-    Homeroom getHomeroom(Long homeroomId);
 
     /**
      * 특정 학급 수정

@@ -97,17 +97,19 @@ public class SubscriptionStudentServiceImpl implements SubscriptionStudentServic
             Long subscriptionStudentId,
             SubscriptionStudentDto.UpdateSubscriptionStudentRequest updateSubscriptionStudentRequest
     ) {
+        // 수정할 구독정보(학생) 엔티티 조회
+        var subscriptionStudent = getSubscriptionStudent(subscriptionStudentId);
         // 수정 요청 객체에 구독상품 고유번호가 있다면 구독상품 엔티티 조회
         SubscriptionPlan subscriptionPlan = Optional.ofNullable(updateSubscriptionStudentRequest.subscriptionPlanId())
                 .flatMap(subscriptionPlanRepository::findById)
-                .orElse(null);
+                .orElseGet(subscriptionStudent::getSubscriptionPlan);
         // 수정 요청 객체에 구독상품을 구독할 학생 고유번호가 있다면 학생 엔티티 조회
         Student student = Optional.ofNullable(updateSubscriptionStudentRequest.studentId())
                 .flatMap(studentRepository::findById)
-                .orElse(null);
+                .orElseGet(subscriptionStudent::getStudent);
         // 구독정보(학생) 수정
         subscriptionStudentRepository.save(subscriptionStudentMapper.toUpdateEntity(
-                getSubscriptionStudent(subscriptionStudentId),
+                subscriptionStudent,
                 updateSubscriptionStudentRequest,
                 subscriptionPlan,
                 student
@@ -132,6 +134,6 @@ public class SubscriptionStudentServiceImpl implements SubscriptionStudentServic
     @Transactional(readOnly = true)
     public SubscriptionStudent getSubscriptionStudent(Long subscriptionStudentId) {
         return subscriptionStudentRepository.findById(subscriptionStudentId)
-                .orElseThrow(() -> new EntityNotFoundException("구독정보(학생)을 찾을 수 없습니다. subscriptionStudentId = " + subscriptionStudentId));
+                .orElseThrow(() -> new EntityNotFoundException("구독정보(학생)을 찾을 수 없습니다. subscriptionStudentId: " + subscriptionStudentId));
     }
 }

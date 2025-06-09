@@ -106,11 +106,11 @@ public class TeacherServiceImpl implements TeacherService {
         // 수정 요청 객체에 교육기관 고유번호가 있다면 교육기관 엔티티 조회(없으면 Null)
         Institute institute = Optional.ofNullable(updateTeacherRequest.instituteId())
                 .flatMap(instituteRepository::findById)
-                .orElse(null);
+                .orElseGet(teacher::getInstitute);
         // 수정 요청 객체에 학급 고유번호가 있다면 학급 엔티티 조회(없으면 Null)
         Homeroom homeroom = Optional.ofNullable(updateTeacherRequest.homeroomId())
                 .flatMap(homeroomRepository::findById)
-                .orElse(null);
+                .orElseGet(teacher::getHomeroom);
         // 교사 정보 수정 엔티티 빌드 후 UPDATE
         teacherRepository.save(teacherMapper.toUpdateEntity(
                 teacher,
@@ -138,6 +138,6 @@ public class TeacherServiceImpl implements TeacherService {
     @Transactional(readOnly = true)
     public Teacher getTeacher(Long teacherId) {
         return teacherRepository.findById(teacherId)
-                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 교사입니다. teacherId = " + teacherId));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 교사입니다. teacherId: " + teacherId));
     }
 }

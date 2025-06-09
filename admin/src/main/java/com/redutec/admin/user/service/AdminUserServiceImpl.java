@@ -107,6 +107,6 @@ public class AdminUserServiceImpl implements AdminUserService {
     @Transactional(readOnly = true)
     public AdminUser getAdminUser(Long adminUserId) {
         return adminUserRepository.findById(adminUserId)
-                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 어드민 사용자입니다. adminUserId = " + adminUserId));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 어드민 사용자입니다. adminUserId: " + adminUserId));
     }
 }

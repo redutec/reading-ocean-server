@@ -83,19 +83,21 @@ public class AdminMenuServiceImpl implements AdminMenuService {
     @Override
     @Transactional
     public void update(Long adminMenuId, AdminMenuDto.UpdateAdminMenuRequest updateAdminMenuRequest) {
+        // 수정할 어드민 메뉴 엔티티 조회
+        AdminMenu adminMenu = getAdminMenu(adminMenuId);
         // 수정 요청 객체에 상위 메뉴 고유번호가 있다면 상위 메뉴 엔티티 조회
         AdminMenu parentMenu = Optional.ofNullable(updateAdminMenuRequest.parentMenuId())
                 .map(this::getAdminMenu)
-                .orElse(null);
+                .orElseGet(adminMenu::getParent);
         // 수정 요청 객체에 하위 메뉴 고유번호 목록이 있다면 하위 메뉴 엔티티들을 조회
         List<AdminMenu> childrenMenus = Optional.ofNullable(updateAdminMenuRequest.childrenMenuIds())
                 .map(childrenMenuIds -> childrenMenuIds.stream()
                         .map(this::getAdminMenu)
                         .toList())
-                .orElse(null);
+                .orElseGet(adminMenu::getChildren);
         // 어드민 메뉴 수정
         adminMenuRepository.save(adminMenuMapper.toUpdateEntity(
-                getAdminMenu(adminMenuId),
+                adminMenu,
                 updateAdminMenuRequest,
                 parentMenu,
                 childrenMenus
@@ -120,6 +122,6 @@ public class AdminMenuServiceImpl implements AdminMenuService {
     @Transactional(readOnly = true)
     public AdminMenu getAdminMenu(Long adminMenuId) {
         return adminMenuRepository.findById(adminMenuId)
-                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 어드민 메뉴입니다. adminMenuId = " + adminMenuId));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 어드민 메뉴입니다. adminMenuId: " + adminMenuId));
     }
 }

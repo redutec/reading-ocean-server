@@ -40,7 +40,7 @@ public class BranchServiceImpl implements BranchService {
         // 등록 요청 객체에 교사 고유번호가 있으면 교사 엔티티 조회
         Teacher managerTeacher = Optional.ofNullable(createBranchRequest.managerTeacherId())
                 .map(managerTeacherId -> teacherRepository.findById(managerTeacherId)
-                        .orElseThrow(() -> new EntityNotFoundException("지사장 교사를 찾을 수 없습니다. managerTeacherId = " + managerTeacherId)))
+                        .orElseThrow(() -> new EntityNotFoundException("지사장 교사를 찾을 수 없습니다. managerTeacherId: " + managerTeacherId)))
                 .orElse(null);
         // 계약서 파일이 존재하는 경우 파일을 업로드하고 파일명을 가져오기(파일이 없으면 파일명은 null)
         String contractFileName = Optional.ofNullable(createBranchRequest.contractFile())
@@ -101,12 +101,12 @@ public class BranchServiceImpl implements BranchService {
                     FileUploadResult result = fileUtil.uploadFile(contractFile, "/branch");
                     return Paths.get(result.filePath()).getFileName().toString();
                 })
-                .orElse(null);
+                .orElseGet(branch::getContractFileName);
         // 수정 요청 객체에 교사 고유번호가 있으면 교사 엔티티 조회
         Teacher managerTeacher = Optional.ofNullable(updateBranchRequest.managerTeacherId())
                 .map(managerTeacherId -> teacherRepository.findById(managerTeacherId)
-                        .orElseThrow(() -> new EntityNotFoundException("지사장 교사를 찾을 수 없습니다. managerTeacherId = " + managerTeacherId)))
-                .orElse(null);
+                        .orElseThrow(() -> new EntityNotFoundException("지사장 교사를 찾을 수 없습니다. managerTeacherId: " + managerTeacherId)))
+                .orElseGet(branch::getManagerTeacher);
         // 지사 수정 엔티티 빌드 후 UPDATE
         branchRepository.save(branchMapper.toUpdateEntity(
                 branch,
@@ -134,6 +134,6 @@ public class BranchServiceImpl implements BranchService {
     @Transactional(readOnly = true)
     public Branch getBranch(Long branchId) {
         return branchRepository.findById(branchId)
-                .orElseThrow(() -> new EntityNotFoundException("지사를 찾을 수 없습니다. branchId = " + branchId));
+                .orElseThrow(() -> new EntityNotFoundException("지사를 찾을 수 없습니다. branchId: " + branchId));
     }
 }

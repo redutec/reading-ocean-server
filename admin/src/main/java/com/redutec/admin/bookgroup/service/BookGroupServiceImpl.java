@@ -83,15 +83,18 @@ public class BookGroupServiceImpl implements BookGroupService {
     @Override
     @Transactional
     public void update(Long bookGroupId, BookGroupDto.UpdateBookGroupRequest updateBookGroupRequest) {
+        // 수정할 도서 그룹 조회
+        BookGroup bookGroup = getBookGroup(bookGroupId);
         // 도서 그룹 수정 요청 객체에 도서 고유번호 목록이 있다면 도서 엔티티 리스트를 조회
         List<Book> books = Optional.ofNullable(updateBookGroupRequest.bookIds())
-                .orElse(Collections.emptyList())
-                .stream()
-                .flatMap(bookId -> bookRepository.findById(bookId).stream())
-                .collect(Collectors.toList());
+                .map(bookIds -> bookIds.stream()
+                        .map(bookId -> bookRepository.findById(bookId)
+                                .orElseThrow(() -> new EntityNotFoundException("도서가 존재하지 않습니다. bookId: " + bookId)))
+                        .collect(Collectors.toList()))
+                .orElseGet(bookGroup::getBooks);
         // 도서 그룹 수정
         bookGroupRepository.save(bookGroupMapper.toUpdateEntity(
-                getBookGroup(bookGroupId),
+                bookGroup,
                 updateBookGroupRequest,
                 books
         ));
@@ -115,6 +118,6 @@ public class BookGroupServiceImpl implements BookGroupService {
     @Transactional(readOnly = true)
     public BookGroup getBookGroup(Long bookGroupId) {
         return bookGroupRepository.findById(bookGroupId)
-                .orElseThrow(() -> new EntityNotFoundException("도서 그룹을 찾을 수 없습니다. bookGroupId = " + bookGroupId));
+                .orElseThrow(() -> new EntityNotFoundException("도서 그룹을 찾을 수 없습니다. bookGroupId: " + bookGroupId));
     }
 }

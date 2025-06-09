@@ -82,8 +82,11 @@ public class BannerServiceImpl implements BannerService {
     @Override
     @Transactional
     public void update(Long bannerId, BannerDto.UpdateBannerRequest updateBannerRequest) {
+        // 수정할 배너 엔티티 조회
+        Banner banner = getBanner(bannerId);
+        // 배너 수정
         bannerRepository.save(bannerMapper.toUpdateEntity(
-                getBanner(bannerId),
+                banner,
                 updateBannerRequest,
                 Optional.ofNullable(updateBannerRequest.attachedFile())
                         .filter(attachedFile -> !attachedFile.isEmpty())
@@ -91,7 +94,7 @@ public class BannerServiceImpl implements BannerService {
                             FileUploadResult result = fileUtil.uploadFile(attachedFile, "/banner");
                             return Paths.get(result.filePath()).getFileName().toString();
                         })
-                        .orElse(null)
+                        .orElseGet(banner::getAttachedFileName)
         ));
     }
 
@@ -113,6 +116,6 @@ public class BannerServiceImpl implements BannerService {
     @Transactional(readOnly = true)
     public Banner getBanner(Long bannerId) {
         return bannerRepository.findById(bannerId)
-                .orElseThrow(() -> new EntityNotFoundException("배너를 찾을 수 없습니다. bannerId = " + bannerId));
+                .orElseThrow(() -> new EntityNotFoundException("배너를 찾을 수 없습니다. bannerId: " + bannerId));
     }
 }

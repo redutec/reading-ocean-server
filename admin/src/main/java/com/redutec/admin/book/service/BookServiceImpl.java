@@ -83,6 +83,8 @@ public class BookServiceImpl implements BookService {
     @Override
     @Transactional
     public void update(Long bookId, BookDto.UpdateBookRequest updateBookRequest) {
+        // 수정할 도서 엔티티 조회
+        Book book = getBook(bookId);
         // 도서 수정 요청 객체에 커버 이미지 파일이 있다면 업로드하고 파일명을 가져오기
         String coverImageFileName = Optional.ofNullable(updateBookRequest.coverImageFile())
                 .filter(coverImageFile -> !coverImageFile.isEmpty())
@@ -90,9 +92,9 @@ public class BookServiceImpl implements BookService {
                     FileUploadResult result = fileUtil.uploadFile(coverImageFile, "/book");
                     return Paths.get(result.filePath()).getFileName().toString();
                 })
-                .orElse(null);
+                .orElseGet(book::getCoverImageFileName);
         // 도서 수정
-        bookRepository.save(bookMapper.toUpdateEntity(getBook(bookId), updateBookRequest, coverImageFileName));
+        bookRepository.save(bookMapper.toUpdateEntity(book, updateBookRequest, coverImageFileName));
     }
 
     /**
@@ -113,6 +115,6 @@ public class BookServiceImpl implements BookService {
     @Transactional(readOnly = true)
     public Book getBook(Long bookId) {
         return bookRepository.findById(bookId)
-                .orElseThrow(() -> new EntityNotFoundException("도서를 찾을 수 없습니다. bookId = " + bookId));
+                .orElseThrow(() -> new EntityNotFoundException("도서를 찾을 수 없습니다. bookId: " + bookId));
     }
 }

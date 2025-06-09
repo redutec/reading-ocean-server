@@ -78,13 +78,15 @@ public class InquiryServiceImpl implements InquiryService {
     @Override
     @Transactional
     public void update(Long inquiryId, InquiryDto.UpdateInquiryRequest updateInquiryRequest) {
+        // 수정할 고객문의 엔티티 조회
+        Inquiry inquiry = getInquiry(inquiryId);
         // 수정 요청 객체에 답변자 아이디가 존재한다면 어드민 사용자 엔티티 조회
         AdminUser responder = Optional.ofNullable(updateInquiryRequest.responderAccountId())
                 .flatMap(adminUserRepository::findByAccountId)
-                .orElse(null);
+                .orElseGet(inquiry::getResponder);
         // 고객문의 수정
         inquiryRepository.save(inquiryMapper.toUpdateEntity(
-                getInquiry(inquiryId),
+                inquiry,
                 updateInquiryRequest,
                 responder
         ));
@@ -108,6 +110,6 @@ public class InquiryServiceImpl implements InquiryService {
     @Transactional(readOnly = true)
     public Inquiry getInquiry(Long inquiryId) {
         return inquiryRepository.findById(inquiryId)
-                .orElseThrow(() -> new EntityNotFoundException("고객문의를 찾을 수 없습니다. inquiryId = " + inquiryId));
+                .orElseThrow(() -> new EntityNotFoundException("고객문의를 찾을 수 없습니다. inquiryId: " + inquiryId));
     }
 }

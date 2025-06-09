@@ -89,14 +89,14 @@ public class StudentServiceImpl implements StudentService {
     public void update(Long studentId, StudentDto.UpdateStudentRequest updateStudentRequest) {
         // 수정할 학생 엔티티 조회
         Student student = getStudent(studentId);
-        // 수정 요청 객체에 학원 ID가 있다면 학원 엔티티 조회(없으면 Null)
+        // 수정 요청 객체에 학원 ID가 있다면 학원 엔티티 조회(없으면 기존 값을 사용)
         Institute institute = Optional.ofNullable(updateStudentRequest.instituteId())
                 .flatMap(instituteRepository::findById)
-                .orElse(null);
-        // 수정 요청 객체에 학급 ID가 있다면 학급 엔티티 조회(없으면 Null)
+                .orElseGet(student::getInstitute);
+        // 수정 요청 객체에 학급 ID가 있다면 학급 엔티티 조회(없으면 기존 값을 사용)
         Homeroom homeroom = Optional.ofNullable(updateStudentRequest.homeroomId())
                 .flatMap(homeroomRepository::findById)
-                .orElse(null);
+                .orElseGet(student::getHomeroom);
         // 수정 요청 객체에 newPassword가 존재한다면 현재 비밀번호와 currentPassword가 일치하는지 검증
         Optional.ofNullable(updateStudentRequest.newPassword())
                 .filter(newPassword -> !newPassword.isBlank())

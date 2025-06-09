@@ -91,18 +91,6 @@ public class HomeroomServiceImpl implements HomeroomService {
     }
 
     /**
-     * 특정 학급 엔티티 조회
-     * @param homeroomId 학급 고유번호
-     * @return 특정 학급 엔티티 객체
-     */
-    @Override
-    @Transactional(readOnly = true)
-    public Homeroom getHomeroom(Long homeroomId) {
-        return homeroomRepository.findById(homeroomId)
-                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 학급입니다. homeroomId = " + homeroomId));
-    }
-
-    /**
      * 특정 학급 수정
      * @param homeroomId 수정할 학급의 ID
      * @param updateHomeroomRequest 수정할 정보를 담은 DTO
@@ -112,23 +100,23 @@ public class HomeroomServiceImpl implements HomeroomService {
     public void update(Long homeroomId, HomeroomDto.UpdateHomeroomRequest updateHomeroomRequest) {
         // 수정할 학급 조회
         Homeroom homeroom = homeroomRepository.findById(homeroomId)
-                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 학급입니다. homeroomId = " + homeroomId));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 학급입니다. homeroomId: " + homeroomId));
         // 수정 요청 객체에 교육기관 고유번호가 있다면 교육기관 엔티티 조회
         Institute institute = Optional.ofNullable(updateHomeroomRequest.instituteId())
                 .flatMap(instituteRepository::findById)
-                .orElse(null);
+                .orElseGet(homeroom::getInstitute);
         // 수정 요청 객체에 학급에 소속될 교사 목록이 있다면 교사 엔티티 리스트 조회
         List<Teacher> teachers = Optional.ofNullable(updateHomeroomRequest.teacherIds())
                 .map(teacherIds -> teacherIds.stream()
                         .flatMap(teacherId -> teacherRepository.findById(teacherId).stream())
                         .toList())
-                .orElse(null);
+                .orElseGet(homeroom::getTeachers);
         // 수정 요청 객체에 학급에 소속될 학생 목록이 있다면 학생 엔티티 리스트 조회
         List<Student> students = Optional.ofNullable(updateHomeroomRequest.studentIds())
                 .map(studentIds -> studentIds.stream()
                         .flatMap(studentId -> studentRepository.findById(studentId).stream())
                         .toList())
-                .orElse(null);
+                .orElseGet(homeroom::getStudents);
         // 학급 정보 수정
         homeroomRepository.save(homeroomMapper.toUpdateEntity(
                 homeroom,
@@ -147,5 +135,16 @@ public class HomeroomServiceImpl implements HomeroomService {
     @Transactional
     public void delete(Long homeroomId) {
         homeroomRepository.delete(getHomeroom(homeroomId));
+    }
+
+    /**
+     * 특정 학급 엔티티 조회
+     * @param homeroomId 학급 고유번호
+     * @return 특정 학급 엔티티 객체
+     */
+    @Transactional(readOnly = true)
+    public Homeroom getHomeroom(Long homeroomId) {
+        return homeroomRepository.findById(homeroomId)
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 학급입니다. homeroomId: " + homeroomId));
     }
 }

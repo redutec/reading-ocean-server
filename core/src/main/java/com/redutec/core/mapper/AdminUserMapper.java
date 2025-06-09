@@ -52,7 +52,7 @@ public class AdminUserMapper {
     ) {
         return AdminUser.builder()
                 .id(adminUser.getId())
-                .accountId(Optional.ofNullable(adminUser.getAccountId()).orElse(adminUser.getAccountId()))
+                .accountId(Optional.ofNullable(updateAdminUserRequest.accountId()).orElse(adminUser.getAccountId()))
                 .password(Optional.ofNullable(updateAdminUserRequest.newPassword())
                         .filter(newPassword -> !newPassword.isBlank())
                         .map(passwordEncoder::encode)

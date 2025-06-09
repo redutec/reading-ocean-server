@@ -88,6 +88,6 @@ public class PolicyServiceImpl implements PolicyService {
     @Transactional(readOnly = true)
     public Policy getPolicy(Long policyId) {
         return policyRepository.findById(policyId)
-                .orElseThrow(() -> new EntityNotFoundException("정책을 찾을 수 없습니다. policyId = " + policyId));
+                .orElseThrow(() -> new EntityNotFoundException("정책을 찾을 수 없습니다. policyId: " + policyId));
     }
 }

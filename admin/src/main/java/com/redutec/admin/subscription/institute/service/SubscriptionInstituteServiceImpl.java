@@ -97,17 +97,19 @@ public class SubscriptionInstituteServiceImpl implements SubscriptionInstituteSe
             Long subscriptionInstituteId,
             SubscriptionInstituteDto.UpdateSubscriptionInstituteRequest updateSubscriptionInstituteRequest
     ) {
+        // 수정할 구독정보(교육기관) 엔티티 조회
+        var subscriptionInstitute = getSubscriptionInstitute(subscriptionInstituteId);
         // 수정 요청 객체에 구독상품 고유번호가 있다면 구독상품 엔티티 조회
         SubscriptionPlan subscriptionPlan = Optional.ofNullable(updateSubscriptionInstituteRequest.subscriptionPlanId())
                 .flatMap(subscriptionPlanRepository::findById)
-                .orElse(null);
+                .orElseGet(subscriptionInstitute::getSubscriptionPlan);
         // 수정 요청 객체에 구독상품을 구독할 교육기관 고유번호가 있다면 교육기관 엔티티 조회
         Institute institute = Optional.ofNullable(updateSubscriptionInstituteRequest.instituteId())
                 .flatMap(instituteRepository::findById)
-                .orElse(null);
+                .orElseGet(subscriptionInstitute::getInstitute);
         // 구독정보(교육기관) 수정
         subscriptionInstituteRepository.save(subscriptionInstituteMapper.toUpdateEntity(
-                getSubscriptionInstitute(subscriptionInstituteId),
+                subscriptionInstitute,
                 updateSubscriptionInstituteRequest,
                 subscriptionPlan,
                 institute
@@ -132,6 +134,6 @@ public class SubscriptionInstituteServiceImpl implements SubscriptionInstituteSe
     @Transactional(readOnly = true)
     public SubscriptionInstitute getSubscriptionInstitute(Long subscriptionInstituteId) {
         return subscriptionInstituteRepository.findById(subscriptionInstituteId)
-                .orElseThrow(() -> new EntityNotFoundException("구독정보(교육기관)를 찾을 수 없습니다. subscriptionInstituteId = " + subscriptionInstituteId));
+                .orElseThrow(() -> new EntityNotFoundException("구독정보(교육기관)를 찾을 수 없습니다. subscriptionInstituteId: " + subscriptionInstituteId));
     }
 }
