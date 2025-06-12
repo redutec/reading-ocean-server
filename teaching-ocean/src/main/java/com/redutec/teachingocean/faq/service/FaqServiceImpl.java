@@ -54,6 +54,6 @@ public class FaqServiceImpl implements FaqService {
     @Transactional(readOnly = true)
     public Faq getFaq(Long faqId) {
         return faqRepository.findById(faqId)
-                .orElseThrow(() -> new EntityNotFoundException("이용안내를 찾을 수 없습니다. faqId = " + faqId));
+                .orElseThrow(() -> new EntityNotFoundException("이용안내를 찾을 수 없습니다. faqId: " + faqId));
     }
 }

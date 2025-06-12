@@ -53,6 +53,7 @@ public class TeacherInquiryMapper {
     ) {
         return TeacherInquiry.builder()
                 .id(teacherInquiry.getId())
+                .teacher(teacherInquiry.getTeacher())
                 .domain(Optional.ofNullable(updateTeacherInquiryRequest.domain()).orElse(teacherInquiry.getDomain()))
                 .category(Optional.ofNullable(updateTeacherInquiryRequest.category()).orElse(teacherInquiry.getCategory()))
                 .status(Optional.ofNullable(updateTeacherInquiryRequest.status()).orElse(teacherInquiry.getStatus()))

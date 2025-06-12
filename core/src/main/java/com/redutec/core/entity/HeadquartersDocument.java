@@ -1,0 +1,77 @@
+package com.redutec.core.entity;
+
+import com.redutec.core.meta.DocumentAuthor;
+import com.redutec.core.meta.DocumentCategory;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Comment;
+import org.hibernate.annotations.DynamicUpdate;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+@Entity
+@Comment("본사 자료실")
+@DynamicUpdate
+@Getter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
+public class HeadquartersDocument {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Comment("본사 문서 고유번호")
+    private Long id;
+
+    @Comment("문서 분류(독서목록/교육자료/홍보자료/상담자료/기타)")
+    @NotNull
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private DocumentCategory category;
+
+    @Comment("제목")
+    @Column(nullable = false, length = 100)
+    @NotBlank
+    private String title;
+
+    @Comment("내용")
+    @Lob
+    private String content;
+
+    @Comment("작성자")
+    @NotNull
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private DocumentAuthor author;
+
+    @Comment("첨부파일 목록(파일명)")
+    @ElementCollection
+    @CollectionTable(
+        name = "headquarters_document_attachment",
+        joinColumns = @JoinColumn(name = "headquarters_document_id")
+    )
+    @Column(name = "attachment_file_name", length = 100)
+    private List<String> attachments;
+
+    @Comment("활성화 여부")
+    @Column(nullable = false)
+    @Builder.Default
+    private Boolean available = true;
+
+    @CreatedDate
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
+    @LastModifiedDate
+    @Column(nullable = false)
+    private LocalDateTime updatedAt;
+}
