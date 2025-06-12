@@ -1,6 +1,6 @@
 package com.redutec.admin.subscription.student.controller;
 
-import com.redutec.core.dto.SubscriptionStudentDto;
+import com.redutec.core.dto.StudentSubscriptionDto;
 import com.redutec.admin.subscription.student.service.SubscriptionStudentService;
 import com.redutec.core.config.ApiResponseBody;
 import com.redutec.core.config.ApiResponseManager;
@@ -23,13 +23,13 @@ public class SubscriptionStudentController {
 
     @Operation(summary = "구독(학생) 등록", description = "구독(학생) 정보를 등록하는 API")
     @PostMapping
-    public ResponseEntity<ApiResponseBody> create(@ParameterObject @Valid SubscriptionStudentDto.CreateSubscriptionStudentRequest createSubscriptionStudentRequest) {
+    public ResponseEntity<ApiResponseBody> create(@ParameterObject @Valid StudentSubscriptionDto.CreateSubscriptionStudentRequest createSubscriptionStudentRequest) {
         return apiResponseManager.create(subscriptionStudentService.create(createSubscriptionStudentRequest));
     }
 
     @Operation(summary = "조건에 맞는 구독(학생) 목록 조회", description = "조건에 맞는 구독(학생) 목록을 조회하는 API")
     @GetMapping
-    public ResponseEntity<ApiResponseBody> find(@ParameterObject @Valid SubscriptionStudentDto.FindSubscriptionStudentRequest findSubscriptionStudentRequest) {
+    public ResponseEntity<ApiResponseBody> find(@ParameterObject @Valid StudentSubscriptionDto.FindSubscriptionStudentRequest findSubscriptionStudentRequest) {
         return apiResponseManager.ok(subscriptionStudentService.find(findSubscriptionStudentRequest));
     }
 
@@ -43,7 +43,7 @@ public class SubscriptionStudentController {
     @PatchMapping("/{subscriptionStudentId}")
     public ResponseEntity<ApiResponseBody> update(
             @Parameter(description = "구독(학생) ID") @PathVariable Long subscriptionStudentId,
-            @ParameterObject @Valid SubscriptionStudentDto.UpdateSubscriptionStudentRequest updateSubscriptionStudentRequest
+            @ParameterObject @Valid StudentSubscriptionDto.UpdateSubscriptionStudentRequest updateSubscriptionStudentRequest
     ) {
         subscriptionStudentService.update(subscriptionStudentId, updateSubscriptionStudentRequest);
         return apiResponseManager.noContent();

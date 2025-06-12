@@ -1,9 +1,9 @@
 package com.redutec.admin.subscription.student.service;
 
-import com.redutec.core.dto.SubscriptionStudentDto;
+import com.redutec.core.dto.StudentSubscriptionDto;
 import com.redutec.core.entity.Student;
 import com.redutec.core.entity.SubscriptionPlan;
-import com.redutec.core.entity.SubscriptionStudent;
+import com.redutec.core.entity.StudentSubscription;
 import com.redutec.core.mapper.SubscriptionStudentMapper;
 import com.redutec.core.repository.StudentRepository;
 import com.redutec.core.repository.SubscriptionPlanRepository;
@@ -35,8 +35,8 @@ public class SubscriptionStudentServiceImpl implements SubscriptionStudentServic
      */
     @Override
     @Transactional
-    public SubscriptionStudentDto.SubscriptionStudentResponse create(
-            SubscriptionStudentDto.CreateSubscriptionStudentRequest createSubscriptionStudentRequest
+    public StudentSubscriptionDto.SubscriptionStudentResponse create(
+            StudentSubscriptionDto.CreateSubscriptionStudentRequest createSubscriptionStudentRequest
     ) {
         // 등록 요청 객체에 구독상품 고유번호가 존재한다면 구독상품 엔티티 조회
         SubscriptionPlan subscriptionPlan = Optional.ofNullable(createSubscriptionStudentRequest.subscriptionPlanId())
@@ -65,8 +65,8 @@ public class SubscriptionStudentServiceImpl implements SubscriptionStudentServic
      */
     @Override
     @Transactional(readOnly = true)
-    public SubscriptionStudentDto.SubscriptionStudentPageResponse find(
-            SubscriptionStudentDto.FindSubscriptionStudentRequest findSubscriptionStudentRequest
+    public StudentSubscriptionDto.SubscriptionStudentPageResponse find(
+            StudentSubscriptionDto.FindSubscriptionStudentRequest findSubscriptionStudentRequest
     ) {
         return subscriptionStudentMapper.toPageResponseDto(subscriptionStudentRepository.findAll(
                 SubscriptionStudentSpecification.findWith(subscriptionStudentMapper.toCriteria(findSubscriptionStudentRequest)),
@@ -82,7 +82,7 @@ public class SubscriptionStudentServiceImpl implements SubscriptionStudentServic
      */
     @Override
     @Transactional(readOnly = true)
-    public SubscriptionStudentDto.SubscriptionStudentResponse findById(Long subscriptionStudentId) {
+    public StudentSubscriptionDto.SubscriptionStudentResponse findById(Long subscriptionStudentId) {
         return subscriptionStudentMapper.toResponseDto(getSubscriptionStudent(subscriptionStudentId));
     }
 
@@ -95,7 +95,7 @@ public class SubscriptionStudentServiceImpl implements SubscriptionStudentServic
     @Transactional
     public void update(
             Long subscriptionStudentId,
-            SubscriptionStudentDto.UpdateSubscriptionStudentRequest updateSubscriptionStudentRequest
+            StudentSubscriptionDto.UpdateSubscriptionStudentRequest updateSubscriptionStudentRequest
     ) {
         // 수정할 구독정보(학생) 엔티티 조회
         var subscriptionStudent = getSubscriptionStudent(subscriptionStudentId);
@@ -132,7 +132,7 @@ public class SubscriptionStudentServiceImpl implements SubscriptionStudentServic
      * @return 특정 구독정보(학생) 엔티티 객체
      */
     @Transactional(readOnly = true)
-    public SubscriptionStudent getSubscriptionStudent(Long subscriptionStudentId) {
+    public StudentSubscription getSubscriptionStudent(Long subscriptionStudentId) {
         return subscriptionStudentRepository.findById(subscriptionStudentId)
                 .orElseThrow(() -> new EntityNotFoundException("구독정보(학생)을 찾을 수 없습니다. subscriptionStudentId: " + subscriptionStudentId));
     }

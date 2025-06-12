@@ -1,6 +1,9 @@
 package com.redutec.core.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,16 +15,15 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import static jakarta.persistence.FetchType.LAZY;
 
 @Entity
-@Comment("상품주문(교육기관)")
-@DiscriminatorValue("INSTITUTE")
+@Comment("고객문의(교사)")
 @DynamicUpdate
 @Getter
 @SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
-public class OrderInstitute extends Order {
-    @Comment("상품주문자(교육기관)")
+public class TeacherInquiry extends Inquiry {
+    @Comment("문의자(교사)")
     @ManyToOne(fetch = LAZY, optional = false)
-    @JoinColumn(nullable = false)
-    private Institute institute;
+    @JoinColumn
+    private Teacher teacher;
 }

@@ -1,30 +1,27 @@
 package com.redutec.core.dto;
 
 import com.redutec.core.meta.Domain;
-import com.redutec.core.meta.InquirerType;
 import com.redutec.core.meta.InquiryCategory;
 import com.redutec.core.meta.InquiryStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.validation.constraints.Size;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class InquiryDto {
-    @Schema(description = "고객문의 등록 요청 객체")
-    public record CreateInquiryRequest(
+public class StudentInquiryDto {
+    @Schema(description = "고객문의(학생) 등록 요청 객체")
+    public record CreateStudentInquiryRequest(
             @Schema(description = "서비스 도메인", requiredMode = Schema.RequiredMode.REQUIRED)
             @NotNull
             @Enumerated(EnumType.STRING)
             Domain domain,
-
-            @Schema(description = "문의자 구분(학생/교사/비회원)", requiredMode = Schema.RequiredMode.REQUIRED)
-            @NotNull
-            @Enumerated(EnumType.STRING)
-            InquirerType inquirerType,
 
             @Schema(description = "문의 유형(예: 리딩오션, 기술지원 등)", requiredMode = Schema.RequiredMode.REQUIRED)
             @NotNull
@@ -36,41 +33,24 @@ public class InquiryDto {
             @Enumerated(EnumType.STRING)
             InquiryStatus status,
 
-            @Schema(description = "문의자 이메일", requiredMode = Schema.RequiredMode.REQUIRED)
-            @NotNull
-            @Email(message = "이메일 형식으로 입력해주세요")
-            String inquirerEmail,
-
-            @Schema(description = "답변자(어드민 사용자) 로그인 아이디", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-            @Size(max = 20)
-            String responderAccountId,
-
             @Schema(description = "제목", requiredMode = Schema.RequiredMode.REQUIRED)
             @NotNull
             @Size(max = 100)
             String title,
 
             @Schema(description = "내용", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-            String content,
-
-            @Schema(description = "답변", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-            String response
+            String content
     ) {}
 
-    @Schema(description = "고객문의 조회 요청 객체")
-    public record FindInquiryRequest(
-            @Schema(description = "고객문의 ID", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-            List<@Positive Long> inquiryIds,
+    @Schema(description = "고객문의(학생) 조회 요청 객체")
+    public record FindStudentInquiryRequest(
+            @Schema(description = "고객문의(학생) ID", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+            List<@Positive Long> studentInquiryIds,
 
             @Schema(description = "서비스 도메인", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
             @ElementCollection(targetClass = Domain.class)
             @Enumerated(EnumType.STRING)
             List<Domain> domains,
-
-            @Schema(description = "문의자 구분(학생/교사/비회원)", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-            @ElementCollection(targetClass = InquirerType.class)
-            @Enumerated(EnumType.STRING)
-            List<InquirerType> inquirerTypes,
 
             @Schema(description = "문의 유형(예: 리딩오션, 기술지원 등)", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
             @ElementCollection(targetClass = InquiryCategory.class)
@@ -82,9 +62,9 @@ public class InquiryDto {
             @Enumerated(EnumType.STRING)
             List<InquiryStatus> statuses,
 
-            @Schema(description = "문의자 이메일", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-            @Email(message = "이메일 형식으로 입력해주세요")
-            String inquirerEmail,
+            @Schema(description = "문의자(학생) 아이디", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+            @Size(max = 20, message = "문의자(학생) 아이디는 20자를 초과할 수 없습니다")
+            String inquirerAccountId,
 
             @Schema(description = "답변자(어드민 사용자) 로그인 아이디", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
             @Size(max = 20)
@@ -109,15 +89,11 @@ public class InquiryDto {
             Integer size
     ) {}
 
-    @Schema(description = "고객문의 수정 요청 객체")
-    public record UpdateInquiryRequest(
+    @Schema(description = "고객문의(학생) 수정 요청 객체")
+    public record UpdateStudentInquiryRequest(
             @Schema(description = "서비스 도메인", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
             @Enumerated(EnumType.STRING)
             Domain domain,
-
-            @Schema(description = "문의자 구분(학생/교사/비회원)", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-            @Enumerated(EnumType.STRING)
-            InquirerType inquirerType,
 
             @Schema(description = "문의 유형(예: 리딩오션, 기술지원 등)", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
             @Enumerated(EnumType.STRING)
@@ -126,10 +102,6 @@ public class InquiryDto {
             @Schema(description = "처리 상태(응답대기/처리중/응답완료/종료)", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
             @Enumerated(EnumType.STRING)
             InquiryStatus status,
-
-            @Schema(description = "문의자 이메일", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-            @Email(message = "이메일 형식으로 입력해주세요")
-            String inquirerEmail,
 
             @Schema(description = "답변자(어드민 사용자) 로그인 아이디", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
             @Size(max = 20)
@@ -146,14 +118,13 @@ public class InquiryDto {
             String response
     ) {}
 
-    @Schema(description = "고객문의 응답 객체")
-    public record InquiryResponse(
-            Long inquiryId,
+    @Schema(description = "고객문의(학생) 응답 객체")
+    public record StudentInquiryResponse(
+            Long studentInquiryId,
             Domain domain,
-            InquirerType inquirerType,
             InquiryCategory category,
             InquiryStatus status,
-            String inquirerEmail,
+            String inquirerAccountId,
             String responderAccountId,
             String title,
             String content,
@@ -161,9 +132,9 @@ public class InquiryDto {
             LocalDateTime updatedAt
     ) {}
 
-    @Schema(description = "고객문의 응답 페이징 객체")
-    public record InquiryPageResponse(
-            List<InquiryResponse> inquiries,
+    @Schema(description = "고객문의(학생) 응답 페이징 객체")
+    public record StudentInquiryPageResponse(
+            List<StudentInquiryResponse> inquiries,
             Long totalElements,
             Integer totalPages
     ) {}

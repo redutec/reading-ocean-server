@@ -1,7 +1,7 @@
 package com.redutec.admin.subscription.institute.controller;
 
 import com.redutec.admin.subscription.institute.service.SubscriptionInstituteService;
-import com.redutec.core.dto.SubscriptionInstituteDto;
+import com.redutec.core.dto.InstituteSubscriptionDto;
 import com.redutec.core.config.ApiResponseBody;
 import com.redutec.core.config.ApiResponseManager;
 import io.swagger.v3.oas.annotations.Operation;
@@ -23,13 +23,13 @@ public class SubscriptionInstituteController {
 
     @Operation(summary = "구독(교육기관) 등록", description = "구독(교육기관) 정보를 등록하는 API")
     @PostMapping
-    public ResponseEntity<ApiResponseBody> create(@ParameterObject @Valid SubscriptionInstituteDto.CreateSubscriptionInstituteRequest createSubscriptionInstituteRequest) {
+    public ResponseEntity<ApiResponseBody> create(@ParameterObject @Valid InstituteSubscriptionDto.CreateSubscriptionInstituteRequest createSubscriptionInstituteRequest) {
         return apiResponseManager.create(subscriptionInstituteService.create(createSubscriptionInstituteRequest));
     }
 
     @Operation(summary = "조건에 맞는 구독(교육기관) 목록 조회", description = "조건에 맞는 구독(교육기관) 목록을 조회하는 API")
     @GetMapping
-    public ResponseEntity<ApiResponseBody> find(@ParameterObject @Valid SubscriptionInstituteDto.FindSubscriptionInstituteRequest findSubscriptionInstituteRequest) {
+    public ResponseEntity<ApiResponseBody> find(@ParameterObject @Valid InstituteSubscriptionDto.FindSubscriptionInstituteRequest findSubscriptionInstituteRequest) {
         return apiResponseManager.ok(subscriptionInstituteService.find(findSubscriptionInstituteRequest));
     }
 
@@ -43,7 +43,7 @@ public class SubscriptionInstituteController {
     @PatchMapping("/{subscriptionInstituteId}")
     public ResponseEntity<ApiResponseBody> update(
             @Parameter(description = "구독(교육기관) ID") @PathVariable Long subscriptionInstituteId,
-            @ParameterObject @Valid SubscriptionInstituteDto.UpdateSubscriptionInstituteRequest updateSubscriptionInstituteRequest
+            @ParameterObject @Valid InstituteSubscriptionDto.UpdateSubscriptionInstituteRequest updateSubscriptionInstituteRequest
     ) {
         subscriptionInstituteService.update(subscriptionInstituteId, updateSubscriptionInstituteRequest);
         return apiResponseManager.noContent();

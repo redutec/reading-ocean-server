@@ -1,7 +1,7 @@
 package com.redutec.core.specification;
 
-import com.redutec.core.criteria.InquiryCriteria;
-import com.redutec.core.entity.Inquiry;
+import com.redutec.core.criteria.StudentInquiryCriteria;
+import com.redutec.core.entity.StudentInquiry;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -10,39 +10,36 @@ import java.util.stream.Stream;
 
 import static com.redutec.core.config.SpecificationUtil.combinePredicate;
 
-public class InquirySpecification {
-    public static Specification<Inquiry> findWith(InquiryCriteria inquiryCriteria) {
+public class StudentInquirySpecification {
+    public static Specification<StudentInquiry> findWith(StudentInquiryCriteria studentInquiryCriteria) {
         return (root, query, criteriaBuilder) -> {
             // 각 조건에 맞는 Optional<Predicate> 생성
             Stream<Optional<Predicate>> predicateStream = Stream.of(
-                    Optional.ofNullable(inquiryCriteria.inquiryIds())
-                            .filter(inquiryIds -> !inquiryIds.isEmpty())
-                            .map(inquiryIds -> root.get("id").in(inquiryIds)),
-                    Optional.ofNullable(inquiryCriteria.domains())
+                    Optional.ofNullable(studentInquiryCriteria.studentInquiryIds())
+                            .filter(studentInquiryIds -> !studentInquiryIds.isEmpty())
+                            .map(studentInquiryIds -> root.get("id").in(studentInquiryIds)),
+                    Optional.ofNullable(studentInquiryCriteria.domains())
                             .filter(domains -> !domains.isEmpty())
                             .map(domains -> root.get("domain").in(domains)),
-                    Optional.ofNullable(inquiryCriteria.inquirerTypes())
-                            .filter(inquirerTypes -> !inquirerTypes.isEmpty())
-                            .map(inquirerTypes -> root.get("inquirerType").in(inquirerTypes)),
-                    Optional.ofNullable(inquiryCriteria.categories())
+                    Optional.ofNullable(studentInquiryCriteria.categories())
                             .filter(categories -> !categories.isEmpty())
                             .map(categories -> root.get("category").in(categories)),
-                    Optional.ofNullable(inquiryCriteria.statuses())
+                    Optional.ofNullable(studentInquiryCriteria.statuses())
                             .filter(statuses -> !statuses.isEmpty())
                             .map(statuses -> root.get("status").in(statuses)),
-                    Optional.ofNullable(inquiryCriteria.inquirerEmail())
-                            .filter(inquirerEmail -> !inquirerEmail.isEmpty())
-                            .map(inquirerEmail -> criteriaBuilder.equal(root.get("inquirerEmail"), inquirerEmail)),
-                    Optional.ofNullable(inquiryCriteria.responderAccountId())
+                    Optional.ofNullable(studentInquiryCriteria.studentAccountId())
+                            .filter(studentAccountId -> !studentAccountId.isEmpty())
+                            .map(studentAccountId -> criteriaBuilder.equal(root.get("student").get("accountId"), studentAccountId)),
+                    Optional.ofNullable(studentInquiryCriteria.responderAccountId())
                             .filter(responderAccountId -> !responderAccountId.isEmpty())
                             .map(responderAccountId -> criteriaBuilder.like(root.get("responder").get("accountId"), "%" + responderAccountId + "%")),
-                    Optional.ofNullable(inquiryCriteria.title())
+                    Optional.ofNullable(studentInquiryCriteria.title())
                             .filter(title -> !title.isEmpty())
                             .map(title -> criteriaBuilder.like(root.get("title"), "%" + title + "%")),
-                    Optional.ofNullable(inquiryCriteria.content())
+                    Optional.ofNullable(studentInquiryCriteria.content())
                             .filter(content -> !content.isEmpty())
                             .map(content -> criteriaBuilder.like(root.get("content"), "%" + content + "%")),
-                    Optional.ofNullable(inquiryCriteria.response())
+                    Optional.ofNullable(studentInquiryCriteria.response())
                             .filter(response -> !response.isEmpty())
                             .map(response -> criteriaBuilder.like(root.get("response"), "%" + response + "%"))
             );

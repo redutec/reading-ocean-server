@@ -1,8 +1,8 @@
 package com.redutec.admin.subscription.institute.service;
 
-import com.redutec.core.dto.SubscriptionInstituteDto;
+import com.redutec.core.dto.InstituteSubscriptionDto;
 import com.redutec.core.entity.Institute;
-import com.redutec.core.entity.SubscriptionInstitute;
+import com.redutec.core.entity.InstituteSubscription;
 import com.redutec.core.entity.SubscriptionPlan;
 import com.redutec.core.mapper.SubscriptionInstituteMapper;
 import com.redutec.core.repository.InstituteRepository;
@@ -35,8 +35,8 @@ public class SubscriptionInstituteServiceImpl implements SubscriptionInstituteSe
      */
     @Override
     @Transactional
-    public SubscriptionInstituteDto.SubscriptionInstituteResponse create(
-            SubscriptionInstituteDto.CreateSubscriptionInstituteRequest createSubscriptionInstituteRequest
+    public InstituteSubscriptionDto.SubscriptionInstituteResponse create(
+            InstituteSubscriptionDto.CreateSubscriptionInstituteRequest createSubscriptionInstituteRequest
     ) {
         // 등록 요청 객체에 구독상품 고유번호가 존재하면 구독상품 엔티티를 조회
         SubscriptionPlan subscriptionPlan = Optional.ofNullable(createSubscriptionInstituteRequest.subscriptionPlanId())
@@ -65,8 +65,8 @@ public class SubscriptionInstituteServiceImpl implements SubscriptionInstituteSe
      */
     @Override
     @Transactional(readOnly = true)
-    public SubscriptionInstituteDto.SubscriptionInstitutePageResponse find(
-            SubscriptionInstituteDto.FindSubscriptionInstituteRequest findSubscriptionInstituteRequest
+    public InstituteSubscriptionDto.SubscriptionInstitutePageResponse find(
+            InstituteSubscriptionDto.FindSubscriptionInstituteRequest findSubscriptionInstituteRequest
     ) {
         return subscriptionInstituteMapper.toPageResponseDto(subscriptionInstituteRepository.findAll(
                 SubscriptionInstituteSpecification.findWith(subscriptionInstituteMapper.toCriteria(findSubscriptionInstituteRequest)),
@@ -82,7 +82,7 @@ public class SubscriptionInstituteServiceImpl implements SubscriptionInstituteSe
      */
     @Override
     @Transactional(readOnly = true)
-    public SubscriptionInstituteDto.SubscriptionInstituteResponse findById(Long subscriptionInstituteId) {
+    public InstituteSubscriptionDto.SubscriptionInstituteResponse findById(Long subscriptionInstituteId) {
         return subscriptionInstituteMapper.toResponseDto(getSubscriptionInstitute(subscriptionInstituteId));
     }
 
@@ -95,7 +95,7 @@ public class SubscriptionInstituteServiceImpl implements SubscriptionInstituteSe
     @Transactional
     public void update(
             Long subscriptionInstituteId,
-            SubscriptionInstituteDto.UpdateSubscriptionInstituteRequest updateSubscriptionInstituteRequest
+            InstituteSubscriptionDto.UpdateSubscriptionInstituteRequest updateSubscriptionInstituteRequest
     ) {
         // 수정할 구독정보(교육기관) 엔티티 조회
         var subscriptionInstitute = getSubscriptionInstitute(subscriptionInstituteId);
@@ -132,7 +132,7 @@ public class SubscriptionInstituteServiceImpl implements SubscriptionInstituteSe
      * @return 특정 구독정보(교육기관) 엔티티 객체
      */
     @Transactional(readOnly = true)
-    public SubscriptionInstitute getSubscriptionInstitute(Long subscriptionInstituteId) {
+    public InstituteSubscription getSubscriptionInstitute(Long subscriptionInstituteId) {
         return subscriptionInstituteRepository.findById(subscriptionInstituteId)
                 .orElseThrow(() -> new EntityNotFoundException("구독정보(교육기관)를 찾을 수 없습니다. subscriptionInstituteId: " + subscriptionInstituteId));
     }

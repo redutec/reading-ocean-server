@@ -15,15 +15,15 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import static jakarta.persistence.FetchType.LAZY;
 
 @Entity
-@Comment("구독(교육기관)")
+@Comment("구독(학생)")
 @DynamicUpdate
 @Getter
 @SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
-public class SubscriptionInstitute extends Subscription {
-    @Comment("구독자(교육기관)")
+public class StudentSubscription extends Subscription {
+    @Comment("구독자(학생)")
     @ManyToOne(fetch = LAZY, optional = false)
     @JoinColumn
-    private Institute institute;
+    private Student student;
 }

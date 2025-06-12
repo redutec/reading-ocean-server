@@ -1,7 +1,7 @@
 package com.redutec.core.specification;
 
 import com.redutec.core.criteria.OrderInstituteCriteria;
-import com.redutec.core.entity.OrderInstitute;
+import com.redutec.core.entity.InstituteOrder;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -11,7 +11,7 @@ import java.util.stream.Stream;
 import static com.redutec.core.config.SpecificationUtil.combinePredicate;
 
 public class OrderInstituteSpecification {
-    public static Specification<OrderInstitute> findWith(OrderInstituteCriteria orderInstituteCriteria) {
+    public static Specification<InstituteOrder> findWith(OrderInstituteCriteria orderInstituteCriteria) {
         return (root, query, criteriaBuilder) -> {
             // 각 조건에 맞는 Optional<Predicate> 생성
             Stream<Optional<Predicate>> predicateStream = Stream.of(

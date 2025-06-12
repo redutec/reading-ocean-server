@@ -9,18 +9,18 @@ import jakarta.validation.constraints.PositiveOrZero;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class SubscriptionStudentDto {
-    @Schema(description = "구독(학생) 등록 요청 객체")
-    public record CreateSubscriptionStudentRequest(
+public class InstituteSubscriptionDto {
+    @Schema(description = "구독(교육기관) 등록 요청 객체")
+    public record CreateSubscriptionInstituteRequest(
             @Schema(description = "구독 상품 ID", requiredMode = Schema.RequiredMode.REQUIRED)
             @NotNull
             @Positive
             Long subscriptionPlanId,
 
-            @Schema(description = "구독자(학생) ID", requiredMode = Schema.RequiredMode.REQUIRED)
+            @Schema(description = "구독자(교육기관) ID", requiredMode = Schema.RequiredMode.REQUIRED)
             @NotNull
             @Positive
-            Long studentId,
+            Long instituteId,
 
             @Schema(description = "시작일", requiredMode = Schema.RequiredMode.REQUIRED)
             @NotNull
@@ -33,13 +33,13 @@ public class SubscriptionStudentDto {
             LocalDateTime nextPaymentAt
     ) {}
 
-    @Schema(description = "구독(학생) 조회 요청 객체")
-    public record FindSubscriptionStudentRequest(
-            @Schema(description = "구독(학생) ID", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-            List<@Positive Long> subscriptionStudentIds,
+    @Schema(description = "구독(교육기관) 조회 요청 객체")
+    public record FindSubscriptionInstituteRequest(
+            @Schema(description = "구독(교육기관) ID", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+            List<@Positive Long> subscriptionInstituteIds,
 
-            @Schema(description = "학생 ID", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-            List<@Positive Long> studentIds,
+            @Schema(description = "교육기관 ID", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+            List<@Positive Long> instituteIds,
 
             @Schema(description = "구독 상품 ID", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
             List<@Positive Long> subscriptionPlanIds,
@@ -53,15 +53,15 @@ public class SubscriptionStudentDto {
             Integer size
     ) {}
 
-    @Schema(description = "구독(학생) 수정 요청 객체")
-    public record UpdateSubscriptionStudentRequest(
+    @Schema(description = "구독(교육기관) 수정 요청 객체")
+    public record UpdateSubscriptionInstituteRequest(
             @Schema(description = "구독 상품 ID", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
             @Positive
             Long subscriptionPlanId,
 
-            @Schema(description = "구독자(학생) ID", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+            @Schema(description = "구독자(교육기관) ID", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
             @Positive
-            Long studentId,
+            Long instituteId,
 
             @Schema(description = "시작일", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
             LocalDateTime startedAt,
@@ -73,9 +73,9 @@ public class SubscriptionStudentDto {
             LocalDateTime nextPaymentAt
     ) {}
 
-    @Schema(description = "구독(학생) 응답 객체")
-    public record SubscriptionStudentResponse(
-            Long subscriptionStudentId,
+    @Schema(description = "구독(교육기관) 응답 객체")
+    public record SubscriptionInstituteResponse(
+            Long subscriptionInstituteId,
             LocalDateTime startedAt,
             LocalDateTime endedAt,
             LocalDateTime nextPaymentAt,
@@ -91,9 +91,9 @@ public class SubscriptionStudentDto {
             LocalDateTime updatedAt
     ) {}
 
-    @Schema(description = "구독(학생) 응답 페이징 객체")
-    public record SubscriptionStudentPageResponse(
-            List<SubscriptionStudentResponse> subscriptionStudents,
+    @Schema(description = "구독(교육기관) 응답 페이징 객체")
+    public record SubscriptionInstitutePageResponse(
+            List<SubscriptionInstituteResponse> subscriptionInstitutes,
             Long totalElements,
             Integer totalPages
     ) {}

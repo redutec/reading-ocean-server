@@ -1,9 +1,9 @@
 package com.redutec.core.mapper;
 
-import com.redutec.core.dto.SubscriptionStudentDto;
+import com.redutec.core.dto.StudentSubscriptionDto;
 import com.redutec.core.criteria.SubscriptionStudentCriteria;
 import com.redutec.core.entity.Student;
-import com.redutec.core.entity.SubscriptionStudent;
+import com.redutec.core.entity.StudentSubscription;
 import com.redutec.core.entity.SubscriptionPlan;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -25,12 +25,12 @@ public class SubscriptionStudentMapper {
      * @param student 구독 서비스를 신청한 학생 엔티티
      * @return 등록할 SubscriptionStudent 엔티티
      */
-    public SubscriptionStudent toCreateEntity(
-            SubscriptionStudentDto.CreateSubscriptionStudentRequest createSubscriptionStudentRequest,
+    public StudentSubscription toCreateEntity(
+            StudentSubscriptionDto.CreateSubscriptionStudentRequest createSubscriptionStudentRequest,
             SubscriptionPlan subscriptionPlan,
             Student student
     ) {
-        return SubscriptionStudent.builder()
+        return StudentSubscription.builder()
                 .subscriptionPlan(subscriptionPlan)
                 .startedAt(createSubscriptionStudentRequest.startedAt())
                 .endedAt(createSubscriptionStudentRequest.endedAt())
@@ -42,25 +42,25 @@ public class SubscriptionStudentMapper {
     /**
      * UpdateSubscriptionStudentRequest DTO를 기반으로 SubscriptionStudent 수정 엔티티를 생성합니다.
      *
-     * @param subscriptionStudent 수정할 SubscriptionStudent 엔티티
+     * @param studentSubscription 수정할 SubscriptionStudent 엔티티
      * @param updateSubscriptionStudentRequest 구독(학생) 수정에 필요한 데이터를 담은 DTO
      * @param subscriptionPlan 구독 상품 엔티티
      * @param student 구독 서비스를 신청한 학생 엔티티
      * @return 수정할 SubscriptionStudent 엔티티
      */
-    public SubscriptionStudent toUpdateEntity(
-            SubscriptionStudent subscriptionStudent,
-            SubscriptionStudentDto.UpdateSubscriptionStudentRequest updateSubscriptionStudentRequest,
+    public StudentSubscription toUpdateEntity(
+            StudentSubscription studentSubscription,
+            StudentSubscriptionDto.UpdateSubscriptionStudentRequest updateSubscriptionStudentRequest,
             SubscriptionPlan subscriptionPlan,
             Student student
     ) {
-        return SubscriptionStudent.builder()
-                .id(subscriptionStudent.getId())
-                .subscriptionPlan(Optional.ofNullable(subscriptionPlan).orElse(subscriptionStudent.getSubscriptionPlan()))
-                .startedAt(Optional.ofNullable(updateSubscriptionStudentRequest.startedAt()).orElse(subscriptionStudent.getStartedAt()))
-                .endedAt(Optional.ofNullable(updateSubscriptionStudentRequest.endedAt()).orElse(subscriptionStudent.getEndedAt()))
-                .nextPaymentAt(Optional.ofNullable(updateSubscriptionStudentRequest.nextPaymentAt()).orElse(subscriptionStudent.getNextPaymentAt()))
-                .student(Optional.ofNullable(student).orElse(subscriptionStudent.getStudent()))
+        return StudentSubscription.builder()
+                .id(studentSubscription.getId())
+                .subscriptionPlan(Optional.ofNullable(subscriptionPlan).orElse(studentSubscription.getSubscriptionPlan()))
+                .startedAt(Optional.ofNullable(updateSubscriptionStudentRequest.startedAt()).orElse(studentSubscription.getStartedAt()))
+                .endedAt(Optional.ofNullable(updateSubscriptionStudentRequest.endedAt()).orElse(studentSubscription.getEndedAt()))
+                .nextPaymentAt(Optional.ofNullable(updateSubscriptionStudentRequest.nextPaymentAt()).orElse(studentSubscription.getNextPaymentAt()))
+                .student(Optional.ofNullable(student).orElse(studentSubscription.getStudent()))
                 .build();
     }
     
@@ -73,7 +73,7 @@ public class SubscriptionStudentMapper {
      * @return 해당 요청의 필드를 이용해 생성된 SubscriptionStudentCriteria 객체
      */
     public SubscriptionStudentCriteria toCriteria(
-            SubscriptionStudentDto.FindSubscriptionStudentRequest findSubscriptionStudentRequest
+            StudentSubscriptionDto.FindSubscriptionStudentRequest findSubscriptionStudentRequest
     ) {
         return new SubscriptionStudentCriteria(
                 findSubscriptionStudentRequest.subscriptionStudentIds(),
@@ -86,14 +86,14 @@ public class SubscriptionStudentMapper {
      * SubscriptionStudent 엔티티를 기반으로 응답용 SubscriptionStudentResponse DTO로 변환합니다.
      * Optional을 사용하여 null 검사를 수행합니다.
      *
-     * @param subscriptionStudent 변환할 SubscriptionStudent 엔티티 (null 가능)
+     * @param studentSubscription 변환할 SubscriptionStudent 엔티티 (null 가능)
      * @return SubscriptionStudent 엔티티의 데이터를 담은 SubscriptionStudentResponse DTO, subscriptionStudent가 null이면 null 반환
      */
-    public SubscriptionStudentDto.SubscriptionStudentResponse toResponseDto(
-            SubscriptionStudent subscriptionStudent
+    public StudentSubscriptionDto.SubscriptionStudentResponse toResponseDto(
+            StudentSubscription studentSubscription
     ) {
-        return Optional.ofNullable(subscriptionStudent)
-                .map(ss -> new SubscriptionStudentDto.SubscriptionStudentResponse(
+        return Optional.ofNullable(studentSubscription)
+                .map(ss -> new StudentSubscriptionDto.SubscriptionStudentResponse(
                         ss.getId(),
                         ss.getStartedAt(),
                         ss.getEndedAt(),
@@ -120,13 +120,13 @@ public class SubscriptionStudentMapper {
      * @param subscriptionStudentPage Page 형태로 조회된 SubscriptionStudent 엔티티 목록 (null 가능)
      * @return SubscriptionStudent 엔티티 리스트와 페이지 정보를 담은 SubscriptionStudentPageResponse DTO, subscriptionStudentPage가 null이면 null 반환
      */
-    public SubscriptionStudentDto.SubscriptionStudentPageResponse toPageResponseDto(Page<SubscriptionStudent> subscriptionStudentPage) {
+    public StudentSubscriptionDto.SubscriptionStudentPageResponse toPageResponseDto(Page<StudentSubscription> subscriptionStudentPage) {
         return Optional.ofNullable(subscriptionStudentPage)
                 .map(page -> {
                     var responseList = page.getContent().stream()
                             .map(this::toResponseDto)
                             .collect(Collectors.toList());
-                    return new SubscriptionStudentDto.SubscriptionStudentPageResponse(
+                    return new StudentSubscriptionDto.SubscriptionStudentPageResponse(
                             responseList,
                             page.getTotalElements(),
                             page.getTotalPages()
