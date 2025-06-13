@@ -47,7 +47,7 @@ public class Notice {
 
     @Comment("첨부 파일명")
     @Column
-    private String attachedFileName;
+    private String attachmentFileName;
 
     @Comment("노출 여부")
     @Column(nullable = false)

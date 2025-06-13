@@ -60,7 +60,7 @@ public class HeadquartersDocument {
         joinColumns = @JoinColumn(name = "headquarters_document_id")
     )
     @Column(name = "attachment_file_name", length = 100)
-    private List<String> attachments;
+    private List<String> attachmentFileNames;
 
     @Comment("활성화 여부")
     @Column(nullable = false)

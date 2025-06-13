@@ -33,7 +33,7 @@ public class BannerDto {
             String linkUrl,
 
             @Schema(description = "첨부 파일", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-            MultipartFile attachedFile,
+            MultipartFile attachmentFile,
 
             @Schema(description = "우선순위(0이 최상위)", requiredMode = Schema.RequiredMode.REQUIRED)
             @NotNull
@@ -101,7 +101,7 @@ public class BannerDto {
             String linkUrl,
 
             @Schema(description = "첨부 파일", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-            MultipartFile attachedFile,
+            MultipartFile attachmentFile,
 
             @Schema(description = "우선순위(0이 최상위)", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
             @Min(0)
@@ -125,7 +125,7 @@ public class BannerDto {
             String title,
             String content,
             String linkUrl,
-            String attachedFile,
+            String attachmentFile,
             Integer priority,
             Boolean visible,
             LocalDateTime visibleStartAt,

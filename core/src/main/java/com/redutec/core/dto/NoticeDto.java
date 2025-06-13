@@ -29,7 +29,7 @@ public class NoticeDto {
             String content,
 
             @Schema(description = "첨부 이미지 파일", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-            MultipartFile attachedFile,
+            MultipartFile attachmentFile,
 
             @Schema(description = "노출 여부", requiredMode = Schema.RequiredMode.REQUIRED, example = "true")
             @NotNull
@@ -87,7 +87,7 @@ public class NoticeDto {
             String content,
 
             @Schema(description = "첨부 이미지 파일", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-            MultipartFile attachedFile,
+            MultipartFile attachmentFile,
 
             @Schema(description = "노출 여부", requiredMode = Schema.RequiredMode.NOT_REQUIRED, example = "true")
             Boolean visible,
@@ -105,7 +105,7 @@ public class NoticeDto {
             Domain domain,
             String title,
             String content,
-            String attachedFileName,
+            String attachmentFileName,
             Boolean visible,
             LocalDateTime visibleStartAt,
             LocalDateTime visibleEndAt,

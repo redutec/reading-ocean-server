@@ -35,7 +35,7 @@ public class ProductDto {
             Integer discountPercentage,
 
             @Schema(description = "판매상품에 대한 정보가 담긴 파일명", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-            MultipartFile attachedFile,
+            MultipartFile attachmentFile,
 
             @Schema(description = "분류", requiredMode = Schema.RequiredMode.REQUIRED, example = "POWER_BOOK")
             @NotNull
@@ -111,7 +111,7 @@ public class ProductDto {
             Integer discountPercentage,
 
             @Schema(description = "판매상품에 대한 정보가 담긴 파일명", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-            MultipartFile attachedFile,
+            MultipartFile attachmentFile,
 
             @Schema(description = "분류", requiredMode = Schema.RequiredMode.NOT_REQUIRED, example = "POWER_BOOK")
             @Enumerated(EnumType.STRING)
@@ -130,7 +130,7 @@ public class ProductDto {
             Integer price,
             Integer discountPercentage,
             Integer priceAfterDiscount,
-            String attachedFileName,
+            String attachmentFileName,
             ProductCategory category,
             ProductStatus status,
             LocalDateTime createdAt,

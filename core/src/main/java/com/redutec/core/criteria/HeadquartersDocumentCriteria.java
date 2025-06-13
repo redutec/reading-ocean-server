@@ -11,5 +11,5 @@ public record HeadquartersDocumentCriteria(
         String title,
         String content,
         List<DocumentAuthor> authors,
-        Boolean visible
+        Boolean available
 ) {}

@@ -19,19 +19,19 @@ public class ProductMapper {
      * CreateProductRequest DTO를 기반으로 Product 등록 엔티티를 생성합니다.
      *
      * @param createProductRequest 판매상품 등록에 필요한 데이터를 담은 DTO
-     * @param attachedFileName 첨부 파일명
+     * @param attachmentFileName 첨부 파일명
      * @return 등록할 Product 엔티티
      */
     public Product toCreateEntity(
             ProductDto.CreateProductRequest createProductRequest,
-            String attachedFileName
+            String attachmentFileName
     ) {
         return Product.builder()
                 .name(createProductRequest.name())
                 .details(createProductRequest.details())
                 .price(createProductRequest.price())
                 .discountPercentage(createProductRequest.discountPercentage())
-                .attachedFileName(attachedFileName)
+                .attachmentFileName(attachmentFileName)
                 .category(createProductRequest.category())
                 .status(createProductRequest.status())
                 .build();
@@ -42,13 +42,13 @@ public class ProductMapper {
      *
      * @param product 수정할 Product 엔티티
      * @param updateProductRequest 판매상품 수정 요청 객체
-     * @param attachedFileName 첨부 파일명
+     * @param attachmentFileName 첨부 파일명
      * @return 수정할 Product 엔티티
      */
     public Product toUpdateEntity(
             Product product,
             ProductDto.UpdateProductRequest updateProductRequest,
-            String attachedFileName
+            String attachmentFileName
     ) {
         return Product.builder()
                 .id(product.getId())
@@ -56,7 +56,7 @@ public class ProductMapper {
                 .details(Optional.ofNullable(updateProductRequest.details()).orElse(product.getDetails()))
                 .price(Optional.ofNullable(updateProductRequest.price()).orElse(product.getPrice()))
                 .discountPercentage(Optional.ofNullable(updateProductRequest.discountPercentage()).orElse(product.getDiscountPercentage()))
-                .attachedFileName(Optional.ofNullable(attachedFileName).orElse(product.getAttachedFileName()))
+                .attachmentFileName(Optional.ofNullable(attachmentFileName).orElse(product.getAttachmentFileName()))
                 .category(Optional.ofNullable(updateProductRequest.category()).orElse(product.getCategory()))
                 .status(Optional.ofNullable(updateProductRequest.status()).orElse(product.getStatus()))
                 .build();
@@ -105,7 +105,7 @@ public class ProductMapper {
                         p.getPrice(),
                         p.getDiscountPercentage(),
                         priceAfterDiscount,
-                        p.getAttachedFileName(),
+                        p.getAttachmentFileName(),
                         p.getCategory(),
                         p.getStatus(),
                         p.getCreatedAt(),

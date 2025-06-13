@@ -35,17 +35,17 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     public ProductDto.ProductResponse create(ProductDto.CreateProductRequest createProductRequest) {
         // 등록 요청 객체에 첨부 파일이 있다면 업로드 후 파일명을 가져오기
-        String attachedFileName = Optional.ofNullable(createProductRequest.attachedFile())
-                .filter(attachedFile -> !attachedFile.isEmpty())
-                .map(attachedFile -> {
-                    FileUploadResult result = fileUtil.uploadFile(attachedFile, "/product");
+        String attachmentFileName = Optional.ofNullable(createProductRequest.attachmentFile())
+                .filter(attachmentFile -> !attachmentFile.isEmpty())
+                .map(attachmentFile -> {
+                    FileUploadResult result = fileUtil.uploadFile(attachmentFile, "/product");
                     return Paths.get(result.filePath()).getFileName().toString();
                 })
                 .orElse(null);
         // 판매상품 등록
         return productMapper.toResponseDto(productRepository.save(productMapper.toCreateEntity(
                 createProductRequest,
-                attachedFileName
+                attachmentFileName
         )));
     }
 
@@ -86,18 +86,18 @@ public class ProductServiceImpl implements ProductService {
         // 수정할 판매상품 엔티티 조회
         Product product = getProduct(productId);
         // 수정 요청 객체에 첨부 파일이 존재한다면 업로드 후 파일명을 가져오기
-        String attachedFileName = Optional.ofNullable(updateProductRequest.attachedFile())
-                .filter(attachedFile -> !attachedFile.isEmpty())
-                .map(attachedFile -> {
-                    FileUploadResult result = fileUtil.uploadFile(attachedFile, "/product");
+        String attachmentFileName = Optional.ofNullable(updateProductRequest.attachmentFile())
+                .filter(attachmentFile -> !attachmentFile.isEmpty())
+                .map(attachmentFile -> {
+                    FileUploadResult result = fileUtil.uploadFile(attachmentFile, "/product");
                     return Paths.get(result.filePath()).getFileName().toString();
                 })
-                .orElseGet(product::getAttachedFileName);
+                .orElseGet(product::getAttachmentFileName);
         // 판매상품 수정
         productRepository.save(productMapper.toUpdateEntity(
                 product,
                 updateProductRequest,
-                attachedFileName
+                attachmentFileName
         ));
     }
 

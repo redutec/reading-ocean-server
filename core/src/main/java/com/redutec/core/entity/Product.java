@@ -52,7 +52,7 @@ public class Product {
 
     @Comment("판매상품에 대한 정보가 담긴 파일명")
     @Column
-    private String attachedFileName;
+    private String attachmentFileName;
 
     @Comment("분류")
     @Column(nullable = false)

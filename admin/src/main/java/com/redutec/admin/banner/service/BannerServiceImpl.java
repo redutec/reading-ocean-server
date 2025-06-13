@@ -35,16 +35,16 @@ public class BannerServiceImpl implements BannerService {
     @Transactional
     public BannerDto.BannerResponse create(BannerDto.CreateBannerRequest createBannerRequest) {
         // 첨부 파일이 존재하는 경우 파일을 업로드하고 파일명을 가져오기(파일이 없으면 파일명은 null)
-        String attachedFileName = Optional.ofNullable(createBannerRequest.attachedFile())
-                .filter(attachedFile -> !attachedFile.isEmpty())
-                .map(attachedFile -> {
-                    FileUploadResult result = fileUtil.uploadFile(attachedFile, "/banner");
+        String attachmentFileName = Optional.ofNullable(createBannerRequest.attachmentFile())
+                .filter(attachmentFile -> !attachmentFile.isEmpty())
+                .map(attachmentFile -> {
+                    FileUploadResult result = fileUtil.uploadFile(attachmentFile, "/banner");
                     return Paths.get(result.filePath()).getFileName().toString();
                 })
                 .orElse(null);
         return bannerMapper.toResponseDto(bannerRepository.save(bannerMapper.toCreateEntity(
                 createBannerRequest,
-                attachedFileName
+                attachmentFileName
         )));
     }
 
@@ -88,13 +88,13 @@ public class BannerServiceImpl implements BannerService {
         bannerRepository.save(bannerMapper.toUpdateEntity(
                 banner,
                 updateBannerRequest,
-                Optional.ofNullable(updateBannerRequest.attachedFile())
-                        .filter(attachedFile -> !attachedFile.isEmpty())
-                        .map(attachedFile -> {
-                            FileUploadResult result = fileUtil.uploadFile(attachedFile, "/banner");
+                Optional.ofNullable(updateBannerRequest.attachmentFile())
+                        .filter(attachmentFile -> !attachmentFile.isEmpty())
+                        .map(attachmentFile -> {
+                            FileUploadResult result = fileUtil.uploadFile(attachmentFile, "/banner");
                             return Paths.get(result.filePath()).getFileName().toString();
                         })
-                        .orElseGet(banner::getAttachedFileName)
+                        .orElseGet(banner::getAttachmentFileName)
         ));
     }
 

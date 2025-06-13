@@ -55,7 +55,7 @@ public class Banner {
 
     @Comment("첨부 파일명")
     @Column
-    private String attachedFileName;
+    private String attachmentFileName;
 
     @Comment("우선순위(0이 최상위)")
     @Column(nullable = false)

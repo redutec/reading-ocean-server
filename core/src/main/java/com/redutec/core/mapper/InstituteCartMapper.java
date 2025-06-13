@@ -82,7 +82,7 @@ public class InstituteCartMapper {
                                         product.getPrice(),
                                         product.getDiscountPercentage(),
                                         product.getPrice() * (100 - product.getDiscountPercentage()) / 100,
-                                        product.getAttachedFileName(),
+                                        product.getAttachmentFileName(),
                                         product.getCategory(),
                                         product.getStatus(),
                                         product.getCreatedAt(),

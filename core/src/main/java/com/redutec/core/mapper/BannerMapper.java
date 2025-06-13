@@ -19,19 +19,19 @@ public class BannerMapper {
      * CreateBannerRequest DTO를 기반으로 Banner 등록 엔티티를 생성합니다.
      *
      * @param createBannerRequest Banner 등록에 필요한 데이터를 담은 DTO
-     * @param attachedFileName 첨부 파일명
+     * @param attachmentFileName 첨부 파일명
      * @return 등록할 Banner 엔티티
      */
     public Banner toCreateEntity(
             BannerDto.CreateBannerRequest createBannerRequest,
-            String attachedFileName
+            String attachmentFileName
     ) {
         return Banner.builder()
                 .domain(createBannerRequest.domain())
                 .title(createBannerRequest.title())
                 .content(createBannerRequest.content())
                 .linkUrl(createBannerRequest.linkUrl())
-                .attachedFileName(attachedFileName)
+                .attachmentFileName(attachmentFileName)
                 .priority(createBannerRequest.priority())
                 .visible(createBannerRequest.visible())
                 .visibleStartAt(createBannerRequest.visibleStartAt())
@@ -44,13 +44,13 @@ public class BannerMapper {
      *
      * @param banner 수정할 Banner 엔티티
      * @param updateBannerRequest Banner 수정에 필요한 데이터를 담은 DTO
-     * @param attachedFileName 첨부 파일명
+     * @param attachmentFileName 첨부 파일명
      * @return 생성된 Banner 수정 엔티티
      */
     public Banner toUpdateEntity(
             Banner banner,
             BannerDto.UpdateBannerRequest updateBannerRequest,
-            String attachedFileName
+            String attachmentFileName
     ) {
         return Banner.builder()
                 .id(banner.getId())
@@ -58,7 +58,7 @@ public class BannerMapper {
                 .title(Optional.ofNullable(updateBannerRequest.title()).orElse(banner.getTitle()))
                 .content(Optional.ofNullable(updateBannerRequest.content()).orElse(banner.getContent()))
                 .linkUrl(Optional.ofNullable(updateBannerRequest.linkUrl()).orElse(banner.getLinkUrl()))
-                .attachedFileName(Optional.ofNullable(attachedFileName).orElse(banner.getAttachedFileName()))
+                .attachmentFileName(Optional.ofNullable(attachmentFileName).orElse(banner.getAttachmentFileName()))
                 .priority(Optional.ofNullable(updateBannerRequest.priority()).orElse(banner.getPriority()))
                 .visible(Optional.ofNullable(updateBannerRequest.visible()).orElse(banner.getVisible()))
                 .visibleStartAt(Optional.ofNullable(updateBannerRequest.visibleStartAt()).orElse(banner.getVisibleStartAt()))
@@ -99,7 +99,7 @@ public class BannerMapper {
                         b.getTitle(),
                         b.getContent(),
                         b.getLinkUrl(),
-                        b.getAttachedFileName(),
+                        b.getAttachmentFileName(),
                         b.getPriority(),
                         b.getVisible(),
                         b.getVisibleStartAt(),

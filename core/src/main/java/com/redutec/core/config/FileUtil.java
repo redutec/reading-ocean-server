@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
@@ -98,6 +99,39 @@ public class FileUtil {
         }
         if (!allowed) {
             throw new IllegalArgumentException("허용되지 않는 파일 확장자입니다.");
+        }
+    }
+
+    /**
+     * 파일 삭제 메서드
+     *
+     * @param addPath  업로드 시 사용한 추가 경로 (예: "/hq-document")
+     * @param fileName 삭제할 파일명
+     */
+    public void deleteFile(String addPath, String fileName) {
+        // addPath 끝의 모든 슬래시를 제거
+        var normalizedAddPath = addPath.replaceAll("/+$", "");
+        // 실제 파일 시스템 경로 구성
+        var filePath = Paths.get(
+                System.getProperty("user.dir"),
+                PATH_PREFIX,
+                normalizedAddPath,
+                fileName
+        );
+        try {
+            // 파일 삭제 시도 후 성공 여부를 리턴
+            var deleted = Files.deleteIfExists(filePath);
+            // 성공한 경우 로깅
+            Optional.of(deleted)
+                    .filter(Boolean::booleanValue)
+                    .ifPresent(b -> log.info("파일 삭제 성공: {}", filePath));
+            // 파일이 없어서 삭제되지 않은 경우 로깅
+            Optional.of(deleted)
+                    .filter(d -> !d)
+                    .ifPresent(d -> log.warn("삭제할 파일이 존재하지 않습니다: {}", filePath));
+        } catch (IOException e) {
+            log.error("파일 삭제 실패: {}", filePath, e);
+            throw new RuntimeException("파일 삭제 실패", e);
         }
     }
 }

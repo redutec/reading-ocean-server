@@ -22,18 +22,18 @@ public class NoticeMapper {
      * CreateNoticeRequest DTO를 기반으로 Notice 등록 엔티티를 생성합니다.
      *
      * @param createNoticeRequest 공지사항 등록에 필요한 데이터를 담은 DTO
-     * @param attachedFileName 공지사항의 첨부 파일
+     * @param attachmentFileName 공지사항의 첨부 파일
      * @return 등록할 Notice 엔티티
      */
     public Notice toCreateEntity(
             NoticeDto.CreateNoticeRequest createNoticeRequest,
-            String attachedFileName
+            String attachmentFileName
     ) {
         return Notice.builder()
                 .domain(createNoticeRequest.domain())
                 .title(createNoticeRequest.title())
                 .content(createNoticeRequest.content())
-                .attachedFileName(attachedFileName)
+                .attachmentFileName(attachmentFileName)
                 .visible(createNoticeRequest.visible())
                 .visibleStartAt(createNoticeRequest.visibleStartAt())
                 .visibleEndAt(createNoticeRequest.visibleEndAt())
@@ -45,20 +45,20 @@ public class NoticeMapper {
      *
      * @param notice 수정할 Notice 엔티티
      * @param updateNoticeRequest 공지사항 수정에 필요한 데이터를 담은 DTO
-     * @param attachedFileName 공지사항의 첨부 파일
+     * @param attachmentFileName 공지사항의 첨부 파일
      * @return 수정할 Notice 엔티티
      */
     public Notice toUpdateEntity(
             Notice notice,
             NoticeDto.UpdateNoticeRequest updateNoticeRequest,
-            String attachedFileName
+            String attachmentFileName
     ) {
         return Notice.builder()
                 .id(notice.getId())
                 .domain(Optional.ofNullable(updateNoticeRequest.domain()).orElse(notice.getDomain()))
                 .title(Optional.ofNullable(updateNoticeRequest.title()).orElse(notice.getTitle()))
                 .content(Optional.ofNullable(updateNoticeRequest.content()).orElse(notice.getContent()))
-                .attachedFileName(Optional.ofNullable(attachedFileName).orElse(notice.getAttachedFileName()))
+                .attachmentFileName(Optional.ofNullable(attachmentFileName).orElse(notice.getAttachmentFileName()))
                 .visible(Optional.ofNullable(updateNoticeRequest.visible()).orElse(notice.getVisible()))
                 .visibleStartAt(Optional.ofNullable(updateNoticeRequest.visibleStartAt()).orElse(notice.getVisibleStartAt()))
                 .visibleEndAt(Optional.ofNullable(updateNoticeRequest.visibleEndAt()).orElse(notice.getVisibleEndAt()))
@@ -96,7 +96,7 @@ public class NoticeMapper {
                         n.getDomain(),
                         n.getTitle(),
                         n.getContent(),
-                        n.getAttachedFileName(),
+                        n.getAttachmentFileName(),
                         n.getVisible(),
                         n.getVisibleStartAt(),
                         n.getVisibleEndAt(),

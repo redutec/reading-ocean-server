@@ -35,17 +35,17 @@ public class NoticeServiceImpl implements NoticeService {
     @Transactional
     public NoticeDto.NoticeResponse create(NoticeDto.CreateNoticeRequest createNoticeRequest) {
         // 등록 요청 객체에 첨부 파일이 존재하면 업로드 및 파일명을 가져오기
-        String attachedFileName = Optional.ofNullable(createNoticeRequest.attachedFile())
-                .filter(attachedFile -> !attachedFile.isEmpty())
-                .map(attachedFile -> {
-                    FileUploadResult result = fileUtil.uploadFile(attachedFile, "/notice");
+        String attachmentFileName = Optional.ofNullable(createNoticeRequest.attachmentFile())
+                .filter(attachmentFile -> !attachmentFile.isEmpty())
+                .map(attachmentFile -> {
+                    FileUploadResult result = fileUtil.uploadFile(attachmentFile, "/notice");
                     return Paths.get(result.filePath()).getFileName().toString();
                 })
                 .orElse(null);
         // 공지사항 등록
         return noticeMapper.toResponseDto(noticeRepository.save(noticeMapper.toCreateEntity(
                 createNoticeRequest,
-                attachedFileName
+                attachmentFileName
         )));
     }
 
@@ -86,18 +86,18 @@ public class NoticeServiceImpl implements NoticeService {
         // 수정할 공지사항 엔티티 조회
         Notice notice = getNotice(noticeId);
         // 등록 요청 객체에 첨부 파일이 존재하면 업로드 및 파일명을 가져오기
-        String attachedFileName = Optional.ofNullable(updateNoticeRequest.attachedFile())
-                .filter(attachedFile -> !attachedFile.isEmpty())
-                .map(attachedFile -> {
-                    FileUploadResult result = fileUtil.uploadFile(attachedFile, "/notice");
+        String attachmentFileName = Optional.ofNullable(updateNoticeRequest.attachmentFile())
+                .filter(attachmentFile -> !attachmentFile.isEmpty())
+                .map(attachmentFile -> {
+                    FileUploadResult result = fileUtil.uploadFile(attachmentFile, "/notice");
                     return Paths.get(result.filePath()).getFileName().toString();
                 })
-                .orElseGet(notice::getAttachedFileName);
+                .orElseGet(notice::getAttachmentFileName);
         // 공지사항 수정
         noticeRepository.save(noticeMapper.toUpdateEntity(
                 notice,
                 updateNoticeRequest,
-                attachedFileName
+                attachmentFileName
         ));
     }
 
