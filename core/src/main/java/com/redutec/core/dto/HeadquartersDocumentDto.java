@@ -1,7 +1,7 @@
  package com.redutec.core.dto;
 
- import com.redutec.core.meta.DocumentAuthor;
- import com.redutec.core.meta.DocumentCategory;
+ import com.redutec.core.meta.LearningMaterialAuthor;
+ import com.redutec.core.meta.LearningMaterialCategory;
  import io.swagger.v3.oas.annotations.media.Schema;
  import jakarta.persistence.ElementCollection;
  import jakarta.persistence.EnumType;
@@ -21,7 +21,7 @@ public class HeadquartersDocumentDto {
             @Schema(description = "문서 분류(독서목록/교육자료/홍보자료/상담자료/기타)", requiredMode = Schema.RequiredMode.REQUIRED)
             @NotNull
             @Enumerated(EnumType.STRING)
-            DocumentCategory category,
+            LearningMaterialCategory category,
 
             @Schema(description = "제목", requiredMode = Schema.RequiredMode.REQUIRED)
             @NotNull
@@ -35,7 +35,7 @@ public class HeadquartersDocumentDto {
             @Schema(description = "작성자", requiredMode = Schema.RequiredMode.REQUIRED)
             @NotNull
             @Enumerated(EnumType.STRING)
-            DocumentAuthor author,
+            LearningMaterialAuthor author,
 
             @Schema(description = "첨부파일 목록", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
             List<MultipartFile> attachmentFiles,
@@ -51,9 +51,9 @@ public class HeadquartersDocumentDto {
             List<@Positive Long> headquartersDocumentIds,
 
             @Schema(description = "문서 분류(독서목록/교육자료/홍보자료/상담자료/기타)", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-            @ElementCollection(targetClass = DocumentCategory.class)
+            @ElementCollection(targetClass = LearningMaterialCategory.class)
             @Enumerated(EnumType.STRING)
-            List<DocumentCategory> categories,
+            List<LearningMaterialCategory> categories,
 
             @Schema(description = "제목", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
             @Size(max = 100)
@@ -63,9 +63,9 @@ public class HeadquartersDocumentDto {
             String content,
 
             @Schema(description = "작성자", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-            @ElementCollection(targetClass = DocumentAuthor.class)
+            @ElementCollection(targetClass = LearningMaterialAuthor.class)
             @Enumerated(EnumType.STRING)
-            List<DocumentAuthor> authors,
+            List<LearningMaterialAuthor> authors,
 
             @Schema(description = "활성화 여부", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
             Boolean available,
@@ -83,7 +83,7 @@ public class HeadquartersDocumentDto {
     public record UpdateHeadquartersDocumentRequest(
             @Schema(description = "문서 분류(독서목록/교육자료/홍보자료/상담자료/기타)", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
             @Enumerated(EnumType.STRING)
-            DocumentCategory category,
+            LearningMaterialCategory category,
 
             @Schema(description = "제목", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
             @Size(max = 100)
@@ -94,7 +94,7 @@ public class HeadquartersDocumentDto {
 
             @Schema(description = "작성자", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
             @Enumerated(EnumType.STRING)
-            DocumentAuthor author,
+            LearningMaterialAuthor author,
 
             @Schema(description = "첨부파일 목록", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
             List<MultipartFile> attachmentFiles,
@@ -106,10 +106,10 @@ public class HeadquartersDocumentDto {
     @Schema(description = "본사 자료실 응답 객체")
     public record HeadquartersDocumentResponse(
             Long headquartersDocumentId,
-            DocumentCategory category,
+            LearningMaterialCategory category,
             String title,
             String content,
-            DocumentAuthor author,
+            LearningMaterialAuthor author,
             List<String> attachementFiles,
             Boolean available,
             LocalDateTime createdAt,
