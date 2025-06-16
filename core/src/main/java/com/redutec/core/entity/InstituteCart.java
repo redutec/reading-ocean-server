@@ -26,19 +26,19 @@ import java.util.List;
 public class InstituteCart {
     /** 실제 PK 컬럼 */
     @Id
-    @Column
+    @Column(name = "institute_id")
     private Long instituteId;
 
     /** PK를 공유하도록 MapsId */
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     @MapsId
-    @JoinColumn
+    @JoinColumn(name = "institute_id")
     private Institute institute;
 
     @ElementCollection
     @CollectionTable(
-        name = "cart_item",
-        joinColumns = @JoinColumn(name = "institute_id", referencedColumnName = "institute_id")
+            name = "institute_cart_item",
+            joinColumns = @JoinColumn(name = "institute_id", referencedColumnName = "institute_id")
     )
     @Comment("장바구니에 담긴 상품 목록")
     private List<CartItem> items = new ArrayList<>();
@@ -53,17 +53,17 @@ public class InstituteCart {
 
     public void addItem(Product product, Integer quantity) {
         items.stream()
-                .filter(ci -> ci.getProduct().getId().equals(product.getId()))
+                .filter(cartItem -> cartItem.getProduct().getId().equals(product.getId()))
                 .findFirst()
                 .ifPresentOrElse(
-                    ci -> ci.changeQuantity(ci.getQuantity() + quantity),
-                    () -> items.add(
-                        CartItem.builder()
-                                .product(product)
-                                .quantity(quantity)
-                                .unitPrice(product.getPrice() * (100 - product.getDiscountPercentage()) / 100)
-                                .build()
-                    )
+                        cartItem -> cartItem.changeQuantity(cartItem.getQuantity() + quantity),
+                        () -> items.add(
+                                CartItem.builder()
+                                        .product(product)
+                                        .quantity(quantity)
+                                        .unitPrice(product.getPrice() * (100 - product.getDiscountPercentage()) / 100)
+                                        .build()
+                        )
                 );
     }
 }

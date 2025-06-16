@@ -26,18 +26,18 @@ import java.util.List;
 public class StudentCart {
     /** 실제 PK 컬럼 */
     @Id
-    @Column
+    @Column(name = "student_id")
     private Long studentId;
 
     /** PK를 공유하도록 MapsId */
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     @MapsId
-    @JoinColumn
+    @JoinColumn(name = "student_id")
     private Student student;
 
     @ElementCollection
     @CollectionTable(
-            name = "cart_item",
+            name = "student_cart_item",
             joinColumns = @JoinColumn(name = "student_id", referencedColumnName = "student_id")
     )
     @Comment("장바구니에 담긴 상품 목록")
@@ -53,10 +53,10 @@ public class StudentCart {
 
     public void addItem(Product product, int quantity) {
         items.stream()
-                .filter(cs -> cs.getProduct().getId().equals(product.getId()))
+                .filter(cartItem -> cartItem.getProduct().getId().equals(product.getId()))
                 .findFirst()
                 .ifPresentOrElse(
-                        cs -> cs.changeQuantity(cs.getQuantity() + quantity),
+                        cartItem -> cartItem.changeQuantity(cartItem.getQuantity() + quantity),
                         () -> items.add(
                                 CartItem.builder()
                                         .product(product)

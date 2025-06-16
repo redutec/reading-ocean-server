@@ -13,8 +13,8 @@ import java.util.Optional;
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Builder
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class CartItem {
     @EqualsAndHashCode.Include
     @Comment("상품 엔티티")

@@ -119,6 +119,6 @@ public class ProductServiceImpl implements ProductService {
     @Transactional(readOnly = true)
     public Product getProduct(Long productId) {
         return productRepository.findById(productId)
-                .orElseThrow(() -> new EntityNotFoundException("판매상품을 찾을 수 없습니다. productId = " + productId));
+                .orElseThrow(() -> new EntityNotFoundException("판매상품을 찾을 수 없습니다. productId: " + productId));
     }
 }
