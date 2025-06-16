@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-@Comment("학습자료")
+@Comment("학습 자료")
 @DynamicUpdate
 @Getter
 @Builder
@@ -29,10 +29,10 @@ import java.util.List;
 public class LearningMaterial {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Comment("학습자료 고유번호")
+    @Comment("학습 자료 고유번호")
     private Long id;
 
-    @Comment("학습자료 분류(독서목록/교육자료/홍보자료/상담자료/기타)")
+    @Comment("학습 자료 분류(독서목록/교육자료/홍보자료/상담자료/기타)")
     @NotNull
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)

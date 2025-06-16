@@ -1,4 +1,4 @@
-package com.redutec.teachingocean.headquarters.book.service;
+package com.redutec.teachingocean.hq.book.service;
 
 import com.redutec.core.dto.BookDto;
 

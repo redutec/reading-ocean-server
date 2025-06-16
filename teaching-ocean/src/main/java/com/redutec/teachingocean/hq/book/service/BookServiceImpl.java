@@ -1,4 +1,4 @@
-package com.redutec.teachingocean.headquarters.book.service;
+package com.redutec.teachingocean.hq.book.service;
 
 import com.redutec.core.config.FileUtil;
 import com.redutec.core.dto.BookDto;
@@ -20,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class BookServiceImpl implements BookService {
     private final BookMapper bookMapper;
     private final BookRepository bookRepository;
-    private final FileUtil fileUtil;
 
     /**
      * 조건에 맞는 도서 목록 조회

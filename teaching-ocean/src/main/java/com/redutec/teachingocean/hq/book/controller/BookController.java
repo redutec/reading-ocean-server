@@ -1,9 +1,9 @@
-package com.redutec.teachingocean.headquarters.book.controller;
+package com.redutec.teachingocean.hq.book.controller;
 
 import com.redutec.core.config.ApiResponseBody;
 import com.redutec.core.config.ApiResponseManager;
 import com.redutec.core.dto.BookDto;
-import com.redutec.teachingocean.headquarters.book.service.BookService;
+import com.redutec.teachingocean.hq.book.service.BookService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/book")
+@RequestMapping("/hq/book")
 @Tag(name = "도서 API", description = "도서 API 모음")
 public class BookController {
     private final ApiResponseManager apiResponseManager;

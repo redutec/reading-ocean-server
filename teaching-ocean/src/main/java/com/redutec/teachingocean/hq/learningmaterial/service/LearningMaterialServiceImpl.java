@@ -1,4 +1,4 @@
-package com.redutec.teachingocean.headquarters.studyresource.service;
+package com.redutec.teachingocean.hq.learningmaterial.service;
 
 import com.redutec.core.dto.LearningMaterialDto;
 import com.redutec.core.entity.LearningMaterial;

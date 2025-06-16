@@ -5,8 +5,8 @@ import com.redutec.core.meta.LearningMaterialCategory;
 
 import java.util.List;
 
-public record HeadquartersDocumentCriteria(
-        List<Long> headquartersDocumentIds,
+public record LearningMaterialCriteria(
+        List<Long> learningMaterialIds,
         List<LearningMaterialCategory> categories,
         String title,
         String content,

@@ -15,9 +15,9 @@
  import java.time.LocalDateTime;
  import java.util.List;
 
-public class HeadquartersDocumentDto {
+public class LearningMaterialDto {
     @Schema(description = "본사 자료실 등록 요청 객체")
-    public record CreateHeadquartersDocumentRequest(
+    public record CreateLearningMaterialRequest(
             @Schema(description = "문서 분류(독서목록/교육자료/홍보자료/상담자료/기타)", requiredMode = Schema.RequiredMode.REQUIRED)
             @NotNull
             @Enumerated(EnumType.STRING)
@@ -46,9 +46,9 @@ public class HeadquartersDocumentDto {
     ) {}
 
     @Schema(description = "본사 자료실 조회 요청 객체")
-    public record FindHeadquartersDocumentRequest(
+    public record FindLearningMaterialRequest(
             @Schema(description = "본사 자료실 ID", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-            List<@Positive Long> headquartersDocumentIds,
+            List<@Positive Long> learningMaterialIds,
 
             @Schema(description = "문서 분류(독서목록/교육자료/홍보자료/상담자료/기타)", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
             @ElementCollection(targetClass = LearningMaterialCategory.class)
@@ -80,7 +80,7 @@ public class HeadquartersDocumentDto {
     ) {}
 
     @Schema(description = "본사 자료실 수정 요청 객체")
-    public record UpdateHeadquartersDocumentRequest(
+    public record UpdateLearningMaterialRequest(
             @Schema(description = "문서 분류(독서목록/교육자료/홍보자료/상담자료/기타)", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
             @Enumerated(EnumType.STRING)
             LearningMaterialCategory category,
@@ -104,8 +104,8 @@ public class HeadquartersDocumentDto {
     ) {}
 
     @Schema(description = "본사 자료실 응답 객체")
-    public record HeadquartersDocumentResponse(
-            Long headquartersDocumentId,
+    public record LearningMaterialResponse(
+            Long learningMaterialId,
             LearningMaterialCategory category,
             String title,
             String content,
@@ -117,8 +117,8 @@ public class HeadquartersDocumentDto {
     ) {}
 
     @Schema(description = "본사 자료실 응답 페이징 객체")
-    public record HeadquartersDocumentPageResponse(
-            List<HeadquartersDocumentResponse> headquartersDocuments,
+    public record LearningMaterialPageResponse(
+            List<LearningMaterialResponse> learningMaterials,
             Long totalElements,
             Integer totalPages
     ) {}
