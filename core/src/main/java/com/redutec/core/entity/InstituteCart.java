@@ -13,6 +13,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * 교육기관 당 1:1 매핑된 장바구니.
@@ -54,6 +55,9 @@ public class InstituteCart {
     private LocalDateTime updatedAt;
 
     public void addItem(Product product, Integer quantity) {
+        Integer validQuantity = Optional.ofNullable(quantity)
+                .filter(q -> q > 0)
+                .orElseThrow(() -> new IllegalArgumentException("수량은 1 이상이어야 합니다."));
         items.stream()
                 .filter(cartItem -> cartItem.getProduct().getId().equals(product.getId()))
                 .findFirst()
@@ -62,7 +66,7 @@ public class InstituteCart {
                         () -> items.add(
                                 CartItem.builder()
                                         .product(product)
-                                        .quantity(quantity)
+                                        .quantity(validQuantity)
                                         .unitPrice(product.getPrice() * (100 - product.getDiscountPercentage()) / 100)
                                         .build()
                         )
