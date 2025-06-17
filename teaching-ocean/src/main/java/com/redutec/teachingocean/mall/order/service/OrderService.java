@@ -21,5 +21,5 @@ public interface OrderService {
      * @param getOrderItemRequest 조회 조건을 담은 DTO
      * @return 현재 로그인한 교육기관의 상품 주문 응답 객체
      */
-    OrderDto.OrderItemPageResponse getOrderItems(OrderDto.GetOrderItemRequest getOrderItemRequest);
+    OrderDto.OrderItemPageResponse find(OrderDto.GetOrderItemRequest getOrderItemRequest);
 }

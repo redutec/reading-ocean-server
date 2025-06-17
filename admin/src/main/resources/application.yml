@@ -36,6 +36,11 @@ spring:
     properties:
       hibernate:
         globally_quoted_identifiers: true
+  mail:
+    host: smtp.mailplug.co.kr
+    port: 465
+    username: info@redutec.co.kr
+    password: redutec77$
 # Logger Properties
 logging:
   level:

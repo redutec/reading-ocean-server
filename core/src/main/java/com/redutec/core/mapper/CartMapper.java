@@ -5,7 +5,7 @@ import com.redutec.core.dto.CartItemDto;
 import com.redutec.core.dto.CartDto;
 import com.redutec.core.dto.ProductDto;
 import com.redutec.core.entity.Cart;
-import com.redutec.core.repository.InstituteCartRepository;
+import com.redutec.core.repository.CartRepository;
 import com.redutec.core.repository.ProductRepository;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Component
 public class CartMapper {
-    private final InstituteCartRepository instituteCartRepository;
+    private final CartRepository cartRepository;
     private final ProductRepository productRepository;
 
     /**

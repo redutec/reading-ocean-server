@@ -1,4 +1,4 @@
-package com.redutec.admin.config;
+package com.redutec.readingoceanedu.config;
 
 import com.redutec.core.entity.BlacklistedToken;
 import com.redutec.core.meta.Domain;
@@ -42,13 +42,13 @@ public class CustomLogoutHandler implements LogoutHandler {
                     // 블랙리스트에 없으면 저장
                     blacklistedTokenRepository.findByToken(token)
                             .orElseGet(() -> blacklistedTokenRepository.save(
-                                            BlacklistedToken.builder()
-                                                    .token(token)
-                                                    .build()
+                                    BlacklistedToken.builder()
+                                            .token(token)
+                                            .build()
                                     )
                             );
                     // 리프레시 토큰 삭제
-                    refreshTokenRepository.deleteByUsernameAndDomain(jwtUtil.extractUsername(token), Domain.ADMIN);
+                    refreshTokenRepository.deleteByUsernameAndDomain(jwtUtil.extractUsername(token), Domain.READING_OCEAN_EDU);
                 });
     }
 }

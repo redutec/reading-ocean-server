@@ -8,7 +8,7 @@ import org.hibernate.annotations.Comment;
 
 import java.util.Optional;
 
-@Comment("장바구니에 담길 상품 정보")
+@Comment("장바구니에 담긴 상품 정보")
 @Embeddable
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -27,7 +27,7 @@ public class CartItem {
     @Positive
     private Integer quantity;
 
-    @Comment("상품 단가(할인율 적용)")
+    @Comment("단가(할인율 적용)")
     @Column(nullable = false)
     @PositiveOrZero
     private Integer unitPrice;

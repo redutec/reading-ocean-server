@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Entity
-@Comment("상품주문(교육기관)")
+@Comment("상품주문")
 @DynamicUpdate
 @Getter
 @Builder
@@ -26,7 +26,7 @@ import java.util.Optional;
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Comment("상품주문(교육기관) 고유번호")
+    @Comment("상품주문 고유번호")
     private Long id;
 
     @Comment("상품을 주문한 교육기관")

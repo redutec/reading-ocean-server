@@ -67,6 +67,12 @@ public class Student {
     @Builder.Default
     private AuthenticationStatus authenticationStatus = AuthenticationStatus.INACTIVE;
 
+    @Comment("비밀번호 틀린 횟수")
+    @Column(nullable = false)
+    @Builder.Default
+    @Setter
+    private Integer failedLoginAttempts = 0;
+
     @Comment("독서 레벨")
     @Column
     @Enumerated(EnumType.STRING)

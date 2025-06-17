@@ -5,7 +5,7 @@ import com.redutec.core.dto.OrderItemDto;
 import com.redutec.core.dto.OrderDto;
 import com.redutec.core.dto.ProductDto;
 import com.redutec.core.entity.Order;
-import com.redutec.core.repository.InstituteOrderRepository;
+import com.redutec.core.repository.OrderRepository;
 import com.redutec.core.repository.ProductRepository;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Component
 public class OrderMapper {
-    private final InstituteOrderRepository instituteOrderRepository;
+    private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
 
     /**

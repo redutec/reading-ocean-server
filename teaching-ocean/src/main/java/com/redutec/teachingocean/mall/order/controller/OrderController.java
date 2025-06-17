@@ -36,9 +36,9 @@ public class OrderController {
 
     @Operation(summary = "리딩오션몰 - 상품 주문 조회", description = "현재 로그인한 교육기관의 상품 주문 목록 조회")
     @GetMapping
-    public ResponseEntity<ApiResponseBody> getOrderItems(
+    public ResponseEntity<ApiResponseBody> find(
             @ParameterObject @Valid OrderDto.GetOrderItemRequest getOrderItemRequest
     ) {
-        return apiResponseManager.ok(orderService.getOrderItems(getOrderItemRequest));
+        return apiResponseManager.ok(orderService.find(getOrderItemRequest));
     }
 }

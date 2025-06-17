@@ -6,7 +6,7 @@ import com.redutec.core.entity.Cart;
 import com.redutec.core.entity.Institute;
 import com.redutec.core.entity.Teacher;
 import com.redutec.core.mapper.CartMapper;
-import com.redutec.core.repository.InstituteCartRepository;
+import com.redutec.core.repository.CartRepository;
 import com.redutec.core.repository.TeacherRepository;
 import com.redutec.core.specification.CartSpecification;
 import com.redutec.teachingocean.authentication.service.AuthenticationService;
@@ -26,7 +26,7 @@ import java.util.Optional;
 @AllArgsConstructor
 public class CartServiceImpl implements CartService {
     private final CartMapper cartMapper;
-    private final InstituteCartRepository instituteCartRepository;
+    private final CartRepository cartRepository;
     private final AuthenticationService authenticationService;
     private final TeacherRepository teacherRepository;
 
@@ -48,7 +48,7 @@ public class CartServiceImpl implements CartService {
         authenticationService.validateAuthenticationStatus(teacher);
         Institute institute = Optional.ofNullable(teacher.getInstitute())
                 .orElseThrow(() -> new EntityNotFoundException("소속 교육기관이 없습니다."));
-        Cart cart = instituteCartRepository
+        Cart cart = cartRepository
                 .findByInstituteId(institute.getId())
                 .orElseGet(() ->
                         Cart.builder()
@@ -57,7 +57,7 @@ public class CartServiceImpl implements CartService {
                 );
         // 장바구니 엔티티를 저장하고 장바구니에 담긴 상품(상품정보와 수량)들을 담은 응답 객체를 리턴
         return cartMapper.toResponseDto(
-                instituteCartRepository.save(
+                cartRepository.save(
                         cartMapper.toEntity(addCartItemsRequests, cart)
                 )
         );
@@ -98,7 +98,7 @@ public class CartServiceImpl implements CartService {
                 getCartItemRequest.productName()
         );
         // 6) Specification 기반 조회
-        Page<Cart> instituteCarts = instituteCartRepository.findAll(
+        Page<Cart> instituteCarts = cartRepository.findAll(
                 CartSpecification.findWith(cartCriteria),
                 pageable
         );
@@ -127,10 +127,10 @@ public class CartServiceImpl implements CartService {
                         new EntityNotFoundException("교사가 소속된 교육기관이 없습니다. teacherId: " + teacherId)
                 );
         // 4) 장바구니 조회 및 비우기
-        instituteCartRepository.findByInstituteId(instituteId)
+        cartRepository.findByInstituteId(instituteId)
                 .ifPresent(cart -> {
                     cart.getItems().clear();
-                    instituteCartRepository.save(cart);
+                    cartRepository.save(cart);
                 });
     }
 }

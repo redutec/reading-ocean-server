@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Comment("배송(교육기관)")
+@Comment("배송")
 @DynamicUpdate
 @Getter
 @Builder
@@ -34,7 +34,7 @@ public class Shipping {
     @Comment("배송 고유번호")
     private Long id;
 
-    @Comment("연결된 주문(교육기관) 엔티티")
+    @Comment("연결된 주문 엔티티")
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn
     private Order order;
@@ -84,6 +84,7 @@ public class Shipping {
     @Builder.Default
     private ShippingStatus status = ShippingStatus.READY;
 
+    @Comment("연결된 배송 로그")
     @OneToMany(
             mappedBy = "shipping",
             cascade = CascadeType.ALL,

@@ -11,7 +11,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDateTime;
 
 @Entity
-@Comment("배송 로그(교육기관)")
+@Comment("배송 로그")
 @Immutable
 @Getter
 @Builder
@@ -21,17 +21,17 @@ import java.time.LocalDateTime;
 public class ShippingLog {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Comment("배송 로그(교육기관) 고유번호")
+    @Comment("배송 로그 고유번호")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(nullable = false)
-    @Comment("연결된 배송(교육기관) 엔티티")
+    @Comment("연결된 배송 엔티티")
     private Shipping shipping;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    @Comment("배송(교육기관) 상태")
+    @Comment("배송 상태")
     private ShippingStatus status;
 
     @Column

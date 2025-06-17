@@ -6,7 +6,7 @@ import com.redutec.core.entity.Institute;
 import com.redutec.core.entity.Order;
 import com.redutec.core.entity.Teacher;
 import com.redutec.core.mapper.OrderMapper;
-import com.redutec.core.repository.InstituteOrderRepository;
+import com.redutec.core.repository.OrderRepository;
 import com.redutec.core.repository.TeacherRepository;
 import com.redutec.core.specification.OrderSpecification;
 import com.redutec.teachingocean.authentication.service.AuthenticationService;
@@ -27,7 +27,7 @@ import java.util.Optional;
 @AllArgsConstructor
 public class OrderServiceImpl implements OrderService {
     private final OrderMapper orderMapper;
-    private final InstituteOrderRepository instituteOrderRepository;
+    private final OrderRepository orderRepository;
     private final AuthenticationService authenticationService;
     private final TeacherRepository teacherRepository;
 
@@ -41,29 +41,25 @@ public class OrderServiceImpl implements OrderService {
     public OrderDto.OrderItemResponse addOrderItems(
             OrderDto.AddOrderItemsRequestWrapper addOrderItemsRequests
     ) {
-        // 1) 현재 로그인한 교사의 ID 조회
+        // 현재 로그인한 교사의 ID 조회
         Long teacherId = authenticationService.getAuthenticatedTeacher().teacherId();
-        // 2) Teacher 엔티티 로드 및 검증
+        // Teacher 엔티티 로드 및 검증
         Teacher teacher = teacherRepository.findById(teacherId)
                 .orElseThrow(() -> new EntityNotFoundException("교사가 없습니다. teacherId: " + teacherId));
-        // 3) 소속 교육기관 엔티티 추출
+        // 소속 교육기관 엔티티 추출
         Institute institute = Optional.ofNullable(teacher.getInstitute())
                 .orElseThrow(() -> new EntityNotFoundException("교사가 소속된 교육기관이 없습니다. teacherId: " + teacherId));
-        // 4) 상품들의 가격(할인을 적용한 총 금액)이 5만원 이하면 배송료를 3000원, 그 외에는 배송료를 0원
-        // 5) 수신인 정보를 조회하여 배송 엔티티를 생성
-        // 6) 새로운 주문내역 엔티티를 생성
-        Order order = instituteOrderRepository.findByInstitute(institute)
+        // 상품들의 가격(할인을 적용한 총 금액)이 5만원 이하면 배송료를 3000원, 그 외에는 배송료를 0원
+        // 수신인 정보를 조회하여 배송 엔티티를 생성
+        // 새로운 상품 주문 엔티티를 생성
+        Order order = orderRepository.findByInstitute(institute)
                 .orElseGet(() -> Order.builder()
                         .institute(teacher.getInstitute())
                         .deliveryFee(0)       // TODO: 배송료 계산 로직 추가
                         .build()
                 );
-        // 7) DTO → Entity 매핑 (addItem 호출)
-        orderMapper.toEntity(addOrderItemsRequests, order);
-        // 8) 저장
-        Order savedOrder = instituteOrderRepository.save(order);
-        // 9) 저장된 엔티티 → DTO 변환 후 반환
-        return orderMapper.toResponseDto(savedOrder);
+        // 상품 주문 엔티티 저장 후 응답 객체로 리턴
+        return orderMapper.toResponseDto(orderMapper.toEntity(addOrderItemsRequests, order));
     }
 
     /**
@@ -73,6 +69,9 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public OrderDto.OrderItemResponse addOrderItemsFromCart() {
+        // 현재 로그인한 교육기관의 장바구니 엔티티를 조회
+        // 장바구니에 있는 상품들을 상품 주문 엔티티로 변환하여 생성
+        // 상품 주문 엔티티 저장 후 응답 객체로 리턴
         return null;
     }
 
@@ -83,31 +82,31 @@ public class OrderServiceImpl implements OrderService {
      */
     @Override
     @Transactional(readOnly = true)
-    public OrderDto.OrderItemPageResponse getOrderItems(OrderDto.GetOrderItemRequest getOrderItemRequest) {
-        // 1) 현재 로그인한 교사의 ID 조회
+    public OrderDto.OrderItemPageResponse find(OrderDto.GetOrderItemRequest getOrderItemRequest) {
+        // 현재 로그인한 교사의 ID 조회
         Long teacherId = authenticationService.getAuthenticatedTeacher().teacherId();
-        // 2) Teacher 엔티티 로드 및 검증
+        // Teacher 엔티티 로드 및 검증
         Teacher teacher = teacherRepository.findById(teacherId)
                 .orElseThrow(() -> new EntityNotFoundException("교사가 없습니다. teacherId: " + teacherId));
-        // 3) 소속 교육기관 ID 추출
+        // 소속 교육기관 ID 추출
         Long instituteId = Optional.ofNullable(teacher.getInstitute())
                 .map(Institute::getId)
                 .orElseThrow(() -> new EntityNotFoundException("교사가 소속된 교육기관이 없습니다. teacherId: " + teacherId));
-        // 4) 페이징 설정
+        // 페이징 설정
         Pageable pageable = (getOrderItemRequest.page() != null && getOrderItemRequest.size() != null)
                 ? PageRequest.of(
                 getOrderItemRequest.page(),
                 getOrderItemRequest.size(),
                 Sort.by("createdAt").descending()
         ) : Pageable.unpaged();
-        // 5) 검색 조건(criteria) 생성
+        // 검색 조건(criteria) 생성
         OrderCriteria criteria = orderMapper.toCriteria(instituteId, getOrderItemRequest);
-        // 6) Specification 기반 조회
-        Page<Order> page = instituteOrderRepository.findAll(
+        // Specification 기반 조회
+        Page<Order> page = orderRepository.findAll(
                 OrderSpecification.findWith(criteria),
                 pageable
         );
-        // 7) 조회 결과 → DTO Page 변환 및 반환
+        // 상품 주문 조회 결과 → DTO Page 변환 및 반환
         return orderMapper.toPageResponseDto(page);
     }
 }

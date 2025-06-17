@@ -16,11 +16,11 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * 교육기관 당 1:1 매핑된 장바구니.
+ * 교육기관이 보유한 장바구니.
  * Institute를 곧바로 PK로 사용하도록 변경
  */
 @Entity
-@Comment("장바구니(교육기관)")
+@Comment("장바구니")
 @EntityListeners(AuditingEntityListener.class)
 @Getter
 @NoArgsConstructor
