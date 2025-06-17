@@ -1,6 +1,7 @@
 package com.redutec.core.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -20,6 +21,12 @@ public class InstituteCartDto {
             @NotNull
             @Positive
             Integer quantity
+    ) {}
+
+    public record AddCartItemsRequestWrapper(
+            @Schema(description = "추가할 상품 리스트", requiredMode = Schema.RequiredMode.REQUIRED)
+            @NotNull @Size(min = 1)
+            List<@Valid AddCartItemsRequest> addCartItemsRequests
     ) {}
 
     @Schema(description = "현재 로그인한 교사가 속한 교육기관의 장바구니(교육기관)의 특정 상품 조회 요청 객체")

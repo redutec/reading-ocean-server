@@ -12,8 +12,6 @@ import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/mall/cart")
@@ -25,7 +23,7 @@ public class CartController {
     @Operation(summary = "리딩오션몰 - 특정 상품 선택 - 장바구니에 추가", description = "현재 로그인한 교육기관의 장바구니에 선택한 상품들을 추가")
     @PostMapping
     public ResponseEntity<ApiResponseBody> addCartItems(
-            @ParameterObject @Valid List<InstituteCartDto.AddCartItemsRequest> addCartItemsRequests
+            @RequestBody @Valid InstituteCartDto.AddCartItemsRequestWrapper addCartItemsRequests
     ) {
         return apiResponseManager.ok(cartService.addCartItems(addCartItemsRequests));
     }

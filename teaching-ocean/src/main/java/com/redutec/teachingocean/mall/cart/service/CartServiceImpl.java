@@ -1,5 +1,6 @@
 package com.redutec.teachingocean.mall.cart.service;
 
+import com.redutec.core.criteria.InstituteCartCriteria;
 import com.redutec.core.dto.InstituteCartDto;
 import com.redutec.core.entity.Institute;
 import com.redutec.core.entity.InstituteCart;
@@ -7,14 +8,17 @@ import com.redutec.core.entity.Teacher;
 import com.redutec.core.mapper.InstituteCartMapper;
 import com.redutec.core.repository.InstituteCartRepository;
 import com.redutec.core.repository.TeacherRepository;
+import com.redutec.core.specification.InstituteCartSpecification;
 import com.redutec.teachingocean.authentication.service.AuthenticationService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -35,37 +39,71 @@ public class CartServiceImpl implements CartService {
     @Override
     @Transactional
     public InstituteCartDto.CartItemResponse addCartItems(
-            List<InstituteCartDto.AddCartItemsRequest> addCartItemsRequests
+            InstituteCartDto.AddCartItemsRequestWrapper addCartItemsRequests
     ) {
         // 현재 로그인한 교육기관이 생성한 장바구니 엔티티가 있는지 조회(보유한 장바구니가 없으면 새로운 장바구니 엔티티를 생성)
         Long teacherId = authenticationService.getAuthenticatedTeacher().teacherId();
         Teacher teacher = teacherRepository.findById(teacherId)
                 .orElseThrow(() -> new EntityNotFoundException("교사가 존재하지 않습니다. teacherId: " + teacherId));
         authenticationService.validateAuthenticationStatus(teacher);
-        Long instituteId = Optional.ofNullable(teacher.getInstitute())
-                .map(Institute::getId)
-                .orElseThrow(() -> new EntityNotFoundException("교사가 소속된 교육기관이 없습니다. instituteId: " + teacher.getInstitute().getId()));
-        InstituteCart instituteCart = instituteCartRepository.findByInstituteId(instituteId)
-                .orElseGet(() -> InstituteCart.builder()
-                        .instituteId(instituteId)
-                        .build()
+        Institute institute = Optional.ofNullable(teacher.getInstitute())
+                .orElseThrow(() -> new EntityNotFoundException("소속 교육기관이 없습니다."));
+        InstituteCart instituteCart = instituteCartRepository
+                .findByInstituteId(institute.getId())
+                .orElseGet(() ->
+                        InstituteCart.builder()
+                                .institute(institute)      // ★ 여기만 세팅
+                                .build()
                 );
-        // 조회한 장바구니 엔티티에 소속할 상품들을 요청 객체에서 가져와 담기(상품과 수량)
-        instituteCartMapper.toEntity(addCartItemsRequests, instituteCart);
         // 장바구니 엔티티를 저장하고 장바구니에 담긴 상품(상품정보와 수량)들을 담은 응답 객체를 리턴
-        return instituteCartMapper.toResponseDto(instituteCartRepository.save(instituteCart));
+        return instituteCartMapper.toResponseDto(
+                instituteCartRepository.save(
+                        instituteCartMapper.toEntity(addCartItemsRequests, instituteCart)
+                )
+        );
     }
 
     /**
-     * 리딩오션몰 - 장바구니
+     * 리딩오션몰 - 장바구니 조회
      *
      * @param getCartItemRequest 조회 조건을 담은 DTO
      * @return 현재 로그인한 교육기관의 장바구니에 담긴 상품 응답 객체
      */
     @Override
     @Transactional(readOnly = true)
-    public InstituteCartDto.CartItemPageResponse getCartItems(InstituteCartDto.GetCartItemRequest getCartItemRequest) {
-        return null;
+    public InstituteCartDto.CartItemPageResponse getCartItems(
+            InstituteCartDto.GetCartItemRequest getCartItemRequest
+    ) {
+        // 1) 현재 로그인한 교사의 teacherId 조회 및 엔티티 로드
+        Long teacherId = authenticationService.getAuthenticatedTeacher().teacherId();
+        Teacher teacher = teacherRepository.findById(teacherId)
+                .orElseThrow(() ->
+                        new EntityNotFoundException("교사가 존재하지 않습니다. teacherId: " + teacherId)
+                );
+        // 2) 교사 계정 상태 검증
+        authenticationService.validateAuthenticationStatus(teacher);
+        // 3) 소속 교육기관 ID 추출
+        Long instituteId = Optional.ofNullable(teacher.getInstitute())
+                .map(Institute::getId)
+                .orElseThrow(() ->
+                        new EntityNotFoundException("교사가 소속된 교육기관이 없습니다. teacherId: " + teacherId)
+                );
+        // 4) 페이징 설정
+        Pageable pageable = (getCartItemRequest.page() != null && getCartItemRequest.size() != null)
+                ? PageRequest.of(getCartItemRequest.page(), getCartItemRequest.size())
+                : Pageable.unpaged();
+        // 5) 검색 조건(criteria) 생성 (기관 ID + 상품명)
+        InstituteCartCriteria instituteCartCriteria = new InstituteCartCriteria(
+                instituteId,
+                getCartItemRequest.productName()
+        );
+        // 6) Specification 기반 조회
+        Page<InstituteCart> instituteCarts = instituteCartRepository.findAll(
+                InstituteCartSpecification.findWith(instituteCartCriteria),
+                pageable
+        );
+        // 7) 페이징 DTO 변환 및 반환
+        return instituteCartMapper.toPageResponseDto(instituteCarts);
     }
 
     /**
@@ -74,6 +112,25 @@ public class CartServiceImpl implements CartService {
     @Override
     @Transactional
     public void clearCart() {
-
+        // 1) 현재 로그인한 교사의 teacherId 조회 및 엔티티 로드
+        Long teacherId = authenticationService.getAuthenticatedTeacher().teacherId();
+        Teacher teacher = teacherRepository.findById(teacherId)
+                .orElseThrow(() ->
+                        new EntityNotFoundException("교사가 존재하지 않습니다. teacherId: " + teacherId)
+                );
+        // 2) 교사 계정 상태 검증
+        authenticationService.validateAuthenticationStatus(teacher);
+        // 3) 소속 교육기관 ID 추출
+        Long instituteId = Optional.ofNullable(teacher.getInstitute())
+                .map(Institute::getId)
+                .orElseThrow(() ->
+                        new EntityNotFoundException("교사가 소속된 교육기관이 없습니다. teacherId: " + teacherId)
+                );
+        // 4) 장바구니 조회 및 비우기
+        instituteCartRepository.findByInstituteId(instituteId)
+                .ifPresent(cart -> {
+                    cart.getItems().clear();
+                    instituteCartRepository.save(cart);
+                });
     }
 }

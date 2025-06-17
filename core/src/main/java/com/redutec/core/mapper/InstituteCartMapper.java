@@ -12,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -31,11 +30,11 @@ public class InstituteCartMapper {
      * @return 등록/수정할 InstituteCart 엔티티
      */
     public InstituteCart toEntity(
-            List<InstituteCartDto.AddCartItemsRequest> addCartItemsRequests,
+            InstituteCartDto.AddCartItemsRequestWrapper addCartItemsRequests,
             InstituteCart instituteCart
     ) {
         // DTO에 담긴 상품들이 존재하면 장바구니에 담긴 상품에 추가
-        Optional.ofNullable(addCartItemsRequests)
+        Optional.ofNullable(addCartItemsRequests.addCartItemsRequests())
                 .ifPresent(requests -> requests.forEach(request ->
                         productRepository.findById(request.productId())
                                 .ifPresent(product -> instituteCart.addItem(product, request.quantity()))
@@ -53,9 +52,11 @@ public class InstituteCartMapper {
      * @return 해당 요청의 필드를 이용해 생성된 InstituteCartCriteria 객체
      */
     public InstituteCartCriteria toCriteria(
+            Long instituteId,
             InstituteCartDto.GetCartItemRequest getCartItemRequest
     ) {
         return new InstituteCartCriteria(
+                instituteId,
                 getCartItemRequest.productName()
         );
     }

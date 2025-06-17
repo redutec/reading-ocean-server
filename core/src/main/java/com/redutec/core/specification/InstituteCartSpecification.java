@@ -18,6 +18,8 @@ public class InstituteCartSpecification {
         return (root, query, criteriaBuilder) -> {
             // 각 조건에 맞는 Optional<Predicate> 생성
             Stream<Optional<Predicate>> predicateStream = Stream.of(
+                    Optional.ofNullable(instituteCartCriteria.instituteId())
+                            .map(id -> criteriaBuilder.equal(root.get("instituteId"), id)),
                     Optional.ofNullable(instituteCartCriteria.productName())
                             .filter(productName -> !productName.isEmpty())
                             .map(productName -> {

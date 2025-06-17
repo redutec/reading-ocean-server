@@ -1,6 +1,7 @@
 package com.redutec.core.entity;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -41,6 +42,7 @@ public class InstituteCart {
             joinColumns = @JoinColumn(name = "institute_id", referencedColumnName = "institute_id")
     )
     @Comment("장바구니에 담긴 상품 목록")
+    @Builder.Default
     private List<CartItem> items = new ArrayList<>();
 
     @CreatedDate
