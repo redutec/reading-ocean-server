@@ -1,5 +1,6 @@
 package com.redutec.core.entity;
 
+import com.redutec.core.meta.Domain;
 import com.redutec.core.meta.SubscriptionPlanStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
@@ -30,6 +31,11 @@ public class SubscriptionPlan {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Comment("구독 상품 고유번호")
     private Long id;
+
+    @Comment("구독 상품을 사용하는 도메인")
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Domain domain;
 
     @Comment("상품명")
     @Column(nullable = false, length = 100)
