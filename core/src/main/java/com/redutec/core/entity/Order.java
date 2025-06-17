@@ -23,7 +23,7 @@ import java.util.Optional;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
-public class InstituteOrder {
+public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Comment("상품주문(교육기관) 고유번호")
@@ -36,7 +36,7 @@ public class InstituteOrder {
 
     @ElementCollection
     @CollectionTable(
-            name = "institute_order_item",
+            name = "order_item",
             joinColumns = @JoinColumn(name = "institute_id", referencedColumnName = "institute_id")
     )
     @Comment("주문 상품 목록")
@@ -143,20 +143,20 @@ public class InstituteOrder {
      * - 장바구니에 담긴 각 CartItem을 OrderItem으로 변환하여 주문에 추가합니다.
      * - 주문 생성 시점의 배송정보와 배송료를 설정합니다.
      *
-     * @param instituteCart 주문 생성의 기준이 될 교육기관 장바구니
+     * @param cart 주문 생성의 기준이 될 교육기관 장바구니
      * @param deliveryFee   이 주문에 부과할 배송비
      * @return 생성된 InstituteOrder 엔티티 (아직 저장 전 상태)
      */
-    public static InstituteOrder fromCart(
-            InstituteCart instituteCart,
+    public static Order fromCart(
+            Cart cart,
             Integer deliveryFee
     ) {
-        InstituteOrder order = InstituteOrder.builder()
-                .institute(instituteCart.getInstitute())
+        Order order = Order.builder()
+                .institute(cart.getInstitute())
                 .deliveryFee(deliveryFee)
                 .build();
         // 장바구니의 아이템들을 모두 주문으로 복사
-        instituteCart.getItems().forEach(cartItem ->
+        cart.getItems().forEach(cartItem ->
                 order.addItem(cartItem.getProduct(), cartItem.getQuantity())
         );
         return order;

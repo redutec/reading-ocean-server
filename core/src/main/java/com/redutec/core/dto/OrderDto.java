@@ -6,7 +6,7 @@ import jakarta.validation.constraints.*;
 
 import java.util.List;
 
-public class InstituteOrderDto {
+public class OrderDto {
     @Schema(description = "현재 로그인한 교사가 속한 교육기관의 주문내역에 상품들을 추가하는 요청 객체")
     public record AddOrderItemsRequest(
             @Schema(description = "주문내역에 담을 상품 고유번호", requiredMode = Schema.RequiredMode.REQUIRED)

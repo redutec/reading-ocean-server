@@ -9,7 +9,7 @@ import jakarta.validation.constraints.Size;
 
 import java.util.List;
 
-public class InstituteCartDto {
+public class CartDto {
     @Schema(description = "현재 로그인한 교사가 속한 교육기관의 장바구니에 상품들을 추가하는 요청 객체")
     public record AddCartItemsRequest(
             @Schema(description = "장바구니에 담을 상품 고유번호", requiredMode = Schema.RequiredMode.REQUIRED)

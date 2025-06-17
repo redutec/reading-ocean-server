@@ -1,6 +1,6 @@
 package com.redutec.core.criteria;
 
-public record InstituteCartCriteria(
+public record CartCriteria(
         Long instituteId,
         String productName
 ) {}

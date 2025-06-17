@@ -28,7 +28,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-public class InstituteShipping {
+public class Shipping {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Comment("배송 고유번호")
@@ -37,7 +37,7 @@ public class InstituteShipping {
     @Comment("연결된 주문(교육기관) 엔티티")
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn
-    private InstituteOrder instituteOrder;
+    private Order order;
 
     @Comment("수취인 이름")
     @NotBlank
@@ -85,12 +85,12 @@ public class InstituteShipping {
     private ShippingStatus status = ShippingStatus.READY;
 
     @OneToMany(
-            mappedBy = "instituteShipping",
+            mappedBy = "shipping",
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
     @OrderBy("createdAt ASC")
-    private List<InstituteShippingLog> shippingLogs = new ArrayList<>();
+    private List<ShippingLog> shippingLogs = new ArrayList<>();
 
     @CreatedDate
     @Column(nullable = false, updatable = false)
@@ -104,8 +104,8 @@ public class InstituteShipping {
     public void changeStatus(ShippingStatus newStatus, String note) {
         this.status = newStatus;
         this.shippingLogs.add(
-                InstituteShippingLog.builder()
-                        .instituteShipping(this)
+                ShippingLog.builder()
+                        .shipping(this)
                         .status(newStatus)
                         .note(note)
                         .build()

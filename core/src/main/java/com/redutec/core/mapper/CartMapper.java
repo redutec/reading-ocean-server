@@ -1,10 +1,10 @@
 package com.redutec.core.mapper;
 
-import com.redutec.core.criteria.InstituteCartCriteria;
+import com.redutec.core.criteria.CartCriteria;
 import com.redutec.core.dto.CartItemDto;
-import com.redutec.core.dto.InstituteCartDto;
+import com.redutec.core.dto.CartDto;
 import com.redutec.core.dto.ProductDto;
-import com.redutec.core.entity.InstituteCart;
+import com.redutec.core.entity.Cart;
 import com.redutec.core.repository.InstituteCartRepository;
 import com.redutec.core.repository.ProductRepository;
 import lombok.Getter;
@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 @Getter
 @RequiredArgsConstructor
 @Component
-public class InstituteCartMapper {
+public class CartMapper {
     private final InstituteCartRepository instituteCartRepository;
     private final ProductRepository productRepository;
 
@@ -26,21 +26,21 @@ public class InstituteCartMapper {
      * addCartItemsRequest DTO를 기반으로 InstituteCart INSERT/UPDATE 엔티티를 생성합니다.
      *
      * @param addCartItemsRequests 장바구니에 담을 상품들의 요청 정보
-     * @param instituteCart 교육기관의 장바구니 엔티티
+     * @param cart 교육기관의 장바구니 엔티티
      * @return 등록/수정할 InstituteCart 엔티티
      */
-    public InstituteCart toEntity(
-            InstituteCartDto.AddCartItemsRequestWrapper addCartItemsRequests,
-            InstituteCart instituteCart
+    public Cart toEntity(
+            CartDto.AddCartItemsRequestWrapper addCartItemsRequests,
+            Cart cart
     ) {
         // DTO에 담긴 상품들이 존재하면 장바구니에 담긴 상품에 추가
         Optional.ofNullable(addCartItemsRequests.addCartItemsRequests())
                 .ifPresent(requests -> requests.forEach(request ->
                         productRepository.findById(request.productId())
-                                .ifPresent(product -> instituteCart.addItem(product, request.quantity()))
+                                .ifPresent(product -> cart.addItem(product, request.quantity()))
                 ));
         // 장바구니(교육기관) 등록 엔티티 리턴
-        return instituteCart;
+        return cart;
     }
     
     /**
@@ -51,11 +51,11 @@ public class InstituteCartMapper {
      * @param getCartItemRequest 교육기관의 장바구니에 있는 상품 검색 요청 객체
      * @return 해당 요청의 필드를 이용해 생성된 InstituteCartCriteria 객체
      */
-    public InstituteCartCriteria toCriteria(
+    public CartCriteria toCriteria(
             Long instituteId,
-            InstituteCartDto.GetCartItemRequest getCartItemRequest
+            CartDto.GetCartItemRequest getCartItemRequest
     ) {
-        return new InstituteCartCriteria(
+        return new CartCriteria(
                 instituteId,
                 getCartItemRequest.productName()
         );
@@ -65,13 +65,13 @@ public class InstituteCartMapper {
      * InstituteCart 엔티티를 기반으로 응답용 InstituteCartResponse DTO로 변환합니다.
      * Optional을 사용하여 null 검사를 수행합니다.
      *
-     * @param instituteCart 변환할 InstituteCart 엔티티 (null 가능)
+     * @param cart 변환할 InstituteCart 엔티티 (null 가능)
      * @return InstituteCart 엔티티의 데이터를 담은 InstituteCartResponse DTO, instituteCart가 null이면 null 반환
      */
-    public InstituteCartDto.CartItemResponse toResponseDto(
-            InstituteCart instituteCart
+    public CartDto.CartItemResponse toResponseDto(
+            Cart cart
     ) {
-        return Optional.ofNullable(instituteCart)
+        return Optional.ofNullable(cart)
                 .map(ci -> {
                     var itemsDto = ci.getItems().stream()
                             .map(cartItem -> {
@@ -95,7 +95,7 @@ public class InstituteCartMapper {
                                 );
                             })
                             .collect(Collectors.toList());
-                    return new InstituteCartDto.CartItemResponse(
+                    return new CartDto.CartItemResponse(
                             itemsDto
                     );
                 })
@@ -110,13 +110,13 @@ public class InstituteCartMapper {
      * @param instituteCartPage Page 형태로 조회된 InstituteCart 엔티티 목록 (null 가능)
      * @return InstituteCart 엔티티 리스트와 페이지 정보를 담은 InstituteCartPageResponse DTO, instituteCartPage가 null이면 null 반환
      */
-    public InstituteCartDto.CartItemPageResponse toPageResponseDto(Page<InstituteCart> instituteCartPage) {
+    public CartDto.CartItemPageResponse toPageResponseDto(Page<Cart> instituteCartPage) {
         return Optional.ofNullable(instituteCartPage)
                 .map(page -> {
                     var responseList = page.getContent().stream()
                             .map(this::toResponseDto)
                             .collect(Collectors.toList());
-                    return new InstituteCartDto.CartItemPageResponse(
+                    return new CartDto.CartItemPageResponse(
                             responseList,
                             page.getTotalElements(),
                             page.getTotalPages()

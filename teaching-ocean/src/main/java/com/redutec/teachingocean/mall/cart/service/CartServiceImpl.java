@@ -1,14 +1,14 @@
 package com.redutec.teachingocean.mall.cart.service;
 
-import com.redutec.core.criteria.InstituteCartCriteria;
-import com.redutec.core.dto.InstituteCartDto;
+import com.redutec.core.criteria.CartCriteria;
+import com.redutec.core.dto.CartDto;
+import com.redutec.core.entity.Cart;
 import com.redutec.core.entity.Institute;
-import com.redutec.core.entity.InstituteCart;
 import com.redutec.core.entity.Teacher;
-import com.redutec.core.mapper.InstituteCartMapper;
+import com.redutec.core.mapper.CartMapper;
 import com.redutec.core.repository.InstituteCartRepository;
 import com.redutec.core.repository.TeacherRepository;
-import com.redutec.core.specification.InstituteCartSpecification;
+import com.redutec.core.specification.CartSpecification;
 import com.redutec.teachingocean.authentication.service.AuthenticationService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
@@ -25,7 +25,7 @@ import java.util.Optional;
 @Slf4j
 @AllArgsConstructor
 public class CartServiceImpl implements CartService {
-    private final InstituteCartMapper instituteCartMapper;
+    private final CartMapper cartMapper;
     private final InstituteCartRepository instituteCartRepository;
     private final AuthenticationService authenticationService;
     private final TeacherRepository teacherRepository;
@@ -33,13 +33,13 @@ public class CartServiceImpl implements CartService {
     /**
      * 리딩오션몰 - 특정 상품 선택 - 장바구니에 추가
      *
-     * @param addCartItemsRequests 장바구니(교육기관) 등록 정보를 담은 DTO List
-     * @return 등록된 장바구니(교육기관) 정보
+     * @param addCartItemsRequests 장바구니 등록 정보를 담은 DTO List
+     * @return 현재 로그인한 교육기관의 장바구니 정보
      */
     @Override
     @Transactional
-    public InstituteCartDto.CartItemResponse addCartItems(
-            InstituteCartDto.AddCartItemsRequestWrapper addCartItemsRequests
+    public CartDto.CartItemResponse addCartItems(
+            CartDto.AddCartItemsRequestWrapper addCartItemsRequests
     ) {
         // 현재 로그인한 교육기관이 생성한 장바구니 엔티티가 있는지 조회(보유한 장바구니가 없으면 새로운 장바구니 엔티티를 생성)
         Long teacherId = authenticationService.getAuthenticatedTeacher().teacherId();
@@ -48,17 +48,17 @@ public class CartServiceImpl implements CartService {
         authenticationService.validateAuthenticationStatus(teacher);
         Institute institute = Optional.ofNullable(teacher.getInstitute())
                 .orElseThrow(() -> new EntityNotFoundException("소속 교육기관이 없습니다."));
-        InstituteCart instituteCart = instituteCartRepository
+        Cart cart = instituteCartRepository
                 .findByInstituteId(institute.getId())
                 .orElseGet(() ->
-                        InstituteCart.builder()
+                        Cart.builder()
                                 .institute(institute)      // ★ 여기만 세팅
                                 .build()
                 );
         // 장바구니 엔티티를 저장하고 장바구니에 담긴 상품(상품정보와 수량)들을 담은 응답 객체를 리턴
-        return instituteCartMapper.toResponseDto(
+        return cartMapper.toResponseDto(
                 instituteCartRepository.save(
-                        instituteCartMapper.toEntity(addCartItemsRequests, instituteCart)
+                        cartMapper.toEntity(addCartItemsRequests, cart)
                 )
         );
     }
@@ -71,8 +71,8 @@ public class CartServiceImpl implements CartService {
      */
     @Override
     @Transactional(readOnly = true)
-    public InstituteCartDto.CartItemPageResponse getCartItems(
-            InstituteCartDto.GetCartItemRequest getCartItemRequest
+    public CartDto.CartItemPageResponse getCartItems(
+            CartDto.GetCartItemRequest getCartItemRequest
     ) {
         // 1) 현재 로그인한 교사의 teacherId 조회 및 엔티티 로드
         Long teacherId = authenticationService.getAuthenticatedTeacher().teacherId();
@@ -93,17 +93,17 @@ public class CartServiceImpl implements CartService {
                 ? PageRequest.of(getCartItemRequest.page(), getCartItemRequest.size())
                 : Pageable.unpaged();
         // 5) 검색 조건(criteria) 생성 (기관 ID + 상품명)
-        InstituteCartCriteria instituteCartCriteria = new InstituteCartCriteria(
+        CartCriteria cartCriteria = new CartCriteria(
                 instituteId,
                 getCartItemRequest.productName()
         );
         // 6) Specification 기반 조회
-        Page<InstituteCart> instituteCarts = instituteCartRepository.findAll(
-                InstituteCartSpecification.findWith(instituteCartCriteria),
+        Page<Cart> instituteCarts = instituteCartRepository.findAll(
+                CartSpecification.findWith(cartCriteria),
                 pageable
         );
         // 7) 페이징 DTO 변환 및 반환
-        return instituteCartMapper.toPageResponseDto(instituteCarts);
+        return cartMapper.toPageResponseDto(instituteCarts);
     }
 
     /**

@@ -1,10 +1,10 @@
 package com.redutec.core.mapper;
 
-import com.redutec.core.criteria.InstituteOrderCriteria;
+import com.redutec.core.criteria.OrderCriteria;
 import com.redutec.core.dto.OrderItemDto;
-import com.redutec.core.dto.InstituteOrderDto;
+import com.redutec.core.dto.OrderDto;
 import com.redutec.core.dto.ProductDto;
-import com.redutec.core.entity.InstituteOrder;
+import com.redutec.core.entity.Order;
 import com.redutec.core.repository.InstituteOrderRepository;
 import com.redutec.core.repository.ProductRepository;
 import lombok.Getter;
@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 @Getter
 @RequiredArgsConstructor
 @Component
-public class InstituteOrderMapper {
+public class OrderMapper {
     private final InstituteOrderRepository instituteOrderRepository;
     private final ProductRepository productRepository;
 
@@ -26,21 +26,21 @@ public class InstituteOrderMapper {
      * addOrderItemsRequest DTO를 기반으로 InstituteOrder INSERT/UPDATE 엔티티를 생성합니다.
      *
      * @param addOrderItemsRequests 주문내역에 담을 상품들의 요청 정보
-     * @param instituteOrder 교육기관의 주문내역 엔티티
+     * @param order 교육기관의 주문내역 엔티티
      * @return 등록/수정할 InstituteOrder 엔티티
      */
-    public InstituteOrder toEntity(
-            InstituteOrderDto.AddOrderItemsRequestWrapper addOrderItemsRequests,
-            InstituteOrder instituteOrder
+    public Order toEntity(
+            OrderDto.AddOrderItemsRequestWrapper addOrderItemsRequests,
+            Order order
     ) {
         // DTO에 담긴 상품들이 존재하면 주문내역에 담긴 상품에 추가
         Optional.ofNullable(addOrderItemsRequests.addOrderItemsRequests())
                 .ifPresent(requests -> requests.forEach(request ->
                         productRepository.findById(request.productId())
-                                .ifPresent(product -> instituteOrder.addItem(product, request.quantity()))
+                                .ifPresent(product -> order.addItem(product, request.quantity()))
                 ));
         // 주문내역(교육기관) 등록 엔티티 리턴
-        return instituteOrder;
+        return order;
     }
     
     /**
@@ -51,11 +51,11 @@ public class InstituteOrderMapper {
      * @param getOrderItemRequest 교육기관의 주문내역에 있는 상품 검색 요청 객체
      * @return 해당 요청의 필드를 이용해 생성된 InstituteOrderCriteria 객체
      */
-    public InstituteOrderCriteria toCriteria(
+    public OrderCriteria toCriteria(
             Long instituteId,
-            InstituteOrderDto.GetOrderItemRequest getOrderItemRequest
+            OrderDto.GetOrderItemRequest getOrderItemRequest
     ) {
-        return new InstituteOrderCriteria(
+        return new OrderCriteria(
                 instituteId,
                 getOrderItemRequest.productName()
         );
@@ -65,13 +65,13 @@ public class InstituteOrderMapper {
      * InstituteOrder 엔티티를 기반으로 응답용 InstituteOrderResponse DTO로 변환합니다.
      * Optional을 사용하여 null 검사를 수행합니다.
      *
-     * @param instituteOrder 변환할 InstituteOrder 엔티티 (null 가능)
+     * @param order 변환할 InstituteOrder 엔티티 (null 가능)
      * @return InstituteOrder 엔티티의 데이터를 담은 InstituteOrderResponse DTO, instituteOrder가 null이면 null 반환
      */
-    public InstituteOrderDto.OrderItemResponse toResponseDto(
-            InstituteOrder instituteOrder
+    public OrderDto.OrderItemResponse toResponseDto(
+            Order order
     ) {
-        return Optional.ofNullable(instituteOrder)
+        return Optional.ofNullable(order)
                 .map(ci -> {
                     var itemsDto = ci.getItems().stream()
                             .map(orderItem -> {
@@ -95,7 +95,7 @@ public class InstituteOrderMapper {
                                 );
                             })
                             .collect(Collectors.toList());
-                    return new InstituteOrderDto.OrderItemResponse(
+                    return new OrderDto.OrderItemResponse(
                             itemsDto
                     );
                 })
@@ -110,13 +110,13 @@ public class InstituteOrderMapper {
      * @param instituteOrderPage Page 형태로 조회된 InstituteOrder 엔티티 목록 (null 가능)
      * @return InstituteOrder 엔티티 리스트와 페이지 정보를 담은 InstituteOrderPageResponse DTO, instituteOrderPage가 null이면 null 반환
      */
-    public InstituteOrderDto.OrderItemPageResponse toPageResponseDto(Page<InstituteOrder> instituteOrderPage) {
+    public OrderDto.OrderItemPageResponse toPageResponseDto(Page<Order> instituteOrderPage) {
         return Optional.ofNullable(instituteOrderPage)
                 .map(page -> {
                     var responseList = page.getContent().stream()
                             .map(this::toResponseDto)
                             .collect(Collectors.toList());
-                    return new InstituteOrderDto.OrderItemPageResponse(
+                    return new OrderDto.OrderItemPageResponse(
                             responseList,
                             page.getTotalElements(),
                             page.getTotalPages()
