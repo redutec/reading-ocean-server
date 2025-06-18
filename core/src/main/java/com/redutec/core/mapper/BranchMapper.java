@@ -20,7 +20,9 @@ public class BranchMapper {
      * CreateBranchRequest DTO를 기반으로 Branch 등록 엔티티를 생성합니다.
      *
      * @param createBranchRequest 지사 등록에 필요한 데이터를 담은 DTO
-     * @return 생성된 Branch 등록 엔티티
+     * @param managerTeacher 지사장 엔티티
+     * @param contractFileName 계약서 파일명
+     * @return 등록할 Branch 엔티티
      */
     public Branch toCreateEntity(
             BranchDto.CreateBranchRequest createBranchRequest,
@@ -43,8 +45,11 @@ public class BranchMapper {
     /**
      * UpdateBranchRequest DTO를 기반으로 Branch 수정 엔티티를 생성합니다.
      *
+     * @param branch 수정할 Branch 엔티티
      * @param updateBranchRequest 지사 수정에 필요한 데이터를 담은 DTO
-     * @return 생성된 Branch 수정 엔티티
+     * @param managerTeacher 지사장 엔티티
+     * @param contractFileName 계약서 파일명
+     * @return 수정할 Branch 엔티티
      */
     public Branch toUpdateEntity(
             Branch branch,
@@ -71,6 +76,7 @@ public class BranchMapper {
      * BranchCriteria 객체를 생성합니다.
      * 내부 검색 로직에서 지사 검색 조건을 구성할 때 사용됩니다.
      *
+     * @param findBranchRequest Branch 조회 요청 객체
      * @return 해당 요청의 필드를 이용해 생성된 BranchCriteria 객체
      */
     public BranchCriteria toCriteria(BranchDto.FindBranchRequest findBranchRequest) {
@@ -87,7 +93,7 @@ public class BranchMapper {
      * Branch 엔티티를 기반으로 응답용 BranchResponse DTO로 변환합니다.
      * Optional을 사용하여 null 검사를 수행합니다.
      *
-     * @param branch 변환할 Branch 엔티티 (null 가능)
+     * @param branch 변환할 Branch 엔티티
      * @return Branch 엔티티의 데이터를 담은 BranchResponse DTO, branch가 null이면 null 반환
      */
     public BranchDto.BranchResponse toResponseDto(Branch branch) {

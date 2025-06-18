@@ -1,4 +1,4 @@
-package com.redutec.admin.learningmaterial.service;
+package com.redutec.admin.learning.material.service;
 
 import com.redutec.core.config.FileUploadResult;
 import com.redutec.core.config.FileUtil;

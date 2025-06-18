@@ -1,9 +1,9 @@
-package com.redutec.teachingocean.hq.learningmaterial.controller;
+package com.redutec.teachingocean.hq.learning.material.controller;
 
 import com.redutec.core.config.ApiResponseBody;
 import com.redutec.core.config.ApiResponseManager;
 import com.redutec.core.dto.LearningMaterialDto;
-import com.redutec.teachingocean.hq.learningmaterial.service.LearningMaterialService;
+import com.redutec.teachingocean.hq.learning.material.service.LearningMaterialService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;

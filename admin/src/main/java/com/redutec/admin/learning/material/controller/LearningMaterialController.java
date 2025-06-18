@@ -1,6 +1,6 @@
-package com.redutec.admin.learningmaterial.controller;
+package com.redutec.admin.learning.material.controller;
 
-import com.redutec.admin.learningmaterial.service.LearningMaterialService;
+import com.redutec.admin.learning.material.service.LearningMaterialService;
 import com.redutec.core.config.ApiResponseBody;
 import com.redutec.core.config.ApiResponseManager;
 import com.redutec.core.dto.LearningMaterialDto;
