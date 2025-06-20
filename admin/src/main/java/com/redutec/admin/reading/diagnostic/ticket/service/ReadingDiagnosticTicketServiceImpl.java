@@ -3,6 +3,7 @@ package com.redutec.admin.reading.diagnostic.ticket.service;
 import com.redutec.core.dto.ReadingDiagnosticTicketDto;
 import com.redutec.core.entity.ReadingDiagnosticTicket;
 import com.redutec.core.entity.ReadingDiagnosticVoucher;
+import com.redutec.core.mapper.ReadingDiagnosticTicketMapper;
 import com.redutec.core.repository.ReadingDiagnosticTicketRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
@@ -22,15 +23,16 @@ import java.util.random.RandomGeneratorFactory;
 @AllArgsConstructor
 public class ReadingDiagnosticTicketServiceImpl implements ReadingDiagnosticTicketService {
     private final ReadingDiagnosticTicketRepository readingDiagnosticTicketRepository;
+    private final ReadingDiagnosticTicketMapper readingDiagnosticTicketMapper;
 
     /**
      * 독서능력진단평가 채점권 엔티티 생성
+     *
      * @param readingDiagnosticVoucher 채점권이 소속할 바우처
-     * @param ticketQuantity 생성할 채점권 개수
-     * @return 독서능력진단평가 채점권 엔티티
+     * @param ticketQuantity           생성할 채점권 개수
      */
     @Override
-    public List<ReadingDiagnosticTicket> createReadingDiagnosticTicket(
+    public void createReadingDiagnosticTicket(
             ReadingDiagnosticVoucher readingDiagnosticVoucher,
             Integer ticketQuantity
     ) {
@@ -71,7 +73,7 @@ public class ReadingDiagnosticTicketServiceImpl implements ReadingDiagnosticTick
             readingDiagnosticTickets.add(ticket);
         }
         // 일괄 저장 후 반환
-        return readingDiagnosticTicketRepository.saveAll(readingDiagnosticTickets);
+        readingDiagnosticTicketRepository.saveAll(readingDiagnosticTickets);
     }
 
     /**
@@ -92,8 +94,9 @@ public class ReadingDiagnosticTicketServiceImpl implements ReadingDiagnosticTick
      * @return 특정 독서능력진단평가 채점권 응답 객체
      */
     @Override
+    @Transactional(readOnly = true)
     public ReadingDiagnosticTicketDto.ReadingDiagnosticTicketResponse findById(Long readingDiagnosticTicketId) {
-        return null;
+        return readingDiagnosticTicketMapper.toResponseDto(getReadingDiagnosticTicket(readingDiagnosticTicketId));
     }
 
     /**
@@ -112,8 +115,9 @@ public class ReadingDiagnosticTicketServiceImpl implements ReadingDiagnosticTick
      * @param readingDiagnosticTicketId 삭제할 독서능력진단평가 채점권의 ID
      */
     @Override
+    @Transactional
     public void delete(Long readingDiagnosticTicketId) {
-
+        readingDiagnosticTicketRepository.delete(getReadingDiagnosticTicket(readingDiagnosticTicketId));
     }
 
     /**
