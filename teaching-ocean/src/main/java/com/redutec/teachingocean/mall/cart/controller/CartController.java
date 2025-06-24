@@ -37,7 +37,7 @@ public class CartController {
     }
 
     @Operation(summary = "리딩오션몰 - 장바구니 비우기", description = "현재 로그인한 교육기관의 장바구니를 비우기")
-    @PatchMapping
+    @PutMapping
     public ResponseEntity<ApiResponseBody> clearCart() {
         cartService.clearCart();
         return apiResponseManager.noContent();

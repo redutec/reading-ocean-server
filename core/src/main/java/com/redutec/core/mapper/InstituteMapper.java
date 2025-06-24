@@ -22,7 +22,7 @@ public class InstituteMapper {
      * @param branch 교육기관이 소속할 지사 엔티티
      * @return 등록할 Institute 엔티티
      */
-    public Institute toCreateEntity(
+    public Institute createEntity(
             InstituteDto.CreateInstituteRequest createInstituteRequest,
             Branch branch
     ) {
@@ -43,33 +43,29 @@ public class InstituteMapper {
     }
 
     /**
-     * UpdateInstituteRequest DTO를 기반으로 Institute 수정 엔티티를 생성합니다.
+     * UpdateInstituteRequest DTO를 기반으로 Institute 엔티티를 수정합니다.
      *
      * @param institute 수정할 Institute 엔티티
      * @param updateInstituteRequest 교육기관 수정에 필요한 데이터를 담은 DTO
      * @param branch 교육기관이 소속할 지사 엔티티
-     * @return 수정할 Institute 엔티티
      */
-    public Institute toUpdateEntity(
+    public void updateEntity(
             Institute institute,
             InstituteDto.UpdateInstituteRequest updateInstituteRequest,
             Branch branch
     ) {
-        return Institute.builder()
-                .id(institute.getId())
-                .name(Optional.ofNullable(updateInstituteRequest.name()).orElse(institute.getName()))
-                .businessRegistrationName(Optional.ofNullable(updateInstituteRequest.businessRegistrationName()).orElse(institute.getBusinessRegistrationName()))
-                .address(Optional.ofNullable(updateInstituteRequest.address()).orElse(institute.getAddress()))
-                .postalCode(Optional.ofNullable(updateInstituteRequest.postalCode()).orElse(institute.getPostalCode()))
-                .phoneNumber(Optional.ofNullable(updateInstituteRequest.phoneNumber()).orElse(institute.getPhoneNumber()))
-                .url(Optional.ofNullable(updateInstituteRequest.url()).orElse(institute.getUrl()))
-                .naverPlaceUrl(Optional.ofNullable(updateInstituteRequest.naverPlaceUrl()).orElse(institute.getNaverPlaceUrl()))
-                .type(Optional.ofNullable(updateInstituteRequest.type()).orElse(institute.getType()))
-                .managementType(Optional.ofNullable(updateInstituteRequest.managementType()).orElse(institute.getManagementType()))
-                .status(Optional.ofNullable(updateInstituteRequest.status()).orElse(institute.getStatus()))
-                .operationStatus(Optional.ofNullable(updateInstituteRequest.operationStatus()).orElse(institute.getOperationStatus()))
-                .branch(Optional.ofNullable(branch).orElse(institute.getBranch()))
-                .build();
+        Optional.ofNullable(updateInstituteRequest.name()).ifPresent(institute::setName);
+        Optional.ofNullable(updateInstituteRequest.businessRegistrationName()).ifPresent(institute::setBusinessRegistrationName);
+        Optional.ofNullable(updateInstituteRequest.address()).ifPresent(institute::setAddress);
+        Optional.ofNullable(updateInstituteRequest.postalCode()).ifPresent(institute::setPostalCode);
+        Optional.ofNullable(updateInstituteRequest.phoneNumber()).ifPresent(institute::setPhoneNumber);
+        Optional.ofNullable(updateInstituteRequest.url()).ifPresent(institute::setUrl);
+        Optional.ofNullable(updateInstituteRequest.naverPlaceUrl()).ifPresent(institute::setNaverPlaceUrl);
+        Optional.ofNullable(updateInstituteRequest.type()).ifPresent(institute::setType);
+        Optional.ofNullable(updateInstituteRequest.managementType()).ifPresent(institute::setManagementType);
+        Optional.ofNullable(updateInstituteRequest.status()).ifPresent(institute::setStatus);
+        Optional.ofNullable(updateInstituteRequest.operationStatus()).ifPresent(institute::setOperationStatus);
+        Optional.ofNullable(branch).ifPresent(institute::setBranch);
     }
     
     /**

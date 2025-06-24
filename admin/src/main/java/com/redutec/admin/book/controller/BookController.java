@@ -41,7 +41,7 @@ public class BookController {
     }
 
     @Operation(summary = "특정 도서 수정", description = "특정 도서를 수정하는 API")
-    @PatchMapping(path = "/{bookId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PutMapping(path = "/{bookId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponseBody> update(
             @Parameter(description = "도서 ID") @PathVariable Long bookId,
             @ModelAttribute @Valid BookDto.UpdateBookRequest updateBookRequest

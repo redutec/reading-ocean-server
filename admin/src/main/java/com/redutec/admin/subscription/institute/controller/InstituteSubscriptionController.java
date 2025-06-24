@@ -1,6 +1,6 @@
 package com.redutec.admin.subscription.institute.controller;
 
-import com.redutec.admin.subscription.institute.service.SubscriptionInstituteService;
+import com.redutec.admin.subscription.institute.service.InstituteSubscriptionService;
 import com.redutec.core.dto.InstituteSubscriptionDto;
 import com.redutec.core.config.ApiResponseBody;
 import com.redutec.core.config.ApiResponseManager;
@@ -17,42 +17,46 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/subscription/institute")
 @Tag(name = "구독(교육기관) 관리 API", description = "구독(교육기관) 관리 API 모음")
-public class SubscriptionInstituteController {
+public class InstituteSubscriptionController {
     private final ApiResponseManager apiResponseManager;
-    private final SubscriptionInstituteService subscriptionInstituteService;
+    private final InstituteSubscriptionService instituteSubscriptionService;
 
     @Operation(summary = "구독(교육기관) 등록", description = "구독(교육기관) 정보를 등록하는 API")
     @PostMapping
-    public ResponseEntity<ApiResponseBody> create(@ParameterObject @Valid InstituteSubscriptionDto.CreateSubscriptionInstituteRequest createSubscriptionInstituteRequest) {
-        return apiResponseManager.create(subscriptionInstituteService.create(createSubscriptionInstituteRequest));
+    public ResponseEntity<ApiResponseBody> create(
+            @ParameterObject @Valid InstituteSubscriptionDto.CreateInstituteSubscriptionRequest createInstituteSubscriptionRequest
+    ) {
+        return apiResponseManager.create(instituteSubscriptionService.create(createInstituteSubscriptionRequest));
     }
 
     @Operation(summary = "조건에 맞는 구독(교육기관) 목록 조회", description = "조건에 맞는 구독(교육기관) 목록을 조회하는 API")
     @GetMapping
-    public ResponseEntity<ApiResponseBody> find(@ParameterObject @Valid InstituteSubscriptionDto.FindSubscriptionInstituteRequest findSubscriptionInstituteRequest) {
-        return apiResponseManager.ok(subscriptionInstituteService.find(findSubscriptionInstituteRequest));
+    public ResponseEntity<ApiResponseBody> find(
+            @ParameterObject @Valid InstituteSubscriptionDto.FindInstituteSubscriptionRequest findInstituteSubscriptionRequest
+    ) {
+        return apiResponseManager.ok(instituteSubscriptionService.find(findInstituteSubscriptionRequest));
     }
 
     @Operation(summary = "특정 구독(교육기관) 조회", description = "특정 구독(교육기관) 정보를 조회하는 API")
-    @GetMapping("/{subscriptionInstituteId}")
-    public ResponseEntity<ApiResponseBody> findById(@PathVariable Long subscriptionInstituteId) {
-        return apiResponseManager.ok(subscriptionInstituteService.findById(subscriptionInstituteId));
+    @GetMapping("/{instituteSubscriptionId}")
+    public ResponseEntity<ApiResponseBody> findById(@PathVariable Long instituteSubscriptionId) {
+        return apiResponseManager.ok(instituteSubscriptionService.findById(instituteSubscriptionId));
     }
 
     @Operation(summary = "특정 구독(교육기관) 수정", description = "특정 구독(교육기관) 정보를 수정하는 API")
-    @PatchMapping("/{subscriptionInstituteId}")
+    @PutMapping("/{instituteSubscriptionId}")
     public ResponseEntity<ApiResponseBody> update(
-            @Parameter(description = "구독(교육기관) ID") @PathVariable Long subscriptionInstituteId,
-            @ParameterObject @Valid InstituteSubscriptionDto.UpdateSubscriptionInstituteRequest updateSubscriptionInstituteRequest
+            @Parameter(description = "구독(교육기관) ID") @PathVariable Long instituteSubscriptionId,
+            @ParameterObject @Valid InstituteSubscriptionDto.UpdateInstituteSubscriptionRequest updateInstituteSubscriptionRequest
     ) {
-        subscriptionInstituteService.update(subscriptionInstituteId, updateSubscriptionInstituteRequest);
+        instituteSubscriptionService.update(instituteSubscriptionId, updateInstituteSubscriptionRequest);
         return apiResponseManager.noContent();
     }
 
     @Operation(summary = "특정 구독(교육기관) 삭제", description = "특정 구독(교육기관) 정보를 삭제하는 API")
-    @DeleteMapping("/{subscriptionInstituteId}")
-    public ResponseEntity<ApiResponseBody> delete(@Parameter(description = "구독(교육기관) ID") @PathVariable Long subscriptionInstituteId) {
-        subscriptionInstituteService.delete(subscriptionInstituteId);
+    @DeleteMapping("/{instituteSubscriptionId}")
+    public ResponseEntity<ApiResponseBody> delete(@Parameter(description = "구독(교육기관) ID") @PathVariable Long instituteSubscriptionId) {
+        instituteSubscriptionService.delete(instituteSubscriptionId);
         return apiResponseManager.noContent();
     }
 }

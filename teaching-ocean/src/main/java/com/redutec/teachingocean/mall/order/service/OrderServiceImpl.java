@@ -39,7 +39,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public OrderDto.OrderItemResponse addOrderItems(
-            OrderDto.AddOrderItemsRequestWrapper addOrderItemsRequests
+            OrderDto.AddOrderItemsRequestWrapper addOrderItemsRequestWrapper
     ) {
         // 현재 로그인한 교사의 ID 조회
         Long teacherId = authenticationService.getAuthenticatedTeacher().teacherId();
@@ -59,7 +59,7 @@ public class OrderServiceImpl implements OrderService {
                         .build()
                 );
         // 상품 주문 엔티티 저장 후 응답 객체로 리턴
-        return orderMapper.toResponseDto(orderMapper.toEntity(addOrderItemsRequests, order));
+        return orderMapper.toResponseDto(orderMapper.toEntity(addOrderItemsRequestWrapper, order));
     }
 
     /**

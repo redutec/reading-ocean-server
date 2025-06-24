@@ -43,7 +43,7 @@ public class NoticeServiceImpl implements NoticeService {
                 })
                 .orElse(null);
         // 공지사항 등록
-        return noticeMapper.toResponseDto(noticeRepository.save(noticeMapper.toCreateEntity(
+        return noticeMapper.toResponseDto(noticeRepository.save(noticeMapper.createEntity(
                 createNoticeRequest,
                 attachmentFileName
         )));
@@ -94,11 +94,11 @@ public class NoticeServiceImpl implements NoticeService {
                 })
                 .orElseGet(notice::getAttachmentFileName);
         // 공지사항 수정
-        noticeRepository.save(noticeMapper.toUpdateEntity(
+        noticeMapper.updateEntity(
                 notice,
                 updateNoticeRequest,
                 attachmentFileName
-        ));
+        );
     }
 
     /**

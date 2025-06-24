@@ -22,7 +22,7 @@ public class BannerMapper {
      * @param attachmentFileName 첨부 파일명
      * @return 등록할 Banner 엔티티
      */
-    public Banner toCreateEntity(
+    public Banner createEntity(
             BannerDto.CreateBannerRequest createBannerRequest,
             String attachmentFileName
     ) {
@@ -40,30 +40,26 @@ public class BannerMapper {
     }
 
     /**
-     * UpdateBannerRequest DTO를 기반으로 Banner 수정 엔티티를 생성합니다.
+     * UpdateBannerRequest DTO를 기반으로 Banner 엔티티를 수정합니다.
      *
      * @param banner 수정할 Banner 엔티티
      * @param updateBannerRequest Banner 수정에 필요한 데이터를 담은 DTO
      * @param attachmentFileName 첨부 파일명
-     * @return 생성된 Banner 수정 엔티티
      */
-    public Banner toUpdateEntity(
+    public void updateEntity(
             Banner banner,
             BannerDto.UpdateBannerRequest updateBannerRequest,
             String attachmentFileName
     ) {
-        return Banner.builder()
-                .id(banner.getId())
-                .domain(Optional.ofNullable(updateBannerRequest.domain()).orElse(banner.getDomain()))
-                .title(Optional.ofNullable(updateBannerRequest.title()).orElse(banner.getTitle()))
-                .content(Optional.ofNullable(updateBannerRequest.content()).orElse(banner.getContent()))
-                .linkUrl(Optional.ofNullable(updateBannerRequest.linkUrl()).orElse(banner.getLinkUrl()))
-                .attachmentFileName(Optional.ofNullable(attachmentFileName).orElse(banner.getAttachmentFileName()))
-                .priority(Optional.ofNullable(updateBannerRequest.priority()).orElse(banner.getPriority()))
-                .visible(Optional.ofNullable(updateBannerRequest.visible()).orElse(banner.getVisible()))
-                .visibleStartAt(Optional.ofNullable(updateBannerRequest.visibleStartAt()).orElse(banner.getVisibleStartAt()))
-                .visibleEndAt(Optional.ofNullable(updateBannerRequest.visibleEndAt()).orElse(banner.getVisibleEndAt()))
-                .build();
+        Optional.ofNullable(updateBannerRequest.domain()).ifPresent(banner::setDomain);
+        Optional.ofNullable(updateBannerRequest.title()).ifPresent(banner::setTitle);
+        Optional.ofNullable(updateBannerRequest.content()).ifPresent(banner::setContent);
+        Optional.ofNullable(updateBannerRequest.linkUrl()).ifPresent(banner::setLinkUrl);
+        Optional.ofNullable(attachmentFileName).ifPresent(banner::setAttachmentFileName);
+        Optional.ofNullable(updateBannerRequest.priority()).ifPresent(banner::setPriority);
+        Optional.ofNullable(updateBannerRequest.visible()).ifPresent(banner::setVisible);
+        Optional.ofNullable(updateBannerRequest.visibleStartAt()).ifPresent(banner::setVisibleStartAt);
+        Optional.ofNullable(updateBannerRequest.visibleEndAt()).ifPresent(banner::setVisibleEndAt);
     }
     
     /**

@@ -28,7 +28,7 @@ public class PopupServiceImpl implements PopupService {
     @Override
     @Transactional
     public PopupDto.PopupResponse create(PopupDto.CreatePopupRequest createPopupRequest) {
-        return popupMapper.toResponseDto(popupRepository.save(popupMapper.toCreateEntity(createPopupRequest)));
+        return popupMapper.toResponseDto(popupRepository.save(popupMapper.createEntity(createPopupRequest)));
     }
 
     /**
@@ -65,7 +65,7 @@ public class PopupServiceImpl implements PopupService {
     @Override
     @Transactional
     public void update(Long popupId, PopupDto.UpdatePopupRequest updatePopupRequest) {
-        popupRepository.save(popupMapper.toUpdateEntity(getPopup(popupId), updatePopupRequest));
+        popupMapper.updateEntity(getPopup(popupId), updatePopupRequest);
     }
 
     /**

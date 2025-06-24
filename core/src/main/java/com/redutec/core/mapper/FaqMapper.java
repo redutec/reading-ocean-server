@@ -17,11 +17,10 @@ import java.util.stream.Collectors;
 public class FaqMapper {
     /**
      * CreateFaqRequest DTO를 기반으로 Faq 등록 엔티티를 생성합니다.
-     *
      * @param createFaqRequest Faq 등록에 필요한 데이터를 담은 DTO
-     * @return 생성된 Faq 등록 엔티티
+     * @return 등록할 Faq 엔티티
      */
-    public Faq toCreateEntity(FaqDto.CreateFaqRequest createFaqRequest) {
+    public Faq createEntity(FaqDto.CreateFaqRequest createFaqRequest) {
         return Faq.builder()
                 .domain(createFaqRequest.domain())
                 .title(createFaqRequest.title())
@@ -31,20 +30,15 @@ public class FaqMapper {
     }
 
     /**
-     * UpdateFaqRequest DTO를 기반으로 Faq 수정 엔티티를 생성합니다.
-     *
+     * UpdateFaqRequest DTO를 기반으로 Faq 엔티티를 수정합니다.
      * @param faq 수정할 Faq 엔티티
      * @param updateFaqRequest Faq 수정에 필요한 데이터를 담은 DTO
-     * @return 생성된 Faq 등록 엔티티
      */
-    public Faq toUpdateEntity(Faq faq, FaqDto.UpdateFaqRequest updateFaqRequest) {
-        return Faq.builder()
-                .id(faq.getId())
-                .domain(Optional.ofNullable(updateFaqRequest.domain()).orElse(faq.getDomain()))
-                .title(Optional.ofNullable(updateFaqRequest.title()).orElse(faq.getTitle()))
-                .content(Optional.ofNullable(updateFaqRequest.content()).orElse(faq.getContent()))
-                .visible(Optional.ofNullable(updateFaqRequest.visible()).orElse(faq.getVisible()))
-                .build();
+    public void updateEntity(Faq faq, FaqDto.UpdateFaqRequest updateFaqRequest) {
+        Optional.ofNullable(updateFaqRequest.domain()).ifPresent(faq::setDomain);
+        Optional.ofNullable(updateFaqRequest.title()).ifPresent(faq::setTitle);
+        Optional.ofNullable(updateFaqRequest.content()).ifPresent(faq::setContent);
+        Optional.ofNullable(updateFaqRequest.visible()).ifPresent(faq::setVisible);
     }
     
     /**

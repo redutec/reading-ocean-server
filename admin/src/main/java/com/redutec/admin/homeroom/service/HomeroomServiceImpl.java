@@ -56,7 +56,7 @@ public class HomeroomServiceImpl implements HomeroomService {
                         .toList())
                 .orElse(null);
         // 학급 등록 및 등록한 정보를 응답 객체로 리턴
-        return homeroomMapper.toResponseDto(homeroomRepository.save(homeroomMapper.toCreateEntity(
+        return homeroomMapper.toResponseDto(homeroomRepository.save(homeroomMapper.createEntity(
                 createHomeroomRequest,
                 institute,
                 teachers,
@@ -118,13 +118,13 @@ public class HomeroomServiceImpl implements HomeroomService {
                         .toList())
                 .orElseGet(homeroom::getStudents);
         // 학급 정보 수정
-        homeroomRepository.save(homeroomMapper.toUpdateEntity(
+        homeroomMapper.updateEntity(
                 homeroom,
                 updateHomeroomRequest,
                 institute,
                 teachers,
                 students
-        ));
+        );
     }
 
     /**

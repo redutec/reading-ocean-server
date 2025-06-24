@@ -26,9 +26,9 @@ public class BookMapper {
      *
      * @param createBookRequest 도서 생성에 필요한 데이터를 담은 DTO
      * @param coverImageFileName 커버 이미지 파일명
-     * @return 생성된 Book 등록 엔티티
+     * @return 등록할 Book 엔티티
      */
-    public Book toCreateEntity(
+    public Book createEntity(
             BookDto.CreateBookRequest createBookRequest,
             String coverImageFileName
     ) {
@@ -65,47 +65,42 @@ public class BookMapper {
     }
 
     /**
-     * UpdateBookRequest DTO를 기반으로 Book 수정 엔티티를 생성합니다.
-     *
+     * UpdateBookRequest DTO를 기반으로 Book 엔티티를 수정합니다.
      * @param updateBookRequest 배너 수정에 필요한 데이터를 담은 DTO
-     * @return 생성된 Book 수정 엔티티
      */
-    public Book toUpdateEntity(
+    public void updateEntity(
             Book book,
             BookDto.UpdateBookRequest updateBookRequest,
             String coverImageFileName
     ) {
-        return Book.builder()
-                .id(book.getId())
-                .isbn(Optional.ofNullable(updateBookRequest.isbn()).orElse(book.getIsbn()))
-                .title(Optional.ofNullable(updateBookRequest.title()).orElse(book.getTitle()))
-                .author(Optional.ofNullable(updateBookRequest.author()).orElse(book.getAuthor()))
-                .publisher(Optional.ofNullable(updateBookRequest.publisher()).orElse(book.getPublisher()))
-                .translator(Optional.ofNullable(updateBookRequest.translator()).orElse(book.getTranslator()))
-                .illustrator(Optional.ofNullable(updateBookRequest.illustrator()).orElse(book.getIllustrator()))
-                .publicationDate(Optional.ofNullable(updateBookRequest.publicationDate()).orElse(book.getPublicationDate()))
-                .coverImageFileName(Optional.ofNullable(coverImageFileName).orElse(book.getCoverImageFileName()))
-                .recommended(Optional.ofNullable(updateBookRequest.recommended()).orElse(book.getRecommended()))
-                .ebookAvailable(Optional.ofNullable(updateBookRequest.ebookAvailable()).orElse(book.getEbookAvailable()))
-                .audioBookAvailable(Optional.ofNullable(updateBookRequest.audioBookAvalable()).orElse(book.getAudioBookAvailable()))
-                .visible(Optional.ofNullable(updateBookRequest.visible()).orElse(book.getVisible()))
-                .enabled(Optional.ofNullable(updateBookRequest.enabled()).orElse(book.getEnabled()))
-                .pageCount(Optional.ofNullable(updateBookRequest.pageCount()).orElse(book.getPageCount()))
-                .schoolGrade(Optional.ofNullable(updateBookRequest.schoolGrade()).orElse(book.getSchoolGrade()))
-                .genre(Optional.ofNullable(updateBookRequest.genre()).orElse(book.getGenre()))
-                .subGenre(Optional.ofNullable(updateBookRequest.subGenre()).orElse(book.getSubGenre()))
-                .bookPoints(Optional.ofNullable(updateBookRequest.bookPoints()).orElse(book.getBookPoints()))
-                .raq(Optional.ofNullable(updateBookRequest.raq()).orElse(book.getRaq()))
-                .readingLevel(Optional.ofNullable(updateBookRequest.readingLevel()).orElse(book.getReadingLevel()))
-                .bookMbti(Optional.ofNullable(updateBookRequest.bookMbti()).orElse(book.getBookMbti()))
-                .subject(Optional.ofNullable(updateBookRequest.subject()).orElse(book.getSubject()))
-                .content(Optional.ofNullable(updateBookRequest.content()).orElse(book.getContent()))
-                .awardHistory(Optional.ofNullable(updateBookRequest.awardHistory()).orElse(book.getAwardHistory()))
-                .includedBookName(Optional.ofNullable(updateBookRequest.includedBookName()).orElse(book.getIncludedBookName()))
-                .institutionRecommendations(Optional.ofNullable(updateBookRequest.institutionRecommendations()).orElse(book.getInstitutionRecommendations()))
-                .educationOfficeRecommendations(Optional.ofNullable(updateBookRequest.educationOfficeRecommendations()).orElse(book.getEducationOfficeRecommendations()))
-                .tags(Optional.ofNullable(updateBookRequest.tags()).orElse(book.getTags()))
-                .build();
+        Optional.ofNullable(updateBookRequest.isbn()).ifPresent(book::setIsbn);
+        Optional.ofNullable(updateBookRequest.title()).ifPresent(book::setTitle);
+        Optional.ofNullable(updateBookRequest.author()).ifPresent(book::setAuthor);
+        Optional.ofNullable(updateBookRequest.publisher()).ifPresent(book::setPublisher);
+        Optional.ofNullable(updateBookRequest.translator()).ifPresent(book::setTranslator);
+        Optional.ofNullable(updateBookRequest.illustrator()).ifPresent(book::setIllustrator);
+        Optional.ofNullable(updateBookRequest.publicationDate()).ifPresent(book::setPublicationDate);
+        Optional.ofNullable(coverImageFileName).ifPresent(book::setCoverImageFileName);
+        Optional.ofNullable(updateBookRequest.recommended()).ifPresent(book::setRecommended);
+        Optional.ofNullable(updateBookRequest.ebookAvailable()).ifPresent(book::setEbookAvailable);
+        Optional.ofNullable(updateBookRequest.audioBookAvalable()).ifPresent(book::setAudioBookAvailable);
+        Optional.ofNullable(updateBookRequest.visible()).ifPresent(book::setVisible);
+        Optional.ofNullable(updateBookRequest.enabled()).ifPresent(book::setEnabled);
+        Optional.ofNullable(updateBookRequest.pageCount()).ifPresent(book::setPageCount);
+        Optional.ofNullable(updateBookRequest.schoolGrade()).ifPresent(book::setSchoolGrade);
+        Optional.ofNullable(updateBookRequest.genre()).ifPresent(book::setGenre);
+        Optional.ofNullable(updateBookRequest.subGenre()).ifPresent(book::setSubGenre);
+        Optional.ofNullable(updateBookRequest.bookPoints()).ifPresent(book::setBookPoints);
+        Optional.ofNullable(updateBookRequest.raq()).ifPresent(book::setRaq);
+        Optional.ofNullable(updateBookRequest.readingLevel()).ifPresent(book::setReadingLevel);
+        Optional.ofNullable(updateBookRequest.bookMbti()).ifPresent(book::setBookMbti);
+        Optional.ofNullable(updateBookRequest.subject()).ifPresent(book::setSubject);
+        Optional.ofNullable(updateBookRequest.content()).ifPresent(book::setContent);
+        Optional.ofNullable(updateBookRequest.awardHistory()).ifPresent(book::setAwardHistory);
+        Optional.ofNullable(updateBookRequest.includedBookName()).ifPresent(book::setIncludedBookName);
+        Optional.ofNullable(updateBookRequest.institutionRecommendations()).ifPresent(book::setInstitutionRecommendations);
+        Optional.ofNullable(updateBookRequest.educationOfficeRecommendations()).ifPresent(book::setEducationOfficeRecommendations);
+        Optional.ofNullable(updateBookRequest.tags()).ifPresent(book::setTags);
     }
     
     /**

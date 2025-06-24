@@ -5,10 +5,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.PositiveOrZero;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.DynamicUpdate;
@@ -34,45 +31,54 @@ public class Banner {
     private Long id;
 
     @Comment("노출 도메인")
+    @Setter
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Domain domain;
 
     @Comment("제목")
+    @Setter
     @Column(nullable = false, length = 100)
     @NotBlank
     private String title;
 
     @Comment("내용")
+    @Setter
     @Column
     @Lob
     private String content;
 
     @Comment("링크 URL")
+    @Setter
     @Column(length = 300)
     @URL
     private String linkUrl;
 
     @Comment("첨부 파일명")
+    @Setter
     @Column
     private String attachmentFileName;
 
     @Comment("우선순위(0이 최상위)")
+    @Setter
     @Column(nullable = false)
     @Min(0)
     @PositiveOrZero
     private Integer priority;
 
     @Comment("노출 여부")
+    @Setter
     @Column(nullable = false)
     @ColumnDefault("true")
     private Boolean visible = true;
 
     @Comment("노출 시작일시")
+    @Setter
     @Column(nullable = false)
     private LocalDateTime visibleStartAt;
 
     @Comment("노출 종료일시")
+    @Setter
     @Column(nullable = false)
     private LocalDateTime visibleEndAt;
 

@@ -5,10 +5,7 @@ import com.redutec.core.meta.LearningMaterialCategory;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.data.annotation.CreatedDate;
@@ -33,27 +30,33 @@ public class LearningMaterial {
     private Long id;
 
     @Comment("학습 자료 분류(독서목록/교육자료/홍보자료/상담자료/기타)")
+    @Setter
     @NotNull
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private LearningMaterialCategory category;
 
     @Comment("제목")
+    @Setter
     @Column(nullable = false, length = 100)
     @NotBlank
     private String title;
 
     @Comment("내용")
+    @Setter
+    @Column(nullable = false)
     @Lob
     private String content;
 
     @Comment("작성자")
+    @Setter
     @NotNull
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private LearningMaterialAuthor author;
 
     @Comment("첨부파일 목록(파일명)")
+    @Setter
     @ElementCollection
     @CollectionTable(
         name = "learning_material_attachment",
@@ -63,6 +66,7 @@ public class LearningMaterial {
     private List<String> attachmentFileNames;
 
     @Comment("활성화 여부")
+    @Setter
     @Column(nullable = false)
     @Builder.Default
     private Boolean available = true;

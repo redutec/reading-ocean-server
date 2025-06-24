@@ -1,7 +1,7 @@
 package com.redutec.core.mapper;
 
 import com.redutec.core.dto.StudentSubscriptionDto;
-import com.redutec.core.criteria.SubscriptionStudentCriteria;
+import com.redutec.core.criteria.StudentSubscriptionCriteria;
 import com.redutec.core.entity.Student;
 import com.redutec.core.entity.StudentSubscription;
 import com.redutec.core.entity.SubscriptionPlan;
@@ -16,69 +16,65 @@ import java.util.stream.Collectors;
 @Getter
 @RequiredArgsConstructor
 @Component
-public class SubscriptionStudentMapper {
+public class StudentSubscriptionMapper {
     /**
      * CreateSubscriptionStudentRequest DTO를 기반으로 SubscriptionStudent 등록 엔티티를 생성합니다.
      *
-     * @param createSubscriptionStudentRequest 구독(학생) 등록에 필요한 데이터를 담은 DTO
+     * @param createStudentSubscriptionRequest 구독(학생) 등록에 필요한 데이터를 담은 DTO
      * @param subscriptionPlan 구독 상품 엔티티
      * @param student 구독 서비스를 신청한 학생 엔티티
      * @return 등록할 SubscriptionStudent 엔티티
      */
-    public StudentSubscription toCreateEntity(
-            StudentSubscriptionDto.CreateSubscriptionStudentRequest createSubscriptionStudentRequest,
+    public StudentSubscription createEntity(
+            StudentSubscriptionDto.CreateStudentSubscriptionRequest createStudentSubscriptionRequest,
             SubscriptionPlan subscriptionPlan,
             Student student
     ) {
         return StudentSubscription.builder()
                 .subscriptionPlan(subscriptionPlan)
-                .startedAt(createSubscriptionStudentRequest.startedAt())
-                .endedAt(createSubscriptionStudentRequest.endedAt())
-                .nextPaymentAt(createSubscriptionStudentRequest.nextPaymentAt())
+                .startedAt(createStudentSubscriptionRequest.startedAt())
+                .endedAt(createStudentSubscriptionRequest.endedAt())
+                .nextPaymentAt(createStudentSubscriptionRequest.nextPaymentAt())
                 .student(student)
                 .build();
     }
 
     /**
-     * UpdateSubscriptionStudentRequest DTO를 기반으로 SubscriptionStudent 수정 엔티티를 생성합니다.
+     * UpdateSubscriptionStudentRequest DTO를 기반으로 SubscriptionStudent 엔티티를 수정합니다.
      *
      * @param studentSubscription 수정할 SubscriptionStudent 엔티티
-     * @param updateSubscriptionStudentRequest 구독(학생) 수정에 필요한 데이터를 담은 DTO
+     * @param updateStudentSubscriptionRequest 구독(학생) 수정에 필요한 데이터를 담은 DTO
      * @param subscriptionPlan 구독 상품 엔티티
      * @param student 구독 서비스를 신청한 학생 엔티티
-     * @return 수정할 SubscriptionStudent 엔티티
      */
-    public StudentSubscription toUpdateEntity(
+    public void updateEntity(
             StudentSubscription studentSubscription,
-            StudentSubscriptionDto.UpdateSubscriptionStudentRequest updateSubscriptionStudentRequest,
+            StudentSubscriptionDto.UpdateStudentSubscriptionRequest updateStudentSubscriptionRequest,
             SubscriptionPlan subscriptionPlan,
             Student student
     ) {
-        return StudentSubscription.builder()
-                .id(studentSubscription.getId())
-                .subscriptionPlan(Optional.ofNullable(subscriptionPlan).orElse(studentSubscription.getSubscriptionPlan()))
-                .startedAt(Optional.ofNullable(updateSubscriptionStudentRequest.startedAt()).orElse(studentSubscription.getStartedAt()))
-                .endedAt(Optional.ofNullable(updateSubscriptionStudentRequest.endedAt()).orElse(studentSubscription.getEndedAt()))
-                .nextPaymentAt(Optional.ofNullable(updateSubscriptionStudentRequest.nextPaymentAt()).orElse(studentSubscription.getNextPaymentAt()))
-                .student(Optional.ofNullable(student).orElse(studentSubscription.getStudent()))
-                .build();
+        Optional.ofNullable(subscriptionPlan).ifPresent(studentSubscription::setSubscriptionPlan);
+        Optional.ofNullable(updateStudentSubscriptionRequest.startedAt()).ifPresent(studentSubscription::setStartedAt);
+        Optional.ofNullable(updateStudentSubscriptionRequest.endedAt()).ifPresent(studentSubscription::setEndedAt);
+        Optional.ofNullable(updateStudentSubscriptionRequest.nextPaymentAt()).ifPresent(studentSubscription::setNextPaymentAt);
+        Optional.ofNullable(student).ifPresent(studentSubscription::setStudent);
     }
     
     /**
-     * 이 메서드는 현재 FindSubscriptionStudentRequest 객체를 기반으로
-     * SubscriptionStudentCriteria 객체를 생성합니다.
+     * 이 메서드는 현재 FindStudentSubscriptionRequest 객체를 기반으로
+     * StudentSubscriptionCriteria 객체를 생성합니다.
      * 내부 검색 로직에서 구독(학생) 검색 조건을 구성할 때 사용됩니다.
      *
-     * @param findSubscriptionStudentRequest 구독(학생) 검색 요청 객체
+     * @param findStudentSubscriptionRequest 구독(학생) 검색 요청 객체
      * @return 해당 요청의 필드를 이용해 생성된 SubscriptionStudentCriteria 객체
      */
-    public SubscriptionStudentCriteria toCriteria(
-            StudentSubscriptionDto.FindSubscriptionStudentRequest findSubscriptionStudentRequest
+    public StudentSubscriptionCriteria toCriteria(
+            StudentSubscriptionDto.FindStudentSubscriptionRequest findStudentSubscriptionRequest
     ) {
-        return new SubscriptionStudentCriteria(
-                findSubscriptionStudentRequest.subscriptionStudentIds(),
-                findSubscriptionStudentRequest.subscriptionPlanIds(),
-                findSubscriptionStudentRequest.studentIds()
+        return new StudentSubscriptionCriteria(
+                findStudentSubscriptionRequest.studentSubscriptionIds(),
+                findStudentSubscriptionRequest.subscriptionPlanIds(),
+                findStudentSubscriptionRequest.studentIds()
         );
     }
 
@@ -89,11 +85,11 @@ public class SubscriptionStudentMapper {
      * @param studentSubscription 변환할 SubscriptionStudent 엔티티 (null 가능)
      * @return SubscriptionStudent 엔티티의 데이터를 담은 SubscriptionStudentResponse DTO, subscriptionStudent가 null이면 null 반환
      */
-    public StudentSubscriptionDto.SubscriptionStudentResponse toResponseDto(
+    public StudentSubscriptionDto.StudentSubscriptionResponse toResponseDto(
             StudentSubscription studentSubscription
     ) {
         return Optional.ofNullable(studentSubscription)
-                .map(ss -> new StudentSubscriptionDto.SubscriptionStudentResponse(
+                .map(ss -> new StudentSubscriptionDto.StudentSubscriptionResponse(
                         ss.getId(),
                         ss.getStartedAt(),
                         ss.getEndedAt(),
@@ -113,20 +109,20 @@ public class SubscriptionStudentMapper {
     }
 
     /**
-     * Page 형식의 SubscriptionStudent 엔티티 목록을 SubscriptionStudentPageResponse DTO로 변환합니다.
+     * Page 형식의 StudentSubscription 엔티티 목록을 StudentSubscriptionPageResponse DTO로 변환합니다.
      * 엔티티 리스트를 응답용 DTO 리스트로 매핑하고 페이지네이션 정보를 포함합니다.
      * Optional을 사용하여 null 검사를 수행합니다.
      *
      * @param subscriptionStudentPage Page 형태로 조회된 SubscriptionStudent 엔티티 목록 (null 가능)
      * @return SubscriptionStudent 엔티티 리스트와 페이지 정보를 담은 SubscriptionStudentPageResponse DTO, subscriptionStudentPage가 null이면 null 반환
      */
-    public StudentSubscriptionDto.SubscriptionStudentPageResponse toPageResponseDto(Page<StudentSubscription> subscriptionStudentPage) {
+    public StudentSubscriptionDto.StudentSubscriptionPageResponse toPageResponseDto(Page<StudentSubscription> subscriptionStudentPage) {
         return Optional.ofNullable(subscriptionStudentPage)
                 .map(page -> {
                     var responseList = page.getContent().stream()
                             .map(this::toResponseDto)
                             .collect(Collectors.toList());
-                    return new StudentSubscriptionDto.SubscriptionStudentPageResponse(
+                    return new StudentSubscriptionDto.StudentSubscriptionPageResponse(
                             responseList,
                             page.getTotalElements(),
                             page.getTotalPages()

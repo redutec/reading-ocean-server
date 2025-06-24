@@ -21,7 +21,7 @@ public class SubscriptionPlanMapper {
      * @param createSubscriptionPlanRequest 구독 상품 등록에 필요한 데이터를 담은 DTO
      * @return 등록할 SubscriptionPlan 엔티티
      */
-    public SubscriptionPlan toCreateEntity(
+    public SubscriptionPlan createEntity(
             SubscriptionPlanDto.CreateSubscriptionPlanRequest createSubscriptionPlanRequest
     ) {
         return SubscriptionPlan.builder()
@@ -36,26 +36,22 @@ public class SubscriptionPlanMapper {
     }
 
     /**
-     * UpdateSubscriptionPlanRequest DTO를 기반으로 SubscriptionPlan 수정 엔티티를 생성합니다.
+     * UpdateSubscriptionPlanRequest DTO를 기반으로 SubscriptionPlan 엔티티를 수정합니다.
      *
      * @param subscriptionPlan 수정할 SubscriptionPlan 엔티티
      * @param updateSubscriptionPlanRequest 구독 상품 수정에 필요한 데이터를 담은 DTO
-     * @return 수정할 SubscriptionPlan 엔티티
      */
-    public SubscriptionPlan toUpdateEntity(
+    public void updateEntity(
             SubscriptionPlan subscriptionPlan,
             SubscriptionPlanDto.UpdateSubscriptionPlanRequest updateSubscriptionPlanRequest
     ) {
-        return SubscriptionPlan.builder()
-                .id(subscriptionPlan.getId())
-                .name(Optional.ofNullable(updateSubscriptionPlanRequest.name()).orElse(subscriptionPlan.getName()))
-                .details(Optional.ofNullable(updateSubscriptionPlanRequest.details()).orElse(subscriptionPlan.getDetails()))
-                .price(Optional.ofNullable(updateSubscriptionPlanRequest.price()).orElse(subscriptionPlan.getPrice()))
-                .discountPercentage(Optional.ofNullable(updateSubscriptionPlanRequest.discountPercentage()).orElse(subscriptionPlan.getDiscountPercentage()))
-                .durationDays(Optional.ofNullable(updateSubscriptionPlanRequest.durationDays()).orElse(subscriptionPlan.getDurationDays()))
-                .status(Optional.ofNullable(updateSubscriptionPlanRequest.status()).orElse(subscriptionPlan.getStatus()))
-                .autoRenew(Optional.ofNullable(updateSubscriptionPlanRequest.autoRenew()).orElse(subscriptionPlan.getAutoRenew()))
-                .build();
+        Optional.ofNullable(updateSubscriptionPlanRequest.name()).ifPresent(subscriptionPlan::setName);
+        Optional.ofNullable(subscriptionPlan.getDetails()).ifPresent(subscriptionPlan::setDetails);
+        Optional.ofNullable(subscriptionPlan.getPrice()).ifPresent(subscriptionPlan::setPrice);
+        Optional.ofNullable(subscriptionPlan.getDiscountPercentage()).ifPresent(subscriptionPlan::setDiscountPercentage);
+        Optional.ofNullable(subscriptionPlan.getDurationDays()).ifPresent(subscriptionPlan::setDurationDays);
+        Optional.ofNullable(subscriptionPlan.getStatus()).ifPresent(subscriptionPlan::setStatus);
+        Optional.ofNullable(subscriptionPlan.getAutoRenew()).ifPresent(subscriptionPlan::setAutoRenew);
     }
     
     /**

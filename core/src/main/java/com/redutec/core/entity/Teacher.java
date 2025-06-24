@@ -29,74 +29,83 @@ public class Teacher {
     private Long id;
 
     @Comment("로그인 아이디")
+    @Setter
     @Column(length = 20, nullable = false, unique = true)
     private String accountId;
 
     @Comment("비밀번호")
-    @Column(nullable = false)
     @Setter
+    @Column(nullable = false)
     private String password;
 
     @Comment("교사명(AES256 암호화)")
+    @Setter
     @Convert(converter = AesAttributeConverter.class)
     @Column(nullable = false)
     private String name;
 
     @Comment("이메일(AES256 암호화)")
+    @Setter
     @Convert(converter = AesAttributeConverter.class)
     @Column
     private String email;
 
     @Comment("연락처(AES256 암호화)")
+    @Setter
     @Convert(converter = AesAttributeConverter.class)
     @Column(nullable = false)
     private String phoneNumber;
 
     @Comment("상태")
+    @Setter
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     @Builder.Default
     private TeacherStatus status = TeacherStatus.WAIT;
 
     @Comment("역할")
+    @Setter
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     @Builder.Default
     private TeacherRole role = TeacherRole.TEACHER;
 
     @Comment("계정 상태")
+    @Setter
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     @Builder.Default
-    @Setter
     private AuthenticationStatus authenticationStatus = AuthenticationStatus.INACTIVE;
 
     @Comment("비밀번호 틀린 횟수")
+    @Setter
     @Column(nullable = false)
     @Builder.Default
-    @Setter
     private Integer failedLoginAttempts = 0;
 
     @Comment("마지막 로그인 IP")
-    @Column(length = 45)
     @Setter
+    @Column(length = 45)
     private String lastLoginIp;
 
     @Comment("마지막 로그인 일시")
-    @Column
     @Setter
+    @Column
     private LocalDateTime lastLoginAt;
 
     @Comment("비고")
+    @Setter
     @Column
     private String description;
 
     @Comment("소속 교육기관")
+    @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
     private Institute institute;
 
     @Comment("소속 학급")
+    @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
     private Homeroom homeroom;

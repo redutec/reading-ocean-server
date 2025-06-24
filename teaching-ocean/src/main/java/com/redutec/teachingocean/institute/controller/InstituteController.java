@@ -10,10 +10,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,12 +22,12 @@ public class InstituteController {
 
     @Operation(summary = "마이페이지 - 교육기관 조회", description = "현재 로그인한 교사가 속한 교육기관 조회")
     @GetMapping
-    public ResponseEntity<ApiResponseBody> findOne() {
-        return apiResponseManager.ok(instituteService.findOne());
+    public ResponseEntity<ApiResponseBody> findInstitute() {
+        return apiResponseManager.ok(instituteService.findInstitute());
     }
 
     @Operation(summary = "마이페이지 - 교육기관 수정", description = "현재 로그인한 교사가 속한 교육기관 수정")
-    @PatchMapping
+    @PutMapping
     public ResponseEntity<ApiResponseBody> update(
             @ParameterObject @Valid InstituteDto.UpdateInstituteRequest updateInstituteRequest
     ) {

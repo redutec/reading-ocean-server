@@ -17,12 +17,12 @@ import java.util.stream.Collectors;
 @Component
 public class AdminMenuMapper {
     /**
-     * CreateAdminMenuRequest DTO를 기반으로 AdminMenu 엔티티를 생성합니다.
+     * CreateAdminMenuRequest DTO를 기반으로 AdminMenu 등록 엔티티를 생성합니다.
      *
      * @param createAdminMenuRequest 어드민 메뉴 생성에 필요한 데이터를 담은 DTO
-     * @return 생성된 AdminMenu 엔티티
+     * @return 등록할 AdminMenu 엔티티
      */
-    public AdminMenu toCreateEntity(
+    public AdminMenu createEntity(
             AdminMenuDto.CreateAdminMenuRequest createAdminMenuRequest,
             AdminMenu parentMenu,
             List<AdminMenu> childrenMenus
@@ -40,28 +40,24 @@ public class AdminMenuMapper {
     }
 
     /**
-     * UpdateAdminMenuRequest DTO를 기반으로 AdminMenu 업데이트 엔티티를 빌드합니다.
+     * UpdateAdminMenuRequest DTO를 기반으로 AdminMenu 엔티티를 수정합니다.
      *
      * @param updateAdminMenuRequest 어드민 메뉴 수정에 필요한 데이터를 담은 DTO
-     * @return 생성된 AdminMenu 업데이트 엔티티
      */
-    public AdminMenu toUpdateEntity(
+    public void updateEntity(
             AdminMenu adminMenu,
             AdminMenuDto.UpdateAdminMenuRequest updateAdminMenuRequest,
             AdminMenu parentMenu,
             List<AdminMenu> childrenMenus
     ) {
-        return AdminMenu.builder()
-                .id(adminMenu.getId())
-                .name(Optional.ofNullable(updateAdminMenuRequest.name()).orElse(adminMenu.getName()))
-                .url(Optional.ofNullable(updateAdminMenuRequest.url()).orElse(adminMenu.getUrl()))
-                .description(Optional.ofNullable(updateAdminMenuRequest.description()).orElse(adminMenu.getDescription()))
-                .available(Optional.ofNullable(updateAdminMenuRequest.available()).orElse(adminMenu.getAvailable()))
-                .accessibleRoles(Optional.ofNullable(updateAdminMenuRequest.accessibleRoles()).orElse(adminMenu.getAccessibleRoles()))
-                .depth(Optional.ofNullable(updateAdminMenuRequest.depth()).orElse(adminMenu.getDepth()))
-                .parent(Optional.ofNullable(parentMenu).orElse(adminMenu.getParent()))
-                .children(Optional.ofNullable(childrenMenus).orElse(adminMenu.getChildren()))
-                .build();
+        Optional.ofNullable(updateAdminMenuRequest.name()).ifPresent(adminMenu::setName);
+        Optional.ofNullable(updateAdminMenuRequest.url()).ifPresent(adminMenu::setUrl);
+        Optional.ofNullable(updateAdminMenuRequest.description()).ifPresent(adminMenu::setDescription);
+        Optional.ofNullable(updateAdminMenuRequest.available()).ifPresent(adminMenu::setAvailable);
+        Optional.ofNullable(updateAdminMenuRequest.accessibleRoles()).ifPresent(adminMenu::setAccessibleRoles);
+        Optional.ofNullable(updateAdminMenuRequest.depth()).ifPresent(adminMenu::setDepth);
+        Optional.ofNullable(parentMenu).ifPresent(adminMenu::setParent);
+        Optional.ofNullable(childrenMenus).ifPresent(adminMenu::setChildren);
     }
     
     /**

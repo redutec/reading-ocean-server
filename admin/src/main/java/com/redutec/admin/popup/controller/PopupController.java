@@ -40,7 +40,7 @@ public class PopupController {
     }
 
     @Operation(summary = "특정 팝업 수정", description = "특정 팝업을 수정하는 API")
-    @PatchMapping("/{popupId}")
+    @PutMapping("/{popupId}")
     public ResponseEntity<ApiResponseBody> update(
             @Parameter(description = "팝업 ID") @PathVariable Long popupId,
             @ParameterObject @Valid PopupDto.UpdatePopupRequest updatePopupRequest

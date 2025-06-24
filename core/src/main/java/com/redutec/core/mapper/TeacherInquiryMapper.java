@@ -24,7 +24,7 @@ public class TeacherInquiryMapper {
      * @param teacher 고객문의를 등록한 교사
      * @return 등록할 TeacherInquiry 엔티티
      */
-    public TeacherInquiry toCreateEntity(
+    public TeacherInquiry createEntity(
             TeacherInquiryDto.CreateTeacherInquiryRequest createTeacherInquiryRequest,
             Teacher teacher
     ) {
@@ -39,29 +39,24 @@ public class TeacherInquiryMapper {
     }
 
     /**
-     * UpdateInquiryRequest DTO를 기반으로 TeacherInquiry 수정 엔티티를 생성합니다.
+     * UpdateInquiryRequest DTO를 기반으로 TeacherInquiry 엔티티를 수정합니다.
      *
      * @param teacherInquiry 수정할 TeacherInquiry 엔티티
      * @param updateTeacherInquiryRequest TeacherInquiry 수정에 필요한 데이터를 담은 DTO
      * @param responder 문의에 답변한 어드민 사용자 엔티티
-     * @return 수정할 Inquiry 엔티티
      */
-    public TeacherInquiry toUpdateEntity(
+    public void updateEntity(
             TeacherInquiry teacherInquiry,
             AdminUser responder,
             TeacherInquiryDto.UpdateTeacherInquiryRequest updateTeacherInquiryRequest
     ) {
-        return TeacherInquiry.builder()
-                .id(teacherInquiry.getId())
-                .teacher(teacherInquiry.getTeacher())
-                .domain(Optional.ofNullable(updateTeacherInquiryRequest.domain()).orElse(teacherInquiry.getDomain()))
-                .category(Optional.ofNullable(updateTeacherInquiryRequest.category()).orElse(teacherInquiry.getCategory()))
-                .status(Optional.ofNullable(updateTeacherInquiryRequest.status()).orElse(teacherInquiry.getStatus()))
-                .responder(Optional.ofNullable(responder).orElse(teacherInquiry.getResponder()))
-                .title(Optional.ofNullable(updateTeacherInquiryRequest.title()).orElse(teacherInquiry.getTitle()))
-                .content(Optional.ofNullable(updateTeacherInquiryRequest.content()).orElse(teacherInquiry.getContent()))
-                .response(Optional.ofNullable(updateTeacherInquiryRequest.response()).orElse(teacherInquiry.getResponse()))
-                .build();
+        Optional.ofNullable(updateTeacherInquiryRequest.domain()).ifPresent(teacherInquiry::setDomain);
+        Optional.ofNullable(updateTeacherInquiryRequest.category()).ifPresent(teacherInquiry::setCategory);
+        Optional.ofNullable(updateTeacherInquiryRequest.status()).ifPresent(teacherInquiry::setStatus);
+        Optional.ofNullable(responder).ifPresent(teacherInquiry::setResponder);
+        Optional.ofNullable(updateTeacherInquiryRequest.title()).ifPresent(teacherInquiry::setTitle);
+        Optional.ofNullable(updateTeacherInquiryRequest.content()).ifPresent(teacherInquiry::setContent);
+        Optional.ofNullable(updateTeacherInquiryRequest.response()).ifPresent(teacherInquiry::setResponse);
     }
     
     /**

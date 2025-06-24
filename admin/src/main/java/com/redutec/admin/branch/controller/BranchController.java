@@ -45,7 +45,7 @@ public class BranchController {
     }
 
     @Operation(summary = "특정 지사 수정", description = "특정 지사를 수정하는 API")
-    @PatchMapping(path = "/{branchId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PutMapping(path = "/{branchId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponseBody> update(
             @Parameter(description = "지사 ID") @PathVariable Long branchId,
             @ModelAttribute @Valid BranchDto.UpdateBranchRequest updateBranchRequest

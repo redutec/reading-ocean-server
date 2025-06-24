@@ -88,7 +88,7 @@ public class AuthenticationController {
      * @param resetPasswordRequest 어드민 사용자 비밀번호 초기화 요청 데이터
      */
     @Operation(summary = "어드민 사용자의 비밀번호 초기화", description = "어드민 사용자의 비밀번호를 초기화하는 API")
-    @PatchMapping("/reset-password")
+    @PutMapping("/reset-password")
     public ResponseEntity<ApiResponseBody> resetPassword(
             @ParameterObject AdminAuthenticationDto.ResetPasswordRequest resetPasswordRequest
     ) throws MessagingException {
@@ -103,7 +103,7 @@ public class AuthenticationController {
      * @param updatePasswordRequest 어드민 사용자 비밀번호 변경 요청 데이터
      */
     @Operation(summary = "어드민 사용자의 비밀번호 변경", description = "기존 어드민 사용자 계정 정보를 확인 후 새로운 비밀번호로 변경하는 API")
-    @PatchMapping("/update-password")
+    @PutMapping("/update-password")
     public ResponseEntity<ApiResponseBody> updatePassword(
             @ParameterObject AdminAuthenticationDto.UpdatePasswordRequest updatePasswordRequest
     ) {

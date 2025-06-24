@@ -32,7 +32,7 @@ public class SubscriptionPlanServiceImpl implements SubscriptionPlanService {
     ) {
         return subscriptionPlanMapper.toResponseDto(
                 subscriptionPlanRepository.save(
-                        subscriptionPlanMapper.toCreateEntity(createSubscriptionPlanRequest)
+                        subscriptionPlanMapper.createEntity(createSubscriptionPlanRequest)
                 )
         );
     }
@@ -76,10 +76,10 @@ public class SubscriptionPlanServiceImpl implements SubscriptionPlanService {
             Long subscriptionPlanId,
             SubscriptionPlanDto.UpdateSubscriptionPlanRequest updateSubscriptionPlanRequest
     ) {
-        subscriptionPlanRepository.save(subscriptionPlanMapper.toUpdateEntity(
+        subscriptionPlanMapper.updateEntity(
                 getSubscriptionPlan(subscriptionPlanId),
                 updateSubscriptionPlanRequest
-        ));
+        );
     }
 
     /**

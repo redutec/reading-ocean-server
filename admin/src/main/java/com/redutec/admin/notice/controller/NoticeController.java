@@ -45,7 +45,7 @@ public class NoticeController {
     }
 
     @Operation(summary = "특정 공지사항 수정", description = "특정 공지사항을 수정하는 API")
-    @PatchMapping(path = "/{noticeId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PutMapping(path = "/{noticeId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponseBody> update(
             @Parameter(description = "공지사항 ID") @PathVariable Long noticeId,
             @ModelAttribute @Valid NoticeDto.UpdateNoticeRequest updateNoticeRequest

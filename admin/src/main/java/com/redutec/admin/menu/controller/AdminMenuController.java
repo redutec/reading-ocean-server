@@ -37,7 +37,7 @@ public class AdminMenuController {
     }
 
     @Operation(summary = "어드민 메뉴 정보 수정", description = "어드민 메뉴 정보를 수정하는 API")
-    @PatchMapping("/{adminMenuId}")
+    @PutMapping("/{adminMenuId}")
     public ResponseEntity<ApiResponseBody> update(
             @Parameter(description = "어드민 메뉴 ID") @PathVariable Long adminMenuId,
             @ParameterObject AdminMenuDto.UpdateAdminMenuRequest updateAdminMenuRequest

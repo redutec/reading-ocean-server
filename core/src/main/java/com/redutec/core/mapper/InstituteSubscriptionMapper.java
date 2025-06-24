@@ -1,6 +1,6 @@
 package com.redutec.core.mapper;
 
-import com.redutec.core.criteria.SubscriptionInstituteCriteria;
+import com.redutec.core.criteria.InstituteSubscriptionCriteria;
 import com.redutec.core.dto.InstituteSubscriptionDto;
 import com.redutec.core.entity.Institute;
 import com.redutec.core.entity.InstituteSubscription;
@@ -16,52 +16,46 @@ import java.util.stream.Collectors;
 @Getter
 @RequiredArgsConstructor
 @Component
-public class SubscriptionInstituteMapper {
+public class InstituteSubscriptionMapper {
     /**
-     * CreateSubscriptionInstituteRequest DTO를 기반으로 SubscriptionInstitute 등록 엔티티를 생성합니다.
-     *
-     * @param createSubscriptionInstituteRequest 구독(교육기관) 등록에 필요한 데이터를 담은 DTO
+     * CreateSubscriptionInstituteRequest DTO를 기반으로 InstituteSubscription 등록 엔티티를 생성합니다.
+     * @param createInstituteSubscriptionRequest 구독(교육기관) 등록에 필요한 데이터를 담은 DTO
      * @param subscriptionPlan 구독 상품 엔티티
      * @param institute 구독 서비스를 신청한 교육기관 엔티티
      * @return 등록할 SubscriptionInstitute 엔티티
      */
-    public InstituteSubscription toCreateEntity(
-            InstituteSubscriptionDto.CreateSubscriptionInstituteRequest createSubscriptionInstituteRequest,
+    public InstituteSubscription createEntity(
+            InstituteSubscriptionDto.CreateInstituteSubscriptionRequest createInstituteSubscriptionRequest,
             SubscriptionPlan subscriptionPlan,
             Institute institute
     ) {
         return InstituteSubscription.builder()
                 .subscriptionPlan(subscriptionPlan)
-                .startedAt(createSubscriptionInstituteRequest.startedAt())
-                .endedAt(createSubscriptionInstituteRequest.endedAt())
-                .nextPaymentAt(createSubscriptionInstituteRequest.nextPaymentAt())
+                .startedAt(createInstituteSubscriptionRequest.startedAt())
+                .endedAt(createInstituteSubscriptionRequest.endedAt())
+                .nextPaymentAt(createInstituteSubscriptionRequest.nextPaymentAt())
                 .institute(institute)
                 .build();
     }
 
     /**
-     * UpdateSubscriptionInstituteRequest DTO를 기반으로 SubscriptionInstitute 수정 엔티티를 생성합니다.
-     *
+     * UpdateSubscriptionInstituteRequest DTO를 기반으로 InstituteSubscription 엔티티를 수정합니다.
      * @param instituteSubscription 수정할 SubscriptionInstitute 엔티티
-     * @param updateSubscriptionInstituteRequest 구독(교육기관) 수정에 필요한 데이터를 담은 DTO
+     * @param updateInstituteSubscriptionRequest 구독(교육기관) 수정에 필요한 데이터를 담은 DTO
      * @param subscriptionPlan 구독 상품 엔티티
      * @param institute 구독 서비스를 신청한 교육기관 엔티티
-     * @return 수정할 SubscriptionInstitute 엔티티
      */
-    public InstituteSubscription toUpdateEntity(
+    public void updateEntity(
             InstituteSubscription instituteSubscription,
-            InstituteSubscriptionDto.UpdateSubscriptionInstituteRequest updateSubscriptionInstituteRequest,
+            InstituteSubscriptionDto.UpdateInstituteSubscriptionRequest updateInstituteSubscriptionRequest,
             SubscriptionPlan subscriptionPlan,
             Institute institute
     ) {
-        return InstituteSubscription.builder()
-                .id(instituteSubscription.getId())
-                .subscriptionPlan(Optional.ofNullable(subscriptionPlan).orElse(instituteSubscription.getSubscriptionPlan()))
-                .startedAt(Optional.ofNullable(updateSubscriptionInstituteRequest.startedAt()).orElse(instituteSubscription.getStartedAt()))
-                .endedAt(Optional.ofNullable(updateSubscriptionInstituteRequest.endedAt()).orElse(instituteSubscription.getEndedAt()))
-                .nextPaymentAt(Optional.ofNullable(updateSubscriptionInstituteRequest.nextPaymentAt()).orElse(instituteSubscription.getNextPaymentAt()))
-                .institute(Optional.ofNullable(institute).orElse(instituteSubscription.getInstitute()))
-                .build();
+        Optional.ofNullable(subscriptionPlan).ifPresent(instituteSubscription::setSubscriptionPlan);
+        Optional.ofNullable(updateInstituteSubscriptionRequest.startedAt()).ifPresent(instituteSubscription::setStartedAt);
+        Optional.ofNullable(updateInstituteSubscriptionRequest.endedAt()).ifPresent(instituteSubscription::setEndedAt);
+        Optional.ofNullable(updateInstituteSubscriptionRequest.nextPaymentAt()).ifPresent(instituteSubscription::setNextPaymentAt);
+        Optional.ofNullable(institute).ifPresent(instituteSubscription::setInstitute);
     }
     
     /**
@@ -72,11 +66,11 @@ public class SubscriptionInstituteMapper {
      * @param findSubscriptionInstituteRequest 구독(교육기관) 검색 요청 객체
      * @return 해당 요청의 필드를 이용해 생성된 SubscriptionInstituteCriteria 객체
      */
-    public SubscriptionInstituteCriteria toCriteria(
-            InstituteSubscriptionDto.FindSubscriptionInstituteRequest findSubscriptionInstituteRequest
+    public InstituteSubscriptionCriteria toCriteria(
+            InstituteSubscriptionDto.FindInstituteSubscriptionRequest findSubscriptionInstituteRequest
     ) {
-        return new SubscriptionInstituteCriteria(
-                findSubscriptionInstituteRequest.subscriptionInstituteIds(),
+        return new InstituteSubscriptionCriteria(
+                findSubscriptionInstituteRequest.instituteSubscriptionIds(),
                 findSubscriptionInstituteRequest.subscriptionPlanIds(),
                 findSubscriptionInstituteRequest.instituteIds()
         );
@@ -89,11 +83,11 @@ public class SubscriptionInstituteMapper {
      * @param instituteSubscription 변환할 SubscriptionInstitute 엔티티 (null 가능)
      * @return SubscriptionInstitute 엔티티의 데이터를 담은 SubscriptionInstituteResponse DTO, subscriptionInstitute가 null이면 null 반환
      */
-    public InstituteSubscriptionDto.SubscriptionInstituteResponse toResponseDto(
+    public InstituteSubscriptionDto.InstituteSubscriptionResponse toResponseDto(
             InstituteSubscription instituteSubscription
     ) {
         return Optional.ofNullable(instituteSubscription)
-                .map(si -> new InstituteSubscriptionDto.SubscriptionInstituteResponse(
+                .map(si -> new InstituteSubscriptionDto.InstituteSubscriptionResponse(
                         si.getId(),
                         si.getStartedAt(),
                         si.getEndedAt(),
@@ -120,13 +114,13 @@ public class SubscriptionInstituteMapper {
      * @param subscriptionInstitutePage Page 형태로 조회된 SubscriptionInstitute 엔티티 목록 (null 가능)
      * @return SubscriptionInstitute 엔티티 리스트와 페이지 정보를 담은 SubscriptionInstitutePageResponse DTO, subscriptionInstitutePage가 null이면 null 반환
      */
-    public InstituteSubscriptionDto.SubscriptionInstitutePageResponse toPageResponseDto(Page<InstituteSubscription> subscriptionInstitutePage) {
+    public InstituteSubscriptionDto.InstituteSubscriptionPageResponse toPageResponseDto(Page<InstituteSubscription> subscriptionInstitutePage) {
         return Optional.ofNullable(subscriptionInstitutePage)
                 .map(page -> {
                     var responseList = page.getContent().stream()
                             .map(this::toResponseDto)
                             .collect(Collectors.toList());
-                    return new InstituteSubscriptionDto.SubscriptionInstitutePageResponse(
+                    return new InstituteSubscriptionDto.InstituteSubscriptionPageResponse(
                             responseList,
                             page.getTotalElements(),
                             page.getTotalPages()

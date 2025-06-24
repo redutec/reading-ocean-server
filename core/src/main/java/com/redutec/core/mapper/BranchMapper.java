@@ -24,7 +24,7 @@ public class BranchMapper {
      * @param contractFileName 계약서 파일명
      * @return 등록할 Branch 엔티티
      */
-    public Branch toCreateEntity(
+    public Branch createEntity(
             BranchDto.CreateBranchRequest createBranchRequest,
             Teacher managerTeacher,
             String contractFileName
@@ -43,32 +43,28 @@ public class BranchMapper {
     }
 
     /**
-     * UpdateBranchRequest DTO를 기반으로 Branch 수정 엔티티를 생성합니다.
+     * UpdateBranchRequest DTO를 기반으로 Branch 엔티티를 수정합니다.
      *
      * @param branch 수정할 Branch 엔티티
      * @param updateBranchRequest 지사 수정에 필요한 데이터를 담은 DTO
      * @param managerTeacher 지사장 엔티티
      * @param contractFileName 계약서 파일명
-     * @return 수정할 Branch 엔티티
      */
-    public Branch toUpdateEntity(
+    public void updateEntity(
             Branch branch,
             BranchDto.UpdateBranchRequest updateBranchRequest,
             Teacher managerTeacher,
             String contractFileName
     ) {
-        return Branch.builder()
-                .id(branch.getId())
-                .managerTeacher(Optional.ofNullable(managerTeacher).orElse(branch.getManagerTeacher()))
-                .region(Optional.ofNullable(updateBranchRequest.region()).orElse(branch.getRegion()))
-                .name(Optional.ofNullable(updateBranchRequest.name()).orElse(branch.getName()))
-                .status(Optional.ofNullable(updateBranchRequest.status()).orElse(branch.getStatus()))
-                .businessArea(Optional.ofNullable(updateBranchRequest.businessArea()).orElse(branch.getBusinessArea()))
-                .contractFileName(Optional.ofNullable(contractFileName).orElse(branch.getContractFileName()))
-                .contractDate(Optional.ofNullable(updateBranchRequest.contractDate()).orElse(branch.getContractDate()))
-                .renewalDate(Optional.ofNullable(updateBranchRequest.renewalDate()).orElse(branch.getRenewalDate()))
-                .description(Optional.ofNullable(updateBranchRequest.description()).orElse(branch.getDescription()))
-                .build();
+        Optional.ofNullable(managerTeacher).ifPresent(branch::setManagerTeacher);
+        Optional.ofNullable(updateBranchRequest.region()).ifPresent(branch::setRegion);
+        Optional.ofNullable(branch.getName()).ifPresent(branch::setName);
+        Optional.ofNullable(branch.getStatus()).ifPresent(branch::setStatus);
+        Optional.ofNullable(branch.getBusinessArea()).ifPresent(branch::setBusinessArea);
+        Optional.ofNullable(contractFileName).ifPresent(branch::setContractFileName);
+        Optional.ofNullable(branch.getContractDate()).ifPresent(branch::setContractDate);
+        Optional.ofNullable(branch.getRenewalDate()).ifPresent(branch::setRenewalDate);
+        Optional.ofNullable(branch.getDescription()).ifPresent(branch::setDescription);
     }
 
     /**

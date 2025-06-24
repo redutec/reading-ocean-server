@@ -44,7 +44,7 @@ public class BookGroupController {
     }
 
     @Operation(summary = "특정 도서 그룹 수정", description = "특정 도서 그룹를 수정하는 API")
-    @PatchMapping("/{bookGroupId}")
+    @PutMapping("/{bookGroupId}")
     public ResponseEntity<ApiResponseBody> update(
             @Parameter(description = "도서 그룹 ID") @PathVariable Long bookGroupId,
             @ParameterObject @Valid BookGroupDto.UpdateBookGroupRequest updateBookGroupRequest

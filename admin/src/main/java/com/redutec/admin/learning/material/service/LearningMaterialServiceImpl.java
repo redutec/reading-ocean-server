@@ -57,7 +57,7 @@ public class LearningMaterialServiceImpl implements LearningMaterialService {
         // 학습 자료 게시물 등록
         return learningMaterialMapper.toResponseDto(
                 learningMaterialRepository.save(
-                        learningMaterialMapper.toCreateEntity(
+                        learningMaterialMapper.createEntity(
                                 createLearningMaterialRequest,
                                 attachmentFileNames
                         )
@@ -126,12 +126,10 @@ public class LearningMaterialServiceImpl implements LearningMaterialService {
                 })
                 .orElseGet(learningMaterial::getAttachmentFileNames);
         // 학습 자료 게시물 수정
-        learningMaterialRepository.save(
-                learningMaterialMapper.toUpdateEntity(
-                        learningMaterial,
-                        attachmentFileNames,
-                        updateLearningMaterialRequest
-                )
+        learningMaterialMapper.updateEntity(
+                learningMaterial,
+                attachmentFileNames,
+                updateLearningMaterialRequest
         );
     }
 

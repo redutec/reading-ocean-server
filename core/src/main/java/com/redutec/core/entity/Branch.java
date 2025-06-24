@@ -27,40 +27,49 @@ public class Branch {
     private Long id;
 
     @Comment("지사장(교사 엔티티)")
+    @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
     private Teacher managerTeacher;
 
     @Comment("권역")
+    @Setter
     @Column(length = 10)
     private String region;
 
     @Comment("지사명")
+    @Setter
     @Column(length = 20, nullable = false)
     private String name;
 
     @Comment("상태")
+    @Setter
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private BranchStatus status;
 
     @Comment("영업 구역")
+    @Setter
     @Column(length = 200)
     private String businessArea;
 
     @Comment("계약서 파일명")
+    @Setter
     @Column
     private String contractFileName;
 
     @Comment("계약일")
+    @Setter
     @Column
     private LocalDate contractDate;
 
     @Comment("갱신일")
+    @Setter
     @Column
     private LocalDate renewalDate;
 
     @Comment("비고")
+    @Setter
     @Column
     private String description;
 

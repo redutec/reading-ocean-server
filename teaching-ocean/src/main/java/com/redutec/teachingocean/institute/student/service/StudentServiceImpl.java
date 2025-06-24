@@ -49,7 +49,7 @@ public class StudentServiceImpl implements StudentService {
                 .flatMap(homeroomRepository::findById)
                 .orElse(null);
         // 학생 등록
-        return studentMapper.toResponseDto(studentRepository.save(studentMapper.toCreateEntity(
+        return studentMapper.toResponseDto(studentRepository.save(studentMapper.createEntity(
                 createStudentRequest,
                 institute,
                 homeroom
@@ -113,7 +113,7 @@ public class StudentServiceImpl implements StudentService {
         Homeroom homeroom = Optional.ofNullable(updateStudentRequest.homeroomId())
                 .flatMap(homeroomRepository::findById)
                 .orElseGet(student::getHomeroom);
-        studentRepository.save(studentMapper.toUpdateEntity(student, updateStudentRequest, institute, homeroom));
+        studentMapper.updateEntity(student, updateStudentRequest, institute, homeroom);
     }
 
     /**

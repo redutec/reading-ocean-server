@@ -3,10 +3,7 @@ package com.redutec.core.entity;
 import com.redutec.core.meta.Domain;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.DynamicUpdate;
@@ -31,21 +28,25 @@ public class Faq {
     private Long id;
 
     @Comment("노출 도메인")
+    @Setter
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Domain domain;
 
     @Comment("제목")
+    @Setter
     @Column(nullable = false, length = 100)
     @NotBlank
     private String title;
 
     @Comment("내용")
+    @Setter
     @Column
     @Lob
     private String content;
 
     @Comment("노출 여부")
+    @Setter
     @Column(nullable = false)
     @ColumnDefault("true")
     private Boolean visible = true;

@@ -47,7 +47,7 @@ public class TeacherServiceImpl implements TeacherService {
                 .flatMap(homeroomRepository::findById)
                 .orElse(null);
         // 교사 등록
-        return teacherMapper.toResponseDto(teacherRepository.save(teacherMapper.toCreateEntity(
+        return teacherMapper.toResponseDto(teacherRepository.save(teacherMapper.createEntity(
                 createTeacherRequest,
                 institute,
                 homeroom
@@ -112,12 +112,12 @@ public class TeacherServiceImpl implements TeacherService {
                 .flatMap(homeroomRepository::findById)
                 .orElseGet(teacher::getHomeroom);
         // 교사 정보 수정 엔티티 빌드 후 UPDATE
-        teacherRepository.save(teacherMapper.toUpdateEntity(
+        teacherMapper.updateEntity(
                 teacher,
                 updateTeacherRequest,
                 institute,
                 homeroom
-        ));
+        );
     }
 
     /**

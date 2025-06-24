@@ -45,7 +45,7 @@ public class ProductController {
     }
 
     @Operation(summary = "특정 판매상품 수정", description = "특정 판매상품을 수정하는 API")
-    @PatchMapping(path = "/{productId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PutMapping(path = "/{productId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponseBody> update(
             @Parameter(description = "판매상품 ID") @PathVariable Long productId,
             @ModelAttribute @Valid ProductDto.UpdateProductRequest updateProductRequest

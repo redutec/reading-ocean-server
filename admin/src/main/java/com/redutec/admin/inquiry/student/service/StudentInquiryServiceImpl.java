@@ -66,11 +66,11 @@ public class StudentInquiryServiceImpl implements StudentInquiryService {
                 .flatMap(adminUserRepository::findByAccountId)
                 .orElseGet(studentInquiry::getResponder);
         // 고객문의(학생) 수정
-        studentInquiryRepository.save(studentInquiryMapper.toUpdateEntity(
+        studentInquiryMapper.updateEntity(
                 studentInquiry,
                 updateStudentInquiryRequest,
                 responder
-        ));
+        );
     }
 
     /**

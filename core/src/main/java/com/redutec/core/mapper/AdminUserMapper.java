@@ -25,9 +25,9 @@ public class AdminUserMapper {
      * CreateAdminUserRequest DTO를 기반으로 AdminUser 등록 엔티티를 생성합니다.
      *
      * @param createAdminUserRequest 어드민 사용자 등록에 필요한 데이터를 담은 DTO
-     * @return 생성된 AdminUser 등록 엔티티
+     * @return 등록할 AdminUser 엔티티
      */
-    public AdminUser toCreateEntity(AdminUserDto.CreateAdminUserRequest createAdminUserRequest) {
+    public AdminUser createEntity(AdminUserDto.CreateAdminUserRequest createAdminUserRequest) {
         return AdminUser.builder()
                 .accountId(createAdminUserRequest.accountId())
                 .password(passwordEncoder.encode(createAdminUserRequest.password()))
@@ -41,31 +41,27 @@ public class AdminUserMapper {
     }
 
     /**
-     * UpdateAdminUserRequest DTO를 기반으로 AdminUser 수정 엔티티를 생성합니다.
+     * UpdateAdminUserRequest DTO를 기반으로 AdminUser 엔티티를 수정합니다.
      *
      * @param updateAdminUserRequest 어드민 사용자 수정에 필요한 데이터를 담은 DTO
-     * @return 생성된 AdminUser 수정 엔티티
      */
-    public AdminUser toUpdateEntity(
+    public void updateEntity(
             AdminUser adminUser,
             AdminUserDto.UpdateAdminUserRequest updateAdminUserRequest
     ) {
-        return AdminUser.builder()
-                .id(adminUser.getId())
-                .accountId(Optional.ofNullable(updateAdminUserRequest.accountId()).orElse(adminUser.getAccountId()))
-                .password(Optional.ofNullable(updateAdminUserRequest.newPassword())
-                        .filter(newPassword -> !newPassword.isBlank())
-                        .map(passwordEncoder::encode)
-                        .orElse(adminUser.getPassword()))
-                .nickname(Optional.ofNullable(updateAdminUserRequest.nickname()).orElse(adminUser.getNickname()))
-                .email(Optional.ofNullable(updateAdminUserRequest.email()).orElse(adminUser.getEmail()))
-                .phoneNumber(Optional.ofNullable(updateAdminUserRequest.phoneNumber()).orElse(adminUser.getPhoneNumber()))
-                .role(Optional.ofNullable(updateAdminUserRequest.role()).orElse(adminUser.getRole()))
-                .authenticationStatus(Optional.ofNullable(updateAdminUserRequest.authenticationStatus()).orElse(adminUser.getAuthenticationStatus()))
-                .failedLoginAttempts(Optional.ofNullable(updateAdminUserRequest.failedLoginAttempts()).orElse(adminUser.getFailedLoginAttempts()))
-                .lastLoginIp(Optional.ofNullable(updateAdminUserRequest.lastLoginIp()).orElse(adminUser.getLastLoginIp()))
-                .lastLoginAt(Optional.ofNullable(updateAdminUserRequest.lastLoginAt()).orElse(adminUser.getLastLoginAt()))
-                .build();
+        Optional.ofNullable(updateAdminUserRequest.accountId()).ifPresent(adminUser::setAccountId);
+        Optional.ofNullable(updateAdminUserRequest.newPassword())
+                .filter(newPassword -> !newPassword.isBlank())
+                .map(passwordEncoder::encode)
+                .ifPresent(adminUser::setPassword);
+        Optional.ofNullable(updateAdminUserRequest.nickname()).ifPresent(adminUser::setNickname);
+        Optional.ofNullable(updateAdminUserRequest.email()).ifPresent(adminUser::setEmail);
+        Optional.ofNullable(updateAdminUserRequest.phoneNumber()).ifPresent(adminUser::setPhoneNumber);
+        Optional.ofNullable(updateAdminUserRequest.role()).ifPresent(adminUser::setRole);
+        Optional.ofNullable(updateAdminUserRequest.authenticationStatus()).ifPresent(adminUser::setAuthenticationStatus);
+        Optional.ofNullable(updateAdminUserRequest.failedLoginAttempts()).ifPresent(adminUser::setFailedLoginAttempts);
+        Optional.ofNullable(updateAdminUserRequest.lastLoginIp()).ifPresent(adminUser::setLastLoginIp);
+        Optional.ofNullable(updateAdminUserRequest.lastLoginAt()).ifPresent(adminUser::setLastLoginAt);
     }
     
     /**

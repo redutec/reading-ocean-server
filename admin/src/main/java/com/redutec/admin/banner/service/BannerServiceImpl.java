@@ -42,7 +42,7 @@ public class BannerServiceImpl implements BannerService {
                     return Paths.get(result.filePath()).getFileName().toString();
                 })
                 .orElse(null);
-        return bannerMapper.toResponseDto(bannerRepository.save(bannerMapper.toCreateEntity(
+        return bannerMapper.toResponseDto(bannerRepository.save(bannerMapper.createEntity(
                 createBannerRequest,
                 attachmentFileName
         )));
@@ -85,7 +85,7 @@ public class BannerServiceImpl implements BannerService {
         // 수정할 배너 엔티티 조회
         Banner banner = getBanner(bannerId);
         // 배너 수정
-        bannerRepository.save(bannerMapper.toUpdateEntity(
+        bannerMapper.updateEntity(
                 banner,
                 updateBannerRequest,
                 Optional.ofNullable(updateBannerRequest.attachmentFile())
@@ -95,7 +95,7 @@ public class BannerServiceImpl implements BannerService {
                             return Paths.get(result.filePath()).getFileName().toString();
                         })
                         .orElseGet(banner::getAttachmentFileName)
-        ));
+        );
     }
 
     /**

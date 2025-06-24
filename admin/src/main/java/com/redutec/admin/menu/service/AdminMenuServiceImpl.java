@@ -42,7 +42,7 @@ public class AdminMenuServiceImpl implements AdminMenuService {
                 .map(this::getAdminMenu)
                 .toList();
         // 어드민 메뉴 등록
-        return adminMenuMapper.toResponseDto(adminMenuRepository.save(adminMenuMapper.toCreateEntity(
+        return adminMenuMapper.toResponseDto(adminMenuRepository.save(adminMenuMapper.createEntity(
                 createAdminMenuRequest,
                 parentMenu,
                 childrenMenus
@@ -96,12 +96,12 @@ public class AdminMenuServiceImpl implements AdminMenuService {
                         .toList())
                 .orElseGet(adminMenu::getChildren);
         // 어드민 메뉴 수정
-        adminMenuRepository.save(adminMenuMapper.toUpdateEntity(
+        adminMenuMapper.updateEntity(
                 adminMenu,
                 updateAdminMenuRequest,
                 parentMenu,
                 childrenMenus
-        ));
+        );
     }
 
     /**

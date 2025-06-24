@@ -44,7 +44,7 @@ public class StudentController {
     }
 
     @Operation(summary = "특정 학생 수정", description = "특정 학생을 수정하는 API")
-    @PatchMapping("/{studentId}")
+    @PutMapping("/{studentId}")
     public ResponseEntity<ApiResponseBody> update(
             @Parameter(description = "학생 ID") @PathVariable Long studentId,
             @ParameterObject @Valid StudentDto.UpdateStudentRequest updateStudentRequest

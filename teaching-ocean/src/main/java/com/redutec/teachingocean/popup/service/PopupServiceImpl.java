@@ -55,6 +55,6 @@ public class PopupServiceImpl implements PopupService {
     @Transactional(readOnly = true)
     public Popup getPopup(Long popupId) {
         return popupRepository.findById(popupId)
-                .orElseThrow(() -> new EntityNotFoundException("팝업을 찾을 수 없습니다. popupId = " + popupId));
+                .orElseThrow(() -> new EntityNotFoundException("팝업을 찾을 수 없습니다. popupId: " + popupId));
     }
 }

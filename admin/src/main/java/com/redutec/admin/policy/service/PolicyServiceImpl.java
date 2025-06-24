@@ -28,7 +28,7 @@ public class PolicyServiceImpl implements PolicyService {
     @Override
     @Transactional
     public PolicyDto.PolicyResponse create(PolicyDto.CreatePolicyRequest createPolicyRequest) {
-        return policyMapper.toResponseDto(policyRepository.save(policyMapper.toCreateEntity(createPolicyRequest)));
+        return policyMapper.toResponseDto(policyRepository.save(policyMapper.createEntity(createPolicyRequest)));
     }
 
     /**
@@ -67,7 +67,7 @@ public class PolicyServiceImpl implements PolicyService {
     @Override
     @Transactional
     public void update(Long policyId, PolicyDto.UpdatePolicyRequest updatePolicyRequest) {
-        policyRepository.save(policyMapper.toUpdateEntity(getPolicy(policyId), updatePolicyRequest));
+        policyMapper.updateEntity(getPolicy(policyId), updatePolicyRequest);
     }
 
     /**

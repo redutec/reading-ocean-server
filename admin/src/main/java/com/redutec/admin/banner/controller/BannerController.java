@@ -43,7 +43,7 @@ public class BannerController {
     }
 
     @Operation(summary = "특정 배너 수정", description = "특정 배너를 수정하는 API")
-    @PatchMapping(path = "/{bannerId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PutMapping(path = "/{bannerId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponseBody> update(
             @Parameter(description = "배너 ID") @PathVariable Long bannerId,
             @ModelAttribute @Valid BannerDto.UpdateBannerRequest updateBannerRequest

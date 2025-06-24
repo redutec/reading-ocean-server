@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.Comment;
 import org.springframework.data.annotation.CreatedDate;
@@ -24,19 +25,23 @@ public abstract class Subscription {
     private Long id;
 
     @Comment("구독 상품")
+    @Setter
     @ManyToOne(fetch = LAZY, optional = false)
     @JoinColumn
     private SubscriptionPlan subscriptionPlan;
 
     @Comment("시작일")
+    @Setter
     @Column(nullable = false)
     private LocalDateTime startedAt;
 
     @Comment("종료일")
+    @Setter
     @Column
     private LocalDateTime endedAt;
 
     @Comment("다음 결제일")
+    @Setter
     @Column
     private LocalDateTime nextPaymentAt;
 

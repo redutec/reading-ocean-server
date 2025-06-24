@@ -44,7 +44,7 @@ public class TeachingOceanMenuServiceImpl implements TeachingOceanMenuService {
                 .map(this::getTeachingOceanMenu)
                 .toList();
         // 티칭오션 메뉴 등록
-        return teachingOceanMenuMapper.toResponseDto(teachingOceanMenuRepository.save(teachingOceanMenuMapper.toCreateEntity(
+        return teachingOceanMenuMapper.toResponseDto(teachingOceanMenuRepository.save(teachingOceanMenuMapper.createEntity(
                 createTeachingOceanMenuRequest,
                 parentMenu,
                 childrenMenus
@@ -103,12 +103,12 @@ public class TeachingOceanMenuServiceImpl implements TeachingOceanMenuService {
                         .toList())
                 .orElseGet(teachingOceanMenu::getChildren);
         // 티칭오션 메뉴 수정
-        teachingOceanMenuRepository.save(teachingOceanMenuMapper.toUpdateEntity(
+        teachingOceanMenuMapper.updateEntity(
                 teachingOceanMenu,
                 updateTeachingOceanMenuRequest,
                 parentMenu,
                 childrenMenus
-        ));
+        );
     }
 
     /**

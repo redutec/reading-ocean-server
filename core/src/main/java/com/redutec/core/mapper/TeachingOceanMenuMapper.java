@@ -22,7 +22,7 @@ public class TeachingOceanMenuMapper {
      * @param createTeachingOceanMenuRequest 티칭오션 메뉴 생성에 필요한 데이터를 담은 DTO
      * @return 생성된 TeachingOceanMenu 엔티티
      */
-    public TeachingOceanMenu toCreateEntity(
+    public TeachingOceanMenu createEntity(
             TeachingOceanMenuDto.CreateTeachingOceanMenuRequest createTeachingOceanMenuRequest,
             TeachingOceanMenu parentMenu,
             List<TeachingOceanMenu> childrenMenus
@@ -40,28 +40,24 @@ public class TeachingOceanMenuMapper {
     }
 
     /**
-     * UpdateTeachingOceanMenuRequest DTO를 기반으로 TeachingOceanMenu 업데이트 엔티티를 빌드합니다.
+     * UpdateTeachingOceanMenuRequest DTO를 기반으로 TeachingOceanMenu 엔티티를 수정합니다.
      *
      * @param updateTeachingOceanMenuRequest 어드민 메뉴 수정에 필요한 데이터를 담은 DTO
-     * @return 생성된 TeachingOceanMenu 업데이트 엔티티
      */
-    public TeachingOceanMenu toUpdateEntity(
+    public void updateEntity(
             TeachingOceanMenu teachingOceanMenu,
             TeachingOceanMenuDto.UpdateTeachingOceanMenuRequest updateTeachingOceanMenuRequest,
             TeachingOceanMenu parentMenu,
             List<TeachingOceanMenu> childrenMenus
     ) {
-        return TeachingOceanMenu.builder()
-                .id(teachingOceanMenu.getId())
-                .name(Optional.ofNullable(updateTeachingOceanMenuRequest.name()).orElse(teachingOceanMenu.getName()))
-                .url(Optional.ofNullable(updateTeachingOceanMenuRequest.url()).orElse(teachingOceanMenu.getUrl()))
-                .description(Optional.ofNullable(updateTeachingOceanMenuRequest.description()).orElse(teachingOceanMenu.getDescription()))
-                .available(Optional.ofNullable(updateTeachingOceanMenuRequest.available()).orElse(teachingOceanMenu.getAvailable()))
-                .accessibleRoles(Optional.ofNullable(updateTeachingOceanMenuRequest.accessibleRoles()).orElse(teachingOceanMenu.getAccessibleRoles()))
-                .depth(Optional.ofNullable(updateTeachingOceanMenuRequest.depth()).orElse(teachingOceanMenu.getDepth()))
-                .parent(Optional.ofNullable(parentMenu).orElse(teachingOceanMenu.getParent()))
-                .children(Optional.ofNullable(childrenMenus).orElse(teachingOceanMenu.getChildren()))
-                .build();
+        Optional.ofNullable(updateTeachingOceanMenuRequest.name()).ifPresent(teachingOceanMenu::setName);
+        Optional.ofNullable(updateTeachingOceanMenuRequest.url()).ifPresent(teachingOceanMenu::setUrl);
+        Optional.ofNullable(updateTeachingOceanMenuRequest.description()).ifPresent(teachingOceanMenu::setDescription);
+        Optional.ofNullable(updateTeachingOceanMenuRequest.available()).ifPresent(teachingOceanMenu::setAvailable);
+        Optional.ofNullable(updateTeachingOceanMenuRequest.accessibleRoles()).ifPresent(teachingOceanMenu::setAccessibleRoles);
+        Optional.ofNullable(updateTeachingOceanMenuRequest.depth()).ifPresent(teachingOceanMenu::setDepth);
+        Optional.ofNullable(parentMenu).ifPresent(teachingOceanMenu::setParent);
+        Optional.ofNullable(childrenMenus).ifPresent(teachingOceanMenu::setChildren);
     }
     
     /**

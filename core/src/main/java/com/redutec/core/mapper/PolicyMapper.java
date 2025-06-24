@@ -21,7 +21,7 @@ public class PolicyMapper {
      * @param createPolicyRequest 정책 등록에 필요한 데이터를 담은 DTO
      * @return 등록할 Policy 엔티티
      */
-    public Policy toCreateEntity(PolicyDto.CreatePolicyRequest createPolicyRequest) {
+    public Policy createEntity(PolicyDto.CreatePolicyRequest createPolicyRequest) {
         return Policy.builder()
                 .domain(createPolicyRequest.domain())
                 .type(createPolicyRequest.type())
@@ -34,23 +34,19 @@ public class PolicyMapper {
     }
 
     /**
-     * UpdatePolicyRequest DTO를 기반으로 Policy 수정 엔티티를 생성합니다.
+     * UpdatePolicyRequest DTO를 기반으로 Policy 엔티티를 수정합니다.
      *
      * @param policy 수정할 Policy 엔티티
      * @param updatePolicyRequest 정책 수정에 필요한 데이터를 담은 DTO
-     * @return 수정할 Policy 엔티티
      */
-    public Policy toUpdateEntity(Policy policy, PolicyDto.UpdatePolicyRequest updatePolicyRequest) {
-        return Policy.builder()
-                .id(policy.getId())
-                .domain(Optional.ofNullable(updatePolicyRequest.domain()).orElse(policy.getDomain()))
-                .type(Optional.ofNullable(updatePolicyRequest.type()).orElse(policy.getType()))
-                .version(Optional.ofNullable(updatePolicyRequest.version()).orElse(policy.getVersion()))
-                .content(Optional.ofNullable(updatePolicyRequest.content()).orElse(policy.getContent()))
-                .effectiveAt(Optional.ofNullable(updatePolicyRequest.effectiveAt()).orElse(policy.getEffectiveAt()))
-                .expiresAt(Optional.ofNullable(updatePolicyRequest.expiresAt()).orElse(policy.getExpiresAt()))
-                .available(Optional.ofNullable(updatePolicyRequest.available()).orElse(policy.getAvailable()))
-                .build();
+    public void updateEntity(Policy policy, PolicyDto.UpdatePolicyRequest updatePolicyRequest) {
+        Optional.ofNullable(updatePolicyRequest.domain()).ifPresent(policy::setDomain);
+        Optional.ofNullable(updatePolicyRequest.type()).ifPresent(policy::setType);
+        Optional.ofNullable(updatePolicyRequest.version()).ifPresent(policy::setVersion);
+        Optional.ofNullable(updatePolicyRequest.content()).ifPresent(policy::setContent);
+        Optional.ofNullable(updatePolicyRequest.effectiveAt()).ifPresent(policy::setEffectiveAt);
+        Optional.ofNullable(updatePolicyRequest.expiresAt()).ifPresent(policy::setExpiresAt);
+        Optional.ofNullable(updatePolicyRequest.available()).ifPresent(policy::setAvailable);
     }
 
     /**

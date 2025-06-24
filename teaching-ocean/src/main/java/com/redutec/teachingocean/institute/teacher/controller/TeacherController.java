@@ -44,7 +44,7 @@ public class TeacherController {
     }
 
     @Operation(summary = "학사관리 - 교사관리 - 특정 교사 수정", description = "현재 로그인한 교사가 속한 교육기관의 특정 교사 수정")
-    @PatchMapping("/{teacherId}")
+    @PutMapping("/{teacherId}")
     public ResponseEntity<ApiResponseBody> update(
             @Parameter(description = "교사 ID") @PathVariable Long teacherId,
             @ParameterObject @Valid TeacherDto.UpdateTeacherRequest updateTeacherRequest

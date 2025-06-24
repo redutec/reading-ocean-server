@@ -25,19 +25,19 @@ public class CartMapper {
     /**
      * addCartItemsRequest DTO를 기반으로 InstituteCart INSERT/UPDATE 엔티티를 생성합니다.
      *
-     * @param addCartItemsRequests 장바구니에 담을 상품들의 요청 정보
+     * @param addCartItemsRequestWrapper 장바구니에 담을 상품들의 요청 정보
      * @param cart 교육기관의 장바구니 엔티티
      * @return 등록/수정할 InstituteCart 엔티티
      */
     public Cart toEntity(
-            CartDto.AddCartItemsRequestWrapper addCartItemsRequests,
+            CartDto.AddCartItemsRequestWrapper addCartItemsRequestWrapper,
             Cart cart
     ) {
         // DTO에 담긴 상품들이 존재하면 장바구니에 담긴 상품에 추가
-        Optional.ofNullable(addCartItemsRequests.addCartItemsRequests())
-                .ifPresent(requests -> requests.forEach(request ->
-                        productRepository.findById(request.productId())
-                                .ifPresent(product -> cart.addItem(product, request.quantity()))
+        Optional.ofNullable(addCartItemsRequestWrapper.addCartItemsRequests())
+                .ifPresent(addCartItemsRequests -> addCartItemsRequests.forEach(
+                        addCartItemsRequest -> productRepository.findById(addCartItemsRequest.productId())
+                                .ifPresent(product -> cart.addItem(product, addCartItemsRequest.quantity()))
                 ));
         // 장바구니(교육기관) 등록 엔티티 리턴
         return cart;

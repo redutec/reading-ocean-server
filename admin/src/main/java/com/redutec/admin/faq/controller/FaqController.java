@@ -40,7 +40,7 @@ public class FaqController {
     }
 
     @Operation(summary = "특정 이용안내 수정", description = "특정 이용안내를 수정하는 API")
-    @PatchMapping("/{faqId}")
+    @PutMapping("/{faqId}")
     public ResponseEntity<ApiResponseBody> update(
             @Parameter(description = "이용안내 ID") @PathVariable Long faqId,
             @ParameterObject @Valid FaqDto.UpdateFaqRequest updateFaqRequest

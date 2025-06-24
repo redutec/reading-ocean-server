@@ -1,11 +1,10 @@
 package com.redutec.core.mapper;
 
 import com.redutec.core.criteria.OrderCriteria;
-import com.redutec.core.dto.OrderItemDto;
 import com.redutec.core.dto.OrderDto;
+import com.redutec.core.dto.OrderItemDto;
 import com.redutec.core.dto.ProductDto;
 import com.redutec.core.entity.Order;
-import com.redutec.core.repository.OrderRepository;
 import com.redutec.core.repository.ProductRepository;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -19,25 +18,24 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Component
 public class OrderMapper {
-    private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
 
     /**
      * addOrderItemsRequest DTO를 기반으로 InstituteOrder INSERT/UPDATE 엔티티를 생성합니다.
      *
-     * @param addOrderItemsRequests 주문내역에 담을 상품들의 요청 정보
+     * @param addOrderItemsRequestWrapper 주문내역에 담을 상품들의 요청 정보
      * @param order 교육기관의 주문내역 엔티티
      * @return 등록/수정할 InstituteOrder 엔티티
      */
     public Order toEntity(
-            OrderDto.AddOrderItemsRequestWrapper addOrderItemsRequests,
+            OrderDto.AddOrderItemsRequestWrapper addOrderItemsRequestWrapper,
             Order order
     ) {
         // DTO에 담긴 상품들이 존재하면 주문내역에 담긴 상품에 추가
-        Optional.ofNullable(addOrderItemsRequests.addOrderItemsRequests())
-                .ifPresent(requests -> requests.forEach(request ->
-                        productRepository.findById(request.productId())
-                                .ifPresent(product -> order.addItem(product, request.quantity()))
+        Optional.ofNullable(addOrderItemsRequestWrapper.addOrderItemsRequests())
+                .ifPresent(addOrderItemsRequests -> addOrderItemsRequests.forEach(
+                        addOrderItemsRequest -> productRepository.findById(addOrderItemsRequest.productId())
+                                .ifPresent(product -> order.addItem(product, addOrderItemsRequest.quantity()))
                 ));
         // 주문내역(교육기관) 등록 엔티티 리턴
         return order;

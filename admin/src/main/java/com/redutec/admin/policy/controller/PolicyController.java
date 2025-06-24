@@ -44,7 +44,7 @@ public class PolicyController {
     }
 
     @Operation(summary = "특정 정책 수정", description = "특정 정책을 수정하는 API")
-    @PatchMapping("/{policyId}")
+    @PutMapping("/{policyId}")
     public ResponseEntity<ApiResponseBody> update(
             @Parameter(description = "정책 ID") @PathVariable Long policyId,
             @ParameterObject @Valid PolicyDto.UpdatePolicyRequest updatePolicyRequest

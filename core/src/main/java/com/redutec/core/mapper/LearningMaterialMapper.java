@@ -20,9 +20,9 @@ public class LearningMaterialMapper {
      * CreateLearningMaterialRequest DTO를 기반으로 LearningMaterial 등록 엔티티를 생성합니다.
      *
      * @param createLearningMaterialRequest LearningMaterial 등록에 필요한 데이터를 담은 DTO
-     * @return 생성된 LearningMaterial 등록 엔티티
+     * @return 등록할 LearningMaterial 엔티티
      */
-    public LearningMaterial toCreateEntity(
+    public LearningMaterial createEntity(
             LearningMaterialDto.CreateLearningMaterialRequest createLearningMaterialRequest,
             List<String> attachmentFileNames
     ) {
@@ -37,27 +37,23 @@ public class LearningMaterialMapper {
     }
 
     /**
-     * UpdateLearningMaterialRequest DTO를 기반으로 LearningMaterial 수정 엔티티를 생성합니다.
+     * UpdateLearningMaterialRequest DTO를 기반으로 LearningMaterial 엔티티를 수정합니다.
      *
      * @param learningMaterial 수정할 LearningMaterial 엔티티
      * @param attachmentFileNames 첨부 파일명 목록
      * @param updateLearningMaterialRequest LearningMaterial 수정에 필요한 데이터를 담은 DTO
-     * @return 생성된 LearningMaterial 등록 엔티티
      */
-    public LearningMaterial toUpdateEntity(
+    public void updateEntity(
             LearningMaterial learningMaterial,
             List<String> attachmentFileNames,
             LearningMaterialDto.UpdateLearningMaterialRequest updateLearningMaterialRequest
     ) {
-        return LearningMaterial.builder()
-                .id(learningMaterial.getId())
-                .category(Optional.ofNullable(updateLearningMaterialRequest.category()).orElse(learningMaterial.getCategory()))
-                .title(Optional.ofNullable(updateLearningMaterialRequest.title()).orElse(learningMaterial.getTitle()))
-                .content(Optional.ofNullable(updateLearningMaterialRequest.content()).orElse(learningMaterial.getContent()))
-                .author(Optional.ofNullable(updateLearningMaterialRequest.author()).orElse(learningMaterial.getAuthor()))
-                .attachmentFileNames(Optional.ofNullable(attachmentFileNames).orElse(learningMaterial.getAttachmentFileNames()))
-                .available(Optional.ofNullable(updateLearningMaterialRequest.available()).orElse(learningMaterial.getAvailable()))
-                .build();
+        Optional.ofNullable(updateLearningMaterialRequest.category()).ifPresent(learningMaterial::setCategory);
+        Optional.ofNullable(updateLearningMaterialRequest.title()).ifPresent(learningMaterial::setTitle);
+        Optional.ofNullable(updateLearningMaterialRequest.content()).ifPresent(learningMaterial::setContent);
+        Optional.ofNullable(updateLearningMaterialRequest.author()).ifPresent(learningMaterial::setAuthor);
+        Optional.ofNullable(attachmentFileNames).ifPresent(learningMaterial::setAttachmentFileNames);
+        Optional.ofNullable(updateLearningMaterialRequest.available()).ifPresent(learningMaterial::setAvailable);
     }
     
     /**

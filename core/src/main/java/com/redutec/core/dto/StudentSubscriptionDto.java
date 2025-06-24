@@ -11,7 +11,7 @@ import java.util.List;
 
 public class StudentSubscriptionDto {
     @Schema(description = "구독(학생) 등록 요청 객체")
-    public record CreateSubscriptionStudentRequest(
+    public record CreateStudentSubscriptionRequest(
             @Schema(description = "구독 상품 ID", requiredMode = Schema.RequiredMode.REQUIRED)
             @NotNull
             @Positive
@@ -34,9 +34,9 @@ public class StudentSubscriptionDto {
     ) {}
 
     @Schema(description = "구독(학생) 조회 요청 객체")
-    public record FindSubscriptionStudentRequest(
+    public record FindStudentSubscriptionRequest(
             @Schema(description = "구독(학생) ID", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-            List<@Positive Long> subscriptionStudentIds,
+            List<@Positive Long> studentSubscriptionIds,
 
             @Schema(description = "학생 ID", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
             List<@Positive Long> studentIds,
@@ -54,7 +54,7 @@ public class StudentSubscriptionDto {
     ) {}
 
     @Schema(description = "구독(학생) 수정 요청 객체")
-    public record UpdateSubscriptionStudentRequest(
+    public record UpdateStudentSubscriptionRequest(
             @Schema(description = "구독 상품 ID", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
             @Positive
             Long subscriptionPlanId,
@@ -74,7 +74,7 @@ public class StudentSubscriptionDto {
     ) {}
 
     @Schema(description = "구독(학생) 응답 객체")
-    public record SubscriptionStudentResponse(
+    public record StudentSubscriptionResponse(
             Long subscriptionStudentId,
             LocalDateTime startedAt,
             LocalDateTime endedAt,
@@ -92,8 +92,8 @@ public class StudentSubscriptionDto {
     ) {}
 
     @Schema(description = "구독(학생) 응답 페이징 객체")
-    public record SubscriptionStudentPageResponse(
-            List<SubscriptionStudentResponse> subscriptionStudents,
+    public record StudentSubscriptionPageResponse(
+            List<StudentSubscriptionResponse> studentSubscriptions,
             Long totalElements,
             Integer totalPages
     ) {}

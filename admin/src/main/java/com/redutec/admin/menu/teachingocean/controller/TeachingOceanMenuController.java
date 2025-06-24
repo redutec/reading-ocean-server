@@ -37,7 +37,7 @@ public class TeachingOceanMenuController {
     }
 
     @Operation(summary = "티칭오션 메뉴 정보 수정", description = "티칭오션 메뉴 정보를 수정하는 API")
-    @PatchMapping("/{teachingOceanMenuId}")
+    @PutMapping("/{teachingOceanMenuId}")
     public ResponseEntity<ApiResponseBody> update(
             @Parameter(description = "티칭오션 메뉴 ID") @PathVariable Long teachingOceanMenuId,
             @ParameterObject TeachingOceanMenuDto.UpdateTeachingOceanMenuRequest updateTeachingOceanMenuRequest

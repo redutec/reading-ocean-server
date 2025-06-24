@@ -47,7 +47,7 @@ public class InstituteServiceImpl implements InstituteService {
                 .orElse(null);
         // 교육기관 등록
         return instituteMapper.toResponseDto(
-                instituteRepository.save(instituteMapper.toCreateEntity(createInstituteRequest, branch)),
+                instituteRepository.save(instituteMapper.createEntity(createInstituteRequest, branch)),
                 null
         );
     }
@@ -109,11 +109,11 @@ public class InstituteServiceImpl implements InstituteService {
                         .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 지사입니다. branchId: " + branchId)))
                 .orElseGet(institute::getBranch);
         // 교육기관 수정
-        instituteRepository.save(instituteMapper.toUpdateEntity(
+        instituteMapper.updateEntity(
                 institute,
                 updateInstituteRequest,
                 branch
-        ));
+        );
     }
 
     /**

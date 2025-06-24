@@ -25,7 +25,7 @@ public class ReadingDiagnosticVoucherMapper {
      * @param institute 바우처를 사용할 교육기관 엔티티
      * @return 등록할 ReadingDiagnosticVoucher 엔티티
      */
-    public ReadingDiagnosticVoucher toCreateEntity(
+    public ReadingDiagnosticVoucher createEntity(
             ReadingDiagnosticVoucherDto.CreateReadingDiagnosticVoucherRequest createReadingDiagnosticVoucherRequest,
             String code,
             Institute institute
@@ -39,11 +39,11 @@ public class ReadingDiagnosticVoucherMapper {
     }
 
     /**
-     * UpdateReadingDiagnosticVoucherRequest DTO를 기반으로 ReadingDiagnosticVoucher 수정 엔티티를 생성합니다.
+     * UpdateReadingDiagnosticVoucherRequest DTO를 기반으로 ReadingDiagnosticVoucher 엔티티를 수정합니다.
      *
      * @param updateReadingDiagnosticVoucherRequest 독서능력진단평가 바우처 수정에 필요한 데이터를 담은 DTO
      */
-    public void toUpdateEntity(
+    public void updateEntity(
             ReadingDiagnosticVoucher readingDiagnosticVoucher,
             ReadingDiagnosticVoucherDto.UpdateReadingDiagnosticVoucherRequest updateReadingDiagnosticVoucherRequest,
             Institute institute

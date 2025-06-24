@@ -24,14 +24,13 @@ public class HomeroomMapper {
 
     /**
      * CreateHomeroomRequest DTO를 기반으로 Homeroom 등록 엔티티를 생성합니다.
-     *
      * @param createHomeroomRequest 학급 등록에 필요한 데이터를 담은 DTO
      * @param institute 등록할 학급이 속할 교육기관 엔티티
      * @param teachers 등록할 학급에 속할 교사 엔티티 목록
      * @param students 등록할 학급에 속할 학생 엔티티 목록
-     * @return 생성된 Homeroom 등록 엔티티
+     * @return 등록할 Homeroom 엔티티
      */
-    public Homeroom toCreateEntity(
+    public Homeroom createEntity(
             HomeroomDto.CreateHomeroomRequest createHomeroomRequest,
             Institute institute,
             List<Teacher> teachers,
@@ -47,29 +46,25 @@ public class HomeroomMapper {
     }
 
     /**
-     * UpdateHomeroomRequest DTO를 기반으로 Homeroom 수정 엔티티를 생성합니다.
+     * UpdateHomeroomRequest DTO를 기반으로 Homeroom 엔티티를 수정합니다.
      *
      * @param updateHomeroomRequest 학급 수정에 필요한 데이터를 담은 DTO
      * @param institute 등록할 학급이 속할 교육기관 엔티티
      * @param teachers 등록할 학급에 속할 교사 엔티티 목록
      * @param students 등록할 학급에 속할 학생 엔티티 목록
-     * @return 생성된 Homeroom 수정 엔티티
      */
-    public Homeroom toUpdateEntity(
+    public void updateEntity(
             Homeroom homeroom,
             HomeroomDto.UpdateHomeroomRequest updateHomeroomRequest,
             Institute institute,
             List<Teacher> teachers,
             List<Student> students
     ) {
-        return Homeroom.builder()
-                .id(homeroom.getId())
-                .name(Optional.ofNullable(updateHomeroomRequest.name()).orElse(homeroom.getName()))
-                .institute(Optional.ofNullable(institute).orElse(homeroom.getInstitute()))
-                .description(Optional.ofNullable(homeroom.getDescription()).orElse(homeroom.getDescription()))
-                .students(Optional.ofNullable(students).orElse(homeroom.getStudents()))
-                .teachers(Optional.ofNullable(teachers).orElse(homeroom.getTeachers()))
-                .build();
+        Optional.ofNullable(updateHomeroomRequest.name()).ifPresent(homeroom::setName);
+        Optional.ofNullable(institute).ifPresent(homeroom::setInstitute);
+        Optional.ofNullable(updateHomeroomRequest.description()).ifPresent(homeroom::setDescription);
+        Optional.ofNullable(teachers).ifPresent(homeroom::setTeachers);
+        Optional.ofNullable(students).ifPresent(homeroom::setStudents);
     }
     
     /**

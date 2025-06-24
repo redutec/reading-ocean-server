@@ -65,7 +65,7 @@ public class HomeroomServiceImpl implements HomeroomService {
                         .toList())
                 .orElse(null);
         // 학급 등록 및 등록한 정보를 응답 객체로 리턴
-        return homeroomMapper.toResponseDto(homeroomRepository.save(homeroomMapper.toCreateEntity(
+        return homeroomMapper.toResponseDto(homeroomRepository.save(homeroomMapper.createEntity(
                 createHomeroomRequest,
                 institute,
                 teachers,
@@ -109,34 +109,34 @@ public class HomeroomServiceImpl implements HomeroomService {
     public void update(Long homeroomId, HomeroomDto.UpdateHomeroomRequest updateHomeroomRequest) {
         // 수정할 학급 조회
         Homeroom homeroom = homeroomRepository.findById(homeroomId)
-                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 학급입니다. homeroomId = " + homeroomId));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 학급입니다. homeroomId: " + homeroomId));
         // 수정 요청 객체에 교육기관 고유번호가 있다면 교육기관 엔티티 조회
         Institute institute = Optional.ofNullable(updateHomeroomRequest.instituteId())
                 .map(instituteId -> instituteRepository.findById(instituteId)
-                        .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 교육기관입니다. instituteId = " + instituteId)))
+                        .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 교육기관입니다. instituteId: " + instituteId)))
                 .orElse(null);
         // 수정 요청 객체에 학급에 소속될 교사 목록이 있다면 교사 엔티티 리스트 조회
         List<Teacher> teachers = Optional.ofNullable(updateHomeroomRequest.teacherIds())
                 .map(teacherIds -> teacherIds.stream()
                         .map(teacherId -> teacherRepository.findById(teacherId)
-                                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 교사입니다. teacherId = " + teacherId)))
+                                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 교사입니다. teacherId: " + teacherId)))
                         .toList())
                 .orElse(null);
         // 수정 요청 객체에 학급에 소속될 학생 목록이 있다면 학생 엔티티 리스트 조회
         List<Student> students = Optional.ofNullable(updateHomeroomRequest.studentIds())
                 .map(studentIds -> studentIds.stream()
                         .map(studentId -> studentRepository.findById(studentId)
-                                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 학생입니다. studentId = " + studentId)))
+                                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 학생입니다. studentId: " + studentId)))
                         .toList())
                 .orElse(null);
         // 학급 수정
-        homeroomRepository.save(homeroomMapper.toUpdateEntity(
+        homeroomMapper.updateEntity(
                 homeroom,
                 updateHomeroomRequest,
                 institute,
                 teachers,
                 students
-        ));
+        );
     }
 
     /**

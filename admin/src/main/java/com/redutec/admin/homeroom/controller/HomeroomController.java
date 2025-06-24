@@ -44,7 +44,7 @@ public class HomeroomController {
     }
 
     @Operation(summary = "특정 학급 수정", description = "특정 학급를 수정하는 API")
-    @PatchMapping("/{homeroomId}")
+    @PutMapping("/{homeroomId}")
     public ResponseEntity<ApiResponseBody> update(
             @Parameter(description = "학급 ID") @PathVariable Long homeroomId,
             @ParameterObject @Valid HomeroomDto.UpdateHomeroomRequest updateHomeroomRequest

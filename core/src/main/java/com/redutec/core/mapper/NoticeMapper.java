@@ -1,6 +1,5 @@
 package com.redutec.core.mapper;
 
-import com.redutec.core.config.FileUtil;
 import com.redutec.core.criteria.NoticeCriteria;
 import com.redutec.core.dto.NoticeDto;
 import com.redutec.core.entity.Notice;
@@ -16,8 +15,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Component
 public class NoticeMapper {
-    private final FileUtil fileUtil;
-
     /**
      * CreateNoticeRequest DTO를 기반으로 Notice 등록 엔티티를 생성합니다.
      *
@@ -25,7 +22,7 @@ public class NoticeMapper {
      * @param attachmentFileName 공지사항의 첨부 파일
      * @return 등록할 Notice 엔티티
      */
-    public Notice toCreateEntity(
+    public Notice createEntity(
             NoticeDto.CreateNoticeRequest createNoticeRequest,
             String attachmentFileName
     ) {
@@ -41,28 +38,24 @@ public class NoticeMapper {
     }
 
     /**
-     * UpdateNoticeRequest DTO를 기반으로 Notice 엔티티를 생성합니다.
+     * UpdateNoticeRequest DTO를 기반으로 Notice 엔티티를 수정합니다.
      *
      * @param notice 수정할 Notice 엔티티
      * @param updateNoticeRequest 공지사항 수정에 필요한 데이터를 담은 DTO
      * @param attachmentFileName 공지사항의 첨부 파일
-     * @return 수정할 Notice 엔티티
      */
-    public Notice toUpdateEntity(
+    public void updateEntity(
             Notice notice,
             NoticeDto.UpdateNoticeRequest updateNoticeRequest,
             String attachmentFileName
     ) {
-        return Notice.builder()
-                .id(notice.getId())
-                .domain(Optional.ofNullable(updateNoticeRequest.domain()).orElse(notice.getDomain()))
-                .title(Optional.ofNullable(updateNoticeRequest.title()).orElse(notice.getTitle()))
-                .content(Optional.ofNullable(updateNoticeRequest.content()).orElse(notice.getContent()))
-                .attachmentFileName(Optional.ofNullable(attachmentFileName).orElse(notice.getAttachmentFileName()))
-                .visible(Optional.ofNullable(updateNoticeRequest.visible()).orElse(notice.getVisible()))
-                .visibleStartAt(Optional.ofNullable(updateNoticeRequest.visibleStartAt()).orElse(notice.getVisibleStartAt()))
-                .visibleEndAt(Optional.ofNullable(updateNoticeRequest.visibleEndAt()).orElse(notice.getVisibleEndAt()))
-                .build();
+        Optional.ofNullable(updateNoticeRequest.domain()).ifPresent(notice::setDomain);
+        Optional.ofNullable(updateNoticeRequest.title()).ifPresent(notice::setTitle);
+        Optional.ofNullable(updateNoticeRequest.content()).ifPresent(notice::setContent);
+        Optional.ofNullable(attachmentFileName).ifPresent(notice::setAttachmentFileName);
+        Optional.ofNullable(updateNoticeRequest.visible()).ifPresent(notice::setVisible);
+        Optional.ofNullable(updateNoticeRequest.visibleStartAt()).ifPresent(notice::setVisibleStartAt);
+        Optional.ofNullable(updateNoticeRequest.visibleEndAt()).ifPresent(notice::setVisibleEndAt);
     }
     
     /**

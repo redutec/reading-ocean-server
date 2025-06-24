@@ -44,7 +44,7 @@ public class InquiryServiceImpl implements InquiryService {
         Teacher teacher = teacherRepository.findById(authenticationService.getAuthenticatedTeacher().teacherId())
                 .orElseThrow(() -> new EntityNotFoundException("교사가 존재하지 않습니다. teacherId: " + authenticationService.getAuthenticatedTeacher().teacherId()));
         // 고객문의 등록
-        return teacherInquiryMapper.toResponseDto(teacherInquiryRepository.save(teacherInquiryMapper.toCreateEntity(
+        return teacherInquiryMapper.toResponseDto(teacherInquiryRepository.save(teacherInquiryMapper.createEntity(
                 createTeacherInquiryRequest,
                 teacher
         )));
@@ -108,11 +108,11 @@ public class InquiryServiceImpl implements InquiryService {
                 .flatMap(adminUserRepository::findByAccountId)
                 .orElseGet(teacherInquiry::getResponder);
         // 고객문의 수정
-        teacherInquiryRepository.save(teacherInquiryMapper.toUpdateEntity(
+        teacherInquiryMapper.updateEntity(
                 teacherInquiry,
                 responder,
                 updateTeacherInquiryRequest
-        ));
+        );
     }
 
     /**

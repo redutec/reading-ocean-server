@@ -25,9 +25,9 @@ public class BookGroupMapper {
      *
      * @param createBookGroupRequest 도서 그룹 등록에 필요한 데이터를 담은 DTO
      * @param books 등록할 도서 그룹에 포함할 도서 목록
-     * @return 생성된 BookGroup 등록 엔티티
+     * @return 등록할 BookGroup 엔티티
      */
-    public BookGroup toCreateEntity(
+    public BookGroup createEntity(
             BookGroupDto.CreateBookGroupRequest createBookGroupRequest,
             List<Book> books
     ) {
@@ -41,26 +41,22 @@ public class BookGroupMapper {
     }
 
     /**
-     * UpdateBookGroupRequest DTO를 기반으로 BookGroup 수정 엔티티를 생성합니다.
+     * UpdateBookGroupRequest DTO를 기반으로 BookGroup 엔티티를 수정합니다.
      *
      * @param bookGroup 수정할 도서 그룹 엔티티
      * @param updateBookGroupRequest 도서 그룹 수정에 필요한 데이터를 담은 DTO
      * @param books 수정할 도서 그룹에 포함할 도서 목록
-     * @return 생성된 BookGroup 수정 엔티티
      */
-    public BookGroup toUpdateEntity(
+    public void updateEntity(
             BookGroup bookGroup,
             BookGroupDto.UpdateBookGroupRequest updateBookGroupRequest,
             List<Book> books
     ) {
-        return BookGroup.builder()
-                .id(bookGroup.getId())
-                .name(Optional.ofNullable(updateBookGroupRequest.name()).orElse(bookGroup.getName()))
-                .yearMonth(Optional.ofNullable(updateBookGroupRequest.yearMonth()).orElse(bookGroup.getYearMonth()))
-                .type(Optional.ofNullable(updateBookGroupRequest.type()).orElse(bookGroup.getType()))
-                .schoolGrade(Optional.ofNullable(updateBookGroupRequest.schoolGrade()).orElse(bookGroup.getSchoolGrade()))
-                .books(Optional.ofNullable(books).orElse(bookGroup.getBooks()))
-                .build();
+        Optional.ofNullable(updateBookGroupRequest.name()).ifPresent(bookGroup::setName);
+        Optional.ofNullable(updateBookGroupRequest.yearMonth()).ifPresent(bookGroup::setYearMonth);
+        Optional.ofNullable(updateBookGroupRequest.type()).ifPresent(bookGroup::setType);
+        Optional.ofNullable(updateBookGroupRequest.schoolGrade()).ifPresent(bookGroup::setSchoolGrade);
+        Optional.ofNullable(books).ifPresent(bookGroup::setBooks);
     }
     
     /**

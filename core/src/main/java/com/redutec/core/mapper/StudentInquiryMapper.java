@@ -19,12 +19,11 @@ import java.util.stream.Collectors;
 public class StudentInquiryMapper {
     /**
      * CreateInquiryRequest DTO를 기반으로 StudentInquiry 등록 엔티티를 생성합니다.
-     *
      * @param createStudentInquiryRequest StudentInquiry 등록에 필요한 데이터를 담은 DTO
      * @param student 고객문의를 등록한 교사
      * @return 등록할 StudentInquiry 엔티티
      */
-    public StudentInquiry toCreateEntity(
+    public StudentInquiry createEntity(
             StudentInquiryDto.CreateStudentInquiryRequest createStudentInquiryRequest,
             Student student
     ) {
@@ -39,28 +38,23 @@ public class StudentInquiryMapper {
     }
 
     /**
-     * UpdateInquiryRequest DTO를 기반으로 StudentInquiry 수정 엔티티를 생성합니다.
-     *
+     * UpdateInquiryRequest DTO를 기반으로 StudentInquiry 엔티티를 수정합니다.
      * @param studentInquiry 수정할 StudentInquiry 엔티티
      * @param updateStudentInquiryRequest StudentInquiry 수정에 필요한 데이터를 담은 DTO
      * @param responder 문의에 답변한 어드민 사용자 엔티티
-     * @return 수정할 Inquiry 엔티티
      */
-    public StudentInquiry toUpdateEntity(
+    public void updateEntity(
             StudentInquiry studentInquiry,
             StudentInquiryDto.UpdateStudentInquiryRequest updateStudentInquiryRequest,
             AdminUser responder
     ) {
-        return StudentInquiry.builder()
-                .id(studentInquiry.getId())
-                .domain(Optional.ofNullable(updateStudentInquiryRequest.domain()).orElse(studentInquiry.getDomain()))
-                .category(Optional.ofNullable(updateStudentInquiryRequest.category()).orElse(studentInquiry.getCategory()))
-                .status(Optional.ofNullable(updateStudentInquiryRequest.status()).orElse(studentInquiry.getStatus()))
-                .responder(Optional.ofNullable(responder).orElse(studentInquiry.getResponder()))
-                .title(Optional.ofNullable(updateStudentInquiryRequest.title()).orElse(studentInquiry.getTitle()))
-                .content(Optional.ofNullable(updateStudentInquiryRequest.content()).orElse(studentInquiry.getContent()))
-                .response(Optional.ofNullable(updateStudentInquiryRequest.response()).orElse(studentInquiry.getResponse()))
-                .build();
+        Optional.ofNullable(updateStudentInquiryRequest.domain()).ifPresent(studentInquiry::setDomain);
+        Optional.ofNullable(updateStudentInquiryRequest.category()).ifPresent(studentInquiry::setCategory);
+        Optional.ofNullable(updateStudentInquiryRequest.status()).ifPresent(studentInquiry::setStatus);
+        Optional.ofNullable(responder).ifPresent(studentInquiry::setResponder);
+        Optional.ofNullable(updateStudentInquiryRequest.title()).ifPresent(studentInquiry::setTitle);
+        Optional.ofNullable(updateStudentInquiryRequest.content()).ifPresent(studentInquiry::setContent);
+        Optional.ofNullable(updateStudentInquiryRequest.response()).ifPresent(studentInquiry::setResponse);
     }
     
     /**

@@ -43,7 +43,7 @@ public class ProductServiceImpl implements ProductService {
                 })
                 .orElse(null);
         // 판매상품 등록
-        return productMapper.toResponseDto(productRepository.save(productMapper.toCreateEntity(
+        return productMapper.toResponseDto(productRepository.save(productMapper.createEntity(
                 createProductRequest,
                 attachmentFileName
         )));
@@ -94,11 +94,11 @@ public class ProductServiceImpl implements ProductService {
                 })
                 .orElseGet(product::getAttachmentFileName);
         // 판매상품 수정
-        productRepository.save(productMapper.toUpdateEntity(
+        productMapper.updateEntity(
                 product,
                 updateProductRequest,
                 attachmentFileName
-        ));
+        );
     }
 
     /**

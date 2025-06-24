@@ -37,7 +37,7 @@ public class AdminUserController {
     }
 
     @Operation(summary = "어드민 사용자 정보 수정", description = "어드민 사용자 정보를 수정하는 API")
-    @PatchMapping("/{adminUserId}")
+    @PutMapping("/{adminUserId}")
     public ResponseEntity<ApiResponseBody> update(
             @Parameter(description = "어드민 사용자 ID") @PathVariable Long adminUserId,
             @ParameterObject AdminUserDto.UpdateAdminUserRequest updateAdminUserRequest

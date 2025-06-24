@@ -11,7 +11,7 @@ import java.util.List;
 
 public class InstituteSubscriptionDto {
     @Schema(description = "구독(교육기관) 등록 요청 객체")
-    public record CreateSubscriptionInstituteRequest(
+    public record CreateInstituteSubscriptionRequest(
             @Schema(description = "구독 상품 ID", requiredMode = Schema.RequiredMode.REQUIRED)
             @NotNull
             @Positive
@@ -34,9 +34,9 @@ public class InstituteSubscriptionDto {
     ) {}
 
     @Schema(description = "구독(교육기관) 조회 요청 객체")
-    public record FindSubscriptionInstituteRequest(
+    public record FindInstituteSubscriptionRequest(
             @Schema(description = "구독(교육기관) ID", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-            List<@Positive Long> subscriptionInstituteIds,
+            List<@Positive Long> instituteSubscriptionIds,
 
             @Schema(description = "교육기관 ID", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
             List<@Positive Long> instituteIds,
@@ -54,7 +54,7 @@ public class InstituteSubscriptionDto {
     ) {}
 
     @Schema(description = "구독(교육기관) 수정 요청 객체")
-    public record UpdateSubscriptionInstituteRequest(
+    public record UpdateInstituteSubscriptionRequest(
             @Schema(description = "구독 상품 ID", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
             @Positive
             Long subscriptionPlanId,
@@ -74,8 +74,8 @@ public class InstituteSubscriptionDto {
     ) {}
 
     @Schema(description = "구독(교육기관) 응답 객체")
-    public record SubscriptionInstituteResponse(
-            Long subscriptionInstituteId,
+    public record InstituteSubscriptionResponse(
+            Long instituteSubscriptionId,
             LocalDateTime startedAt,
             LocalDateTime endedAt,
             LocalDateTime nextPaymentAt,
@@ -92,8 +92,8 @@ public class InstituteSubscriptionDto {
     ) {}
 
     @Schema(description = "구독(교육기관) 응답 페이징 객체")
-    public record SubscriptionInstitutePageResponse(
-            List<SubscriptionInstituteResponse> subscriptionInstitutes,
+    public record InstituteSubscriptionPageResponse(
+            List<InstituteSubscriptionResponse> instituteSubscriptions,
             Long totalElements,
             Integer totalPages
     ) {}

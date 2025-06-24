@@ -51,7 +51,7 @@ public class BranchServiceImpl implements BranchService {
                 })
                 .orElse(null);
         // 신규 지사 INSERT 후 등록한 지사 정보를 응답 객체에 담아 리턴
-        return branchMapper.toResponseDto(branchMapper.toCreateEntity(
+        return branchMapper.toResponseDto(branchMapper.createEntity(
                 createBranchRequest,
                 managerTeacher,
                 contractFileName
@@ -108,12 +108,12 @@ public class BranchServiceImpl implements BranchService {
                         .orElseThrow(() -> new EntityNotFoundException("지사장 교사를 찾을 수 없습니다. managerTeacherId: " + managerTeacherId)))
                 .orElseGet(branch::getManagerTeacher);
         // 지사 수정 엔티티 빌드 후 UPDATE
-        branchRepository.save(branchMapper.toUpdateEntity(
+        branchMapper.updateEntity(
                 branch,
                 updateBranchRequest,
                 managerTeacher,
                 contractFileName
-        ));
+        );
     }
 
     /**

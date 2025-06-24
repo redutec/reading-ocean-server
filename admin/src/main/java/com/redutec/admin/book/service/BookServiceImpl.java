@@ -43,7 +43,7 @@ public class BookServiceImpl implements BookService {
                 })
                 .orElse(null);
         // 도서 등록
-        return bookMapper.toResponseDto(bookRepository.save(bookMapper.toCreateEntity(
+        return bookMapper.toResponseDto(bookRepository.save(bookMapper.createEntity(
                 createBookRequest,
                 coverImageFileName
         )));
@@ -94,7 +94,7 @@ public class BookServiceImpl implements BookService {
                 })
                 .orElseGet(book::getCoverImageFileName);
         // 도서 수정
-        bookRepository.save(bookMapper.toUpdateEntity(book, updateBookRequest, coverImageFileName));
+        bookMapper.updateEntity(book, updateBookRequest, coverImageFileName);
     }
 
     /**

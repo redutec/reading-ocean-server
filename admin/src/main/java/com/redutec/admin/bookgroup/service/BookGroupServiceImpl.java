@@ -43,7 +43,7 @@ public class BookGroupServiceImpl implements BookGroupService {
                 .flatMap(bookId -> bookRepository.findById(bookId).stream())
                 .collect(Collectors.toList());
         // 도서 그룹 등록
-        return bookGroupMapper.toResponseDto(bookGroupRepository.save(bookGroupMapper.toCreateEntity(
+        return bookGroupMapper.toResponseDto(bookGroupRepository.save(bookGroupMapper.createEntity(
                 createBookGroupRequest,
                 books
         )));
@@ -93,11 +93,11 @@ public class BookGroupServiceImpl implements BookGroupService {
                         .collect(Collectors.toList()))
                 .orElseGet(bookGroup::getBooks);
         // 도서 그룹 수정
-        bookGroupRepository.save(bookGroupMapper.toUpdateEntity(
+        bookGroupMapper.updateEntity(
                 bookGroup,
                 updateBookGroupRequest,
                 books
-        ));
+        );
     }
 
     /**

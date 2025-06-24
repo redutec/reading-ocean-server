@@ -4,10 +4,7 @@ import com.redutec.core.meta.Domain;
 import com.redutec.core.meta.PolicyType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.data.annotation.CreatedDate;
@@ -30,37 +27,44 @@ public class Policy {
     @Comment("정책 고유번호")
     private Long id;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
     @Comment("노출 도메인")
+    @Setter
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private Domain domain;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
     @Comment("유형")
+    @Setter
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private PolicyType type;
 
-    @Column(nullable = false, length = 50)
-    @NotBlank
     @Comment("버전(e.g. v1.0, 2025-05)")
+    @Setter
+    @NotBlank
+    @Column(nullable = false, length = 50)
     private String version;
 
-    @Lob
-    @Column(nullable = false)
-    @NotBlank
     @Comment("내용(HTML 혹은 마크다운)")
+    @Setter
+    @NotBlank
+    @Column(nullable = false)
+    @Lob
     private String content;
 
     @Column(nullable = false)
+    @Setter
     @Comment("적용 시작일시")
     private LocalDateTime effectiveAt;
 
     @Column
+    @Setter
     @Comment("적용 종료일시(선택)")
     private LocalDateTime expiresAt;
 
-    @Column(nullable = false)
     @Comment("활성화 여부")
+    @Setter
+    @Column(nullable = false)
     @Builder.Default
     private Boolean available = true;
 

@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface SubscriptionInstituteRepository extends JpaRepository<InstituteSubscription, Long>, JpaSpecificationExecutor<InstituteSubscription> {
+public interface InstituteSubscriptionRepository extends JpaRepository<InstituteSubscription, Long>, JpaSpecificationExecutor<InstituteSubscription> {
 }

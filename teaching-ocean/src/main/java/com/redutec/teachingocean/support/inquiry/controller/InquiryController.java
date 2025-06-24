@@ -44,7 +44,7 @@ public class InquiryController {
     }
 
     @Operation(summary = "고객센터 - 1:1 문의 - 특정 고객문의 수정", description = "특정 고객문의을 수정")
-    @PatchMapping("/{teacherInquiryId}")
+    @PutMapping("/{teacherInquiryId}")
     public ResponseEntity<ApiResponseBody> update(
             @Parameter(description = "고객문의 ID") @PathVariable Long teacherInquiryId,
             @ParameterObject @Valid TeacherInquiryDto.UpdateTeacherInquiryRequest updateTeacherInquiryRequest

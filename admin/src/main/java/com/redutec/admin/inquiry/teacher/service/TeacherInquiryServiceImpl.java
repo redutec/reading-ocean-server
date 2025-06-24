@@ -66,11 +66,11 @@ public class TeacherInquiryServiceImpl implements TeacherInquiryService {
                 .flatMap(adminUserRepository::findByAccountId)
                 .orElseGet(teacherInquiry::getResponder);
         // 고객문의(교사) 수정
-        teacherInquiryRepository.save(teacherInquiryMapper.toUpdateEntity(
+        teacherInquiryMapper.updateEntity(
                 teacherInquiry,
                 responder,
                 updateTeacherInquiryRequest
-        ));
+        );
     }
 
     /**

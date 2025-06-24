@@ -22,4 +22,10 @@ public interface BranchService {
      * @return 현재 로그인한 지사장(교사)의 지사에 속한 교육기관 응답 객체
      */
     InstituteDto.InstitutePageResponse findInstitutes();
+
+    /**
+     * 현재 로그인한 지사장(교사)의 지사 정보 수정
+     * @param updateBranchRequest 지사 수정 요청 객체
+     */
+    void update(BranchDto.UpdateBranchRequest updateBranchRequest);
 }

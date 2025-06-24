@@ -44,7 +44,7 @@ public class InstituteController {
     }
 
     @Operation(summary = "특정 교육기관 수정", description = "특정 교육기관을 수정하는 API")
-    @PatchMapping("/{instituteId}")
+    @PutMapping("/{instituteId}")
     public ResponseEntity<ApiResponseBody> update(
             @Parameter(description = "교육기관 ID") @PathVariable Long instituteId,
             @ParameterObject @Valid InstituteDto.UpdateInstituteRequest updateInstituteRequest

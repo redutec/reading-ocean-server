@@ -46,7 +46,7 @@ public class StudentServiceImpl implements StudentService {
         Homeroom homeroom = Optional.ofNullable(createStudentRequest.homeroomId())
                 .flatMap(homeroomRepository::findById)
                 .orElse(null);
-        return studentMapper.toResponseDto(studentRepository.save(studentMapper.toCreateEntity(
+        return studentMapper.toResponseDto(studentRepository.save(studentMapper.createEntity(
                 createStudentRequest,
                 institute,
                 homeroom
@@ -110,7 +110,7 @@ public class StudentServiceImpl implements StudentService {
                             .filter(currentPassword -> passwordEncoder.matches(currentPassword, student.getPassword()))
                             .orElseThrow(() -> new IllegalArgumentException("현재 비밀번호가 일치하지 않습니다."));
                 });
-        studentRepository.save(studentMapper.toUpdateEntity(student, updateStudentRequest, institute, homeroom));
+        studentMapper.updateEntity(student, updateStudentRequest, institute, homeroom);
     }
 
     /**

@@ -69,7 +69,7 @@ public class ReadingDiagnosticVoucherServiceImpl implements ReadingDiagnosticVou
         } while (candidateVoucherCodes.isEmpty());
         String voucherCode = candidateVoucherCodes.iterator().next();
         // 바우처 엔티티 생성 및 저장
-        ReadingDiagnosticVoucher readingDiagnosticVoucher = readingDiagnosticVoucherMapper.toCreateEntity(
+        ReadingDiagnosticVoucher readingDiagnosticVoucher = readingDiagnosticVoucherMapper.createEntity(
                 createReadingDiagnosticVoucherRequest,
                 voucherCode,
                 institute
@@ -126,10 +126,11 @@ public class ReadingDiagnosticVoucherServiceImpl implements ReadingDiagnosticVou
         ReadingDiagnosticVoucher readingDiagnosticVoucher = getReadingDiagnosticVoucher(readingDiagnosticVoucherId);
         // 수정 요청 객체에 교육기관 고유번호가 있으면 교육기관 엔티티 조회
         Institute institute = Optional.ofNullable(updateReadingDiagnosticVoucherRequest.instituteId())
-                .flatMap(instituteRepository::findById)
-                .orElseGet(readingDiagnosticVoucher::getInstitute);
+                .map(instituteId -> instituteRepository.findById(instituteId)
+                        .orElseThrow(() -> new EntityNotFoundException("교육기관을 찾을 수 없습니다. instituteId: " + instituteId)))
+                .orElse(readingDiagnosticVoucher.getInstitute());
         // 독서능력진단평가 바우처 엔티티 빌드 후 UPDATE
-        readingDiagnosticVoucherMapper.toUpdateEntity(readingDiagnosticVoucher, updateReadingDiagnosticVoucherRequest, institute);
+        readingDiagnosticVoucherMapper.updateEntity(readingDiagnosticVoucher, updateReadingDiagnosticVoucherRequest, institute);
     }
 
     /**

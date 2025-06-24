@@ -7,10 +7,7 @@ import com.redutec.core.meta.InstituteStatus;
 import com.redutec.core.meta.InstituteType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Pattern;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.data.annotation.CreatedDate;
@@ -34,59 +31,71 @@ public class Institute {
     private Long id;
 
     @Comment("지점명")
+    @Setter
     @Column(nullable = false, unique = true, length = 60)
     private String name;
 
     @Comment("사업자 등록명")
+    @Setter
     @Column(length = 60, unique = true)
     private String businessRegistrationName;
 
     @Comment("주소")
+    @Setter
     @Column(length = 300)
     private String address;
 
     @Comment("우편번호")
+    @Setter
     @Column(length = 5)
     @Pattern(regexp = "^[0-9]{5}", message = "우편번호는 5자리의 숫자로만 구성되어야 합니다.")
     private String postalCode;
 
     @Comment("연락처(AES256 암호화)")
+    @Setter
     @Convert(converter = AesAttributeConverter.class)
     @Column
     @Pattern(regexp = "^[0-9]{1,11}$", message = "연락처는 숫자로만 구성되어야 합니다.")
     private String phoneNumber;
 
     @Comment("홈페이지")
+    @Setter
     @Column(length = 100)
     private String url;
 
     @Comment("네이버 플레이스 URL")
+    @Setter
     @Column(length = 60)
     private String naverPlaceUrl;
 
     @Comment("유형")
+    @Setter
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private InstituteType type;
 
     @Comment("운영 유형")
+    @Setter
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private InstituteManagementType managementType;
 
     @Comment("상태")
+    @Setter
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     @Builder.Default
     private InstituteStatus status = InstituteStatus.WAIT;
 
     @Comment("운영 상태")
+    @Setter
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     @Builder.Default
     private InstituteOperationStatus operationStatus = InstituteOperationStatus.PREPARING;
 
     @Comment("지사")
+    @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
     private Branch branch;

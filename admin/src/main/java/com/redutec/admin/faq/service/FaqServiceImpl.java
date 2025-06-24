@@ -28,7 +28,7 @@ public class FaqServiceImpl implements FaqService {
     @Override
     @Transactional
     public FaqDto.FaqResponse create(FaqDto.CreateFaqRequest createFaqRequest) {
-        return faqMapper.toResponseDto(faqRepository.save(faqMapper.toCreateEntity(createFaqRequest)));
+        return faqMapper.toResponseDto(faqRepository.save(faqMapper.createEntity(createFaqRequest)));
     }
 
     /**
@@ -65,7 +65,7 @@ public class FaqServiceImpl implements FaqService {
     @Override
     @Transactional
     public void update(Long faqId, FaqDto.UpdateFaqRequest updateFaqRequest) {
-        faqRepository.save(faqMapper.toUpdateEntity(getFaq(faqId), updateFaqRequest));
+        faqMapper.updateEntity(getFaq(faqId), updateFaqRequest);
     }
 
     /**

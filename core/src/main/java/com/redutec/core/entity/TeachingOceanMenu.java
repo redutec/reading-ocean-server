@@ -30,22 +30,27 @@ public class TeachingOceanMenu {
     private Long id;
 
     @Comment("메뉴명")
+    @Setter
     @Column(nullable = false, unique = true, length = 50)
     private String name;
 
     @Comment("접근 URL")
+    @Setter
     @Column(nullable = false, unique = true, length = 30)
     private String url;
 
     @Comment("비고")
+    @Setter
     @Column(nullable = false)
     private String description;
 
     @Comment("사용여부")
+    @Setter
     @Column(nullable = false)
     private Boolean available;
 
     @Comment("접근 가능 권한")
+    @Setter
     @ElementCollection(fetch = FetchType.EAGER, targetClass = TeacherRole.class)
     @CollectionTable(
             name = "teaching_ocean_menu_roles",
@@ -56,15 +61,18 @@ public class TeachingOceanMenu {
     private List<TeacherRole> accessibleRoles;
 
     @Comment("메뉴의 깊이")
+    @Setter
     @Column(nullable = false)
     private Integer depth;
 
     @Comment("상위 메뉴")
+    @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
     private TeachingOceanMenu parent;
 
     @Comment("소속된 하위 메뉴")
+    @Setter
     @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TeachingOceanMenu> children;
 

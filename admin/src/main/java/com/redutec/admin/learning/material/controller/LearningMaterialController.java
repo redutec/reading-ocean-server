@@ -47,7 +47,7 @@ public class LearningMaterialController {
     }
 
     @Operation(summary = "특정 학습 자료 게시물 수정", description = "특정 학습 자료 게시물을 수정하는 API")
-    @PatchMapping(path = "/{learningMaterialId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PutMapping(path = "/{learningMaterialId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponseBody> update(
             @Parameter(description = "학습 자료 게시물 ID") @PathVariable Long learningMaterialId,
             @ModelAttribute @Valid LearningMaterialDto.UpdateLearningMaterialRequest updateLearningMaterialRequest

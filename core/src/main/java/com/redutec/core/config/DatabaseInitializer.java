@@ -246,12 +246,12 @@ public class DatabaseInitializer {
                             sampleBranch.getRenewalDate(),
                             sampleBranch.getDescription()
                             );
-                    branchRepository.save(branchMapper.toUpdateEntity(
+                    branchMapper.updateEntity(
                             branch,
                             updateBranchRequest,
                             managerTeacher,
                             sampleBranch.getContractFileName()
-                    ));
+                    );
                 });
     }
 }

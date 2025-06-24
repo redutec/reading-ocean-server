@@ -7,6 +7,7 @@ import jakarta.persistence.ManyToOne;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.DynamicUpdate;
@@ -17,6 +18,7 @@ import static jakarta.persistence.FetchType.LAZY;
 @Entity
 @Comment("구독(학생)")
 @DynamicUpdate
+@Setter
 @Getter
 @SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

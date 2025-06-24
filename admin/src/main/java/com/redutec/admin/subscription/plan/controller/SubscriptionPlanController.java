@@ -40,7 +40,7 @@ public class SubscriptionPlanController {
     }
 
     @Operation(summary = "특정 구독 상품 수정", description = "특정 구독 상품를 수정하는 API")
-    @PatchMapping("/{subscriptionPlanId}")
+    @PutMapping("/{subscriptionPlanId}")
     public ResponseEntity<ApiResponseBody> update(
             @Parameter(description = "구독 상품 ID") @PathVariable Long subscriptionPlanId,
             @ParameterObject @Valid SubscriptionPlanDto.UpdateSubscriptionPlanRequest updateSubscriptionPlanRequest

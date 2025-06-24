@@ -22,7 +22,7 @@ public class ProductMapper {
      * @param attachmentFileName 첨부 파일명
      * @return 등록할 Product 엔티티
      */
-    public Product toCreateEntity(
+    public Product createEntity(
             ProductDto.CreateProductRequest createProductRequest,
             String attachmentFileName
     ) {
@@ -38,28 +38,24 @@ public class ProductMapper {
     }
 
     /**
-     * UpdateProductRequest DTO를 기반으로 Product 수정 엔티티를 생성합니다.
+     * UpdateProductRequest DTO를 기반으로 Product 엔티티를 수정합니다.
      *
      * @param product 수정할 Product 엔티티
      * @param updateProductRequest 판매상품 수정 요청 객체
      * @param attachmentFileName 첨부 파일명
-     * @return 수정할 Product 엔티티
      */
-    public Product toUpdateEntity(
+    public void updateEntity(
             Product product,
             ProductDto.UpdateProductRequest updateProductRequest,
             String attachmentFileName
     ) {
-        return Product.builder()
-                .id(product.getId())
-                .name(Optional.ofNullable(updateProductRequest.name()).orElse(product.getName()))
-                .details(Optional.ofNullable(updateProductRequest.details()).orElse(product.getDetails()))
-                .price(Optional.ofNullable(updateProductRequest.price()).orElse(product.getPrice()))
-                .discountPercentage(Optional.ofNullable(updateProductRequest.discountPercentage()).orElse(product.getDiscountPercentage()))
-                .attachmentFileName(Optional.ofNullable(attachmentFileName).orElse(product.getAttachmentFileName()))
-                .category(Optional.ofNullable(updateProductRequest.category()).orElse(product.getCategory()))
-                .status(Optional.ofNullable(updateProductRequest.status()).orElse(product.getStatus()))
-                .build();
+        Optional.ofNullable(updateProductRequest.name()).ifPresent(product::setName);
+        Optional.ofNullable(updateProductRequest.details()).ifPresent(product::setDetails);
+        Optional.ofNullable(updateProductRequest.price()).ifPresent(product::setPrice);
+        Optional.ofNullable(updateProductRequest.discountPercentage()).ifPresent(product::setDiscountPercentage);
+        Optional.ofNullable(attachmentFileName).ifPresent(product::setAttachmentFileName);
+        Optional.ofNullable(updateProductRequest.category()).ifPresent(product::setCategory);
+        Optional.ofNullable(updateProductRequest.status()).ifPresent(product::setStatus);
     }
 
     /**

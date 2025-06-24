@@ -46,7 +46,7 @@ public class HomeroomController {
     }
 
     @Operation(summary = "학사관리 - 학급관리 - 특정 학급 수정", description = "현재 로그인한 교사가 속한 교육기관의 특정 학급 수정")
-    @PatchMapping("/{homeroomId}")
+    @PutMapping("/{homeroomId}")
     public ResponseEntity<ApiResponseBody> update(
             @Parameter(description = "학급 ID") @PathVariable Long homeroomId,
             @ParameterObject @Valid HomeroomDto.UpdateHomeroomRequest updateHomeroomRequest

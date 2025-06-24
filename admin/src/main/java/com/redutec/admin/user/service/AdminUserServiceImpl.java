@@ -32,7 +32,7 @@ public class AdminUserServiceImpl implements AdminUserService {
     @Override
     @Transactional
     public AdminUserDto.AdminUserResponse create(AdminUserDto.CreateAdminUserRequest createAdminUserRequest) {
-        return adminUserMapper.toResponseDto(adminUserRepository.save(adminUserMapper.toCreateEntity(createAdminUserRequest)));
+        return adminUserMapper.toResponseDto(adminUserRepository.save(adminUserMapper.createEntity(createAdminUserRequest)));
     }
 
     /**
@@ -85,7 +85,7 @@ public class AdminUserServiceImpl implements AdminUserService {
                             .orElseThrow(() -> new IllegalArgumentException("현재 비밀번호가 일치하지 않습니다."));
                 });
         // 어드민 사용자 수정 엔티티 빌드 후 UPDATE
-        adminUserRepository.save(adminUserMapper.toUpdateEntity(adminUser, updateAdminUserRequest));
+        adminUserMapper.updateEntity(adminUser, updateAdminUserRequest);
     }
 
     /**

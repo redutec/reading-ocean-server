@@ -44,7 +44,7 @@ public class ReadingDiagnosticVoucherController {
     }
 
     @Operation(summary = "특정 독서능력진단평가 바우처 수정", description = "특정 독서능력진단평가 바우처를 수정하는 API")
-    @PatchMapping("/{readingDiagnosticVoucherId}")
+    @PutMapping("/{readingDiagnosticVoucherId}")
     public ResponseEntity<ApiResponseBody> update(
             @Parameter(description = "독서능력진단평가 바우처 ID") @PathVariable Long readingDiagnosticVoucherId,
             @ParameterObject @Valid ReadingDiagnosticVoucherDto.UpdateReadingDiagnosticVoucherRequest updateReadingDiagnosticVoucherRequest

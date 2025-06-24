@@ -28,7 +28,7 @@ public class StudentMapper {
      * @param homeroom 학생이 소속될 학급 엔티티
      * @return 등록할 Student 엔티티
      */
-    public Student toCreateEntity(
+    public Student createEntity(
             StudentDto.CreateStudentRequest createStudentRequest,
             Institute institute,
             Homeroom homeroom
@@ -53,42 +53,38 @@ public class StudentMapper {
     }
 
     /**
-     * CreateStudentRequest DTO를 기반으로 Student 수정 엔티티를 생성합니다.
+     * CreateStudentRequest DTO를 기반으로 Student 엔티티를 수정합니다.
      *
      * @param student 수정할 Student 엔티티
      * @param updateStudentRequest 학생 수정에 필요한 데이터를 담은 DTO
      * @param institute 학생이 소속될 교육기관 엔티티
      * @param homeroom 학생이 소속될 학급 엔티티
-     * @return 수정할 Student 엔티티
      */
-    public Student toUpdateEntity(
+    public void updateEntity(
             Student student,
             StudentDto.UpdateStudentRequest updateStudentRequest,
             Institute institute,
             Homeroom homeroom
     ) {
-        return Student.builder()
-                .id(student.getId())
-                .accountId(Optional.ofNullable(updateStudentRequest.accountId()).orElse(student.getAccountId()))
-                .password(Optional.ofNullable(updateStudentRequest.newPassword())
-                        .filter(newPassword -> !newPassword.isBlank())
-                        .map(passwordEncoder::encode)
-                        .orElse(student.getPassword()))
-                .name(Optional.ofNullable(updateStudentRequest.name()).orElse(student.getName()))
-                .phoneNumber(Optional.ofNullable(updateStudentRequest.phoneNumber()).orElse(student.getPhoneNumber()))
-                .email(Optional.ofNullable(updateStudentRequest.email()).orElse(student.getEmail()))
-                .birthday(Optional.ofNullable(updateStudentRequest.birthday()).orElse(student.getBirthday()))
-                .status(Optional.ofNullable(updateStudentRequest.status()).orElse(student.getStatus()))
-                .authenticationStatus(Optional.ofNullable(updateStudentRequest.authenticationStatus()).orElse(student.getAuthenticationStatus()))
-                .readingLevel(Optional.ofNullable(updateStudentRequest.readingLevel()).orElse(student.getReadingLevel()))
-                .raq(Optional.ofNullable(updateStudentRequest.raq()).orElse(student.getRaq()))
-                .schoolGrade(Optional.ofNullable(updateStudentRequest.schoolGrade()).orElse(student.getSchoolGrade()))
-                .bookMbti(Optional.ofNullable(updateStudentRequest.bookMbti()).orElse(student.getBookMbti()))
-                .description(Optional.ofNullable(updateStudentRequest.description()).orElse(student.getDescription()))
-                .domain(Optional.ofNullable(updateStudentRequest.domain()).orElse(student.getDomain()))
-                .institute(Optional.ofNullable(institute).orElse(student.getInstitute()))
-                .homeroom(Optional.ofNullable(homeroom).orElse(student.getHomeroom()))
-                .build();
+        Optional.ofNullable(updateStudentRequest.accountId()).ifPresent(student::setAccountId);
+        Optional.ofNullable(updateStudentRequest.newPassword())
+                .filter(newPassword -> !newPassword.isBlank())
+                .map(passwordEncoder::encode)
+                .ifPresent(student::setPassword);
+        Optional.ofNullable(updateStudentRequest.name()).ifPresent(student::setName);
+        Optional.ofNullable(updateStudentRequest.phoneNumber()).ifPresent(student::setPhoneNumber);
+        Optional.ofNullable(updateStudentRequest.email()).ifPresent(student::setEmail);
+        Optional.ofNullable(updateStudentRequest.birthday()).ifPresent(student::setBirthday);
+        Optional.ofNullable(updateStudentRequest.status()).ifPresent(student::setStatus);
+        Optional.ofNullable(updateStudentRequest.authenticationStatus()).ifPresent(student::setAuthenticationStatus);
+        Optional.ofNullable(updateStudentRequest.readingLevel()).ifPresent(student::setReadingLevel);
+        Optional.ofNullable(updateStudentRequest.raq()).ifPresent(student::setRaq);
+        Optional.ofNullable(updateStudentRequest.schoolGrade()).ifPresent(student::setSchoolGrade);
+        Optional.ofNullable(updateStudentRequest.bookMbti()).ifPresent(student::setBookMbti);
+        Optional.ofNullable(updateStudentRequest.description()).ifPresent(student::setDescription);
+        Optional.ofNullable(updateStudentRequest.domain()).ifPresent(student::setDomain);
+        Optional.ofNullable(institute).ifPresent(student::setInstitute);
+        Optional.ofNullable(homeroom).ifPresent(student::setHomeroom);
     }
     
     /**

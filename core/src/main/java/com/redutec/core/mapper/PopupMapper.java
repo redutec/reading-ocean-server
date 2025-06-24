@@ -24,7 +24,7 @@ public class PopupMapper {
      * @param createPopupRequest 팝업 등록에 필요한 데이터를 담은 DTO
      * @return 등록할 Popup 엔티티
      */
-    public Popup toCreateEntity(
+    public Popup createEntity(
             PopupDto.CreatePopupRequest createPopupRequest
     ) {
         return Popup.builder()
@@ -38,25 +38,20 @@ public class PopupMapper {
     }
 
     /**
-     * UpdatePopupRequest DTO를 기반으로 Popup 엔티티를 생성합니다.
-     *
+     * UpdatePopupRequest DTO를 기반으로 Popup 엔티티를 수정합니다.
      * @param popup 수정할 Popup 엔티티
      * @param updatePopupRequest 팝업 수정에 필요한 데이터를 담은 DTO
-     * @return 수정할 Popup 엔티티
      */
-    public Popup toUpdateEntity(
+    public void updateEntity(
             Popup popup,
             PopupDto.UpdatePopupRequest updatePopupRequest
     ) {
-        return Popup.builder()
-                .id(popup.getId())
-                .domain(Optional.ofNullable(updatePopupRequest.domain()).orElse(popup.getDomain()))
-                .title(Optional.ofNullable(updatePopupRequest.title()).orElse(popup.getTitle()))
-                .content(Optional.ofNullable(updatePopupRequest.content()).orElse(popup.getContent()))
-                .visible(Optional.ofNullable(updatePopupRequest.visible()).orElse(popup.getVisible()))
-                .visibleStartAt(Optional.ofNullable(updatePopupRequest.visibleStartAt()).orElse(popup.getVisibleStartAt()))
-                .visibleEndAt(Optional.ofNullable(updatePopupRequest.visibleEndAt()).orElse(popup.getVisibleEndAt()))
-                .build();
+        Optional.ofNullable(updatePopupRequest.domain()).ifPresent(popup::setDomain);
+        Optional.ofNullable(updatePopupRequest.title()).ifPresent(popup::setTitle);
+        Optional.ofNullable(updatePopupRequest.content()).ifPresent(popup::setContent);
+        Optional.ofNullable(updatePopupRequest.visible()).ifPresent(popup::setVisible);
+        Optional.ofNullable(updatePopupRequest.visibleStartAt()).ifPresent(popup::setVisibleStartAt);
+        Optional.ofNullable(updatePopupRequest.visibleEndAt()).ifPresent(popup::setVisibleEndAt);
     }
     
     /**
