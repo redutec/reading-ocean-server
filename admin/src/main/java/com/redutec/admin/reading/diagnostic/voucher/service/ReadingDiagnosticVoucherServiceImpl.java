@@ -126,15 +126,10 @@ public class ReadingDiagnosticVoucherServiceImpl implements ReadingDiagnosticVou
         ReadingDiagnosticVoucher readingDiagnosticVoucher = getReadingDiagnosticVoucher(readingDiagnosticVoucherId);
         // 수정 요청 객체에 교육기관 고유번호가 있으면 교육기관 엔티티 조회
         Institute institute = Optional.ofNullable(updateReadingDiagnosticVoucherRequest.instituteId())
-                .map(instituteId -> instituteRepository.findById(instituteId)
-                        .orElseThrow(() -> new EntityNotFoundException("교육기관이 존재하지 않습니다. instituteId: " + instituteId)))
+                .flatMap(instituteRepository::findById)
                 .orElseGet(readingDiagnosticVoucher::getInstitute);
         // 독서능력진단평가 바우처 엔티티 빌드 후 UPDATE
-        readingDiagnosticVoucherRepository.save(readingDiagnosticVoucherMapper.toUpdateEntity(
-                readingDiagnosticVoucher,
-                updateReadingDiagnosticVoucherRequest,
-                institute
-        ));
+        readingDiagnosticVoucherMapper.toUpdateEntity(readingDiagnosticVoucher, updateReadingDiagnosticVoucherRequest, institute);
     }
 
     /**

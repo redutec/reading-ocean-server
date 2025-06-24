@@ -5,9 +5,12 @@ import com.redutec.core.entity.ReadingDiagnosticTicket;
 import com.redutec.core.entity.ReadingDiagnosticVoucher;
 import com.redutec.core.mapper.ReadingDiagnosticTicketMapper;
 import com.redutec.core.repository.ReadingDiagnosticTicketRepository;
+import com.redutec.core.specification.ReadingDiagnosticTicketSpecification;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,7 +30,6 @@ public class ReadingDiagnosticTicketServiceImpl implements ReadingDiagnosticTick
 
     /**
      * 독서능력진단평가 채점권 엔티티 생성
-     *
      * @param readingDiagnosticVoucher 채점권이 소속할 바우처
      * @param ticketQuantity           생성할 채점권 개수
      */
@@ -36,8 +38,8 @@ public class ReadingDiagnosticTicketServiceImpl implements ReadingDiagnosticTick
             ReadingDiagnosticVoucher readingDiagnosticVoucher,
             Integer ticketQuantity
     ) {
-        // 랜덤 시리얼 생성을 위한 문자 집합과 난수 생성기 준비
-        String characterPool = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        // 랜덤 시리얼 생성을 위한 문자 집합과 난수 생성기 준비(비슷하게 생긴 숫자와 알파벳은 제거)
+        String characterPool = "ACDEFGHIJKLMNOPQRTUVWXYZ23456789";
         RandomGenerator randomGenerator = RandomGeneratorFactory.getDefault().create();
         // 메모리에서 중복 없이 목표 개수만큼 시리얼 후보 생성
         Set<String> candidateSerials = new HashSet<>();
@@ -78,18 +80,20 @@ public class ReadingDiagnosticTicketServiceImpl implements ReadingDiagnosticTick
 
     /**
      * 조건에 맞는 독서능력진단평가 채점권 목록 조회
-     *
      * @param findReadingDiagnosticTicketRequest 조회 조건을 담은 DTO
      * @return 조건에 맞는 독서능력진단평가 채점권 목록 및 페이징 정보
      */
     @Override
     public ReadingDiagnosticTicketDto.ReadingDiagnosticTicketPageResponse find(ReadingDiagnosticTicketDto.FindReadingDiagnosticTicketRequest findReadingDiagnosticTicketRequest) {
-        return null;
+        return readingDiagnosticTicketMapper.toPageResponseDto(readingDiagnosticTicketRepository.findAll(
+                ReadingDiagnosticTicketSpecification.findWith(readingDiagnosticTicketMapper.toCriteria(findReadingDiagnosticTicketRequest)),
+                (findReadingDiagnosticTicketRequest.page() != null && findReadingDiagnosticTicketRequest.size() != null)
+                        ? PageRequest.of(findReadingDiagnosticTicketRequest.page(), findReadingDiagnosticTicketRequest.size())
+                        : Pageable.unpaged()));
     }
 
     /**
      * 특정 독서능력진단평가 채점권 조회
-     *
      * @param readingDiagnosticTicketId 독서능력진단평가 채점권 고유번호
      * @return 특정 독서능력진단평가 채점권 응답 객체
      */
@@ -101,17 +105,17 @@ public class ReadingDiagnosticTicketServiceImpl implements ReadingDiagnosticTick
 
     /**
      * 특정 독서능력진단평가 채점권 사용 처리
-     *
-     * @param readingDiagnosticTicketId 사용 처리할 독서능력진단평가 채점권의 ID
+     * @param serial 사용 처리할 독서능력진단평가 채점권의 일련번호
      */
     @Override
-    public void markAsUsed(Long readingDiagnosticTicketId) {
-
+    public void markAsUsed(String serial) {
+        ReadingDiagnosticTicket readingDiagnosticTicket = readingDiagnosticTicketRepository.findBySerial(serial)
+                .orElseThrow(() -> new EntityNotFoundException("유효하지 않은 채점권입니다. serial: " + serial));
+        readingDiagnosticTicket.markAsUsed();
     }
 
     /**
      * 특정 독서능력진단평가 채점권 삭제
-     *
      * @param readingDiagnosticTicketId 삭제할 독서능력진단평가 채점권의 ID
      */
     @Override

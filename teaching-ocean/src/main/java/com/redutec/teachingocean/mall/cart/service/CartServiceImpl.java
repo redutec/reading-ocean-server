@@ -48,11 +48,10 @@ public class CartServiceImpl implements CartService {
         authenticationService.validateAuthenticationStatus(teacher);
         Institute institute = Optional.ofNullable(teacher.getInstitute())
                 .orElseThrow(() -> new EntityNotFoundException("소속 교육기관이 없습니다."));
-        Cart cart = cartRepository
-                .findByInstituteId(institute.getId())
+        Cart cart = cartRepository.findByInstitute(institute)
                 .orElseGet(() ->
                         Cart.builder()
-                                .institute(institute)      // ★ 여기만 세팅
+                                .institute(institute)
                                 .build()
                 );
         // 장바구니 엔티티를 저장하고 장바구니에 담긴 상품(상품정보와 수량)들을 담은 응답 객체를 리턴
@@ -120,14 +119,11 @@ public class CartServiceImpl implements CartService {
                 );
         // 2) 교사 계정 상태 검증
         authenticationService.validateAuthenticationStatus(teacher);
-        // 3) 소속 교육기관 ID 추출
-        Long instituteId = Optional.ofNullable(teacher.getInstitute())
-                .map(Institute::getId)
-                .orElseThrow(() ->
-                        new EntityNotFoundException("교사가 소속된 교육기관이 없습니다. teacherId: " + teacherId)
-                );
+        // 3) 소속 교육기관 엔티티 추출
+        Institute institute = Optional.ofNullable(teacher.getInstitute())
+                .orElseThrow(() -> new EntityNotFoundException("교사가 소속된 교육기관이 없습니다. teacherId: " + teacherId));
         // 4) 장바구니 조회 및 비우기
-        cartRepository.findByInstituteId(instituteId)
+        cartRepository.findByInstitute(teacher.getInstitute())
                 .ifPresent(cart -> {
                     cart.getItems().clear();
                     cartRepository.save(cart);

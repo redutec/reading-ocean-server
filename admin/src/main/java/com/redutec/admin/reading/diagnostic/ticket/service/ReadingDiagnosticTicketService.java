@@ -28,9 +28,9 @@ public interface ReadingDiagnosticTicketService {
 
     /**
      * 특정 독서능력진단평가 채점권 사용 처리
-     * @param readingDiagnosticTicketId 사용 처리할 독서능력진단평가 채점권의 ID
+     * @param serial 사용 처리할 독서능력진단평가 채점권의 일련번호
      */
-    void markAsUsed(Long readingDiagnosticTicketId);
+    void markAsUsed(String serial);
 
     /**
      * 특정 독서능력진단평가 채점권 삭제

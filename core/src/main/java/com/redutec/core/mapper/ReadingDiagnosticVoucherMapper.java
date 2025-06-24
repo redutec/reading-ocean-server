@@ -42,19 +42,15 @@ public class ReadingDiagnosticVoucherMapper {
      * UpdateReadingDiagnosticVoucherRequest DTO를 기반으로 ReadingDiagnosticVoucher 수정 엔티티를 생성합니다.
      *
      * @param updateReadingDiagnosticVoucherRequest 독서능력진단평가 바우처 수정에 필요한 데이터를 담은 DTO
-     * @return 수정할 ReadingDiagnosticVoucher 엔티티
      */
-    public ReadingDiagnosticVoucher toUpdateEntity(
+    public void toUpdateEntity(
             ReadingDiagnosticVoucher readingDiagnosticVoucher,
             ReadingDiagnosticVoucherDto.UpdateReadingDiagnosticVoucherRequest updateReadingDiagnosticVoucherRequest,
             Institute institute
     ) {
-        return ReadingDiagnosticVoucher.builder()
-                .id(readingDiagnosticVoucher.getId())
-                .name(Optional.ofNullable(updateReadingDiagnosticVoucherRequest.name()).orElse(readingDiagnosticVoucher.getName()))
-                .institute(Optional.ofNullable(institute).orElse(readingDiagnosticVoucher.getInstitute()))
-                .description(Optional.ofNullable(updateReadingDiagnosticVoucherRequest.description()).orElse(readingDiagnosticVoucher.getDescription()))
-                .build();
+        Optional.ofNullable(updateReadingDiagnosticVoucherRequest.name()).ifPresent(readingDiagnosticVoucher::setName);
+        Optional.ofNullable(updateReadingDiagnosticVoucherRequest.description()).ifPresent(readingDiagnosticVoucher::setDescription);
+        Optional.ofNullable(institute).ifPresent(readingDiagnosticVoucher::setInstitute);
     }
 
     /**

@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.annotations.Comment;
+import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -18,6 +19,7 @@ import java.util.List;
 @Getter
 @Builder
 @AllArgsConstructor
+@DynamicUpdate
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
 public class ReadingDiagnosticVoucher {
@@ -27,6 +29,7 @@ public class ReadingDiagnosticVoucher {
     private Long id;
 
     @Comment("바우처 이름(사용자에게 보여질 이름)")
+    @Setter
     @Column(length = 40, nullable = false, unique = true)
     @Size(max = 40, message = "바우처명은 최대 40자까지 입력할 수 있습니다")
     private String name;
@@ -38,8 +41,9 @@ public class ReadingDiagnosticVoucher {
     private String code;
 
     @Comment("바우처를 사용하는 교육기관")
+    @Setter
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "institute_id", nullable = false)
+    @JoinColumn(nullable = false)
     private Institute institute;
 
     @Comment("발급한 채점권 목록")
@@ -48,6 +52,7 @@ public class ReadingDiagnosticVoucher {
     private List<ReadingDiagnosticTicket> readingDiagnosticTickets = new ArrayList<>();
 
     @Comment("비고")
+    @Setter
     @Column(nullable = false)
     private String description;
 
