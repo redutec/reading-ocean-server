@@ -7,6 +7,7 @@ import com.redutec.core.entity.Institute;
 import com.redutec.core.entity.ReadingDiagnosticVoucher;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
@@ -31,10 +32,10 @@ public class ReadingDiagnosticVoucherMapper {
             Institute institute
     ) {
         return ReadingDiagnosticVoucher.builder()
-                .name(createReadingDiagnosticVoucherRequest.name())
+                .name(StringUtils.stripToNull(createReadingDiagnosticVoucherRequest.name()))
                 .code(code)
                 .institute(institute)
-                .description(createReadingDiagnosticVoucherRequest.description())
+                .description(StringUtils.stripToNull(createReadingDiagnosticVoucherRequest.description()))
                 .build();
     }
 
@@ -48,9 +49,12 @@ public class ReadingDiagnosticVoucherMapper {
             ReadingDiagnosticVoucherDto.UpdateReadingDiagnosticVoucherRequest updateReadingDiagnosticVoucherRequest,
             Institute institute
     ) {
-        Optional.ofNullable(updateReadingDiagnosticVoucherRequest.name()).ifPresent(readingDiagnosticVoucher::setName);
-        Optional.ofNullable(updateReadingDiagnosticVoucherRequest.description()).ifPresent(readingDiagnosticVoucher::setDescription);
-        Optional.ofNullable(institute).ifPresent(readingDiagnosticVoucher::setInstitute);
+        Optional.ofNullable(StringUtils.stripToNull(updateReadingDiagnosticVoucherRequest.name()))
+                .ifPresent(readingDiagnosticVoucher::setName);
+        Optional.ofNullable(StringUtils.stripToNull(updateReadingDiagnosticVoucherRequest.description()))
+                .ifPresent(readingDiagnosticVoucher::setDescription);
+        Optional.ofNullable(institute)
+                .ifPresent(readingDiagnosticVoucher::setInstitute);
     }
 
     /**
@@ -64,9 +68,9 @@ public class ReadingDiagnosticVoucherMapper {
         return new ReadingDiagnosticVoucherCriteria(
                 findReadingDiagnosticVoucherRequest.readingDiagnosticVoucherIds(),
                 findReadingDiagnosticVoucherRequest.instituteIds(),
-                findReadingDiagnosticVoucherRequest.name(),
-                findReadingDiagnosticVoucherRequest.code(),
-                findReadingDiagnosticVoucherRequest.description()
+                StringUtils.stripToNull(findReadingDiagnosticVoucherRequest.name()),
+                StringUtils.stripToNull(findReadingDiagnosticVoucherRequest.code()),
+                StringUtils.stripToNull(findReadingDiagnosticVoucherRequest.description())
         );
     }
 

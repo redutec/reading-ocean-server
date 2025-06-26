@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/subscription/plan")
+@RequestMapping("/subscriptions/plans")
 @Tag(name = "구독 상품 관리 API", description = "구독 상품 관리 API 모음")
 public class SubscriptionPlanController {
     private final ApiResponseManager apiResponseManager;

@@ -9,9 +9,11 @@ import com.redutec.core.meta.BookSubGenre;
 import com.redutec.core.meta.SchoolGrade;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -33,14 +35,14 @@ public class BookMapper {
             String coverImageFileName
     ) {
         return Book.builder()
-                .isbn(createBookRequest.isbn())
-                .title(createBookRequest.title())
-                .author(createBookRequest.author())
-                .publisher(createBookRequest.publisher())
-                .translator(createBookRequest.translator())
-                .illustrator(createBookRequest.illustrator())
+                .isbn(StringUtils.stripToNull(createBookRequest.isbn()))
+                .title(StringUtils.stripToNull(createBookRequest.title()))
+                .author(StringUtils.stripToNull(createBookRequest.author()))
+                .publisher(StringUtils.stripToNull(createBookRequest.publisher()))
+                .translator(StringUtils.stripToNull(createBookRequest.translator()))
+                .illustrator(StringUtils.stripToNull(createBookRequest.illustrator()))
                 .publicationDate(createBookRequest.publicationDate())
-                .coverImageFileName(coverImageFileName)
+                .coverImageFileName(StringUtils.stripToNull(coverImageFileName))
                 .recommended(createBookRequest.recommended())
                 .ebookAvailable(createBookRequest.ebookAvailable())
                 .audioBookAvailable(createBookRequest.audioBookAvalable())
@@ -54,13 +56,19 @@ public class BookMapper {
                 .raq(createBookRequest.raq())
                 .readingLevel(createBookRequest.readingLevel())
                 .bookMbti(createBookRequest.bookMbti())
-                .subject(createBookRequest.subject())
-                .content(createBookRequest.content())
-                .awardHistory(createBookRequest.awardHistory())
-                .includedBookName(createBookRequest.includedBookName())
-                .institutionRecommendations(createBookRequest.institutionRecommendations())
-                .educationOfficeRecommendations(createBookRequest.educationOfficeRecommendations())
-                .tags(createBookRequest.tags())
+                .subject(StringUtils.stripToNull(createBookRequest.subject()))
+                .content(StringUtils.stripToNull(createBookRequest.content()))
+                .awardHistory(StringUtils.stripToNull(createBookRequest.awardHistory()))
+                .includedBookName(StringUtils.stripToNull(createBookRequest.includedBookName()))
+                .institutionRecommendations(StringUtils.stripToNull(createBookRequest.institutionRecommendations()))
+                .educationOfficeRecommendations(StringUtils.stripToNull(createBookRequest.educationOfficeRecommendations()))
+                .tags(Optional.ofNullable(createBookRequest.tags())
+                        .map(tags -> tags.stream()
+                                .map(StringUtils::stripToNull)
+                                .filter(Objects::nonNull)
+                                .collect(Collectors.toList())
+                        )
+                        .orElse(null))
                 .build();
     }
 
@@ -73,34 +81,67 @@ public class BookMapper {
             BookDto.UpdateBookRequest updateBookRequest,
             String coverImageFileName
     ) {
-        Optional.ofNullable(updateBookRequest.isbn()).ifPresent(book::setIsbn);
-        Optional.ofNullable(updateBookRequest.title()).ifPresent(book::setTitle);
-        Optional.ofNullable(updateBookRequest.author()).ifPresent(book::setAuthor);
-        Optional.ofNullable(updateBookRequest.publisher()).ifPresent(book::setPublisher);
-        Optional.ofNullable(updateBookRequest.translator()).ifPresent(book::setTranslator);
-        Optional.ofNullable(updateBookRequest.illustrator()).ifPresent(book::setIllustrator);
-        Optional.ofNullable(updateBookRequest.publicationDate()).ifPresent(book::setPublicationDate);
-        Optional.ofNullable(coverImageFileName).ifPresent(book::setCoverImageFileName);
-        Optional.ofNullable(updateBookRequest.recommended()).ifPresent(book::setRecommended);
-        Optional.ofNullable(updateBookRequest.ebookAvailable()).ifPresent(book::setEbookAvailable);
-        Optional.ofNullable(updateBookRequest.audioBookAvalable()).ifPresent(book::setAudioBookAvailable);
-        Optional.ofNullable(updateBookRequest.visible()).ifPresent(book::setVisible);
-        Optional.ofNullable(updateBookRequest.enabled()).ifPresent(book::setEnabled);
-        Optional.ofNullable(updateBookRequest.pageCount()).ifPresent(book::setPageCount);
-        Optional.ofNullable(updateBookRequest.schoolGrade()).ifPresent(book::setSchoolGrade);
-        Optional.ofNullable(updateBookRequest.genre()).ifPresent(book::setGenre);
-        Optional.ofNullable(updateBookRequest.subGenre()).ifPresent(book::setSubGenre);
-        Optional.ofNullable(updateBookRequest.bookPoints()).ifPresent(book::setBookPoints);
-        Optional.ofNullable(updateBookRequest.raq()).ifPresent(book::setRaq);
-        Optional.ofNullable(updateBookRequest.readingLevel()).ifPresent(book::setReadingLevel);
-        Optional.ofNullable(updateBookRequest.bookMbti()).ifPresent(book::setBookMbti);
-        Optional.ofNullable(updateBookRequest.subject()).ifPresent(book::setSubject);
-        Optional.ofNullable(updateBookRequest.content()).ifPresent(book::setContent);
-        Optional.ofNullable(updateBookRequest.awardHistory()).ifPresent(book::setAwardHistory);
-        Optional.ofNullable(updateBookRequest.includedBookName()).ifPresent(book::setIncludedBookName);
-        Optional.ofNullable(updateBookRequest.institutionRecommendations()).ifPresent(book::setInstitutionRecommendations);
-        Optional.ofNullable(updateBookRequest.educationOfficeRecommendations()).ifPresent(book::setEducationOfficeRecommendations);
-        Optional.ofNullable(updateBookRequest.tags()).ifPresent(book::setTags);
+        Optional.ofNullable(StringUtils.stripToNull(updateBookRequest.isbn()))
+                .ifPresent(book::setIsbn);
+        Optional.ofNullable(StringUtils.stripToNull(updateBookRequest.title()))
+                .ifPresent(book::setTitle);
+        Optional.ofNullable(StringUtils.stripToNull(updateBookRequest.author()))
+                .ifPresent(book::setAuthor);
+        Optional.ofNullable(StringUtils.stripToNull(updateBookRequest.publisher()))
+                .ifPresent(book::setPublisher);
+        Optional.ofNullable(StringUtils.stripToNull(updateBookRequest.translator()))
+                .ifPresent(book::setTranslator);
+        Optional.ofNullable(StringUtils.stripToNull(updateBookRequest.illustrator()))
+                .ifPresent(book::setIllustrator);
+        Optional.ofNullable(updateBookRequest.publicationDate())
+                .ifPresent(book::setPublicationDate);
+        Optional.ofNullable(coverImageFileName)
+                .ifPresent(book::setCoverImageFileName);
+        Optional.ofNullable(updateBookRequest.recommended())
+                .ifPresent(book::setRecommended);
+        Optional.ofNullable(updateBookRequest.ebookAvailable())
+                .ifPresent(book::setEbookAvailable);
+        Optional.ofNullable(updateBookRequest.audioBookAvalable())
+                .ifPresent(book::setAudioBookAvailable);
+        Optional.ofNullable(updateBookRequest.visible())
+                .ifPresent(book::setVisible);
+        Optional.ofNullable(updateBookRequest.enabled())
+                .ifPresent(book::setEnabled);
+        Optional.ofNullable(updateBookRequest.pageCount())
+                .ifPresent(book::setPageCount);
+        Optional.ofNullable(updateBookRequest.schoolGrade())
+                .ifPresent(book::setSchoolGrade);
+        Optional.ofNullable(updateBookRequest.genre())
+                .ifPresent(book::setGenre);
+        Optional.ofNullable(updateBookRequest.subGenre())
+                .ifPresent(book::setSubGenre);
+        Optional.ofNullable(updateBookRequest.bookPoints())
+                .ifPresent(book::setBookPoints);
+        Optional.ofNullable(updateBookRequest.raq())
+                .ifPresent(book::setRaq);
+        Optional.ofNullable(updateBookRequest.readingLevel())
+                .ifPresent(book::setReadingLevel);
+        Optional.ofNullable(updateBookRequest.bookMbti())
+                .ifPresent(book::setBookMbti);
+        Optional.ofNullable(StringUtils.stripToNull(updateBookRequest.subject()))
+                .ifPresent(book::setSubject);
+        Optional.ofNullable(StringUtils.stripToNull(updateBookRequest.content()))
+                .ifPresent(book::setContent);
+        Optional.ofNullable(StringUtils.stripToNull(updateBookRequest.awardHistory()))
+                .ifPresent(book::setAwardHistory);
+        Optional.ofNullable(StringUtils.stripToNull(updateBookRequest.includedBookName()))
+                .ifPresent(book::setIncludedBookName);
+        Optional.ofNullable(StringUtils.stripToNull(updateBookRequest.institutionRecommendations()))
+                .ifPresent(book::setInstitutionRecommendations);
+        Optional.ofNullable(StringUtils.stripToNull(updateBookRequest.educationOfficeRecommendations()))
+                .ifPresent(book::setEducationOfficeRecommendations);
+        Optional.ofNullable(updateBookRequest.tags())
+                .map(tags -> tags.stream()
+                        .map(StringUtils::stripToNull)
+                        .filter(Objects::nonNull)
+                        .collect(Collectors.toList())
+                )
+                .ifPresent(book::setTags);
     }
     
     /**
@@ -113,10 +154,10 @@ public class BookMapper {
     public BookCriteria toCriteria(BookDto.FindBookRequest findBookRequest) {
         return new BookCriteria(
                 findBookRequest.bookIds(),
-                findBookRequest.isbn(),
-                findBookRequest.title(),
-                findBookRequest.author(),
-                findBookRequest.publisher(),
+                StringUtils.stripToNull(findBookRequest.isbn()),
+                StringUtils.stripToNull(findBookRequest.title()),
+                StringUtils.stripToNull(findBookRequest.author()),
+                StringUtils.stripToNull(findBookRequest.publisher()),
                 findBookRequest.recommended(),
                 findBookRequest.ebookAvailable(),
                 findBookRequest.audioBookAvailable(),
@@ -133,9 +174,15 @@ public class BookMapper {
                 findBookRequest.minimumRaq(),
                 findBookRequest.maximumRaq(),
                 findBookRequest.bookMbtiList(),
-                findBookRequest.subject(),
-                findBookRequest.content(),
-                findBookRequest.tags()
+                StringUtils.stripToNull(findBookRequest.subject()),
+                StringUtils.stripToNull(findBookRequest.content()),
+                Optional.ofNullable(findBookRequest.tags())
+                        .map(tags -> tags.stream()
+                                .map(StringUtils::stripToNull)
+                                .filter(Objects::nonNull)
+                                .collect(Collectors.toList())
+                        )
+                        .orElse(null)
         );
     }
 

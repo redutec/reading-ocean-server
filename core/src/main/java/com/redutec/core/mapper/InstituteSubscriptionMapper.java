@@ -51,11 +51,16 @@ public class InstituteSubscriptionMapper {
             SubscriptionPlan subscriptionPlan,
             Institute institute
     ) {
-        Optional.ofNullable(subscriptionPlan).ifPresent(instituteSubscription::setSubscriptionPlan);
-        Optional.ofNullable(updateInstituteSubscriptionRequest.startedAt()).ifPresent(instituteSubscription::setStartedAt);
-        Optional.ofNullable(updateInstituteSubscriptionRequest.endedAt()).ifPresent(instituteSubscription::setEndedAt);
-        Optional.ofNullable(updateInstituteSubscriptionRequest.nextPaymentAt()).ifPresent(instituteSubscription::setNextPaymentAt);
-        Optional.ofNullable(institute).ifPresent(instituteSubscription::setInstitute);
+        Optional.ofNullable(subscriptionPlan)
+                .ifPresent(instituteSubscription::setSubscriptionPlan);
+        Optional.ofNullable(updateInstituteSubscriptionRequest.startedAt())
+                .ifPresent(instituteSubscription::setStartedAt);
+        Optional.ofNullable(updateInstituteSubscriptionRequest.endedAt())
+                .ifPresent(instituteSubscription::setEndedAt);
+        Optional.ofNullable(updateInstituteSubscriptionRequest.nextPaymentAt())
+                .ifPresent(instituteSubscription::setNextPaymentAt);
+        Optional.ofNullable(institute)
+                .ifPresent(instituteSubscription::setInstitute);
     }
     
     /**

@@ -8,6 +8,7 @@ import com.redutec.core.entity.Student;
 import com.redutec.core.entity.Teacher;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
@@ -37,9 +38,9 @@ public class HomeroomMapper {
             List<Student> students
     ) {
         return Homeroom.builder()
-                .name(createHomeroomRequest.name())
+                .name(StringUtils.stripToNull(createHomeroomRequest.name()))
                 .institute(institute)
-                .description(createHomeroomRequest.description())
+                .description(StringUtils.stripToNull(createHomeroomRequest.description()))
                 .students(students)
                 .teachers(teachers)
                 .build();
@@ -60,11 +61,16 @@ public class HomeroomMapper {
             List<Teacher> teachers,
             List<Student> students
     ) {
-        Optional.ofNullable(updateHomeroomRequest.name()).ifPresent(homeroom::setName);
-        Optional.ofNullable(institute).ifPresent(homeroom::setInstitute);
-        Optional.ofNullable(updateHomeroomRequest.description()).ifPresent(homeroom::setDescription);
-        Optional.ofNullable(teachers).ifPresent(homeroom::setTeachers);
-        Optional.ofNullable(students).ifPresent(homeroom::setStudents);
+        Optional.ofNullable(StringUtils.stripToNull(updateHomeroomRequest.name()))
+                .ifPresent(homeroom::setName);
+        Optional.ofNullable(institute)
+                .ifPresent(homeroom::setInstitute);
+        Optional.ofNullable(StringUtils.stripToNull(updateHomeroomRequest.description()))
+                .ifPresent(homeroom::setDescription);
+        Optional.ofNullable(teachers)
+                .ifPresent(homeroom::setTeachers);
+        Optional.ofNullable(students)
+                .ifPresent(homeroom::setStudents);
     }
     
     /**
@@ -77,8 +83,8 @@ public class HomeroomMapper {
     public HomeroomCriteria toCriteria(HomeroomDto.FindHomeroomRequest findHomeroomRequest) {
         return new HomeroomCriteria(
                 findHomeroomRequest.homeroomIds(),
-                findHomeroomRequest.name(),
-                findHomeroomRequest.description(),
+                StringUtils.stripToNull(findHomeroomRequest.name()),
+                StringUtils.stripToNull(findHomeroomRequest.description()),
                 findHomeroomRequest.instituteIds()
         );
     }

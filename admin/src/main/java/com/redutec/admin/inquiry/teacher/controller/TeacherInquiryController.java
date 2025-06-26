@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/inquiry/teacher")
+@RequestMapping("/inquiries/teachers")
 @Tag(name = "고객문의(교사) 관리 API", description = "고객문의(교사) 관리 API 모음")
 public class TeacherInquiryController {
     private final ApiResponseManager apiResponseManager;
@@ -30,27 +30,29 @@ public class TeacherInquiryController {
     }
 
     @Operation(summary = "특정 고객문의(교사) 조회", description = "특정 고객문의(교사)를 조회하는 API")
-    @GetMapping("/{teacherInquiryId}")
-    public ResponseEntity<ApiResponseBody> findByTeacherInquiryId(@PathVariable Long teacherInquiryId) {
-        return apiResponseManager.ok(teacherInquiryService.findById(teacherInquiryId));
+    @GetMapping("/{inquiryId}")
+    public ResponseEntity<ApiResponseBody> findByTeacherInquiryId(
+            @Parameter(description = "고객문의(교사) ID") @PathVariable Long inquiryId
+    ) {
+        return apiResponseManager.ok(teacherInquiryService.findById(inquiryId));
     }
 
     @Operation(summary = "특정 고객문의(교사) 수정", description = "특정 고객문의(교사)를 수정하는 API")
-    @PutMapping("/{teacherInquiryId}")
+    @PutMapping("/{inquiryId}")
     public ResponseEntity<ApiResponseBody> update(
-            @Parameter(description = "고객문의 ID") @PathVariable Long teacherInquiryId,
+            @Parameter(description = "고객문의(교사) ID") @PathVariable Long inquiryId,
             @ParameterObject @Valid TeacherInquiryDto.UpdateTeacherInquiryRequest updateInquiryRequest
     ) {
-        teacherInquiryService.update(teacherInquiryId, updateInquiryRequest);
+        teacherInquiryService.update(inquiryId, updateInquiryRequest);
         return apiResponseManager.noContent();
     }
 
     @Operation(summary = "특정 고객문의(교사) 삭제", description = "특정 고객문의(교사)를 삭제하는 API")
-    @DeleteMapping("/{teacherInquiryId}")
+    @DeleteMapping("/{inquiryId}")
     public ResponseEntity<ApiResponseBody> delete(
-            @Parameter(description = "고객문의(교사) ID") @PathVariable Long teacherInquiryId
+            @Parameter(description = "고객문의(교사) ID") @PathVariable Long inquiryId
     ) {
-        teacherInquiryService.delete(teacherInquiryId);
+        teacherInquiryService.delete(inquiryId);
         return apiResponseManager.noContent();
     }
 }

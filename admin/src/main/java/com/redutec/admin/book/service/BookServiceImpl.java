@@ -1,10 +1,9 @@
 package com.redutec.admin.book.service;
 
-import com.redutec.core.dto.BookDto;
-import com.redutec.core.mapper.BookMapper;
-import com.redutec.core.config.FileUploadResult;
 import com.redutec.core.config.FileUtil;
+import com.redutec.core.dto.BookDto;
 import com.redutec.core.entity.Book;
+import com.redutec.core.mapper.BookMapper;
 import com.redutec.core.repository.BookRepository;
 import com.redutec.core.specification.BookSpecification;
 import jakarta.persistence.EntityNotFoundException;
@@ -37,10 +36,8 @@ public class BookServiceImpl implements BookService {
         // 도서 등록 요청 객체에 커버 이미지 파일이 존재한다면 업로드 후 파일명을 변수에 담기
         String coverImageFileName = Optional.ofNullable(createBookRequest.coverImageFile())
                 .filter(coverImageFile -> !coverImageFile.isEmpty())
-                .map(coverImageFile -> {
-                    FileUploadResult result = fileUtil.uploadFile(coverImageFile, "/book");
-                    return Paths.get(result.filePath()).getFileName().toString();
-                })
+                .map(coverImageFile -> Paths.get(fileUtil.uploadFile(coverImageFile, "/book").filePath()).getFileName().toString()
+        )
                 .orElse(null);
         // 도서 등록
         return bookMapper.toResponseDto(bookRepository.save(bookMapper.createEntity(
@@ -88,10 +85,7 @@ public class BookServiceImpl implements BookService {
         // 도서 수정 요청 객체에 커버 이미지 파일이 있다면 업로드하고 파일명을 가져오기
         String coverImageFileName = Optional.ofNullable(updateBookRequest.coverImageFile())
                 .filter(coverImageFile -> !coverImageFile.isEmpty())
-                .map(coverImageFile -> {
-                    FileUploadResult result = fileUtil.uploadFile(coverImageFile, "/book");
-                    return Paths.get(result.filePath()).getFileName().toString();
-                })
+                .map(coverImageFile -> Paths.get(fileUtil.uploadFile(coverImageFile, "/book").filePath()).getFileName().toString())
                 .orElseGet(book::getCoverImageFileName);
         // 도서 수정
         bookMapper.updateEntity(book, updateBookRequest, coverImageFileName);

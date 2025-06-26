@@ -38,8 +38,8 @@ public class NoticeServiceImpl implements NoticeService {
         String attachmentFileName = Optional.ofNullable(createNoticeRequest.attachmentFile())
                 .filter(attachmentFile -> !attachmentFile.isEmpty())
                 .map(attachmentFile -> {
-                    FileUploadResult result = fileUtil.uploadFile(attachmentFile, "/notice");
-                    return Paths.get(result.filePath()).getFileName().toString();
+                    FileUploadResult fileUploadResult = fileUtil.uploadFile(attachmentFile, "/notice");
+                    return Paths.get(fileUploadResult.filePath()).getFileName().toString();
                 })
                 .orElse(null);
         // 공지사항 등록

@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/institute/homeroom")
+@RequestMapping("/homerooms")
 @Tag(name = "학급 관리 API", description = "학급 관리 API 모음")
 public class HomeroomController {
     private final ApiResponseManager apiResponseManager;

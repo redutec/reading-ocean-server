@@ -7,7 +7,9 @@ import com.redutec.core.entity.Institute;
 import com.redutec.core.entity.Teacher;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -31,15 +33,15 @@ public class TeacherMapper {
             Homeroom homeroom
     ) {
         return Teacher.builder()
-                .accountId(createTeacherRequest.accountId())
-                .password(passwordEncoder.encode(createTeacherRequest.password()))
-                .name(createTeacherRequest.name())
-                .phoneNumber(createTeacherRequest.phoneNumber())
-                .email(createTeacherRequest.email())
+                .accountId(StringUtils.stripToNull(createTeacherRequest.accountId()))
+                .password(passwordEncoder.encode(StringUtils.stripToNull(createTeacherRequest.password())))
+                .name(StringUtils.stripToNull(createTeacherRequest.name()))
+                .phoneNumber(StringUtils.stripToNull(createTeacherRequest.phoneNumber()))
+                .email(StringUtils.stripToNull(createTeacherRequest.email()))
                 .status(createTeacherRequest.status())
                 .authenticationStatus(createTeacherRequest.authenticationStatus())
                 .failedLoginAttempts(0)
-                .description(createTeacherRequest.description())
+                .description(StringUtils.stripToNull(createTeacherRequest.description()))
                 .institute(institute)
                 .homeroom(homeroom)
                 .build();
@@ -55,23 +57,44 @@ public class TeacherMapper {
             Institute institute,
             Homeroom homeroom
     ) {
-        Optional.ofNullable(updateTeacherRequest.accountId()).ifPresent(teacher::setAccountId);
-        Optional.ofNullable(updateTeacherRequest.newPassword())
-                .filter(newPassword -> !newPassword.isBlank())
-                .map(passwordEncoder::encode)
-                .ifPresent(passwordEncoder::encode);
-        Optional.ofNullable(updateTeacherRequest.name()).ifPresent(teacher::setName);
-        Optional.ofNullable(updateTeacherRequest.email()).ifPresent(teacher::setEmail);
-        Optional.ofNullable(updateTeacherRequest.phoneNumber()).ifPresent(teacher::setPhoneNumber);
-        Optional.ofNullable(updateTeacherRequest.status()).ifPresent(teacher::setStatus);
-        Optional.ofNullable(updateTeacherRequest.role()).ifPresent(teacher::setRole);
-        Optional.ofNullable(updateTeacherRequest.authenticationStatus()).ifPresent(teacher::setAuthenticationStatus);
-        Optional.ofNullable(updateTeacherRequest.failedLoginAttempts()).ifPresent(teacher::setFailedLoginAttempts);
-        Optional.ofNullable(updateTeacherRequest.lastLoginIp()).ifPresent(teacher::setLastLoginIp);
-        Optional.ofNullable(updateTeacherRequest.lastLoginAt()).ifPresent(teacher::setLastLoginAt);
-        Optional.ofNullable(updateTeacherRequest.description()).ifPresent(teacher::setDescription);
-        Optional.ofNullable(institute).ifPresent(teacher::setInstitute);
-        Optional.ofNullable(homeroom).ifPresent(teacher::setHomeroom);
+        Optional.ofNullable(StringUtils.stripToNull(updateTeacherRequest.accountId()))
+                .ifPresent(teacher::setAccountId);
+        Optional.ofNullable(StringUtils.stripToNull(updateTeacherRequest.newPassword()))
+                .ifPresent(newPassword -> {
+                    // currentPassword 미입력 시 예외
+                    Optional.ofNullable(StringUtils.stripToNull(updateTeacherRequest.currentPassword()))
+                            .orElseThrow(() -> new BadCredentialsException("비밀번호를 변경하려면 현재 비밀번호를 입력해야 합니다."));
+                    // currentPassword 불일치 시 예외
+                    Optional.of(StringUtils.stripToNull(updateTeacherRequest.currentPassword()))
+                            .filter(currentPassword -> passwordEncoder.matches(currentPassword, teacher.getPassword()))
+                            .orElseThrow(() -> new BadCredentialsException("현재 비밀번호가 일치하지 않습니다."));
+                    // 새 비밀번호 암호화 후 Set
+                    teacher.setPassword(passwordEncoder.encode(newPassword));
+                });
+        Optional.ofNullable(StringUtils.stripToNull(updateTeacherRequest.name()))
+                .ifPresent(teacher::setName);
+        Optional.ofNullable(StringUtils.stripToNull(updateTeacherRequest.email()))
+                .ifPresent(teacher::setEmail);
+        Optional.ofNullable(StringUtils.stripToNull(updateTeacherRequest.phoneNumber()))
+                .ifPresent(teacher::setPhoneNumber);
+        Optional.ofNullable(updateTeacherRequest.status())
+                .ifPresent(teacher::setStatus);
+        Optional.ofNullable(updateTeacherRequest.role())
+                .ifPresent(teacher::setRole);
+        Optional.ofNullable(updateTeacherRequest.authenticationStatus())
+                .ifPresent(teacher::setAuthenticationStatus);
+        Optional.ofNullable(updateTeacherRequest.failedLoginAttempts())
+                .ifPresent(teacher::setFailedLoginAttempts);
+        Optional.ofNullable(updateTeacherRequest.lastLoginIp())
+                .ifPresent(teacher::setLastLoginIp);
+        Optional.ofNullable(updateTeacherRequest.lastLoginAt())
+                .ifPresent(teacher::setLastLoginAt);
+        Optional.ofNullable(StringUtils.stripToNull(updateTeacherRequest.description()))
+                .ifPresent(teacher::setDescription);
+        Optional.ofNullable(institute)
+                .ifPresent(teacher::setInstitute);
+        Optional.ofNullable(homeroom)
+                .ifPresent(teacher::setHomeroom);
     }
     
     /**
@@ -83,9 +106,9 @@ public class TeacherMapper {
     public TeacherCriteria toCriteria(TeacherDto.FindTeacherRequest findTeacherRequest) {
         return new TeacherCriteria(
                 findTeacherRequest.teacherIds(),
-                findTeacherRequest.accountId(),
-                findTeacherRequest.name(),
-                findTeacherRequest.instituteName(),
+                StringUtils.stripToNull(findTeacherRequest.accountId()),
+                StringUtils.stripToNull(findTeacherRequest.name()),
+                StringUtils.stripToNull(findTeacherRequest.instituteName()),
                 findTeacherRequest.statuses(),
                 findTeacherRequest.roles()
         );

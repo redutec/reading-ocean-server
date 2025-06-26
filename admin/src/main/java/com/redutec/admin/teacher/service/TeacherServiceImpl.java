@@ -103,11 +103,11 @@ public class TeacherServiceImpl implements TeacherService {
                             .filter(currentPassword -> passwordEncoder.matches(currentPassword, teacher.getPassword()))
                             .orElseThrow(() -> new IllegalArgumentException("현재 비밀번호가 일치하지 않습니다."));
                 });
-        // 수정 요청 객체에 교육기관 고유번호가 있다면 교육기관 엔티티 조회(없으면 Null)
+        // 수정 요청 객체에 교육기관 고유번호가 있다면 교육기관 엔티티 조회
         Institute institute = Optional.ofNullable(updateTeacherRequest.instituteId())
                 .flatMap(instituteRepository::findById)
                 .orElseGet(teacher::getInstitute);
-        // 수정 요청 객체에 학급 고유번호가 있다면 학급 엔티티 조회(없으면 Null)
+        // 수정 요청 객체에 학급 고유번호가 있다면 학급 엔티티 조회
         Homeroom homeroom = Optional.ofNullable(updateTeacherRequest.homeroomId())
                 .flatMap(homeroomRepository::findById)
                 .orElseGet(teacher::getHomeroom);

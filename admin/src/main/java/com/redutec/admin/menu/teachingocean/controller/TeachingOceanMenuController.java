@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/menu/teaching-ocean")
+@RequestMapping("/teaching-ocean/menus")
 @Tag(name = "티칭오션 메뉴 관리 API", description = "티칭오션 메뉴 관리 API 모음")
 public class TeachingOceanMenuController {
     private final ApiResponseManager apiResponseManager;

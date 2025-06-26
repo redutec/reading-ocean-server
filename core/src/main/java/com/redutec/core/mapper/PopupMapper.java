@@ -6,6 +6,7 @@ import com.redutec.core.dto.PopupDto;
 import com.redutec.core.entity.Popup;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
@@ -29,8 +30,8 @@ public class PopupMapper {
     ) {
         return Popup.builder()
                 .domain(createPopupRequest.domain())
-                .title(createPopupRequest.title())
-                .content(createPopupRequest.content())
+                .title(StringUtils.stripToNull(createPopupRequest.title()))
+                .content(StringUtils.stripToNull(createPopupRequest.content()))
                 .visible(createPopupRequest.visible())
                 .visibleStartAt(createPopupRequest.visibleStartAt())
                 .visibleEndAt(createPopupRequest.visibleEndAt())
@@ -46,12 +47,18 @@ public class PopupMapper {
             Popup popup,
             PopupDto.UpdatePopupRequest updatePopupRequest
     ) {
-        Optional.ofNullable(updatePopupRequest.domain()).ifPresent(popup::setDomain);
-        Optional.ofNullable(updatePopupRequest.title()).ifPresent(popup::setTitle);
-        Optional.ofNullable(updatePopupRequest.content()).ifPresent(popup::setContent);
-        Optional.ofNullable(updatePopupRequest.visible()).ifPresent(popup::setVisible);
-        Optional.ofNullable(updatePopupRequest.visibleStartAt()).ifPresent(popup::setVisibleStartAt);
-        Optional.ofNullable(updatePopupRequest.visibleEndAt()).ifPresent(popup::setVisibleEndAt);
+        Optional.ofNullable(updatePopupRequest.domain())
+                .ifPresent(popup::setDomain);
+        Optional.ofNullable(StringUtils.stripToNull(updatePopupRequest.title()))
+                .ifPresent(popup::setTitle);
+        Optional.ofNullable(StringUtils.stripToNull(updatePopupRequest.content()))
+                .ifPresent(popup::setContent);
+        Optional.ofNullable(updatePopupRequest.visible())
+                .ifPresent(popup::setVisible);
+        Optional.ofNullable(updatePopupRequest.visibleStartAt())
+                .ifPresent(popup::setVisibleStartAt);
+        Optional.ofNullable(updatePopupRequest.visibleEndAt())
+                .ifPresent(popup::setVisibleEndAt);
     }
     
     /**
@@ -65,8 +72,8 @@ public class PopupMapper {
         return new PopupCriteria(
                 findPopupRequest.popupIds(),
                 findPopupRequest.domains(),
-                findPopupRequest.title(),
-                findPopupRequest.content(),
+                StringUtils.stripToNull(findPopupRequest.title()),
+                StringUtils.stripToNull(findPopupRequest.content()),
                 findPopupRequest.visible()
         );
     }
@@ -80,16 +87,16 @@ public class PopupMapper {
      */
     public PopupDto.PopupResponse toResponseDto(Popup popup) {
         return Optional.ofNullable(popup)
-                .map(n -> new PopupDto.PopupResponse(
-                        n.getId(),
-                        n.getDomain(),
-                        n.getTitle(),
-                        n.getContent(),
-                        n.getVisible(),
-                        n.getVisibleStartAt(),
-                        n.getVisibleEndAt(),
-                        n.getCreatedAt(),
-                        n.getUpdatedAt()
+                .map(p -> new PopupDto.PopupResponse(
+                        p.getId(),
+                        p.getDomain(),
+                        p.getTitle(),
+                        p.getContent(),
+                        p.getVisible(),
+                        p.getVisibleStartAt(),
+                        p.getVisibleEndAt(),
+                        p.getCreatedAt(),
+                        p.getUpdatedAt()
                 ))
                 .orElse(null);
     }

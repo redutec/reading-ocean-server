@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/banner")
+@RequestMapping("/banners")
 @Tag(name = "배너 관리 API", description = "배너 관리 API 모음")
 public class BannerController {
     private final ApiResponseManager apiResponseManager;

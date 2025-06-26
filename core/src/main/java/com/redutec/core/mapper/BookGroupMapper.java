@@ -1,12 +1,13 @@
 package com.redutec.core.mapper;
 
-import com.redutec.core.dto.BookGroupDto;
 import com.redutec.core.criteria.BookGroupCriteria;
+import com.redutec.core.dto.BookGroupDto;
 import com.redutec.core.entity.Book;
 import com.redutec.core.entity.BookGroup;
 import com.redutec.core.meta.SchoolGrade;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
@@ -32,8 +33,8 @@ public class BookGroupMapper {
             List<Book> books
     ) {
         return BookGroup.builder()
-                .name(createBookGroupRequest.name())
-                .yearMonth(createBookGroupRequest.yearMonth())
+                .name(StringUtils.stripToNull(createBookGroupRequest.name()))
+                .yearMonth(StringUtils.stripToNull(createBookGroupRequest.yearMonth()))
                 .type(createBookGroupRequest.type())
                 .schoolGrade(createBookGroupRequest.schoolGrade())
                 .books(books)
@@ -52,8 +53,10 @@ public class BookGroupMapper {
             BookGroupDto.UpdateBookGroupRequest updateBookGroupRequest,
             List<Book> books
     ) {
-        Optional.ofNullable(updateBookGroupRequest.name()).ifPresent(bookGroup::setName);
-        Optional.ofNullable(updateBookGroupRequest.yearMonth()).ifPresent(bookGroup::setYearMonth);
+        Optional.ofNullable(StringUtils.stripToNull(updateBookGroupRequest.name()))
+                .ifPresent(bookGroup::setName);
+        Optional.ofNullable(StringUtils.stripToNull(updateBookGroupRequest.yearMonth()))
+                .ifPresent(bookGroup::setYearMonth);
         Optional.ofNullable(updateBookGroupRequest.type()).ifPresent(bookGroup::setType);
         Optional.ofNullable(updateBookGroupRequest.schoolGrade()).ifPresent(bookGroup::setSchoolGrade);
         Optional.ofNullable(books).ifPresent(bookGroup::setBooks);
@@ -69,8 +72,8 @@ public class BookGroupMapper {
     public BookGroupCriteria toCriteria(BookGroupDto.FindBookGroupRequest findBookGroupRequest) {
         return new BookGroupCriteria(
                 findBookGroupRequest.bookGroupIds(),
-                findBookGroupRequest.name(),
-                findBookGroupRequest.yearMonth(),
+                StringUtils.stripToNull(findBookGroupRequest.name()),
+                StringUtils.stripToNull(findBookGroupRequest.yearMonth()),
                 findBookGroupRequest.types(),
                 findBookGroupRequest.schoolGrades()
         );
@@ -80,7 +83,7 @@ public class BookGroupMapper {
      * BookGroup 엔티티를 기반으로 응답용 BookGroupResponse DTO로 변환합니다.
      * Optional을 사용하여 null 검사를 수행합니다.
      *
-     * @param bookGroup 변환할 BookGroup 엔티티 (null 가능)
+     * @param bookGroup 변환할 BookGroup 엔티티
      * @return BookGroup 엔티티의 데이터를 담은 BookGroupResponse DTO, bookGroup가 null이면 null 반환
      */
     public BookGroupDto.BookGroupResponse toResponseDto(BookGroup bookGroup) {
@@ -107,7 +110,7 @@ public class BookGroupMapper {
      * 엔티티 리스트를 응답용 DTO 리스트로 매핑하고 페이지네이션 정보를 포함합니다.
      * Optional을 사용하여 null 검사를 수행합니다.
      *
-     * @param bookGroupPage Page 형태로 조회된 BookGroup 엔티티 목록 (null 가능)
+     * @param bookGroupPage Page 형태로 조회된 BookGroup 엔티티 목록
      * @return BookGroup 엔티티 리스트와 페이지 정보를 담은 BookGroupPageResponse DTO, bookGroupPage가 null이면 null 반환
      */
     public BookGroupDto.BookGroupPageResponse toPageResponseDto(Page<BookGroup> bookGroupPage) {

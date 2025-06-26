@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/popup")
+@RequestMapping("/popups")
 @Tag(name = "팝업 관리 API", description = "팝업 관리 API 모음")
 public class PopupController {
     private final ApiResponseManager apiResponseManager;

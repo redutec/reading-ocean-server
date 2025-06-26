@@ -6,6 +6,7 @@ import com.redutec.core.entity.Branch;
 import com.redutec.core.entity.Teacher;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
@@ -31,14 +32,14 @@ public class BranchMapper {
     ) {
         return Branch.builder()
                 .managerTeacher(managerTeacher)
-                .region(createBranchRequest.region())
-                .name(createBranchRequest.name())
+                .region(StringUtils.stripToNull(createBranchRequest.region()))
+                .name(StringUtils.stripToNull(createBranchRequest.name()))
                 .status(createBranchRequest.status())
                 .businessArea(createBranchRequest.businessArea())
-                .contractFileName(contractFileName)
+                .contractFileName(StringUtils.stripToNull(contractFileName))
                 .contractDate(createBranchRequest.contractDate())
                 .renewalDate(createBranchRequest.renewalDate())
-                .description(createBranchRequest.description())
+                .description(StringUtils.stripToNull(createBranchRequest.description()))
                 .build();
     }
 
@@ -56,15 +57,24 @@ public class BranchMapper {
             Teacher managerTeacher,
             String contractFileName
     ) {
-        Optional.ofNullable(managerTeacher).ifPresent(branch::setManagerTeacher);
-        Optional.ofNullable(updateBranchRequest.region()).ifPresent(branch::setRegion);
-        Optional.ofNullable(branch.getName()).ifPresent(branch::setName);
-        Optional.ofNullable(branch.getStatus()).ifPresent(branch::setStatus);
-        Optional.ofNullable(branch.getBusinessArea()).ifPresent(branch::setBusinessArea);
-        Optional.ofNullable(contractFileName).ifPresent(branch::setContractFileName);
-        Optional.ofNullable(branch.getContractDate()).ifPresent(branch::setContractDate);
-        Optional.ofNullable(branch.getRenewalDate()).ifPresent(branch::setRenewalDate);
-        Optional.ofNullable(branch.getDescription()).ifPresent(branch::setDescription);
+        Optional.ofNullable(managerTeacher)
+                .ifPresent(branch::setManagerTeacher);
+        Optional.ofNullable(StringUtils.stripToNull(updateBranchRequest.region()))
+                .ifPresent(branch::setRegion);
+        Optional.ofNullable(StringUtils.stripToNull(updateBranchRequest.name()))
+                .ifPresent(branch::setName);
+        Optional.ofNullable(updateBranchRequest.status())
+                .ifPresent(branch::setStatus);
+        Optional.ofNullable(updateBranchRequest.businessArea())
+                .ifPresent(branch::setBusinessArea);
+        Optional.ofNullable(StringUtils.stripToNull(contractFileName))
+                .ifPresent(branch::setContractFileName);
+        Optional.ofNullable(updateBranchRequest.contractDate())
+                .ifPresent(branch::setContractDate);
+        Optional.ofNullable(updateBranchRequest.renewalDate())
+                .ifPresent(branch::setRenewalDate);
+        Optional.ofNullable(StringUtils.stripToNull(updateBranchRequest.description()))
+                .ifPresent(branch::setDescription);
     }
 
     /**
@@ -78,10 +88,10 @@ public class BranchMapper {
     public BranchCriteria toCriteria(BranchDto.FindBranchRequest findBranchRequest) {
         return new BranchCriteria(
                 findBranchRequest.branchIds(),
-                findBranchRequest.name(),
+                StringUtils.stripToNull(findBranchRequest.name()),
                 findBranchRequest.statuses(),
-                findBranchRequest.managerTeacherName(),
-                findBranchRequest.managerTeacherAccountId()
+                StringUtils.stripToNull(findBranchRequest.managerTeacherName()),
+                StringUtils.stripToNull(findBranchRequest.managerTeacherAccountId())
         );
     }
 

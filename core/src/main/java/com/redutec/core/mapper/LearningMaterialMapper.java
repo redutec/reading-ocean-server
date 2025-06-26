@@ -5,6 +5,7 @@ import com.redutec.core.dto.LearningMaterialDto;
 import com.redutec.core.entity.LearningMaterial;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
@@ -28,8 +29,8 @@ public class LearningMaterialMapper {
     ) {
         return LearningMaterial.builder()
                 .category(createLearningMaterialRequest.category())
-                .title(createLearningMaterialRequest.title())
-                .content(createLearningMaterialRequest.content())
+                .title(StringUtils.stripToNull(createLearningMaterialRequest.title()))
+                .content(StringUtils.stripToNull(createLearningMaterialRequest.content()))
                 .author(createLearningMaterialRequest.author())
                 .attachmentFileNames(attachmentFileNames)
                 .available(createLearningMaterialRequest.available())
@@ -48,9 +49,12 @@ public class LearningMaterialMapper {
             List<String> attachmentFileNames,
             LearningMaterialDto.UpdateLearningMaterialRequest updateLearningMaterialRequest
     ) {
-        Optional.ofNullable(updateLearningMaterialRequest.category()).ifPresent(learningMaterial::setCategory);
-        Optional.ofNullable(updateLearningMaterialRequest.title()).ifPresent(learningMaterial::setTitle);
-        Optional.ofNullable(updateLearningMaterialRequest.content()).ifPresent(learningMaterial::setContent);
+        Optional.ofNullable(updateLearningMaterialRequest.category())
+                .ifPresent(learningMaterial::setCategory);
+        Optional.ofNullable(StringUtils.stripToNull(updateLearningMaterialRequest.title()))
+                .ifPresent(learningMaterial::setTitle);
+        Optional.ofNullable(StringUtils.stripToNull(updateLearningMaterialRequest.content()))
+                .ifPresent(learningMaterial::setContent);
         Optional.ofNullable(updateLearningMaterialRequest.author()).ifPresent(learningMaterial::setAuthor);
         Optional.ofNullable(attachmentFileNames).ifPresent(learningMaterial::setAttachmentFileNames);
         Optional.ofNullable(updateLearningMaterialRequest.available()).ifPresent(learningMaterial::setAvailable);
@@ -69,8 +73,8 @@ public class LearningMaterialMapper {
         return new LearningMaterialCriteria(
                 findLearningMaterialRequest.learningMaterialIds(),
                 findLearningMaterialRequest.categories(),
-                findLearningMaterialRequest.title(),
-                findLearningMaterialRequest.content(),
+                StringUtils.stripToNull(findLearningMaterialRequest.title()),
+                StringUtils.stripToNull(findLearningMaterialRequest.content()),
                 findLearningMaterialRequest.authors(),
                 findLearningMaterialRequest.available()
         );

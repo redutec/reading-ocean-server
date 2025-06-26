@@ -7,6 +7,7 @@ import com.redutec.core.entity.Student;
 import com.redutec.core.entity.StudentInquiry;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
@@ -32,8 +33,8 @@ public class StudentInquiryMapper {
                 .domain(createStudentInquiryRequest.domain())
                 .category(createStudentInquiryRequest.category())
                 .status(createStudentInquiryRequest.status())
-                .title(createStudentInquiryRequest.title())
-                .content(createStudentInquiryRequest.content())
+                .title(StringUtils.stripToNull(createStudentInquiryRequest.title()))
+                .content(StringUtils.stripToNull(createStudentInquiryRequest.content()))
                 .build();
     }
 
@@ -48,13 +49,20 @@ public class StudentInquiryMapper {
             StudentInquiryDto.UpdateStudentInquiryRequest updateStudentInquiryRequest,
             AdminUser responder
     ) {
-        Optional.ofNullable(updateStudentInquiryRequest.domain()).ifPresent(studentInquiry::setDomain);
-        Optional.ofNullable(updateStudentInquiryRequest.category()).ifPresent(studentInquiry::setCategory);
-        Optional.ofNullable(updateStudentInquiryRequest.status()).ifPresent(studentInquiry::setStatus);
-        Optional.ofNullable(responder).ifPresent(studentInquiry::setResponder);
-        Optional.ofNullable(updateStudentInquiryRequest.title()).ifPresent(studentInquiry::setTitle);
-        Optional.ofNullable(updateStudentInquiryRequest.content()).ifPresent(studentInquiry::setContent);
-        Optional.ofNullable(updateStudentInquiryRequest.response()).ifPresent(studentInquiry::setResponse);
+        Optional.ofNullable(updateStudentInquiryRequest.domain())
+                .ifPresent(studentInquiry::setDomain);
+        Optional.ofNullable(updateStudentInquiryRequest.category())
+                .ifPresent(studentInquiry::setCategory);
+        Optional.ofNullable(updateStudentInquiryRequest.status())
+                .ifPresent(studentInquiry::setStatus);
+        Optional.ofNullable(responder)
+                .ifPresent(studentInquiry::setResponder);
+        Optional.ofNullable(StringUtils.stripToNull(updateStudentInquiryRequest.title()))
+                .ifPresent(studentInquiry::setTitle);
+        Optional.ofNullable(StringUtils.stripToNull(updateStudentInquiryRequest.content()))
+                .ifPresent(studentInquiry::setContent);
+        Optional.ofNullable(StringUtils.stripToNull(updateStudentInquiryRequest.response()))
+                .ifPresent(studentInquiry::setResponse);
     }
     
     /**
@@ -87,17 +95,17 @@ public class StudentInquiryMapper {
      */
     public StudentInquiryDto.StudentInquiryResponse toResponseDto(StudentInquiry studentInquiry) {
         return Optional.ofNullable(studentInquiry)
-                .map(ti -> new StudentInquiryDto.StudentInquiryResponse(
-                        ti.getId(),
-                        ti.getDomain(),
-                        ti.getCategory(),
-                        ti.getStatus(),
-                        ti.getStudent().getAccountId(),
-                        ti.getResponder().getAccountId(),
-                        ti.getTitle(),
-                        ti.getContent(),
-                        ti.getCreatedAt(),
-                        ti.getUpdatedAt()
+                .map(si -> new StudentInquiryDto.StudentInquiryResponse(
+                        si.getId(),
+                        si.getDomain(),
+                        si.getCategory(),
+                        si.getStatus(),
+                        si.getStudent().getAccountId(),
+                        si.getResponder().getAccountId(),
+                        si.getTitle(),
+                        si.getContent(),
+                        si.getCreatedAt(),
+                        si.getUpdatedAt()
                 ))
                 .orElse(null);
     }

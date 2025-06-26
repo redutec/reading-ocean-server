@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/subscription/institute")
+@RequestMapping("/subscriptions/institutes")
 @Tag(name = "구독(교육기관) 관리 API", description = "구독(교육기관) 관리 API 모음")
 public class InstituteSubscriptionController {
     private final ApiResponseManager apiResponseManager;
@@ -38,25 +38,25 @@ public class InstituteSubscriptionController {
     }
 
     @Operation(summary = "특정 구독(교육기관) 조회", description = "특정 구독(교육기관) 정보를 조회하는 API")
-    @GetMapping("/{instituteSubscriptionId}")
-    public ResponseEntity<ApiResponseBody> findById(@PathVariable Long instituteSubscriptionId) {
-        return apiResponseManager.ok(instituteSubscriptionService.findById(instituteSubscriptionId));
+    @GetMapping("/{subscriptionId}")
+    public ResponseEntity<ApiResponseBody> findById(@PathVariable Long subscriptionId) {
+        return apiResponseManager.ok(instituteSubscriptionService.findById(subscriptionId));
     }
 
     @Operation(summary = "특정 구독(교육기관) 수정", description = "특정 구독(교육기관) 정보를 수정하는 API")
-    @PutMapping("/{instituteSubscriptionId}")
+    @PutMapping("/{subscriptionId}")
     public ResponseEntity<ApiResponseBody> update(
-            @Parameter(description = "구독(교육기관) ID") @PathVariable Long instituteSubscriptionId,
+            @Parameter(description = "구독(교육기관) ID") @PathVariable Long subscriptionId,
             @ParameterObject @Valid InstituteSubscriptionDto.UpdateInstituteSubscriptionRequest updateInstituteSubscriptionRequest
     ) {
-        instituteSubscriptionService.update(instituteSubscriptionId, updateInstituteSubscriptionRequest);
+        instituteSubscriptionService.update(subscriptionId, updateInstituteSubscriptionRequest);
         return apiResponseManager.noContent();
     }
 
     @Operation(summary = "특정 구독(교육기관) 삭제", description = "특정 구독(교육기관) 정보를 삭제하는 API")
-    @DeleteMapping("/{instituteSubscriptionId}")
-    public ResponseEntity<ApiResponseBody> delete(@Parameter(description = "구독(교육기관) ID") @PathVariable Long instituteSubscriptionId) {
-        instituteSubscriptionService.delete(instituteSubscriptionId);
+    @DeleteMapping("/{subscriptionId}")
+    public ResponseEntity<ApiResponseBody> delete(@Parameter(description = "구독(교육기관) ID") @PathVariable Long subscriptionId) {
+        instituteSubscriptionService.delete(subscriptionId);
         return apiResponseManager.noContent();
     }
 }

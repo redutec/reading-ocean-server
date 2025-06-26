@@ -1,6 +1,5 @@
 package com.redutec.admin.learning.material.service;
 
-import com.redutec.core.config.FileUploadResult;
 import com.redutec.core.config.FileUtil;
 import com.redutec.core.dto.LearningMaterialDto;
 import com.redutec.core.entity.LearningMaterial;
@@ -14,12 +13,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -39,21 +37,13 @@ public class LearningMaterialServiceImpl implements LearningMaterialService {
     public LearningMaterialDto.LearningMaterialResponse create(
             LearningMaterialDto.CreateLearningMaterialRequest createLearningMaterialRequest
     ) {
-        // 업로드된 파일이 있으면 각각 업로드하고, 파일명만 추출해 리스트에 담기
-        List<String> attachmentFileNames = new ArrayList<>();
-        List<MultipartFile> files = createLearningMaterialRequest.attachmentFiles();
-        if (files != null) {
-            for (MultipartFile file : files) {
-                if (!file.isEmpty()) {
-                    FileUploadResult result = fileUtil.uploadFile(file, "/hq-document");
-                    // 파일 경로 중 파일명만 추출
-                    String filename = Paths.get(result.filePath())
-                            .getFileName()
-                            .toString();
-                    attachmentFileNames.add(filename);
-                }
-            }
-        }
+        // attachmentFiles 리스트 중 비어있지 않은 MultipartFile을 업로드하고, 파일명만 추출하여 List<String>으로 수집
+        List<String> attachmentFileNames = Optional.ofNullable(createLearningMaterialRequest.attachmentFiles())
+                .stream()
+                .flatMap(List::stream)
+                .filter(attachmentFile -> !attachmentFile.isEmpty())
+                .map(attachmentFile -> Paths.get(fileUtil.uploadFile(attachmentFile, "/hq-document").filePath()).getFileName().toString())
+                .collect(Collectors.toList());
         // 학습 자료 게시물 등록
         return learningMaterialMapper.toResponseDto(
                 learningMaterialRepository.save(
@@ -106,23 +96,19 @@ public class LearningMaterialServiceImpl implements LearningMaterialService {
     ) {
         // 수정할 학습 자료 게시물 엔티티 조회
         LearningMaterial learningMaterial = getLearningMaterial(learningMaterialId);
-        // 새로 업로드된 파일 리스트
-        List<MultipartFile> files = updateLearningMaterialRequest.attachmentFiles();
         // 신규 파일이 하나라도 있으면 기존 파일 삭제 후 새 파일 업로드, 없으면 기존 유지
-        List<String> attachmentFileNames = Optional.ofNullable(files)
-                .filter(fs -> fs.stream().anyMatch(f -> !f.isEmpty()))
-                .map(fs -> {
+        List<String> attachmentFileNames = Optional.ofNullable(updateLearningMaterialRequest.attachmentFiles())
+                .filter(attachmentFiles -> updateLearningMaterialRequest.attachmentFiles()
+                        .stream().anyMatch(attachmentFile -> !attachmentFile.isEmpty()))
+                .map(attachmentFiles -> {
                     // 기존 파일 삭제
                     learningMaterial.getAttachmentFileNames()
-                            .forEach(oldName -> fileUtil.deleteFile("/hq-document", oldName));
+                            .forEach(currentFileName -> fileUtil.deleteFile("/hq-document", currentFileName));
                     // 새 파일 업로드 후 파일명 리스트 생성
-                    return fs.stream()
-                            .filter(f -> !f.isEmpty())
-                            .map(f -> {
-                                FileUploadResult result = fileUtil.uploadFile(f, "/hq-document");
-                                return Paths.get(result.filePath()).getFileName().toString();
-                            })
-                            .toList();
+                    return attachmentFiles.stream()
+                            .filter(attachmentFile -> !attachmentFile.isEmpty())
+                            .map(attachmentFile -> Paths.get(fileUtil.uploadFile(attachmentFile, "/hq-document").filePath()).getFileName().toString())
+                            .collect(Collectors.toList());
                 })
                 .orElseGet(learningMaterial::getAttachmentFileNames);
         // 학습 자료 게시물 수정

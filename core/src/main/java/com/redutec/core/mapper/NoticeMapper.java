@@ -5,6 +5,7 @@ import com.redutec.core.dto.NoticeDto;
 import com.redutec.core.entity.Notice;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
@@ -28,8 +29,8 @@ public class NoticeMapper {
     ) {
         return Notice.builder()
                 .domain(createNoticeRequest.domain())
-                .title(createNoticeRequest.title())
-                .content(createNoticeRequest.content())
+                .title(StringUtils.stripToNull(createNoticeRequest.title()))
+                .content(StringUtils.stripToNull(createNoticeRequest.content()))
                 .attachmentFileName(attachmentFileName)
                 .visible(createNoticeRequest.visible())
                 .visibleStartAt(createNoticeRequest.visibleStartAt())
@@ -49,13 +50,20 @@ public class NoticeMapper {
             NoticeDto.UpdateNoticeRequest updateNoticeRequest,
             String attachmentFileName
     ) {
-        Optional.ofNullable(updateNoticeRequest.domain()).ifPresent(notice::setDomain);
-        Optional.ofNullable(updateNoticeRequest.title()).ifPresent(notice::setTitle);
-        Optional.ofNullable(updateNoticeRequest.content()).ifPresent(notice::setContent);
-        Optional.ofNullable(attachmentFileName).ifPresent(notice::setAttachmentFileName);
-        Optional.ofNullable(updateNoticeRequest.visible()).ifPresent(notice::setVisible);
-        Optional.ofNullable(updateNoticeRequest.visibleStartAt()).ifPresent(notice::setVisibleStartAt);
-        Optional.ofNullable(updateNoticeRequest.visibleEndAt()).ifPresent(notice::setVisibleEndAt);
+        Optional.ofNullable(updateNoticeRequest.domain())
+                .ifPresent(notice::setDomain);
+        Optional.ofNullable(StringUtils.stripToNull(updateNoticeRequest.title()))
+                .ifPresent(notice::setTitle);
+        Optional.ofNullable(StringUtils.stripToNull(updateNoticeRequest.content()))
+                .ifPresent(notice::setContent);
+        Optional.ofNullable(attachmentFileName)
+                .ifPresent(notice::setAttachmentFileName);
+        Optional.ofNullable(updateNoticeRequest.visible())
+                .ifPresent(notice::setVisible);
+        Optional.ofNullable(updateNoticeRequest.visibleStartAt())
+                .ifPresent(notice::setVisibleStartAt);
+        Optional.ofNullable(updateNoticeRequest.visibleEndAt())
+                .ifPresent(notice::setVisibleEndAt);
     }
     
     /**
@@ -69,8 +77,8 @@ public class NoticeMapper {
         return new NoticeCriteria(
                 findNoticeRequest.noticeIds(),
                 findNoticeRequest.domains(),
-                findNoticeRequest.title(),
-                findNoticeRequest.content(),
+                StringUtils.stripToNull(findNoticeRequest.title()),
+                StringUtils.stripToNull(findNoticeRequest.content()),
                 findNoticeRequest.visible()
         );
     }

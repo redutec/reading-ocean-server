@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/faq")
+@RequestMapping("/faqs")
 @Tag(name = "이용안내 API", description = "이용안내 API 모음")
 public class FaqController {
     private final ApiResponseManager apiResponseManager;

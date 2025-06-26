@@ -53,11 +53,16 @@ public class StudentSubscriptionMapper {
             SubscriptionPlan subscriptionPlan,
             Student student
     ) {
-        Optional.ofNullable(subscriptionPlan).ifPresent(studentSubscription::setSubscriptionPlan);
-        Optional.ofNullable(updateStudentSubscriptionRequest.startedAt()).ifPresent(studentSubscription::setStartedAt);
-        Optional.ofNullable(updateStudentSubscriptionRequest.endedAt()).ifPresent(studentSubscription::setEndedAt);
-        Optional.ofNullable(updateStudentSubscriptionRequest.nextPaymentAt()).ifPresent(studentSubscription::setNextPaymentAt);
-        Optional.ofNullable(student).ifPresent(studentSubscription::setStudent);
+        Optional.ofNullable(subscriptionPlan)
+                .ifPresent(studentSubscription::setSubscriptionPlan);
+        Optional.ofNullable(updateStudentSubscriptionRequest.startedAt())
+                .ifPresent(studentSubscription::setStartedAt);
+        Optional.ofNullable(updateStudentSubscriptionRequest.endedAt())
+                .ifPresent(studentSubscription::setEndedAt);
+        Optional.ofNullable(updateStudentSubscriptionRequest.nextPaymentAt())
+                .ifPresent(studentSubscription::setNextPaymentAt);
+        Optional.ofNullable(student)
+                .ifPresent(studentSubscription::setStudent);
     }
     
     /**

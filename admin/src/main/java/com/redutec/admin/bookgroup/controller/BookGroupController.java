@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/book/group")
+@RequestMapping("/book-groups")
 @Tag(name = "도서 그룹 관리 API", description = "도서 그룹 관리 API 모음")
 public class BookGroupController {
     private final ApiResponseManager apiResponseManager;

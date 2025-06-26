@@ -5,6 +5,7 @@ import com.redutec.core.dto.FaqDto;
 import com.redutec.core.entity.Faq;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
@@ -23,8 +24,8 @@ public class FaqMapper {
     public Faq createEntity(FaqDto.CreateFaqRequest createFaqRequest) {
         return Faq.builder()
                 .domain(createFaqRequest.domain())
-                .title(createFaqRequest.title())
-                .content(createFaqRequest.content())
+                .title(StringUtils.stripToNull(createFaqRequest.title()))
+                .content(StringUtils.stripToNull(createFaqRequest.content()))
                 .visible(createFaqRequest.visible())
                 .build();
     }
@@ -35,10 +36,14 @@ public class FaqMapper {
      * @param updateFaqRequest Faq 수정에 필요한 데이터를 담은 DTO
      */
     public void updateEntity(Faq faq, FaqDto.UpdateFaqRequest updateFaqRequest) {
-        Optional.ofNullable(updateFaqRequest.domain()).ifPresent(faq::setDomain);
-        Optional.ofNullable(updateFaqRequest.title()).ifPresent(faq::setTitle);
-        Optional.ofNullable(updateFaqRequest.content()).ifPresent(faq::setContent);
-        Optional.ofNullable(updateFaqRequest.visible()).ifPresent(faq::setVisible);
+        Optional.ofNullable(updateFaqRequest.domain())
+                .ifPresent(faq::setDomain);
+        Optional.ofNullable(StringUtils.stripToNull(updateFaqRequest.title()))
+                .ifPresent(faq::setTitle);
+        Optional.ofNullable(StringUtils.stripToNull(updateFaqRequest.content()))
+                .ifPresent(faq::setContent);
+        Optional.ofNullable(updateFaqRequest.visible())
+                .ifPresent(faq::setVisible);
     }
     
     /**
@@ -52,8 +57,8 @@ public class FaqMapper {
         return new FaqCriteria(
                 findFaqRequest.faqIds(),
                 findFaqRequest.domains(),
-                findFaqRequest.title(),
-                findFaqRequest.content(),
+                StringUtils.stripToNull(findFaqRequest.title()),
+                StringUtils.stripToNull(findFaqRequest.content()),
                 findFaqRequest.visible()
         );
     }

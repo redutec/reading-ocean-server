@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/mall/order")
+@RequestMapping("/orders")
 @Tag(name = "상품 주문 API", description = "상품 주문 API 모음")
 public class OrderController {
     private final ApiResponseManager apiResponseManager;

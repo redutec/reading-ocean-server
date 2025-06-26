@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/hq/learning-material")
+@RequestMapping("/learning-materials")
 @Tag(name = "학습 자료 API", description = "학습 자료 API 모음")
 public class LearningMaterialController {
     private final ApiResponseManager apiResponseManager;

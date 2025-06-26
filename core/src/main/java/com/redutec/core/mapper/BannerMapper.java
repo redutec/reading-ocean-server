@@ -5,6 +5,7 @@ import com.redutec.core.dto.BannerDto;
 import com.redutec.core.entity.Banner;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
@@ -28,10 +29,10 @@ public class BannerMapper {
     ) {
         return Banner.builder()
                 .domain(createBannerRequest.domain())
-                .title(createBannerRequest.title())
-                .content(createBannerRequest.content())
-                .linkUrl(createBannerRequest.linkUrl())
-                .attachmentFileName(attachmentFileName)
+                .title(StringUtils.stripToNull(createBannerRequest.title()))
+                .content(StringUtils.stripToNull(createBannerRequest.content()))
+                .linkUrl(StringUtils.stripToNull(createBannerRequest.linkUrl()))
+                .attachmentFileName(StringUtils.stripToNull(attachmentFileName))
                 .priority(createBannerRequest.priority())
                 .visible(createBannerRequest.visible())
                 .visibleStartAt(createBannerRequest.visibleStartAt())
@@ -51,15 +52,24 @@ public class BannerMapper {
             BannerDto.UpdateBannerRequest updateBannerRequest,
             String attachmentFileName
     ) {
-        Optional.ofNullable(updateBannerRequest.domain()).ifPresent(banner::setDomain);
-        Optional.ofNullable(updateBannerRequest.title()).ifPresent(banner::setTitle);
-        Optional.ofNullable(updateBannerRequest.content()).ifPresent(banner::setContent);
-        Optional.ofNullable(updateBannerRequest.linkUrl()).ifPresent(banner::setLinkUrl);
-        Optional.ofNullable(attachmentFileName).ifPresent(banner::setAttachmentFileName);
-        Optional.ofNullable(updateBannerRequest.priority()).ifPresent(banner::setPriority);
-        Optional.ofNullable(updateBannerRequest.visible()).ifPresent(banner::setVisible);
-        Optional.ofNullable(updateBannerRequest.visibleStartAt()).ifPresent(banner::setVisibleStartAt);
-        Optional.ofNullable(updateBannerRequest.visibleEndAt()).ifPresent(banner::setVisibleEndAt);
+        Optional.ofNullable(updateBannerRequest.domain())
+                .ifPresent(banner::setDomain);
+        Optional.ofNullable(StringUtils.stripToNull(updateBannerRequest.title()))
+                .ifPresent(banner::setTitle);
+        Optional.ofNullable(StringUtils.stripToNull(updateBannerRequest.content()))
+                .ifPresent(banner::setContent);
+        Optional.ofNullable(StringUtils.stripToNull(updateBannerRequest.linkUrl()))
+                .ifPresent(banner::setLinkUrl);
+        Optional.ofNullable(StringUtils.stripToNull(attachmentFileName))
+                .ifPresent(banner::setAttachmentFileName);
+        Optional.ofNullable(updateBannerRequest.priority())
+                .ifPresent(banner::setPriority);
+        Optional.ofNullable(updateBannerRequest.visible())
+                .ifPresent(banner::setVisible);
+        Optional.ofNullable(updateBannerRequest.visibleStartAt())
+                .ifPresent(banner::setVisibleStartAt);
+        Optional.ofNullable(updateBannerRequest.visibleEndAt())
+                .ifPresent(banner::setVisibleEndAt);
     }
     
     /**
@@ -74,8 +84,8 @@ public class BannerMapper {
         return new BannerCriteria(
                 findBannerRequest.bannerIds(),
                 findBannerRequest.domains(),
-                findBannerRequest.title(),
-                findBannerRequest.content(),
+                StringUtils.stripToNull(findBannerRequest.title()),
+                StringUtils.stripToNull(findBannerRequest.content()),
                 findBannerRequest.visible()
         );
     }
@@ -84,7 +94,7 @@ public class BannerMapper {
      * Banner 엔티티를 기반으로 응답용 BannerResponse DTO로 변환합니다.
      * Optional을 사용하여 null 검사를 수행합니다.
      *
-     * @param banner 변환할 Banner 엔티티(null 가능)
+     * @param banner 변환할 Banner 엔티티
      * @return Banner 엔티티의 데이터를 담은 BannerResponse DTO, banner가 null이면 null 반환
      */
     public BannerDto.BannerResponse toResponseDto(Banner banner) {
@@ -111,7 +121,7 @@ public class BannerMapper {
      * 엔티티 리스트를 응답용 DTO 리스트로 매핑하고 페이지네이션 정보를 포함합니다.
      * Optional을 사용하여 null 검사를 수행합니다.
      *
-     * @param bannerPage Page 형태로 조회된 Banner 엔티티 목록 (null 가능)
+     * @param bannerPage Page 형태로 조회된 Banner 엔티티 목록
      * @return Banner 엔티티 리스트와 페이지 정보를 담은 BannerPageResponse DTO, bannerPage가 null이면 null 반환
      */
     public BannerDto.BannerPageResponse toPageResponseDto(Page<Banner> bannerPage) {

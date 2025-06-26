@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/branch")
+@RequestMapping("/branches")
 @Tag(name = "지사 관리 API", description = "지사 관리 API 모음")
 public class BranchController {
     private final ApiResponseManager apiResponseManager;

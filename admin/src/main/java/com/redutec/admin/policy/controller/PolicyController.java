@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/policy")
+@RequestMapping("/policies")
 @Tag(name = "정책 관리 API", description = "정책 관리 API 모음")
 public class PolicyController {
     private final ApiResponseManager apiResponseManager;

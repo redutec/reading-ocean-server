@@ -5,6 +5,7 @@ import com.redutec.core.dto.ProductDto;
 import com.redutec.core.entity.Product;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
@@ -27,8 +28,8 @@ public class ProductMapper {
             String attachmentFileName
     ) {
         return Product.builder()
-                .name(createProductRequest.name())
-                .details(createProductRequest.details())
+                .name(StringUtils.stripToNull(createProductRequest.name()))
+                .details(StringUtils.stripToNull(createProductRequest.details()))
                 .price(createProductRequest.price())
                 .discountPercentage(createProductRequest.discountPercentage())
                 .attachmentFileName(attachmentFileName)
@@ -49,13 +50,20 @@ public class ProductMapper {
             ProductDto.UpdateProductRequest updateProductRequest,
             String attachmentFileName
     ) {
-        Optional.ofNullable(updateProductRequest.name()).ifPresent(product::setName);
-        Optional.ofNullable(updateProductRequest.details()).ifPresent(product::setDetails);
-        Optional.ofNullable(updateProductRequest.price()).ifPresent(product::setPrice);
-        Optional.ofNullable(updateProductRequest.discountPercentage()).ifPresent(product::setDiscountPercentage);
-        Optional.ofNullable(attachmentFileName).ifPresent(product::setAttachmentFileName);
-        Optional.ofNullable(updateProductRequest.category()).ifPresent(product::setCategory);
-        Optional.ofNullable(updateProductRequest.status()).ifPresent(product::setStatus);
+        Optional.ofNullable(StringUtils.stripToNull(updateProductRequest.name()))
+                .ifPresent(product::setName);
+        Optional.ofNullable(StringUtils.stripToNull(updateProductRequest.details()))
+                .ifPresent(product::setDetails);
+        Optional.ofNullable(updateProductRequest.price())
+                .ifPresent(product::setPrice);
+        Optional.ofNullable(updateProductRequest.discountPercentage())
+                .ifPresent(product::setDiscountPercentage);
+        Optional.ofNullable(attachmentFileName)
+                .ifPresent(product::setAttachmentFileName);
+        Optional.ofNullable(updateProductRequest.category())
+                .ifPresent(product::setCategory);
+        Optional.ofNullable(updateProductRequest.status())
+                .ifPresent(product::setStatus);
     }
 
     /**
@@ -68,8 +76,8 @@ public class ProductMapper {
     public ProductCriteria toCriteria(ProductDto.FindProductRequest findProductRequest) {
         return new ProductCriteria(
                 findProductRequest.productIds(),
-                findProductRequest.name(),
-                findProductRequest.details(),
+                StringUtils.stripToNull(findProductRequest.name()),
+                StringUtils.stripToNull(findProductRequest.details()),
                 findProductRequest.minimumPrice(),
                 findProductRequest.maximumPrice(),
                 findProductRequest.minimumDiscountPercentage(),

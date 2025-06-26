@@ -5,6 +5,7 @@ import com.redutec.core.criteria.PolicyCriteria;
 import com.redutec.core.entity.Policy;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
@@ -25,8 +26,8 @@ public class PolicyMapper {
         return Policy.builder()
                 .domain(createPolicyRequest.domain())
                 .type(createPolicyRequest.type())
-                .version(createPolicyRequest.version())
-                .content(createPolicyRequest.content())
+                .version(StringUtils.stripToNull(createPolicyRequest.version()))
+                .content(StringUtils.stripToNull(createPolicyRequest.content()))
                 .effectiveAt(createPolicyRequest.effectiveAt())
                 .expiresAt(createPolicyRequest.expiresAt())
                 .available(createPolicyRequest.available())
@@ -40,13 +41,20 @@ public class PolicyMapper {
      * @param updatePolicyRequest 정책 수정에 필요한 데이터를 담은 DTO
      */
     public void updateEntity(Policy policy, PolicyDto.UpdatePolicyRequest updatePolicyRequest) {
-        Optional.ofNullable(updatePolicyRequest.domain()).ifPresent(policy::setDomain);
-        Optional.ofNullable(updatePolicyRequest.type()).ifPresent(policy::setType);
-        Optional.ofNullable(updatePolicyRequest.version()).ifPresent(policy::setVersion);
-        Optional.ofNullable(updatePolicyRequest.content()).ifPresent(policy::setContent);
-        Optional.ofNullable(updatePolicyRequest.effectiveAt()).ifPresent(policy::setEffectiveAt);
-        Optional.ofNullable(updatePolicyRequest.expiresAt()).ifPresent(policy::setExpiresAt);
-        Optional.ofNullable(updatePolicyRequest.available()).ifPresent(policy::setAvailable);
+        Optional.ofNullable(updatePolicyRequest.domain())
+                .ifPresent(policy::setDomain);
+        Optional.ofNullable(updatePolicyRequest.type())
+                .ifPresent(policy::setType);
+        Optional.ofNullable(StringUtils.stripToNull(updatePolicyRequest.version()))
+                .ifPresent(policy::setVersion);
+        Optional.ofNullable(StringUtils.stripToNull(updatePolicyRequest.content()))
+                .ifPresent(policy::setContent);
+        Optional.ofNullable(updatePolicyRequest.effectiveAt())
+                .ifPresent(policy::setEffectiveAt);
+        Optional.ofNullable(updatePolicyRequest.expiresAt())
+                .ifPresent(policy::setExpiresAt);
+        Optional.ofNullable(updatePolicyRequest.available())
+                .ifPresent(policy::setAvailable);
     }
 
     /**

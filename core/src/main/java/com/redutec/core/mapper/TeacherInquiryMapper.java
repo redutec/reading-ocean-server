@@ -7,6 +7,7 @@ import com.redutec.core.entity.Teacher;
 import com.redutec.core.entity.TeacherInquiry;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
@@ -33,8 +34,8 @@ public class TeacherInquiryMapper {
                 .domain(createTeacherInquiryRequest.domain())
                 .category(createTeacherInquiryRequest.category())
                 .status(createTeacherInquiryRequest.status())
-                .title(createTeacherInquiryRequest.title())
-                .content(createTeacherInquiryRequest.content())
+                .title(StringUtils.stripToNull(createTeacherInquiryRequest.title()))
+                .content(StringUtils.stripToNull(createTeacherInquiryRequest.content()))
                 .build();
     }
 
@@ -50,13 +51,20 @@ public class TeacherInquiryMapper {
             AdminUser responder,
             TeacherInquiryDto.UpdateTeacherInquiryRequest updateTeacherInquiryRequest
     ) {
-        Optional.ofNullable(updateTeacherInquiryRequest.domain()).ifPresent(teacherInquiry::setDomain);
-        Optional.ofNullable(updateTeacherInquiryRequest.category()).ifPresent(teacherInquiry::setCategory);
-        Optional.ofNullable(updateTeacherInquiryRequest.status()).ifPresent(teacherInquiry::setStatus);
-        Optional.ofNullable(responder).ifPresent(teacherInquiry::setResponder);
-        Optional.ofNullable(updateTeacherInquiryRequest.title()).ifPresent(teacherInquiry::setTitle);
-        Optional.ofNullable(updateTeacherInquiryRequest.content()).ifPresent(teacherInquiry::setContent);
-        Optional.ofNullable(updateTeacherInquiryRequest.response()).ifPresent(teacherInquiry::setResponse);
+        Optional.ofNullable(updateTeacherInquiryRequest.domain())
+                .ifPresent(teacherInquiry::setDomain);
+        Optional.ofNullable(updateTeacherInquiryRequest.category())
+                .ifPresent(teacherInquiry::setCategory);
+        Optional.ofNullable(updateTeacherInquiryRequest.status())
+                .ifPresent(teacherInquiry::setStatus);
+        Optional.ofNullable(responder)
+                .ifPresent(teacherInquiry::setResponder);
+        Optional.ofNullable(StringUtils.stripToNull(updateTeacherInquiryRequest.title()))
+                .ifPresent(teacherInquiry::setTitle);
+        Optional.ofNullable(StringUtils.stripToNull(updateTeacherInquiryRequest.content()))
+                .ifPresent(teacherInquiry::setContent);
+        Optional.ofNullable(StringUtils.stripToNull(updateTeacherInquiryRequest.response()))
+                .ifPresent(teacherInquiry::setResponse);
     }
     
     /**
@@ -74,9 +82,9 @@ public class TeacherInquiryMapper {
                 findTeacherInquiryRequest.statuses(),
                 findTeacherInquiryRequest.inquirerAccountId(),
                 findTeacherInquiryRequest.responderAccountId(),
-                findTeacherInquiryRequest.title(),
-                findTeacherInquiryRequest.content(),
-                findTeacherInquiryRequest.response()
+                StringUtils.stripToNull(findTeacherInquiryRequest.title()),
+                StringUtils.stripToNull(findTeacherInquiryRequest.content()),
+                StringUtils.stripToNull(findTeacherInquiryRequest.response())
         );
     }
 

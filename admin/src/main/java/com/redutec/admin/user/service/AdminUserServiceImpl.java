@@ -43,11 +43,18 @@ public class AdminUserServiceImpl implements AdminUserService {
     @Override
     @Transactional(readOnly = true)
     public AdminUserDto.AdminUserPageResponse find(AdminUserDto.FindAdminUserRequest findAdminUserRequest) {
-        return adminUserMapper.toPageResponseDto(adminUserRepository.findAll(
+        // 페이지 번호(page)와 페이지 크기(size)가 모두 null이 아니면 PageRequest 생성(그렇지 않으면 pageable 처리 하지 않음)
+        Pageable pageable = Optional.ofNullable(findAdminUserRequest.page())
+                .flatMap(page -> Optional.ofNullable(findAdminUserRequest.size())
+                        .map(size -> (Pageable) PageRequest.of(page, size)))
+                .orElse(Pageable.unpaged());
+        // Specification, pageable을 사용하여 엔티티 목록 조회
+        var adminUsers = adminUserRepository.findAll(
                 AdminUserSpecification.findWith(adminUserMapper.toCriteria(findAdminUserRequest)),
-                (findAdminUserRequest.page() != null && findAdminUserRequest.size() != null)
-                        ? PageRequest.of(findAdminUserRequest.page(), findAdminUserRequest.size())
-                        : Pageable.unpaged()));
+                pageable
+        );
+        // 조회한 엔티티 목록을 응답 객체로 변환하여 리턴
+        return adminUserMapper.toPageResponseDto(adminUsers);
     }
 
     /**
@@ -69,23 +76,7 @@ public class AdminUserServiceImpl implements AdminUserService {
     @Override
     @Transactional
     public void update(Long adminUserId, AdminUserDto.UpdateAdminUserRequest updateAdminUserRequest) {
-        // 수정할 어드민 사용자 엔티티 조회
-        AdminUser adminUser = getAdminUser(adminUserId);
-        // 수정 요청 객체에 newPassword가 존재한다면 현재 비밀번호와 currentPassword가 일치하는지 검증
-        Optional.ofNullable(updateAdminUserRequest.newPassword())
-                .filter(newPassword -> !newPassword.isBlank())
-                .ifPresent(newPassword -> {
-                    // currentPassword 미입력 시 예외
-                    Optional.ofNullable(updateAdminUserRequest.currentPassword())
-                            .filter(currentPassword -> !currentPassword.isBlank())
-                            .orElseThrow(() -> new IllegalArgumentException("비밀번호를 변경하려면 현재 비밀번호를 입력해야 합니다."));
-                    // currentPassword 불일치 시 예외
-                    Optional.of(updateAdminUserRequest.currentPassword())
-                            .filter(currentPassword -> passwordEncoder.matches(currentPassword, adminUser.getPassword()))
-                            .orElseThrow(() -> new IllegalArgumentException("현재 비밀번호가 일치하지 않습니다."));
-                });
-        // 어드민 사용자 수정 엔티티 빌드 후 UPDATE
-        adminUserMapper.updateEntity(adminUser, updateAdminUserRequest);
+        adminUserMapper.updateEntity(getAdminUser(adminUserId), updateAdminUserRequest);
     }
 
     /**

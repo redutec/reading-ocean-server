@@ -5,6 +5,7 @@ import com.redutec.core.criteria.SubscriptionPlanCriteria;
 import com.redutec.core.entity.SubscriptionPlan;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
@@ -25,8 +26,8 @@ public class SubscriptionPlanMapper {
             SubscriptionPlanDto.CreateSubscriptionPlanRequest createSubscriptionPlanRequest
     ) {
         return SubscriptionPlan.builder()
-                .name(createSubscriptionPlanRequest.name())
-                .details(createSubscriptionPlanRequest.details())
+                .name(StringUtils.stripToNull(createSubscriptionPlanRequest.name()))
+                .details(StringUtils.stripToNull(createSubscriptionPlanRequest.details()))
                 .price(createSubscriptionPlanRequest.price())
                 .discountPercentage(createSubscriptionPlanRequest.discountPercentage())
                 .durationDays(createSubscriptionPlanRequest.durationDays())
@@ -45,13 +46,20 @@ public class SubscriptionPlanMapper {
             SubscriptionPlan subscriptionPlan,
             SubscriptionPlanDto.UpdateSubscriptionPlanRequest updateSubscriptionPlanRequest
     ) {
-        Optional.ofNullable(updateSubscriptionPlanRequest.name()).ifPresent(subscriptionPlan::setName);
-        Optional.ofNullable(subscriptionPlan.getDetails()).ifPresent(subscriptionPlan::setDetails);
-        Optional.ofNullable(subscriptionPlan.getPrice()).ifPresent(subscriptionPlan::setPrice);
-        Optional.ofNullable(subscriptionPlan.getDiscountPercentage()).ifPresent(subscriptionPlan::setDiscountPercentage);
-        Optional.ofNullable(subscriptionPlan.getDurationDays()).ifPresent(subscriptionPlan::setDurationDays);
-        Optional.ofNullable(subscriptionPlan.getStatus()).ifPresent(subscriptionPlan::setStatus);
-        Optional.ofNullable(subscriptionPlan.getAutoRenew()).ifPresent(subscriptionPlan::setAutoRenew);
+        Optional.ofNullable(StringUtils.stripToNull(updateSubscriptionPlanRequest.name()))
+                .ifPresent(subscriptionPlan::setName);
+        Optional.ofNullable(StringUtils.stripToNull(updateSubscriptionPlanRequest.details()))
+                .ifPresent(subscriptionPlan::setDetails);
+        Optional.ofNullable(updateSubscriptionPlanRequest.price())
+                .ifPresent(subscriptionPlan::setPrice);
+        Optional.ofNullable(updateSubscriptionPlanRequest.discountPercentage())
+                .ifPresent(subscriptionPlan::setDiscountPercentage);
+        Optional.ofNullable(updateSubscriptionPlanRequest.durationDays())
+                .ifPresent(subscriptionPlan::setDurationDays);
+        Optional.ofNullable(updateSubscriptionPlanRequest.status())
+                .ifPresent(subscriptionPlan::setStatus);
+        Optional.ofNullable(updateSubscriptionPlanRequest.autoRenew())
+                .ifPresent(subscriptionPlan::setAutoRenew);
     }
     
     /**
@@ -65,8 +73,8 @@ public class SubscriptionPlanMapper {
     public SubscriptionPlanCriteria toCriteria(SubscriptionPlanDto.FindSubscriptionPlanRequest findSubscriptionPlanRequest) {
         return new SubscriptionPlanCriteria(
                 findSubscriptionPlanRequest.subscriptionPlanIds(),
-                findSubscriptionPlanRequest.name(),
-                findSubscriptionPlanRequest.details(),
+                StringUtils.stripToNull(findSubscriptionPlanRequest.name()),
+                StringUtils.stripToNull(findSubscriptionPlanRequest.details()),
                 findSubscriptionPlanRequest.minimumPrice(),
                 findSubscriptionPlanRequest.maximumPrice(),
                 findSubscriptionPlanRequest.minimumDiscountPercentage(),

@@ -5,6 +5,7 @@ import com.redutec.core.dto.ReadingDiagnosticTicketDto;
 import com.redutec.core.entity.ReadingDiagnosticTicket;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
@@ -27,7 +28,7 @@ public class ReadingDiagnosticTicketMapper {
                 findReadingDiagnosticTicketRequest.readingDiagnosticTicketIds(),
                 findReadingDiagnosticTicketRequest.readingDiagnosticVoucherIds(),
                 findReadingDiagnosticTicketRequest.instituteIds(),
-                findReadingDiagnosticTicketRequest.serial(),
+                StringUtils.stripToNull(findReadingDiagnosticTicketRequest.serial()),
                 findReadingDiagnosticTicketRequest.used()
         );
     }

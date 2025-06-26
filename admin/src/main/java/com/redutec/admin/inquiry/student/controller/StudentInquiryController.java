@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/inquiry/student")
+@RequestMapping("/inquiries/students")
 @Tag(name = "고객문의(학생) 관리 API", description = "고객문의(학생) 관리 API 모음")
 public class StudentInquiryController {
     private final ApiResponseManager apiResponseManager;
@@ -30,27 +30,27 @@ public class StudentInquiryController {
     }
 
     @Operation(summary = "특정 고객문의(학생) 조회", description = "특정 고객문의(학생)를 조회하는 API")
-    @GetMapping("/{studentInquiryId}")
-    public ResponseEntity<ApiResponseBody> findByStudentInquiryId(@PathVariable Long studentInquiryId) {
-        return apiResponseManager.ok(studentInquiryService.findById(studentInquiryId));
+    @GetMapping("/{inquiryId}")
+    public ResponseEntity<ApiResponseBody> findByStudentInquiryId(@PathVariable Long inquiryId) {
+        return apiResponseManager.ok(studentInquiryService.findById(inquiryId));
     }
 
     @Operation(summary = "특정 고객문의(학생) 수정", description = "특정 고객문의(학생)를 수정하는 API")
-    @PutMapping("/{studentInquiryId}")
+    @PutMapping("/{inquiryId}")
     public ResponseEntity<ApiResponseBody> update(
-            @Parameter(description = "고객문의 ID") @PathVariable Long studentInquiryId,
+            @Parameter(description = "고객문의 ID") @PathVariable Long inquiryId,
             @ParameterObject @Valid StudentInquiryDto.UpdateStudentInquiryRequest updateInquiryRequest
     ) {
-        studentInquiryService.update(studentInquiryId, updateInquiryRequest);
+        studentInquiryService.update(inquiryId, updateInquiryRequest);
         return apiResponseManager.noContent();
     }
 
     @Operation(summary = "특정 고객문의(학생) 삭제", description = "특정 고객문의(학생)를 삭제하는 API")
-    @DeleteMapping("/{studentInquiryId}")
+    @DeleteMapping("/{inquiryId}")
     public ResponseEntity<ApiResponseBody> delete(
-            @Parameter(description = "고객문의(학생) ID") @PathVariable Long studentInquiryId
+            @Parameter(description = "고객문의(학생) ID") @PathVariable Long inquiryId
     ) {
-        studentInquiryService.delete(studentInquiryId);
+        studentInquiryService.delete(inquiryId);
         return apiResponseManager.noContent();
     }
 }

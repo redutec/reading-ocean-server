@@ -7,7 +7,9 @@ import com.redutec.core.entity.Homeroom;
 import com.redutec.core.entity.Student;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -34,18 +36,18 @@ public class StudentMapper {
             Homeroom homeroom
     ) {
         return Student.builder()
-                .accountId(createStudentRequest.accountId())
-                .password(passwordEncoder.encode(createStudentRequest.password()))
-                .name(createStudentRequest.name())
-                .phoneNumber(createStudentRequest.phoneNumber())
-                .email(createStudentRequest.email())
-                .birthday(createStudentRequest.birthday())
+                .accountId(StringUtils.stripToNull(createStudentRequest.accountId()))
+                .password(passwordEncoder.encode(StringUtils.stripToNull(createStudentRequest.password())))
+                .name(StringUtils.stripToNull(createStudentRequest.name()))
+                .phoneNumber(StringUtils.stripToNull(createStudentRequest.phoneNumber()))
+                .email(StringUtils.stripToNull(createStudentRequest.email()))
+                .birthday(StringUtils.stripToNull(createStudentRequest.birthday()))
                 .status(createStudentRequest.status())
                 .authenticationStatus(createStudentRequest.authenticationStatus())
                 .readingLevel(createStudentRequest.readingLevel())
                 .raq(createStudentRequest.raq())
                 .schoolGrade(createStudentRequest.schoolGrade())
-                .description(createStudentRequest.description())
+                .description(StringUtils.stripToNull(createStudentRequest.description()))
                 .domain(createStudentRequest.domain())
                 .institute(institute)
                 .homeroom(homeroom)
@@ -66,25 +68,48 @@ public class StudentMapper {
             Institute institute,
             Homeroom homeroom
     ) {
-        Optional.ofNullable(updateStudentRequest.accountId()).ifPresent(student::setAccountId);
-        Optional.ofNullable(updateStudentRequest.newPassword())
-                .filter(newPassword -> !newPassword.isBlank())
-                .map(passwordEncoder::encode)
-                .ifPresent(student::setPassword);
-        Optional.ofNullable(updateStudentRequest.name()).ifPresent(student::setName);
-        Optional.ofNullable(updateStudentRequest.phoneNumber()).ifPresent(student::setPhoneNumber);
-        Optional.ofNullable(updateStudentRequest.email()).ifPresent(student::setEmail);
-        Optional.ofNullable(updateStudentRequest.birthday()).ifPresent(student::setBirthday);
-        Optional.ofNullable(updateStudentRequest.status()).ifPresent(student::setStatus);
-        Optional.ofNullable(updateStudentRequest.authenticationStatus()).ifPresent(student::setAuthenticationStatus);
-        Optional.ofNullable(updateStudentRequest.readingLevel()).ifPresent(student::setReadingLevel);
-        Optional.ofNullable(updateStudentRequest.raq()).ifPresent(student::setRaq);
-        Optional.ofNullable(updateStudentRequest.schoolGrade()).ifPresent(student::setSchoolGrade);
-        Optional.ofNullable(updateStudentRequest.bookMbti()).ifPresent(student::setBookMbti);
-        Optional.ofNullable(updateStudentRequest.description()).ifPresent(student::setDescription);
-        Optional.ofNullable(updateStudentRequest.domain()).ifPresent(student::setDomain);
-        Optional.ofNullable(institute).ifPresent(student::setInstitute);
-        Optional.ofNullable(homeroom).ifPresent(student::setHomeroom);
+        Optional.ofNullable(StringUtils.stripToNull(updateStudentRequest.accountId()))
+                .ifPresent(student::setAccountId);
+        Optional.ofNullable(StringUtils.stripToNull(updateStudentRequest.newPassword()))
+                .ifPresent(newPassword -> {
+                    // currentPassword 미입력 시 예외
+                    Optional.ofNullable(StringUtils.stripToNull(updateStudentRequest.currentPassword()))
+                            .orElseThrow(() -> new BadCredentialsException("비밀번호를 변경하려면 현재 비밀번호를 입력해야 합니다."));
+                    // currentPassword 불일치 시 예외
+                    Optional.of(StringUtils.stripToNull(updateStudentRequest.currentPassword()))
+                            .filter(currentPassword -> passwordEncoder.matches(currentPassword, student.getPassword()))
+                            .orElseThrow(() -> new BadCredentialsException("현재 비밀번호가 일치하지 않습니다."));
+                    // 새 비밀번호 암호화 후 Set
+                    student.setPassword(passwordEncoder.encode(newPassword));
+                });
+        Optional.ofNullable(StringUtils.stripToNull(updateStudentRequest.name()))
+                .ifPresent(student::setName);
+        Optional.ofNullable(StringUtils.stripToNull(updateStudentRequest.phoneNumber()))
+                .ifPresent(student::setPhoneNumber);
+        Optional.ofNullable(StringUtils.stripToNull(updateStudentRequest.email()))
+                .ifPresent(student::setEmail);
+        Optional.ofNullable(StringUtils.stripToNull(updateStudentRequest.birthday()))
+                .ifPresent(student::setBirthday);
+        Optional.ofNullable(updateStudentRequest.status())
+                .ifPresent(student::setStatus);
+        Optional.ofNullable(updateStudentRequest.authenticationStatus())
+                .ifPresent(student::setAuthenticationStatus);
+        Optional.ofNullable(updateStudentRequest.readingLevel())
+                .ifPresent(student::setReadingLevel);
+        Optional.ofNullable(updateStudentRequest.raq())
+                .ifPresent(student::setRaq);
+        Optional.ofNullable(updateStudentRequest.schoolGrade())
+                .ifPresent(student::setSchoolGrade);
+        Optional.ofNullable(updateStudentRequest.bookMbti())
+                .ifPresent(student::setBookMbti);
+        Optional.ofNullable(StringUtils.stripToNull(updateStudentRequest.description()))
+                .ifPresent(student::setDescription);
+        Optional.ofNullable(updateStudentRequest.domain())
+                .ifPresent(student::setDomain);
+        Optional.ofNullable(institute)
+                .ifPresent(student::setInstitute);
+        Optional.ofNullable(homeroom)
+                .ifPresent(student::setHomeroom);
     }
     
     /**
@@ -97,9 +122,9 @@ public class StudentMapper {
     public StudentCriteria toCriteria(StudentDto.FindStudentRequest findStudentRequest) {
         return new StudentCriteria(
                 findStudentRequest.studentIds(),
-                findStudentRequest.accountId(),
-                findStudentRequest.name(),
-                findStudentRequest.instituteName(),
+                StringUtils.stripToNull(findStudentRequest.accountId()),
+                StringUtils.stripToNull(findStudentRequest.name()),
+                StringUtils.stripToNull(findStudentRequest.instituteName()),
                 findStudentRequest.domains()
         );
     }

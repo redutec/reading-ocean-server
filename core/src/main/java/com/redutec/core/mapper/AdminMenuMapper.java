@@ -3,8 +3,10 @@ package com.redutec.core.mapper;
 import com.redutec.core.dto.AdminMenuDto;
 import com.redutec.core.criteria.AdminMenuCriteria;
 import com.redutec.core.entity.AdminMenu;
+import jakarta.validation.ValidationException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
@@ -28,9 +30,9 @@ public class AdminMenuMapper {
             List<AdminMenu> childrenMenus
     ) {
         return AdminMenu.builder()
-                .name(createAdminMenuRequest.name())
-                .url(createAdminMenuRequest.url())
-                .description(createAdminMenuRequest.description())
+                .name(StringUtils.stripToNull(createAdminMenuRequest.name()))
+                .url(StringUtils.stripToNull(createAdminMenuRequest.url()))
+                .description(StringUtils.stripToNull(createAdminMenuRequest.description()))
                 .available(createAdminMenuRequest.available())
                 .accessibleRoles(createAdminMenuRequest.accessibleRoles())
                 .depth(createAdminMenuRequest.depth())
@@ -50,14 +52,22 @@ public class AdminMenuMapper {
             AdminMenu parentMenu,
             List<AdminMenu> childrenMenus
     ) {
-        Optional.ofNullable(updateAdminMenuRequest.name()).ifPresent(adminMenu::setName);
-        Optional.ofNullable(updateAdminMenuRequest.url()).ifPresent(adminMenu::setUrl);
-        Optional.ofNullable(updateAdminMenuRequest.description()).ifPresent(adminMenu::setDescription);
-        Optional.ofNullable(updateAdminMenuRequest.available()).ifPresent(adminMenu::setAvailable);
-        Optional.ofNullable(updateAdminMenuRequest.accessibleRoles()).ifPresent(adminMenu::setAccessibleRoles);
-        Optional.ofNullable(updateAdminMenuRequest.depth()).ifPresent(adminMenu::setDepth);
-        Optional.ofNullable(parentMenu).ifPresent(adminMenu::setParent);
-        Optional.ofNullable(childrenMenus).ifPresent(adminMenu::setChildren);
+        Optional.ofNullable(StringUtils.stripToNull(updateAdminMenuRequest.name()))
+                .ifPresent(adminMenu::setName);
+        Optional.ofNullable(StringUtils.stripToNull(updateAdminMenuRequest.url()))
+                .ifPresent(adminMenu::setUrl);
+        Optional.ofNullable(StringUtils.stripToNull(updateAdminMenuRequest.description()))
+                .ifPresent(adminMenu::setDescription);
+        Optional.ofNullable(updateAdminMenuRequest.available())
+                .ifPresent(adminMenu::setAvailable);
+        Optional.ofNullable(updateAdminMenuRequest.accessibleRoles())
+                .ifPresent(adminMenu::setAccessibleRoles);
+        Optional.ofNullable(updateAdminMenuRequest.depth())
+                .ifPresent(adminMenu::setDepth);
+        Optional.ofNullable(parentMenu)
+                .ifPresent(adminMenu::setParent);
+        Optional.ofNullable(childrenMenus)
+                .ifPresent(adminMenu::setChildren);
     }
     
     /**
@@ -70,8 +80,8 @@ public class AdminMenuMapper {
     public AdminMenuCriteria toCriteria(AdminMenuDto.FindAdminMenuRequest findAdminMenuRequest) {
         return new AdminMenuCriteria(
                 findAdminMenuRequest.adminMenuIds(),
-                findAdminMenuRequest.name(),
-                findAdminMenuRequest.url(),
+                StringUtils.stripToNull(findAdminMenuRequest.name()),
+                StringUtils.stripToNull(findAdminMenuRequest.url()),
                 findAdminMenuRequest.available(),
                 findAdminMenuRequest.accessibleRoles()
         );
@@ -81,7 +91,7 @@ public class AdminMenuMapper {
      * AdminMenu 엔티티를 기반으로 응답용 AdminMenuResponse DTO로 변환합니다.
      * Optional을 사용하여 null 검사를 수행합니다.
      *
-     * @param adminMenu 변환할 AdminMenu 엔티티 (null 가능)
+     * @param adminMenu 변환할 AdminMenu 엔티티
      * @return AdminMenu 엔티티의 데이터를 담은 AdminMenuResponse DTO, adminMenu가 null이면 null 반환
      */
     public AdminMenuDto.AdminMenuResponse toResponseDto(AdminMenu adminMenu) {
@@ -141,7 +151,7 @@ public class AdminMenuMapper {
      * 엔티티 리스트를 응답용 DTO 리스트로 매핑하고 페이지네이션 정보를 포함합니다.
      * Optional을 사용하여 null 검사를 수행합니다.
      *
-     * @param adminMenuPage Page 형태로 조회된 AdminMenu 엔티티 목록 (null 가능)
+     * @param adminMenuPage Page 형태로 조회된 AdminMenu 엔티티 목록
      * @return AdminMenu 엔티티 리스트와 페이지 정보를 담은 AdminMenuPageResponse DTO, adminMenuPage가 null이면 null 반환
      */
     public AdminMenuDto.AdminMenuPageResponse toPageResponseDto(Page<AdminMenu> adminMenuPage) {

@@ -1,12 +1,13 @@
 package com.redutec.core.mapper;
 
-import com.redutec.core.dto.InstituteDto;
 import com.redutec.core.criteria.InstituteCriteria;
+import com.redutec.core.dto.InstituteDto;
 import com.redutec.core.entity.Branch;
 import com.redutec.core.entity.Institute;
 import com.redutec.core.entity.Teacher;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
@@ -27,13 +28,13 @@ public class InstituteMapper {
             Branch branch
     ) {
         return Institute.builder()
-                .name(createInstituteRequest.name())
-                .businessRegistrationName(createInstituteRequest.businessRegistrationName())
-                .address(createInstituteRequest.address())
-                .postalCode(createInstituteRequest.postalCode())
-                .phoneNumber(createInstituteRequest.phoneNumber())
-                .url(createInstituteRequest.url())
-                .naverPlaceUrl(createInstituteRequest.naverPlaceUrl())
+                .name(StringUtils.stripToNull(createInstituteRequest.name()))
+                .businessRegistrationName(StringUtils.stripToNull(createInstituteRequest.businessRegistrationName()))
+                .address(StringUtils.stripToNull(createInstituteRequest.address()))
+                .postalCode(StringUtils.stripToNull(createInstituteRequest.postalCode()))
+                .phoneNumber(StringUtils.stripToNull(createInstituteRequest.phoneNumber()))
+                .url(StringUtils.stripToNull(createInstituteRequest.url()))
+                .naverPlaceUrl(StringUtils.stripToNull(createInstituteRequest.naverPlaceUrl()))
                 .type(createInstituteRequest.type())
                 .managementType(createInstituteRequest.managementType())
                 .status(createInstituteRequest.status())
@@ -54,18 +55,30 @@ public class InstituteMapper {
             InstituteDto.UpdateInstituteRequest updateInstituteRequest,
             Branch branch
     ) {
-        Optional.ofNullable(updateInstituteRequest.name()).ifPresent(institute::setName);
-        Optional.ofNullable(updateInstituteRequest.businessRegistrationName()).ifPresent(institute::setBusinessRegistrationName);
-        Optional.ofNullable(updateInstituteRequest.address()).ifPresent(institute::setAddress);
-        Optional.ofNullable(updateInstituteRequest.postalCode()).ifPresent(institute::setPostalCode);
-        Optional.ofNullable(updateInstituteRequest.phoneNumber()).ifPresent(institute::setPhoneNumber);
-        Optional.ofNullable(updateInstituteRequest.url()).ifPresent(institute::setUrl);
-        Optional.ofNullable(updateInstituteRequest.naverPlaceUrl()).ifPresent(institute::setNaverPlaceUrl);
-        Optional.ofNullable(updateInstituteRequest.type()).ifPresent(institute::setType);
-        Optional.ofNullable(updateInstituteRequest.managementType()).ifPresent(institute::setManagementType);
-        Optional.ofNullable(updateInstituteRequest.status()).ifPresent(institute::setStatus);
-        Optional.ofNullable(updateInstituteRequest.operationStatus()).ifPresent(institute::setOperationStatus);
-        Optional.ofNullable(branch).ifPresent(institute::setBranch);
+        Optional.ofNullable(StringUtils.stripToNull(updateInstituteRequest.name()))
+                .ifPresent(institute::setName);
+        Optional.ofNullable(StringUtils.stripToNull(updateInstituteRequest.businessRegistrationName()))
+                .ifPresent(institute::setBusinessRegistrationName);
+        Optional.ofNullable(StringUtils.stripToNull(updateInstituteRequest.address()))
+                .ifPresent(institute::setAddress);
+        Optional.ofNullable(StringUtils.stripToNull(updateInstituteRequest.postalCode()))
+                .ifPresent(institute::setPostalCode);
+        Optional.ofNullable(StringUtils.stripToNull(updateInstituteRequest.phoneNumber()))
+                .ifPresent(institute::setPhoneNumber);
+        Optional.ofNullable(StringUtils.stripToNull(updateInstituteRequest.url()))
+                .ifPresent(institute::setUrl);
+        Optional.ofNullable(StringUtils.stripToNull(updateInstituteRequest.naverPlaceUrl()))
+                .ifPresent(institute::setNaverPlaceUrl);
+        Optional.ofNullable(updateInstituteRequest.type())
+                .ifPresent(institute::setType);
+        Optional.ofNullable(updateInstituteRequest.managementType())
+                .ifPresent(institute::setManagementType);
+        Optional.ofNullable(updateInstituteRequest.status())
+                .ifPresent(institute::setStatus);
+        Optional.ofNullable(updateInstituteRequest.operationStatus())
+                .ifPresent(institute::setOperationStatus);
+        Optional.ofNullable(branch)
+                .ifPresent(institute::setBranch);
     }
     
     /**
@@ -78,8 +91,8 @@ public class InstituteMapper {
     public InstituteCriteria toCriteria(InstituteDto.FindInstituteRequest findInstituteRequest) {
         return new InstituteCriteria(
                 findInstituteRequest.instituteIds(),
-                findInstituteRequest.name(),
-                findInstituteRequest.businessRegistrationName(),
+                StringUtils.stripToNull(findInstituteRequest.name()),
+                StringUtils.stripToNull(findInstituteRequest.businessRegistrationName()),
                 findInstituteRequest.types(),
                 findInstituteRequest.managementTypes(),
                 findInstituteRequest.statuses(),

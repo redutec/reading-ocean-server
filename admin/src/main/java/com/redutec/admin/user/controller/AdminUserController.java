@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/user")
+@RequestMapping("/users")
 @Tag(name = "어드민 사용자 관리 API", description = "어드민 사용자 관리 API 모음")
 public class AdminUserController {
     private final ApiResponseManager apiResponseManager;

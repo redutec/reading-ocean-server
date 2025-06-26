@@ -5,6 +5,7 @@ import com.redutec.core.dto.TeachingOceanMenuDto;
 import com.redutec.core.entity.TeachingOceanMenu;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
@@ -28,9 +29,9 @@ public class TeachingOceanMenuMapper {
             List<TeachingOceanMenu> childrenMenus
     ) {
         return TeachingOceanMenu.builder()
-                .name(createTeachingOceanMenuRequest.name())
-                .url(createTeachingOceanMenuRequest.url())
-                .description(createTeachingOceanMenuRequest.description())
+                .name(StringUtils.stripToNull(createTeachingOceanMenuRequest.name()))
+                .url(StringUtils.stripToNull(createTeachingOceanMenuRequest.url()))
+                .description(StringUtils.stripToNull(createTeachingOceanMenuRequest.description()))
                 .available(createTeachingOceanMenuRequest.available())
                 .accessibleRoles(createTeachingOceanMenuRequest.accessibleRoles())
                 .depth(createTeachingOceanMenuRequest.depth())
@@ -50,14 +51,22 @@ public class TeachingOceanMenuMapper {
             TeachingOceanMenu parentMenu,
             List<TeachingOceanMenu> childrenMenus
     ) {
-        Optional.ofNullable(updateTeachingOceanMenuRequest.name()).ifPresent(teachingOceanMenu::setName);
-        Optional.ofNullable(updateTeachingOceanMenuRequest.url()).ifPresent(teachingOceanMenu::setUrl);
-        Optional.ofNullable(updateTeachingOceanMenuRequest.description()).ifPresent(teachingOceanMenu::setDescription);
-        Optional.ofNullable(updateTeachingOceanMenuRequest.available()).ifPresent(teachingOceanMenu::setAvailable);
-        Optional.ofNullable(updateTeachingOceanMenuRequest.accessibleRoles()).ifPresent(teachingOceanMenu::setAccessibleRoles);
-        Optional.ofNullable(updateTeachingOceanMenuRequest.depth()).ifPresent(teachingOceanMenu::setDepth);
-        Optional.ofNullable(parentMenu).ifPresent(teachingOceanMenu::setParent);
-        Optional.ofNullable(childrenMenus).ifPresent(teachingOceanMenu::setChildren);
+        Optional.ofNullable(StringUtils.stripToNull(updateTeachingOceanMenuRequest.name()))
+                .ifPresent(teachingOceanMenu::setName);
+        Optional.ofNullable(StringUtils.stripToNull(updateTeachingOceanMenuRequest.url()))
+                .ifPresent(teachingOceanMenu::setUrl);
+        Optional.ofNullable(StringUtils.stripToNull(updateTeachingOceanMenuRequest.description()))
+                .ifPresent(teachingOceanMenu::setDescription);
+        Optional.ofNullable(updateTeachingOceanMenuRequest.available())
+                .ifPresent(teachingOceanMenu::setAvailable);
+        Optional.ofNullable(updateTeachingOceanMenuRequest.accessibleRoles())
+                .ifPresent(teachingOceanMenu::setAccessibleRoles);
+        Optional.ofNullable(updateTeachingOceanMenuRequest.depth())
+                .ifPresent(teachingOceanMenu::setDepth);
+        Optional.ofNullable(parentMenu)
+                .ifPresent(teachingOceanMenu::setParent);
+        Optional.ofNullable(childrenMenus)
+                .ifPresent(teachingOceanMenu::setChildren);
     }
     
     /**
@@ -70,8 +79,8 @@ public class TeachingOceanMenuMapper {
     public TeachingOceanMenuCriteria toCriteria(TeachingOceanMenuDto.FindTeachingOceanMenuRequest findTeachingOceanMenuRequest) {
         return new TeachingOceanMenuCriteria(
                 findTeachingOceanMenuRequest.teachingOceanMenuIds(),
-                findTeachingOceanMenuRequest.name(),
-                findTeachingOceanMenuRequest.url(),
+                StringUtils.stripToNull(findTeachingOceanMenuRequest.name()),
+                StringUtils.stripToNull(findTeachingOceanMenuRequest.url()),
                 findTeachingOceanMenuRequest.available(),
                 findTeachingOceanMenuRequest.accessibleRoles()
         );

@@ -9,6 +9,7 @@ import com.redutec.core.repository.CartRepository;
 import com.redutec.core.repository.ProductRepository;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
@@ -57,7 +58,7 @@ public class CartMapper {
     ) {
         return new CartCriteria(
                 instituteId,
-                getCartItemRequest.productName()
+                StringUtils.stripToNull(getCartItemRequest.productName())
         );
     }
 

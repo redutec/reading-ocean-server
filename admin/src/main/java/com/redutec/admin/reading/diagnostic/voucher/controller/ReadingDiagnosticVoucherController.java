@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/reading-diagnostic/voucher")
+@RequestMapping("/reading-diagnostic-vouchers")
 @Tag(name = "독서능력진단평가 바우처 관리 API", description = "독서능력진단평가 바우처 관리 API 모음")
 public class ReadingDiagnosticVoucherController {
     private final ApiResponseManager apiResponseManager;
