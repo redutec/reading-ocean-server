@@ -1,16 +1,12 @@
 package com.redutec.core.repository;
 
+import com.redutec.core.entity.Institute;
 import com.redutec.core.entity.ReadingDiagnosticVoucher;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 
-import java.util.List;
-import java.util.Set;
+import java.util.Optional;
 
 public interface ReadingDiagnosticVoucherRepository extends JpaRepository<ReadingDiagnosticVoucher, Long>, JpaSpecificationExecutor<ReadingDiagnosticVoucher> {
-    boolean existsByCode(String code);
-    @Query("SELECT v.code FROM ReadingDiagnosticVoucher v WHERE v.code IN :codes")
-    List<String> findAllCodesByCodeIn(@Param("codes") Set<String> codes);
+    Optional<ReadingDiagnosticVoucher> findByIdAndInstitute(Long readingDiagnosticVoucherId, Institute institute);
 }

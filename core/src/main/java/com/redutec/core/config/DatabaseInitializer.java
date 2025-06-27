@@ -252,6 +252,7 @@ public class DatabaseInitializer {
                             managerTeacher,
                             sampleBranch.getContractFileName()
                     );
+                    branchRepository.saveAndFlush(branch);
                 });
     }
 }

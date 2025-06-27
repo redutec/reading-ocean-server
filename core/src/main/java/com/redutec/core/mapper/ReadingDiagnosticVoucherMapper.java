@@ -22,18 +22,15 @@ public class ReadingDiagnosticVoucherMapper {
      * CreateReadingDiagnosticVoucherRequest DTO를 기반으로 ReadingDiagnosticVoucher 등록 엔티티를 생성합니다.
      *
      * @param createReadingDiagnosticVoucherRequest 독서능력진단평가 바우처 등록에 필요한 데이터를 담은 DTO
-     * @param code 독서능력진단평가 바우처 코드
      * @param institute 바우처를 사용할 교육기관 엔티티
      * @return 등록할 ReadingDiagnosticVoucher 엔티티
      */
     public ReadingDiagnosticVoucher createEntity(
             ReadingDiagnosticVoucherDto.CreateReadingDiagnosticVoucherRequest createReadingDiagnosticVoucherRequest,
-            String code,
             Institute institute
     ) {
         return ReadingDiagnosticVoucher.builder()
                 .name(StringUtils.stripToNull(createReadingDiagnosticVoucherRequest.name()))
-                .code(code)
                 .institute(institute)
                 .description(StringUtils.stripToNull(createReadingDiagnosticVoucherRequest.description()))
                 .build();
@@ -69,7 +66,6 @@ public class ReadingDiagnosticVoucherMapper {
                 findReadingDiagnosticVoucherRequest.readingDiagnosticVoucherIds(),
                 findReadingDiagnosticVoucherRequest.instituteIds(),
                 StringUtils.stripToNull(findReadingDiagnosticVoucherRequest.name()),
-                StringUtils.stripToNull(findReadingDiagnosticVoucherRequest.code()),
                 StringUtils.stripToNull(findReadingDiagnosticVoucherRequest.description())
         );
     }
@@ -88,7 +84,6 @@ public class ReadingDiagnosticVoucherMapper {
                 .map(rdv -> new ReadingDiagnosticVoucherDto.ReadingDiagnosticVoucherResponse(
                         rdv.getId(),
                         rdv.getName(),
-                        rdv.getCode(),
                         rdv.getInstitute().getId(),
                         rdv.getInstitute().getName(),
                         rdv.getDescription(),
@@ -97,7 +92,6 @@ public class ReadingDiagnosticVoucherMapper {
                                         readingDiagnosticTicket.getId(),
                                         rdv.getId(),
                                         rdv.getName(),
-                                        rdv.getCode(),
                                         rdv.getInstitute().getId(),
                                         rdv.getInstitute().getName(),
                                         readingDiagnosticTicket.getSerial(),

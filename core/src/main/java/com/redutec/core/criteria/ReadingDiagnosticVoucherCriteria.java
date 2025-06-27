@@ -6,6 +6,5 @@ public record ReadingDiagnosticVoucherCriteria(
     List<Long> readingDiagnoticVoucherIds,
     List<Long> instituteIds,
     String name,
-    String code,
     String description
 ) {}

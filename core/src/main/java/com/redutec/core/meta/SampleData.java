@@ -209,7 +209,7 @@ public class SampleData {
                 "부산",
                 "부산지사",
                 BranchStatus.INACTIVE,
-                "부산시, 김해시, 기장시",
+                "부산시, 김해시, 기장군",
                 "busan_contract_file.pdf",
                 LocalDate.of(2025, 3, 2),
                 LocalDate.of(2026, 3, 1),

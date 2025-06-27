@@ -48,7 +48,6 @@ public class ReadingDiagnosticTicketMapper {
                         rdt.getId(),
                         rdt.getReadingDiagnosticVoucher().getId(),
                         rdt.getReadingDiagnosticVoucher().getName(),
-                        rdt.getReadingDiagnosticVoucher().getCode(),
                         rdt.getReadingDiagnosticVoucher().getInstitute().getId(),
                         rdt.getReadingDiagnosticVoucher().getInstitute().getName(),
                         rdt.getSerial(),

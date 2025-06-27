@@ -40,11 +40,6 @@ public class ReadingDiagnosticVoucherDto {
             @Size(max = 40, message = "바우처명은 최대 40자까지 입력할 수 있습니다")
             String name,
 
-            @Schema(description = "독서능력진단평가 바우처 코드", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-            @Size(max = 8, message = "바우처 코드는 최대 8자까지 입력할 수 있습니다")
-            @Pattern(regexp = "^[A-Z0-9]+$", message = "바우처 코드는 영어 대문자와 숫자만 사용할 수 있습니다")
-            String code,
-
             @Schema(description = "비고", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
             String description,
 
@@ -75,7 +70,6 @@ public class ReadingDiagnosticVoucherDto {
     public record ReadingDiagnosticVoucherResponse(
             Long readingDiagnosticVoucherId,
             String readingDiagnosticVoucherName,
-            String readingDiagnosticVoucherCode,
             Long instituteId,
             String instituteName,
             String description,

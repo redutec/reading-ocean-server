@@ -24,9 +24,6 @@ public class ReadingDiagnosticVoucherSpecification {
                     Optional.ofNullable(readingDiagnosticVoucherCriteria.name())
                             .filter(name -> !name.isEmpty())
                             .map(name -> criteriaBuilder.like(root.get("name"), "%" + name + "%")),
-                    Optional.ofNullable(readingDiagnosticVoucherCriteria.code())
-                            .filter(code -> !code.isEmpty())
-                            .map(code -> criteriaBuilder.like(root.get("code"), "%" + code + "%")),
                     Optional.ofNullable(readingDiagnosticVoucherCriteria.description())
                             .filter(description -> !description.isEmpty())
                             .map(description -> criteriaBuilder.like(root.get("description"), "%" + description + "%"))

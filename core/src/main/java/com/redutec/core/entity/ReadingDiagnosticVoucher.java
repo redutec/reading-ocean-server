@@ -1,7 +1,6 @@
 package com.redutec.core.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.annotations.Comment;
@@ -33,12 +32,6 @@ public class ReadingDiagnosticVoucher {
     @Column(length = 40, nullable = false, unique = true)
     @Size(max = 40, message = "바우처명은 최대 40자까지 입력할 수 있습니다")
     private String name;
-
-    @Comment("바우처 코드(영문 대문자와 숫자만 허용)")
-    @Column(length = 8, nullable = false, unique = true)
-    @Size(max = 8, message = "바우처 코드는 최대 8자까지 입력할 수 있습니다")
-    @Pattern(regexp = "^[A-Z0-9]+$", message = "바우처 코드는 영어 대문자와 숫자만 사용할 수 있습니다")
-    private String code;
 
     @Comment("바우처를 사용하는 교육기관")
     @Setter

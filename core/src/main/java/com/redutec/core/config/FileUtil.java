@@ -105,7 +105,7 @@ public class FileUtil {
     /**
      * 파일 삭제 메서드
      *
-     * @param addPath  업로드 시 사용한 추가 경로 (예: "/hq-document")
+     * @param addPath  업로드 시 사용한 추가 경로 (예: "/learning-material")
      * @param fileName 삭제할 파일명
      */
     public void deleteFile(String addPath, String fileName) {

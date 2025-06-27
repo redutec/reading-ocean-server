@@ -57,7 +57,6 @@ public class ReadingDiagnosticTicketDto {
             Long readingDiagnosticTicketId,
             Long readingDiagnosticVoucherId,
             String readingDiagnosticVoucherName,
-            String readingDiagnosticVoucherCode,
             Long instituteId,
             String instituteName,
             String serial,
