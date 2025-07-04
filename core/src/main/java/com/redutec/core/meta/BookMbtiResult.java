@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum BookMbti {
+public enum BookMbtiResult {
     ISTJ("""
             신중하며 현실적이고 논리적이에요.
             소속감을 중시하고 전통과 위계질서를 선호해요.

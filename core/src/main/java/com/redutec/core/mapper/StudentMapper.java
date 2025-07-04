@@ -100,8 +100,8 @@ public class StudentMapper {
                 .ifPresent(student::setRaq);
         Optional.ofNullable(updateStudentRequest.schoolGrade())
                 .ifPresent(student::setSchoolGrade);
-        Optional.ofNullable(updateStudentRequest.bookMbti())
-                .ifPresent(student::setBookMbti);
+        Optional.ofNullable(updateStudentRequest.bookMbtiResult())
+                .ifPresent(student::setBookMbtiResult);
         Optional.ofNullable(StringUtils.stripToNull(updateStudentRequest.description()))
                 .ifPresent(student::setDescription);
         Optional.ofNullable(updateStudentRequest.domain())
@@ -163,7 +163,7 @@ public class StudentMapper {
                 student.getReadingLevel(),
                 student.getRaq(),
                 student.getSchoolGrade(),
-                student.getBookMbti(),
+                student.getBookMbtiResult(),
                 student.getLastLoginIp(),
                 student.getLastLoginAt(),
                 student.getDescription(),

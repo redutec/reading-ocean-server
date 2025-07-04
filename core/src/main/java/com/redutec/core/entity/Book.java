@@ -148,7 +148,7 @@ public class Book {
     @Setter
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private BookMbti bookMbti;
+    private BookMbtiResult bookMbtiResult;
 
     @Comment("주제")
     @Setter

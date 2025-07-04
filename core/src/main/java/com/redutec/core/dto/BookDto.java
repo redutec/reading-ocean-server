@@ -103,7 +103,7 @@ public class BookDto {
             @Schema(description = "도서 MBTI 유형", requiredMode = Schema.RequiredMode.REQUIRED)
             @NotNull
             @Enumerated(EnumType.STRING)
-            BookMbti bookMbti,
+            BookMbtiResult bookMbtiResult,
 
             @Schema(description = "주제", requiredMode = Schema.RequiredMode.REQUIRED)
             @NotNull
@@ -205,9 +205,9 @@ public class BookDto {
             Integer maximumRaq,
 
             @Schema(description = "도서 MBTI", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-            @ElementCollection(targetClass = BookMbti.class)
+            @ElementCollection(targetClass = BookMbtiResult.class)
             @Enumerated(EnumType.STRING)
-            List<BookMbti> bookMbtiList,
+            List<BookMbtiResult> bookMbtiResultList,
 
             @Schema(description = "주제", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
             @Size(max = 200)
@@ -305,7 +305,7 @@ public class BookDto {
 
             @Schema(description = "도서 MBTI 유형", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
             @Enumerated(EnumType.STRING)
-            BookMbti bookMbti,
+            BookMbtiResult bookMbtiResult,
 
             @Schema(description = "주제", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
             @Size(max = 200)
@@ -357,7 +357,7 @@ public class BookDto {
             Integer bookPoints,
             Integer raq,
             ReadingLevel readingLevel,
-            BookMbti bookMbti,
+            BookMbtiResult bookMbtiResult,
             String subject,
             String content,
             String awardHistory,

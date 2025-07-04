@@ -102,7 +102,7 @@ public class Student {
     @Setter
     @Column
     @Enumerated(EnumType.STRING)
-    private BookMbti bookMbti;
+    private BookMbtiResult bookMbtiResult;
 
     @Comment("마지막 로그인 IP")
     @Setter

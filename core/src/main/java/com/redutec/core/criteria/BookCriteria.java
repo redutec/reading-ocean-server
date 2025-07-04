@@ -1,7 +1,7 @@
 package com.redutec.core.criteria;
 
 import com.redutec.core.meta.BookGenre;
-import com.redutec.core.meta.BookMbti;
+import com.redutec.core.meta.BookMbtiResult;
 import com.redutec.core.meta.BookSubGenre;
 
 import java.util.List;
@@ -27,7 +27,7 @@ public record BookCriteria(
         Integer maximumBookPoints,
         Integer minimumRaq,
         Integer maximumRaq,
-        List<BookMbti> bookMbtiList,
+        List<BookMbtiResult> bookMbtiResultList,
         String subject,
         String content,
         List<String> tags

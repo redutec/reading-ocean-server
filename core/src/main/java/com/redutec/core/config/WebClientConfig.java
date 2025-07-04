@@ -1,4 +1,4 @@
-package com.redutec.core.http;
+package com.redutec.core.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,7 +9,7 @@ public class WebClientConfig {
     @Bean
     public WebClient webClient() {
         return WebClient.builder()
-                .baseUrl("https://api.readingocean.com") // 기본 URL (필요시 수정)
+                .baseUrl("https://api.readingocean.com")
                 .build();
     }
 }

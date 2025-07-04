@@ -63,7 +63,7 @@ public class StudentDto {
 
             @Schema(description = "도서 MBTI", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
             @Enumerated(EnumType.STRING)
-            BookMbti bookMbti,
+            BookMbtiResult bookMbtiResult,
 
             @Schema(description = "비고", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
             String description,
@@ -166,7 +166,7 @@ public class StudentDto {
 
             @Schema(description = "도서 MBTI", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
             @Enumerated(EnumType.STRING)
-            BookMbti bookMbti,
+            BookMbtiResult bookMbtiResult,
 
             @Schema(description = "비고", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
             String description,
@@ -197,7 +197,7 @@ public class StudentDto {
             ReadingLevel readingLevel,
             Integer raq,
             SchoolGrade schoolGrade,
-            BookMbti bookMbti,
+            BookMbtiResult bookMbtiResult,
             String lastLoginIp,
             LocalDateTime lastLoginAt,
             String description,

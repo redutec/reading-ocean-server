@@ -73,7 +73,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         if ("local".equals(activeProfile) && accessToken == null) {
             // 로컬용 임시 어드민 사용자 데이터로 accessToken 발급
             AdminUser localAdminUser = adminUserRepository.findById(1L)
-                    .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 어드민 사용자입니다. adminUserId = " + 1L));
+                    .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 어드민 사용자입니다. adminUserId: " + 1L));
             accessToken = jwtUtil.generateAccessToken(localAdminUser);
             log.info("**** Local profile detected with no token. Generated accessToken for test: {}", accessToken);
         }
@@ -86,7 +86,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                 if (accountId != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                     // 로그인한 시스템 사용자 정보 조회
                     AdminUser adminUser = adminUserRepository.findByAccountId(accountId)
-                            .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 어드민 사용자입니다. accountId = " + accountId));
+                            .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 어드민 사용자입니다. accountId: " + accountId));
                     // 권한 부여 및 인증 객체 생성
                     var authorities = userDetailsService.loadUserByUsername(adminUser.getAccountId());
                     var authenticationToken = new UsernamePasswordAuthenticationToken(authorities, accessToken, authorities.getAuthorities());

@@ -75,7 +75,7 @@ public class BookSpecification {
                             .map(minimumRaq -> criteriaBuilder.greaterThanOrEqualTo(root.get("raq"), minimumRaq)),
                     Optional.ofNullable(bookCriteria.maximumRaq())
                             .map(maximumRaq -> criteriaBuilder.lessThanOrEqualTo(root.get("raq"), maximumRaq)),
-                    Optional.ofNullable(bookCriteria.bookMbtiList())
+                    Optional.ofNullable(bookCriteria.bookMbtiResultList())
                             .filter(bookMbtiList -> !bookMbtiList.isEmpty())
                             .map(bookMbtiList -> root.get("bookMbti").in(bookMbtiList)),
                     Optional.ofNullable(bookCriteria.subject())

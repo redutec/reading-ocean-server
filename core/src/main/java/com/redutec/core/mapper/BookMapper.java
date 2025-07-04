@@ -55,7 +55,7 @@ public class BookMapper {
                 .bookPoints(createBookRequest.bookPoints())
                 .raq(createBookRequest.raq())
                 .readingLevel(createBookRequest.readingLevel())
-                .bookMbti(createBookRequest.bookMbti())
+                .bookMbtiResult(createBookRequest.bookMbtiResult())
                 .subject(StringUtils.stripToNull(createBookRequest.subject()))
                 .content(StringUtils.stripToNull(createBookRequest.content()))
                 .awardHistory(StringUtils.stripToNull(createBookRequest.awardHistory()))
@@ -121,8 +121,8 @@ public class BookMapper {
                 .ifPresent(book::setRaq);
         Optional.ofNullable(updateBookRequest.readingLevel())
                 .ifPresent(book::setReadingLevel);
-        Optional.ofNullable(updateBookRequest.bookMbti())
-                .ifPresent(book::setBookMbti);
+        Optional.ofNullable(updateBookRequest.bookMbtiResult())
+                .ifPresent(book::setBookMbtiResult);
         Optional.ofNullable(StringUtils.stripToNull(updateBookRequest.subject()))
                 .ifPresent(book::setSubject);
         Optional.ofNullable(StringUtils.stripToNull(updateBookRequest.content()))
@@ -173,7 +173,7 @@ public class BookMapper {
                 findBookRequest.maximumBookPoints(),
                 findBookRequest.minimumRaq(),
                 findBookRequest.maximumRaq(),
-                findBookRequest.bookMbtiList(),
+                findBookRequest.bookMbtiResultList(),
                 StringUtils.stripToNull(findBookRequest.subject()),
                 StringUtils.stripToNull(findBookRequest.content()),
                 Optional.ofNullable(findBookRequest.tags())
@@ -223,7 +223,7 @@ public class BookMapper {
                         b.getBookPoints(),
                         b.getRaq(),
                         b.getReadingLevel(),
-                        b.getBookMbti(),
+                        b.getBookMbtiResult(),
                         b.getSubject(),
                         b.getContent(),
                         b.getAwardHistory(),
