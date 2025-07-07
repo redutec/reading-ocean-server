@@ -1,4 +1,4 @@
-package com.redutec.readingoceanedu.config;
+package com.redutec.readingocean.edu.config;
 
 import com.redutec.core.entity.BlacklistedToken;
 import com.redutec.core.meta.Domain;

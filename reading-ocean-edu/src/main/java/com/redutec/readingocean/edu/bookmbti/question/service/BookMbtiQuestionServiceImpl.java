@@ -1,4 +1,4 @@
-package com.redutec.readingoceanedu.bookmbti.question.service;
+package com.redutec.readingocean.edu.bookmbti.question.service;
 
 import com.redutec.core.dto.BookMbtiQuestionDto;
 import com.redutec.core.entity.BookMbtiQuestion;

@@ -1,4 +1,4 @@
-package com.redutec.readingoceanedu.config;
+package com.redutec.readingocean.edu.config;
 
 import com.redutec.core.meta.AuthenticationStatus;
 import com.redutec.core.repository.StudentRepository;

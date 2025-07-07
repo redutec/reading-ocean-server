@@ -402,4 +402,172 @@ public class SampleData {
         private final AuthenticationStatus authenticationStatus;
         private final String instituteName;
     }
+
+    @Getter
+    @AllArgsConstructor
+    public enum SampleStudent {
+        // 성남지점: 2개
+        SEONGNAM_STUDENT_1(
+                "seongnam_student_1",
+                "Redutec123!",
+                "성남지점 학생1",
+                "22244448888",
+                "seongnam_student_1@redutec.co.kr",
+                "20000101",
+                StudentStatus.ACTIVE,
+                AuthenticationStatus.ACTIVE,
+                ReadingLevel.A3,
+                490,
+                SchoolGrade.ELEMENTARY_3,
+                "비고",
+                SampleInstitute.SEONGNAM.getName(),
+                Domain.READING_OCEAN_EDU
+        ),
+        SEONGNAM_STUDENT_2(
+                "seongnam_student_2",
+                "Redutec123!",
+                "성남지점 학생2",
+                "22255558888",
+                "seongnam_student_2@redutec.co.kr",
+                "20000101",
+                StudentStatus.ACTIVE,
+                AuthenticationStatus.ACTIVE,
+                ReadingLevel.B6,
+                920,
+                SchoolGrade.ELEMENTARY_6,
+                "비고",
+                SampleInstitute.SEONGNAM.getName(),
+                Domain.READING_OCEAN_EDU
+        ),
+        // 서울지점: 2개
+        SEOUL_STUDENT_1(
+                "seoul_student_1",
+                "Redutec123!",
+                "서울지점 학생1",
+                "33344445555",
+                "seoul_student_1@redutec.co.kr",
+                "20020202",
+                StudentStatus.ACTIVE,
+                AuthenticationStatus.ACTIVE,
+                ReadingLevel.A2,
+                350,
+                SchoolGrade.ELEMENTARY_2,
+                "샘플임",
+                SampleInstitute.SEOUL.getName(),
+                Domain.READING_OCEAN_EDU
+        ),
+        SEOUL_STUDENT_2(
+                "seoul_student_2",
+                "Redutec123!",
+                "서울지점 학생2",
+                "33344445555",
+                "seoul_student_2@redutec.co.kr",
+                "20020202",
+                StudentStatus.ACTIVE,
+                AuthenticationStatus.ACTIVE,
+                ReadingLevel.B4,
+                680,
+                SchoolGrade.ELEMENTARY_4,
+                "샘플임",
+                SampleInstitute.SEOUL.getName(),
+                Domain.READING_OCEAN_EDU
+        ),
+        // 부산지점: 2개
+        BUSAN_STUDENT_1(
+                "busan_student_1",
+                "Redutec123!",
+                "부산지점 학생1",
+                "33344445555",
+                "busan_student_1@redutec.co.kr",
+                "20040404",
+                StudentStatus.ACTIVE,
+                AuthenticationStatus.ACTIVE,
+                ReadingLevel.A3,
+                490,
+                SchoolGrade.ELEMENTARY_3,
+                "샘플임!!!",
+                SampleInstitute.BUSAN.getName(),
+                Domain.READING_OCEAN_EDU
+        ),
+        BUSAN_STUDENT_2(
+                "busan_student_2",
+                "Redutec123!",
+                "부산지점 학생2",
+                "33344447777",
+                "busan_student_2@redutec.co.kr",
+                "20010303",
+                StudentStatus.ACTIVE,
+                AuthenticationStatus.ACTIVE,
+                ReadingLevel.B7,
+                1030,
+                SchoolGrade.MIDDLE_1,
+                "샘플임!!!!!",
+                SampleInstitute.BUSAN.getName(),
+                Domain.READING_OCEAN_EDU
+        ),
+        // 리딩오션 홈: 3개
+        HOME_STUDENT_1(
+                "home_student_1",
+                "Redutec123!",
+                "홈 학생1",
+                "99922224444",
+                "home_student_1@redutec.co.kr",
+                "20050505",
+                StudentStatus.ACTIVE,
+                AuthenticationStatus.ACTIVE,
+                ReadingLevel.A5,
+                730,
+                SchoolGrade.ELEMENTARY_5,
+                "홈 샘플임22",
+                null,
+                Domain.READING_OCEAN_HOME
+        ),
+        HOME_STUDENT_2(
+                "home_student_2",
+                "Redutec123!",
+                "홈 학생2",
+                "99933334444",
+                "home_student_2@redutec.co.kr",
+                "20020202",
+                StudentStatus.ACTIVE,
+                AuthenticationStatus.ACTIVE,
+                ReadingLevel.B5,
+                920,
+                SchoolGrade.ELEMENTARY_6,
+                "샘플임",
+                null,
+                Domain.READING_OCEAN_HOME
+        ),
+        HOME_STUDENT_3(
+                "home_student_3",
+                "Redutec123!",
+                "홈 학생3",
+                "99933338888",
+                "home_student_3@redutec.co.kr",
+                "20020202",
+                StudentStatus.ACTIVE,
+                AuthenticationStatus.ACTIVE,
+                ReadingLevel.B3,
+                560,
+                SchoolGrade.ELEMENTARY_3,
+                "샘플임@@!",
+                null,
+                Domain.READING_OCEAN_HOME
+        );
+
+        private final String accountId;
+        private final String password;
+        private final String name;
+        private final String phoneNumber;
+        private final String email;
+        private final String birthday;
+        private final StudentStatus status;
+        private final AuthenticationStatus authenticationStatus;
+        private final ReadingLevel readingLevel;
+        private final Integer raq;
+        private final SchoolGrade schoolGrade;
+        private final String description;
+        private final String instituteName;
+        private final Domain domain;
+    }
 }

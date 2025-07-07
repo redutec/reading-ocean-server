@@ -1,8 +1,8 @@
-package com.redutec.readingoceanedu.bookmbti.question.controller;
+package com.redutec.readingocean.edu.bookmbti.question.controller;
 
 import com.redutec.core.config.ApiResponseBody;
 import com.redutec.core.config.ApiResponseManager;
-import com.redutec.readingoceanedu.bookmbti.question.service.BookMbtiQuestionService;
+import com.redutec.readingocean.edu.bookmbti.question.service.BookMbtiQuestionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

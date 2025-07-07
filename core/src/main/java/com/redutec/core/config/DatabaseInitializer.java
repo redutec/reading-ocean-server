@@ -31,6 +31,7 @@ public class DatabaseInitializer {
     private final BranchRepository branchRepository;
     private final InstituteRepository instituteRepository;
     private final TeacherRepository teacherRepository;
+    private final StudentRepository studentRepository;
     private final PasswordEncoder passwordEncoder;
     private final BranchMapper branchMapper;
 
@@ -47,6 +48,8 @@ public class DatabaseInitializer {
         createSampleBranch();
         createSampleInstitute();
         createSampleTeacher();
+        // ReadingOcean Edu, Home, School 서비스의 샘플 데이터 생성
+        createSampleStudent();
     }
 
     // Admin 서비스용
@@ -200,7 +203,7 @@ public class DatabaseInitializer {
                             .status(institute.getStatus())
                             .operationStatus(institute.getOperationStatus())
                             .branch(branchRepository.findByName(institute.getBranchName())
-                                    .orElseThrow(() -> new EntityNotFoundException("지사 정보를 찾을 수 없습니다. branchName: " + institute.getBranchName())))
+                                    .orElse(null))
                             .build())
                     .toList();
             instituteRepository.saveAll(institutes);
@@ -223,7 +226,7 @@ public class DatabaseInitializer {
                             .role(teacher.getRole())
                             .authenticationStatus(teacher.getAuthenticationStatus())
                             .institute(instituteRepository.findByName(teacher.getInstituteName())
-                                    .orElseThrow(() -> new EntityNotFoundException("교육기관 정보를 찾을 수 없습니다. instituteName: " + teacher.getInstituteName())))
+                                    .orElse(null))
                             .build())
                     .toList();
             teacherRepository.saveAll(teachers);
@@ -254,5 +257,32 @@ public class DatabaseInitializer {
                     );
                     branchRepository.saveAndFlush(branch);
                 });
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    protected void createSampleStudent() {
+        if (studentRepository.count() == 0) {
+            log.info("학생 테이블에 데이터가 존재하지 않습니다. 샘플 학생 데이터를 생성합니다.");
+            var students = Arrays.stream(SampleData.SampleStudent.values())
+                    .map(student -> Student.builder()
+                            .accountId(student.getAccountId())
+                            .password(passwordEncoder.encode(student.getPassword()))
+                            .name(student.getName())
+                            .phoneNumber(student.getPhoneNumber())
+                            .email(student.getEmail())
+                            .birthday(student.getBirthday())
+                            .status(student.getStatus())
+                            .authenticationStatus(student.getAuthenticationStatus())
+                            .readingLevel(student.getReadingLevel())
+                            .raq(student.getRaq())
+                            .schoolGrade(student.getSchoolGrade())
+                            .description(student.getDescription())
+                            .institute(instituteRepository.findByName(student.getInstituteName())
+                                    .orElse(null))
+                            .domain(student.getDomain())
+                            .build())
+                    .toList();
+            studentRepository.saveAll(students);
+        }
     }
 }

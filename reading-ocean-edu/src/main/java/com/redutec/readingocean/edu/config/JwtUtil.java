@@ -1,4 +1,4 @@
-package com.redutec.readingoceanedu.config;
+package com.redutec.readingocean.edu.config;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
