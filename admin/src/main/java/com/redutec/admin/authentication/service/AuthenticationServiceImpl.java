@@ -97,7 +97,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         var accountId = SecurityContextHolder.getContext().getAuthentication().getName();
         // 로그인 아이디로 AdminUser 엔티티 조회
         AdminUser adminUser = adminUserRepository.findByAccountId(accountId)
-                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 어드민 사용자입니다. accountId = " + accountId));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 어드민 사용자입니다. accountId: " + accountId));
         // 현재 로그인한 어드민 사용자 정보를 리턴
         return new AdminAuthenticationDto.AuthenticatedAdminUser(
                 adminUser.getId(),
@@ -120,7 +120,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Transactional
     public void resetPassword(AdminAuthenticationDto.ResetPasswordRequest resetPasswordRequest) throws MessagingException {
         var adminUser = adminUserRepository.findByAccountId(resetPasswordRequest.accountId())
-                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 어드민 사용자입니다. accountId = " + resetPasswordRequest.accountId()));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 어드민 사용자입니다. accountId: " + resetPasswordRequest.accountId()));
         validateAuthenticationStatus(adminUser);
         var newPasswordLength = 8;
         var newPassword = generateRandomPassword(newPasswordLength);
@@ -162,7 +162,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "유효하지 않거나 만료된 토큰입니다."));
         // refreshTokenEntity에 있는 어드민 사용자 닉네임으로 어드민 사용자 엔티티 조회
         AdminUser adminUser = adminUserRepository.findByAccountId(refreshTokenEntity.getUsername())
-                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 계정입니다. email = " + refreshTokenEntity.getUsername()));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 계정입니다. email: " + refreshTokenEntity.getUsername()));
         // 새로운 Access Token 생성 후 리턴
         return new AdminAuthenticationDto.LoginResponse(
                 jwtUtil.generateAccessToken(adminUser),
