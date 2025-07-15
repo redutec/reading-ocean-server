@@ -63,9 +63,7 @@ public class MeteredBillingRecordTasklet implements Tasklet {
                 null,
                 null
         );
-        List<Institute> institutes = instituteRepository.findAll(
-                InstituteSpecification.findWith(instituteCriteria)
-        );
+        List<Institute> institutes = instituteRepository.findAll(InstituteSpecification.findWith(instituteCriteria));
         List<MeteredBillingRecord> meteredBillingRecords = new ArrayList<>();
         // 해당 교육기관에 소속한 활성화된 학생수만큼 일일 사용료를 계산
         for (Institute institute : institutes) {
@@ -83,8 +81,8 @@ public class MeteredBillingRecordTasklet implements Tasklet {
         }
         // MeteredBillingRecord 테이블에 INSERT
         List<MeteredBillingRecord> createdMeteredBillingRecords = meteredBillingRecordRepository.saveAll(meteredBillingRecords);
-        // INSERT한 레코드 수가 0보다 큰 경우 로그를 출력
-        TaskletLogger.logRecords("CREATED", "Create meteredBillingRecords", createdMeteredBillingRecords.size());
+        // INSERT한 이력을 출력
+        TaskletLogger.logRecords("Created", "Create metered billing records", createdMeteredBillingRecords.size());
         return RepeatStatus.FINISHED;
     }
 }

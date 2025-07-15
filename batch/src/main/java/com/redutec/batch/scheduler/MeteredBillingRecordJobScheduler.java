@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 
 /**
  * MeteredBillingRecordJobScheduler는 MeteredBillingRecordJob을 스케줄링하여 주기적으로 실행하는 클래스입니다.
- * - 매일 자정에 배치 작업을 실행합니다.
  */
 @Slf4j
 @Component
@@ -23,7 +22,7 @@ public class MeteredBillingRecordJobScheduler {
      * 매일 23시 55분 00초에 MeteredBillingRecordJob을 실행합니다.
      * - JobParameters는 실행 시각을 포함하여 전달됩니다.
      */
-    @Scheduled(cron = "30 * * * * *")
+    @Scheduled(cron = "0 55 23 * * *", zone = "Asia/Seoul")
     public void runJob() throws Exception {
         log.info("**** [시작] 교육기관에 소속한 활성화된 학생수만큼 사용료를 계산 후 MeteredBillingRecord 테이블에 INSERT");
         // JobParametersBuilder에 현재 시간을 추가하여 배치 작업 실행

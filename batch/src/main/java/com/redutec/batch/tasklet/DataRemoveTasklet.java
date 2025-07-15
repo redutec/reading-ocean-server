@@ -43,7 +43,7 @@ public class DataRemoveTasklet implements Tasklet {
         LocalDateTime tenMinutesAgo = now.minusMinutes(10);
         // BlacklistedToken에서 1개월 이전의 데이터 삭제
         long deletedBlacklistedTokens = blacklistedTokenRepository.deleteByCreatedAtBefore(tenMinutesAgo);
-        TaskletLogger.logRecords("DELETED", "Delete blacklisted tokens", deletedBlacklistedTokens);
+        TaskletLogger.logRecords("Deleted", "Delete blacklisted tokens", deletedBlacklistedTokens);
         return RepeatStatus.FINISHED;
     }
 }

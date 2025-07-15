@@ -64,6 +64,10 @@ public class MeteredBilling {
     @Comment("청구 상태: 결제 대기/PENDING, 결제 완료/PAID, 미납/UNPAID, 환불/REFUNDED")
     private BillingStatus billingStatus;
 
+    @Column(nullable = false)
+    @Comment("결제 만기일")
+    private LocalDate paymentDueDate;
+
     @CreatedDate
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
