@@ -38,7 +38,7 @@ import java.time.LocalDateTime;
 public class MeteredBilling {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Comment("월간 과금 집계 고유번호")
+    @Comment("월별 사용료 청구서 고유번호")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -67,6 +67,14 @@ public class MeteredBilling {
     @Column(nullable = false)
     @Comment("결제 만기일")
     private LocalDate paymentDueDate;
+
+    @Column
+    @Comment("결제일")
+    private LocalDateTime paymentAt;
+
+    @Column
+    @Comment("환불일")
+    private LocalDateTime refundAt;
 
     @CreatedDate
     @Column(nullable = false, updatable = false)
