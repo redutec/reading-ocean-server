@@ -22,7 +22,7 @@ public interface NoticeService {
      * @param noticeId 공지사항 고유번호
      * @return 특정 공지사항 응답 객체
      */
-    NoticeDto.NoticeResponse findById(Long noticeId);
+    NoticeDto.NoticeResponse get(Long noticeId);
 
     /**
      * 특정 공지사항 수정

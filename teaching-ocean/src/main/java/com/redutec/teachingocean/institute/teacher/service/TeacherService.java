@@ -22,7 +22,7 @@ public interface TeacherService {
      * @param teacherId 교사 고유번호
      * @return 특정 교사 응답 객체
      */
-    TeacherDto.TeacherResponse findById(Long teacherId);
+    TeacherDto.TeacherResponse get(Long teacherId);
 
     /**
      * 학사관리 - 교사관리 - 특정 교사 수정

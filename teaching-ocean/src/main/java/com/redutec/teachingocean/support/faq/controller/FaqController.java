@@ -31,7 +31,7 @@ public class FaqController {
 
     @Operation(summary = "특정 이용안내 조회", description = "특정 이용안내를 조회하는 API")
     @GetMapping("/{faqId}")
-    public ResponseEntity<ApiResponseBody> findById(@PathVariable Long faqId) {
-        return apiResponseManager.ok(faqService.findById(faqId));
+    public ResponseEntity<ApiResponseBody> get(@PathVariable Long faqId) {
+        return apiResponseManager.ok(faqService.get(faqId));
     }
 }

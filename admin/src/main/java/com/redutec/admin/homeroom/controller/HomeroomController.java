@@ -39,8 +39,8 @@ public class HomeroomController {
 
     @Operation(summary = "특정 학급 조회", description = "특정 학급를 조회하는 API")
     @GetMapping("/{homeroomId}")
-    public ResponseEntity<ApiResponseBody> findById(@PathVariable Long homeroomId) {
-        return apiResponseManager.ok(homeroomService.findById(homeroomId));
+    public ResponseEntity<ApiResponseBody> get(@PathVariable Long homeroomId) {
+        return apiResponseManager.ok(homeroomService.get(homeroomId));
     }
 
     @Operation(summary = "특정 학급 수정", description = "특정 학급를 수정하는 API")

@@ -72,7 +72,7 @@ public class BookMbtiQuestionServiceImpl implements BookMbtiQuestionService {
      */
     @Override
     @Transactional(readOnly = true)
-    public BookMbtiQuestionDto.BookMbtiQuestionResponse findById(Long bookMbtiQuestionId) {
+    public BookMbtiQuestionDto.BookMbtiQuestionResponse get(Long bookMbtiQuestionId) {
         return bookMbtiQuestionMapper.toResponseDto(getBookMbtiQuestion(bookMbtiQuestionId));
     }
 

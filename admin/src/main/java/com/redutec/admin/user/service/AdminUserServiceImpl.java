@@ -10,7 +10,6 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,7 +21,6 @@ import java.util.Optional;
 public class AdminUserServiceImpl implements AdminUserService {
     private final AdminUserMapper adminUserMapper;
     private final AdminUserRepository adminUserRepository;
-    private final PasswordEncoder passwordEncoder;
 
     /**
      * 어드민 사용자 등록
@@ -64,7 +62,7 @@ public class AdminUserServiceImpl implements AdminUserService {
      */
     @Override
     @Transactional(readOnly = true)
-    public AdminUserDto.AdminUserResponse findById(Long adminUserId) {
+    public AdminUserDto.AdminUserResponse get(Long adminUserId) {
         return adminUserMapper.toResponseDto(getAdminUser(adminUserId));
     }
 

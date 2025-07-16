@@ -33,7 +33,7 @@ public class ReadingDiagnosticVoucherController {
 
     @Operation(summary = "특정 독서능력진단평가 바우처 조회(현재 로그인한 교육기관의 바우처만 조회 가능)", description = "특정 독서능력진단평가 바우처를 조회하는 API")
     @GetMapping("/{readingDiagnosticVoucherId}")
-    public ResponseEntity<ApiResponseBody> findById(@PathVariable Long readingDiagnosticVoucherId) {
-        return apiResponseManager.ok(readingDiagnosticVoucherService.findById(readingDiagnosticVoucherId));
+    public ResponseEntity<ApiResponseBody> get(@PathVariable Long readingDiagnosticVoucherId) {
+        return apiResponseManager.ok(readingDiagnosticVoucherService.get(readingDiagnosticVoucherId));
     }
 }

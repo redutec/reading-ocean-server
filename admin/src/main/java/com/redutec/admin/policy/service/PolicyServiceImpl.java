@@ -55,7 +55,7 @@ public class PolicyServiceImpl implements PolicyService {
      */
     @Override
     @Transactional(readOnly = true)
-    public PolicyDto.PolicyResponse findById(Long policyId) {
+    public PolicyDto.PolicyResponse get(Long policyId) {
         return policyMapper.toResponseDto(getPolicy(policyId));
     }
 

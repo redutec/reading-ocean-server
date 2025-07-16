@@ -71,7 +71,7 @@ public class AdminMenuServiceImpl implements AdminMenuService {
      */
     @Override
     @Transactional(readOnly = true)
-    public AdminMenuDto.AdminMenuResponse findById(Long adminMenuId) {
+    public AdminMenuDto.AdminMenuResponse get(Long adminMenuId) {
         return adminMenuMapper.toResponseDto(getAdminMenu(adminMenuId));
     }
 

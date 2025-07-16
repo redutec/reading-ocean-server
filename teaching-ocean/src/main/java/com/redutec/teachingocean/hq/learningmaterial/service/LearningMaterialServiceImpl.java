@@ -44,7 +44,7 @@ public class LearningMaterialServiceImpl implements LearningMaterialService {
      */
     @Override
     @Transactional(readOnly = true)
-    public LearningMaterialDto.LearningMaterialResponse findById(Long learningMaterialId) {
+    public LearningMaterialDto.LearningMaterialResponse get(Long learningMaterialId) {
         return learningMaterialMapper.toResponseDto(getLearningMaterial(learningMaterialId));
     }
 

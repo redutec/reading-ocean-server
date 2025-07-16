@@ -16,7 +16,7 @@ public interface PopupService {
      * @param popupId 팝업 고유번호
      * @return 특정 팝업 응답 객체
      */
-    PopupDto.PopupResponse findById(Long popupId);
+    PopupDto.PopupResponse get(Long popupId);
 
     /**
      * 특정 팝업 엔티티 조회

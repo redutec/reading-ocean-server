@@ -90,6 +90,6 @@ spring:
     activate:
       on-profile: dev
   datasource:
-    url: jdbc:log4jdbc:mysql://db-redutec-db.ccemsdd2ijls.ap-northeast-2.rds.amazonaws.com:3306/redutec?characterEncoding=UTF-8&serverTimezone=Asia/Seoul&noAccessToProcedureBodies=true&useSSL=false&allowMultiQueries=true&useInformationSchema=true&autoReconnect=true
+    url: jdbc:log4jdbc:mysql://dev-redutec-db.ccemsdd2ijls.ap-northeast-2.rds.amazonaws.com:3306/redutec?characterEncoding=UTF-8&serverTimezone=Asia/Seoul&noAccessToProcedureBodies=true&useSSL=false&allowMultiQueries=true&useInformationSchema=true&autoReconnect=true
     username: "redutec"
     password: "readingocean2025"

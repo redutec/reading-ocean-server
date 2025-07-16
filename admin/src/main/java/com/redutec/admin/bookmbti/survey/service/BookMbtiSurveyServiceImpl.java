@@ -57,7 +57,7 @@ public class BookMbtiSurveyServiceImpl implements BookMbtiSurveyService {
      */
     @Override
     @Transactional(readOnly = true)
-    public BookMbtiSurveyDto.BookMbtiSurveyResponse findById(Long bookMbtiSurveyId) {
+    public BookMbtiSurveyDto.BookMbtiSurveyResponse get(Long bookMbtiSurveyId) {
         return bookMbtiSurveyMapper.toResponseDto(getBookMbtiSurvey(bookMbtiSurveyId));
     }
 

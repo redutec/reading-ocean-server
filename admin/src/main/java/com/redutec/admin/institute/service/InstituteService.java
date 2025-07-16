@@ -22,7 +22,7 @@ public interface InstituteService {
      * @param instituteId 교육기관 고유번호
      * @return 특정 교육기관 응답 객체
      */
-    InstituteDto.InstituteResponse findById(Long instituteId);
+    InstituteDto.InstituteResponse get(Long instituteId);
 
     /**
      * 특정 교육기관 수정

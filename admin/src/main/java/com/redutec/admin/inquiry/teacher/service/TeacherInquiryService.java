@@ -15,7 +15,7 @@ public interface TeacherInquiryService {
      * @param teacherInquiryId 고객문의(교사) 고유번호
      * @return 특정 고객문의(교사) 응답 객체
      */
-    TeacherInquiryDto.TeacherInquiryResponse findById(Long teacherInquiryId);
+    TeacherInquiryDto.TeacherInquiryResponse get(Long teacherInquiryId);
 
     /**
      * 특정 고객문의(교사) 수정

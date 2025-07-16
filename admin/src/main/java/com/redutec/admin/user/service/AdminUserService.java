@@ -23,7 +23,7 @@ public interface AdminUserService {
      * @param adminUserId 어드민 사용자 고유번호
      * @return 특정 어드민 사용자 응답 객체
      */
-    AdminUserDto.AdminUserResponse findById(Long adminUserId);
+    AdminUserDto.AdminUserResponse get(Long adminUserId);
 
     /**
      * 어드민 사용자 수정

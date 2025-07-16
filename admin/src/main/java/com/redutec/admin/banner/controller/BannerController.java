@@ -38,8 +38,8 @@ public class BannerController {
 
     @Operation(summary = "특정 배너 조회", description = "특정 배너를 조회하는 API")
     @GetMapping("/{bannerId}")
-    public ResponseEntity<ApiResponseBody> findById(@PathVariable Long bannerId) {
-        return apiResponseManager.ok(bannerService.findById(bannerId));
+    public ResponseEntity<ApiResponseBody> get(@PathVariable Long bannerId) {
+        return apiResponseManager.ok(bannerService.get(bannerId));
     }
 
     @Operation(summary = "특정 배너 수정", description = "특정 배너를 수정하는 API")

@@ -82,7 +82,7 @@ public class InstituteSubscriptionServiceImpl implements InstituteSubscriptionSe
      */
     @Override
     @Transactional(readOnly = true)
-    public InstituteSubscriptionDto.InstituteSubscriptionResponse findById(Long instituteSubscriptionId) {
+    public InstituteSubscriptionDto.InstituteSubscriptionResponse get(Long instituteSubscriptionId) {
         return subscriptionInstituteMapper.toResponseDto(getInstituteSubscription(instituteSubscriptionId));
     }
 

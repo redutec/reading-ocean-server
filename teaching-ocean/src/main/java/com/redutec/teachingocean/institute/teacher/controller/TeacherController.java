@@ -39,8 +39,8 @@ public class TeacherController {
 
     @Operation(summary = "학사관리 - 교사관리 - 특정 교사 조회", description = "현재 로그인한 교사가 속한 교육기관의 특정 교사 조회")
     @GetMapping("/{teacherId}")
-    public ResponseEntity<ApiResponseBody> findById(@PathVariable Long teacherId) {
-        return apiResponseManager.ok(teacherService.findById(teacherId));
+    public ResponseEntity<ApiResponseBody> get(@PathVariable Long teacherId) {
+        return apiResponseManager.ok(teacherService.get(teacherId));
     }
 
     @Operation(summary = "학사관리 - 교사관리 - 특정 교사 수정", description = "현재 로그인한 교사가 속한 교육기관의 특정 교사 수정")

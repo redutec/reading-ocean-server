@@ -89,7 +89,7 @@ public class TeacherServiceImpl implements TeacherService {
      */
     @Override
     @Transactional(readOnly = true)
-    public TeacherDto.TeacherResponse findById(Long teacherId) {
+    public TeacherDto.TeacherResponse get(Long teacherId) {
         return teacherMapper.toResponseDto(getTeacher(teacherId));
     }
 

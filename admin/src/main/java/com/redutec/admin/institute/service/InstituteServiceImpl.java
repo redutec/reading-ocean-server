@@ -84,7 +84,7 @@ public class InstituteServiceImpl implements InstituteService {
      */
     @Override
     @Transactional(readOnly = true)
-    public InstituteDto.InstituteResponse findById(Long instituteId) {
+    public InstituteDto.InstituteResponse get(Long instituteId) {
         // 교육기관 엔티티 조회
         Institute institute = getInstitute(instituteId);
         // 교육기관의 원장 교사 엔티티 조회

@@ -80,7 +80,7 @@ public class BranchServiceImpl implements BranchService {
      */
     @Override
     @Transactional(readOnly = true)
-    public BranchDto.BranchResponse findById(Long branchId) {
+    public BranchDto.BranchResponse get(Long branchId) {
         return branchMapper.toResponseDto(getBranch(branchId));
     }
 

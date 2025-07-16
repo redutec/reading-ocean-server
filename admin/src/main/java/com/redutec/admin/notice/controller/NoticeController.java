@@ -40,8 +40,8 @@ public class NoticeController {
 
     @Operation(summary = "특정 공지사항 조회", description = "특정 공지사항을 조회하는 API")
     @GetMapping("/{noticeId}")
-    public ResponseEntity<ApiResponseBody> findById(@PathVariable Long noticeId) {
-        return apiResponseManager.ok(noticeService.findById(noticeId));
+    public ResponseEntity<ApiResponseBody> get(@PathVariable Long noticeId) {
+        return apiResponseManager.ok(noticeService.get(noticeId));
     }
 
     @Operation(summary = "특정 공지사항 수정", description = "특정 공지사항을 수정하는 API")

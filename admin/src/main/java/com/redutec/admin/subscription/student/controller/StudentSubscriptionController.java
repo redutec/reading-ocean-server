@@ -39,10 +39,10 @@ public class StudentSubscriptionController {
 
     @Operation(summary = "특정 구독(학생) 조회", description = "특정 구독(학생) 정보를 조회하는 API")
     @GetMapping("/{subscriptionId}")
-    public ResponseEntity<ApiResponseBody> findById(
+    public ResponseEntity<ApiResponseBody> get(
             @Parameter(description = "구독(학생) ID") @PathVariable Long subscriptionId
     ) {
-        return apiResponseManager.ok(subscriptionStudentService.findById(subscriptionId));
+        return apiResponseManager.ok(subscriptionStudentService.get(subscriptionId));
     }
 
     @Operation(summary = "특정 구독(학생) 수정", description = "특정 구독(학생) 정보를 수정하는 API")

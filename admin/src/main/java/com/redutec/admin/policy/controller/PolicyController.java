@@ -39,8 +39,8 @@ public class PolicyController {
 
     @Operation(summary = "특정 정책 조회", description = "특정 정책을 조회하는 API")
     @GetMapping("/{policyId}")
-    public ResponseEntity<ApiResponseBody> findById(@PathVariable Long policyId) {
-        return apiResponseManager.ok(policyService.findById(policyId));
+    public ResponseEntity<ApiResponseBody> get(@PathVariable Long policyId) {
+        return apiResponseManager.ok(policyService.get(policyId));
     }
 
     @Operation(summary = "특정 정책 수정", description = "특정 정책을 수정하는 API")

@@ -22,7 +22,7 @@ public interface BannerService {
      * @param bannerId 배너 고유번호
      * @return 특정 배너 응답 객체
      */
-    BannerDto.BannerResponse findById(Long bannerId);
+    BannerDto.BannerResponse get(Long bannerId);
 
     /**
      * 특정 배너 수정

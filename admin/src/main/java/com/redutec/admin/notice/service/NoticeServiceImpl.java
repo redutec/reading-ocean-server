@@ -71,7 +71,7 @@ public class NoticeServiceImpl implements NoticeService {
      */
     @Override
     @Transactional(readOnly = true)
-    public NoticeDto.NoticeResponse findById(Long noticeId) {
+    public NoticeDto.NoticeResponse get(Long noticeId) {
         return noticeMapper.toResponseDto(getNotice(noticeId));
     }
 

@@ -15,5 +15,5 @@ public interface ProductService {
      * @param productId 특정 상품의 고유번호
      * @return 리딩오션몰의 특정 상품 정보
      */
-    ProductDto.ProductResponse findById(Long productId);
+    ProductDto.ProductResponse get(Long productId);
 }

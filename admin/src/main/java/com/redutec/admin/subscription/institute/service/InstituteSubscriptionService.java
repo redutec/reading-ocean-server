@@ -22,7 +22,7 @@ public interface InstituteSubscriptionService {
      * @param instituteSubscriptionId 구독정보(교육기관) 고유번호
      * @return 특정 구독정보(교육기관) 응답 객체
      */
-    InstituteSubscriptionDto.InstituteSubscriptionResponse findById(Long instituteSubscriptionId);
+    InstituteSubscriptionDto.InstituteSubscriptionResponse get(Long instituteSubscriptionId);
 
     /**
      * 특정 구독정보(교육기관) 수정

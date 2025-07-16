@@ -22,7 +22,7 @@ public interface BookGroupService {
      * @param bookGroupId 도서 그룹 고유번호
      * @return 특정 도서 그룹 응답 객체
      */
-    BookGroupDto.BookGroupResponse findById(Long bookGroupId);
+    BookGroupDto.BookGroupResponse get(Long bookGroupId);
 
     /**
      * 특정 도서 그룹 수정

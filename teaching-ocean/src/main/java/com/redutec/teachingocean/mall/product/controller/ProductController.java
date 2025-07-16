@@ -34,7 +34,7 @@ public class ProductController {
 
     @Operation(summary = "리딩오션몰 - 상품 목록 - 특정 상품 조회", description = "리딩오션몰의 특정 상품 조회")
     @GetMapping("/{productId}")
-    public ResponseEntity<ApiResponseBody> findById(@Parameter(description = "상품 ID") @PathVariable Long productId) {
-        return apiResponseManager.ok(productService.findById(productId));
+    public ResponseEntity<ApiResponseBody> get(@Parameter(description = "상품 ID") @PathVariable Long productId) {
+        return apiResponseManager.ok(productService.get(productId));
     }
 }

@@ -22,7 +22,7 @@ public interface StudentSubscriptionService {
      * @param studentSubscriptionId 구독정보(학생) 고유번호
      * @return 특정 구독정보(학생) 응답 객체
      */
-    StudentSubscriptionDto.StudentSubscriptionResponse findById(Long studentSubscriptionId);
+    StudentSubscriptionDto.StudentSubscriptionResponse get(Long studentSubscriptionId);
 
     /**
      * 특정 구독정보(학생) 수정

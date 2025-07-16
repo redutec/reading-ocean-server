@@ -39,8 +39,8 @@ public class InquiryController {
 
     @Operation(summary = "고객센터 - 1:1 문의 - 특정 고객문의 조회", description = "현재 로그인한 교육기관이 등록한 특정 고객문의를 조회")
     @GetMapping("/{teacherInquiryId}")
-    public ResponseEntity<ApiResponseBody> findById(@PathVariable Long teacherInquiryId) {
-        return apiResponseManager.ok(inquiryService.findById(teacherInquiryId));
+    public ResponseEntity<ApiResponseBody> get(@PathVariable Long teacherInquiryId) {
+        return apiResponseManager.ok(inquiryService.get(teacherInquiryId));
     }
 
     @Operation(summary = "고객센터 - 1:1 문의 - 특정 고객문의 수정", description = "특정 고객문의을 수정")

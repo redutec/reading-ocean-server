@@ -53,7 +53,7 @@ public class FaqServiceImpl implements FaqService {
      */
     @Override
     @Transactional(readOnly = true)
-    public FaqDto.FaqResponse findById(Long faqId) {
+    public FaqDto.FaqResponse get(Long faqId) {
         return faqMapper.toResponseDto(getFaq(faqId));
     }
 

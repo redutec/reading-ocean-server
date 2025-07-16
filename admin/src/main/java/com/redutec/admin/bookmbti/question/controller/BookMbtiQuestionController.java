@@ -43,10 +43,10 @@ public class BookMbtiQuestionController {
 
     @Operation(summary = "특정 북BTI 설문 문항 조회", description = "특정 북BTI 설문 문항을 조회하는 API")
     @GetMapping("/{bookMbtiQuestionId}")
-    public ResponseEntity<ApiResponseBody> findById(
+    public ResponseEntity<ApiResponseBody> get(
             @Parameter(description = "북BTI 설문 문항 ID") @PathVariable Long bookMbtiQuestionId
     ) {
-        return apiResponseManager.ok(bookMbtiQuestionService.findById(bookMbtiQuestionId));
+        return apiResponseManager.ok(bookMbtiQuestionService.get(bookMbtiQuestionId));
     }
 
     @Operation(summary = "특정 북BTI 설문 문항 수정", description = "특정 북BTI 설문 문항을 수정하는 API")

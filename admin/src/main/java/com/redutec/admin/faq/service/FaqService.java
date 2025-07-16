@@ -22,7 +22,7 @@ public interface FaqService {
      * @param faqId 이용안내 고유번호
      * @return 특정 이용안내 응답 객체
      */
-    FaqDto.FaqResponse findById(Long faqId);
+    FaqDto.FaqResponse get(Long faqId);
 
     /**
      * 특정 이용안내 수정

@@ -22,7 +22,7 @@ public interface TeachingOceanMenuService {
      * @param teachingOceanMenuId 티칭오션 메뉴 고유번호
      * @return 특정 티칭오션 메뉴 응답 객체
      */
-    TeachingOceanMenuDto.TeachingOceanMenuResponse findById(Long teachingOceanMenuId);
+    TeachingOceanMenuDto.TeachingOceanMenuResponse get(Long teachingOceanMenuId);
 
     /**
      * 티칭오션 메뉴 수정

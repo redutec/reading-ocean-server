@@ -15,7 +15,7 @@ public interface BookMbtiSurveyService {
      * @param bookMbtiSurveyId 북BTI 설문 응답 고유번호
      * @return 특정 북BTI 설문 응답 응답 객체
      */
-    BookMbtiSurveyDto.BookMbtiSurveyResponse findById(Long bookMbtiSurveyId);
+    BookMbtiSurveyDto.BookMbtiSurveyResponse get(Long bookMbtiSurveyId);
 
     /**
      * 특정 북BTI 설문 응답 삭제

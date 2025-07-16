@@ -22,7 +22,7 @@ public interface PolicyService {
      * @param policyId 정책 고유번호
      * @return 특정 정책 응답 객체
      */
-    PolicyDto.PolicyResponse findById(Long policyId);
+    PolicyDto.PolicyResponse get(Long policyId);
 
     /**
      * 특정 정책 수정

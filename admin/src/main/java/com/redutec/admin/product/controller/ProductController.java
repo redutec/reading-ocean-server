@@ -40,8 +40,8 @@ public class ProductController {
 
     @Operation(summary = "특정 판매상품 조회", description = "특정 판매상품을 조회하는 API")
     @GetMapping("/{productId}")
-    public ResponseEntity<ApiResponseBody> findById(@PathVariable Long productId) {
-        return apiResponseManager.ok(productService.findById(productId));
+    public ResponseEntity<ApiResponseBody> get(@PathVariable Long productId) {
+        return apiResponseManager.ok(productService.get(productId));
     }
 
     @Operation(summary = "특정 판매상품 수정", description = "특정 판매상품을 수정하는 API")

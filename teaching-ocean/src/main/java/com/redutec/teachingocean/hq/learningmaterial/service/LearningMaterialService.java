@@ -15,5 +15,5 @@ public interface LearningMaterialService {
      * @param learningMaterialId 학습자료 게시물 고유번호
      * @return 특정 학습자료 게시물 응답 객체
      */
-    LearningMaterialDto.LearningMaterialResponse findById(Long learningMaterialId);
+    LearningMaterialDto.LearningMaterialResponse get(Long learningMaterialId);
 }

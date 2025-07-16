@@ -22,7 +22,7 @@ public interface AdminMenuService {
      * @param adminMenuId 어드민 메뉴 고유번호
      * @return 특정 어드민 메뉴 응답 객체
      */
-    AdminMenuDto.AdminMenuResponse findById(Long adminMenuId);
+    AdminMenuDto.AdminMenuResponse get(Long adminMenuId);
 
     /**
      * 어드민 메뉴 수정

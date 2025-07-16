@@ -22,7 +22,7 @@ public interface SubscriptionPlanService {
      * @param subscriptionPlanId 구독 상품 고유번호
      * @return 특정 구독 상품 응답 객체
      */
-    SubscriptionPlanDto.SubscriptionPlanResponse findById(Long subscriptionPlanId);
+    SubscriptionPlanDto.SubscriptionPlanResponse get(Long subscriptionPlanId);
 
     /**
      * 특정 구독 상품 수정

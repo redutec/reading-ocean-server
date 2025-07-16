@@ -40,8 +40,8 @@ public class BranchController {
 
     @Operation(summary = "특정 지사 조회", description = "특정 지사를 조회하는 API")
     @GetMapping("/{branchId}")
-    public ResponseEntity<ApiResponseBody> findById(@PathVariable Long branchId) {
-        return apiResponseManager.ok(branchService.findById(branchId));
+    public ResponseEntity<ApiResponseBody> get(@PathVariable Long branchId) {
+        return apiResponseManager.ok(branchService.get(branchId));
     }
 
     @Operation(summary = "특정 지사 수정", description = "특정 지사를 수정하는 API")

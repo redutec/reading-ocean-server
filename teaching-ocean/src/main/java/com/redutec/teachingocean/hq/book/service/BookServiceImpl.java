@@ -1,6 +1,5 @@
 package com.redutec.teachingocean.hq.book.service;
 
-import com.redutec.core.config.FileUtil;
 import com.redutec.core.dto.BookDto;
 import com.redutec.core.entity.Book;
 import com.redutec.core.mapper.BookMapper;
@@ -43,7 +42,7 @@ public class BookServiceImpl implements BookService {
      */
     @Override
     @Transactional(readOnly = true)
-    public BookDto.BookResponse findById(Long bookId) {
+    public BookDto.BookResponse get(Long bookId) {
         return bookMapper.toResponseDto(getBook(bookId));
     }
 

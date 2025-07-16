@@ -15,5 +15,5 @@ public interface BookService {
      * @param bookId 도서 고유번호
      * @return 특정 도서 응답 객체
      */
-    BookDto.BookResponse findById(Long bookId);
+    BookDto.BookResponse get(Long bookId);
 }

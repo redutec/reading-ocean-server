@@ -71,7 +71,7 @@ public class ReadingDiagnosticVoucherServiceImpl implements ReadingDiagnosticVou
      */
     @Override
     @Transactional(readOnly = true)
-    public ReadingDiagnosticVoucherDto.ReadingDiagnosticVoucherResponse findById(Long readingDiagnosticVoucherId) {
+    public ReadingDiagnosticVoucherDto.ReadingDiagnosticVoucherResponse get(Long readingDiagnosticVoucherId) {
         return readingDiagnosticVoucherMapper.toResponseDto(getReadingDiagnosticVoucher(readingDiagnosticVoucherId));
     }
 

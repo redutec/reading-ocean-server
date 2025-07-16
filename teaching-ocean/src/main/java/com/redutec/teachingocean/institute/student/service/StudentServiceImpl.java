@@ -78,7 +78,7 @@ public class StudentServiceImpl implements StudentService {
      */
     @Override
     @Transactional(readOnly = true)
-    public StudentDto.StudentResponse findById(Long studentId) {
+    public StudentDto.StudentResponse get(Long studentId) {
         return studentMapper.toResponseDto(getStudent(studentId));
     }
 

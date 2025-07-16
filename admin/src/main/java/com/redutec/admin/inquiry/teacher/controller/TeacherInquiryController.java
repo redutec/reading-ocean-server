@@ -31,10 +31,10 @@ public class TeacherInquiryController {
 
     @Operation(summary = "특정 고객문의(교사) 조회", description = "특정 고객문의(교사)를 조회하는 API")
     @GetMapping("/{inquiryId}")
-    public ResponseEntity<ApiResponseBody> findByTeacherInquiryId(
+    public ResponseEntity<ApiResponseBody> get(
             @Parameter(description = "고객문의(교사) ID") @PathVariable Long inquiryId
     ) {
-        return apiResponseManager.ok(teacherInquiryService.findById(inquiryId));
+        return apiResponseManager.ok(teacherInquiryService.get(inquiryId));
     }
 
     @Operation(summary = "특정 고객문의(교사) 수정", description = "특정 고객문의(교사)를 수정하는 API")

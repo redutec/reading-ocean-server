@@ -22,7 +22,7 @@ public interface BranchService {
      * @param branchId 지사 고유번호
      * @return 특정 지사 응답 객체
      */
-    BranchDto.BranchResponse findById(Long branchId);
+    BranchDto.BranchResponse get(Long branchId);
 
     /**
      * 특정 지사 수정

@@ -22,7 +22,7 @@ public interface BookMbtiQuestionService {
      * @param bookMbtiQuestionId 북BTI 설문 문항 고유번호
      * @return 특정 북BTI 설문 문항 응답 객체
      */
-    BookMbtiQuestionDto.BookMbtiQuestionResponse findById(Long bookMbtiQuestionId);
+    BookMbtiQuestionDto.BookMbtiQuestionResponse get(Long bookMbtiQuestionId);
 
     /**
      * 특정 북BTI 설문 문항 수정

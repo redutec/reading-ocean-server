@@ -22,7 +22,7 @@ public interface StudentService {
      * @param studentId 학생 고유번호
      * @return 특정 학생 응답 객체
      */
-    StudentDto.StudentResponse findById(Long studentId);
+    StudentDto.StudentResponse get(Long studentId);
 
     /**
      * 학사관리 - 학생 관리 - 특정 학생 수정

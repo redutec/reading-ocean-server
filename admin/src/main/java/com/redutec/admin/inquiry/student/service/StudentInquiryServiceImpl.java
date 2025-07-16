@@ -47,7 +47,7 @@ public class StudentInquiryServiceImpl implements StudentInquiryService {
      */
     @Override
     @Transactional(readOnly = true)
-    public StudentInquiryDto.StudentInquiryResponse findById(Long studentInquiryId) {
+    public StudentInquiryDto.StudentInquiryResponse get(Long studentInquiryId) {
         return studentInquiryMapper.toResponseDto(getStudentInquiry(studentInquiryId));
     }
 

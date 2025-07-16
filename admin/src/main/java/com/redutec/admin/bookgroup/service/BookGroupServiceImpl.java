@@ -71,7 +71,7 @@ public class BookGroupServiceImpl implements BookGroupService {
      */
     @Override
     @Transactional(readOnly = true)
-    public BookGroupDto.BookGroupResponse findById(Long bookGroupId) {
+    public BookGroupDto.BookGroupResponse get(Long bookGroupId) {
         return bookGroupMapper.toResponseDto(getBookGroup(bookGroupId));
     }
 

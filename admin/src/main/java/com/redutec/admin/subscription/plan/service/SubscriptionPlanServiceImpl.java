@@ -61,7 +61,7 @@ public class SubscriptionPlanServiceImpl implements SubscriptionPlanService {
      */
     @Override
     @Transactional(readOnly = true)
-    public SubscriptionPlanDto.SubscriptionPlanResponse findById(Long subscriptionPlanId) {
+    public SubscriptionPlanDto.SubscriptionPlanResponse get(Long subscriptionPlanId) {
         return subscriptionPlanMapper.toResponseDto(getSubscriptionPlan(subscriptionPlanId));
     }
 

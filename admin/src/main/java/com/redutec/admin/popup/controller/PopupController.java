@@ -35,8 +35,8 @@ public class PopupController {
 
     @Operation(summary = "특정 팝업 조회", description = "특정 팝업을 조회하는 API")
     @GetMapping("/{popupId}")
-    public ResponseEntity<ApiResponseBody> findById(@PathVariable Long popupId) {
-        return apiResponseManager.ok(popupService.findById(popupId));
+    public ResponseEntity<ApiResponseBody> get(@PathVariable Long popupId) {
+        return apiResponseManager.ok(popupService.get(popupId));
     }
 
     @Operation(summary = "특정 팝업 수정", description = "특정 팝업을 수정하는 API")

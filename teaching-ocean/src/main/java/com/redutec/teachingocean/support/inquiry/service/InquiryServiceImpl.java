@@ -80,7 +80,7 @@ public class InquiryServiceImpl implements InquiryService {
      */
     @Override
     @Transactional(readOnly = true)
-    public TeacherInquiryDto.TeacherInquiryResponse findById(Long teacherInquiryId) {
+    public TeacherInquiryDto.TeacherInquiryResponse get(Long teacherInquiryId) {
         // 현재 로그인한 교사의 로그인 아이디 조회
         String currentAccountId = authenticationService.getAuthenticatedTeacher().accountId();
         // 해당 고객문의의 문의자(교사)와 현재 로그인한 교사가 동일한 엔티티인지 조회 후 아니면 존재하지 않는 고객문의라고 리턴

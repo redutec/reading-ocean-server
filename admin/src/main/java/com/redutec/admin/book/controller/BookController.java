@@ -36,8 +36,8 @@ public class BookController {
 
     @Operation(summary = "특정 도서 조회", description = "특정 도서를 조회하는 API")
     @GetMapping("/{bookId}")
-    public ResponseEntity<ApiResponseBody> findById(@PathVariable Long bookId) {
-        return apiResponseManager.ok(bookService.findById(bookId));
+    public ResponseEntity<ApiResponseBody> get(@PathVariable Long bookId) {
+        return apiResponseManager.ok(bookService.get(bookId));
     }
 
     @Operation(summary = "특정 도서 수정", description = "특정 도서를 수정하는 API")

@@ -68,7 +68,7 @@ public class BookServiceImpl implements BookService {
      */
     @Override
     @Transactional(readOnly = true)
-    public BookDto.BookResponse findById(Long bookId) {
+    public BookDto.BookResponse get(Long bookId) {
         return bookMapper.toResponseDto(getBook(bookId));
     }
 

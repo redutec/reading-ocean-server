@@ -82,7 +82,7 @@ public class StudentSubscriptionServiceImpl implements StudentSubscriptionServic
      */
     @Override
     @Transactional(readOnly = true)
-    public StudentSubscriptionDto.StudentSubscriptionResponse findById(Long studentSubscriptionId) {
+    public StudentSubscriptionDto.StudentSubscriptionResponse get(Long studentSubscriptionId) {
         return studentSubscriptionMapper.toResponseDto(getStudentSubscription(studentSubscriptionId));
     }
 

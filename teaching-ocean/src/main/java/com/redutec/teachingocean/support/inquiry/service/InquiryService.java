@@ -22,7 +22,7 @@ public interface InquiryService {
      * @param teacherInquiryId 고객문의 고유번호
      * @return 특정 고객문의 응답 객체
      */
-    TeacherInquiryDto.TeacherInquiryResponse findById(Long teacherInquiryId);
+    TeacherInquiryDto.TeacherInquiryResponse get(Long teacherInquiryId);
 
     /**
      * 고객센터 - 1:1 문의 - 특정 고객문의 수정

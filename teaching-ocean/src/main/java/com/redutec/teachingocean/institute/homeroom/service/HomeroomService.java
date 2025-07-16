@@ -24,7 +24,7 @@ public interface HomeroomService {
      * @param homeroomId 학급 고유번호
      * @return 특정 학급 응답 객체
      */
-    HomeroomDto.HomeroomResponse findById(Long homeroomId);
+    HomeroomDto.HomeroomResponse get(Long homeroomId);
 
     /**
      * 학사관리 - 학급관리 - 특정 학급 수정

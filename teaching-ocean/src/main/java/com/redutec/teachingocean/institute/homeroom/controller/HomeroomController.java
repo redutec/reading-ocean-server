@@ -41,8 +41,8 @@ public class HomeroomController {
 
     @Operation(summary = "학사관리 - 학급관리 - 특정 학급 조회", description = "현재 로그인한 교사가 속한 교육기관의 특정 학급 조회")
     @GetMapping("/{homeroomId}")
-    public ResponseEntity<ApiResponseBody> findById(@PathVariable Long homeroomId) {
-        return apiResponseManager.ok(homeroomService.findById(homeroomId));
+    public ResponseEntity<ApiResponseBody> get(@PathVariable Long homeroomId) {
+        return apiResponseManager.ok(homeroomService.get(homeroomId));
     }
 
     @Operation(summary = "학사관리 - 학급관리 - 특정 학급 수정", description = "현재 로그인한 교사가 속한 교육기관의 특정 학급 수정")

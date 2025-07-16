@@ -36,6 +36,14 @@ public class TeachingOceanMenuController {
         return apiResponseManager.ok(teachingOceanMenuService.find(findTeachingOceanMenuRequest));
     }
 
+    @Operation(summary = "특정 티칭오션 메뉴 조회", description = "특정 티칭오션 메뉴를 조회하는 API")
+    @GetMapping("/{teachingOceanMenuId}")
+    public ResponseEntity<ApiResponseBody> get(
+            @Parameter(description = "티칭오션 메뉴 ID") @PathVariable Long teachingOceanMenuId
+    ) {
+        return apiResponseManager.ok(teachingOceanMenuService.get(teachingOceanMenuId));
+    }
+
     @Operation(summary = "티칭오션 메뉴 정보 수정", description = "티칭오션 메뉴 정보를 수정하는 API")
     @PutMapping("/{teachingOceanMenuId}")
     public ResponseEntity<ApiResponseBody> update(

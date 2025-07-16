@@ -15,5 +15,5 @@ public interface MeteredBillingService {
      * @param meteredBillingId 월별 사용료 청구서 고유번호
      * @return 특정 월별 사용료 청구서 응답 객체
      */
-    MeteredBillingDto.MeteredBillingResponse findById(Long meteredBillingId);
+    MeteredBillingDto.MeteredBillingResponse get(Long meteredBillingId);
 }

@@ -22,7 +22,7 @@ public interface ProductService {
      * @param productId 판매상품 고유번호
      * @return 특정 판매상품 응답 객체
      */
-    ProductDto.ProductResponse findById(Long productId);
+    ProductDto.ProductResponse get(Long productId);
 
     /**
      * 특정 판매상품 수정

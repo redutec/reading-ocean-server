@@ -15,5 +15,5 @@ public interface ReadingDiagnosticVoucherService {
      * @param readingDiagnosticVoucherId 독서능력진단평가 바우처 고유번호
      * @return 특정 독서능력진단평가 바우처 응답 객체
      */
-    ReadingDiagnosticVoucherDto.ReadingDiagnosticVoucherResponse findById(Long readingDiagnosticVoucherId);
+    ReadingDiagnosticVoucherDto.ReadingDiagnosticVoucherResponse get(Long readingDiagnosticVoucherId);
 }

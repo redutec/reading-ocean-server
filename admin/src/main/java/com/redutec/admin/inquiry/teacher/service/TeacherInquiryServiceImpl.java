@@ -47,7 +47,7 @@ public class TeacherInquiryServiceImpl implements TeacherInquiryService {
      */
     @Override
     @Transactional(readOnly = true)
-    public TeacherInquiryDto.TeacherInquiryResponse findById(Long teacherInquiryId) {
+    public TeacherInquiryDto.TeacherInquiryResponse get(Long teacherInquiryId) {
         return teacherInquiryMapper.toResponseDto(getTeacherInquiry(teacherInquiryId));
     }
 

@@ -70,7 +70,7 @@ public class BannerServiceImpl implements BannerService {
      */
     @Override
     @Transactional(readOnly = true)
-    public BannerDto.BannerResponse findById(Long bannerId) {
+    public BannerDto.BannerResponse get(Long bannerId) {
         return bannerMapper.toResponseDto(getBanner(bannerId));
     }
 

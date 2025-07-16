@@ -31,10 +31,10 @@ public class BookMbtiSurveyController {
 
     @Operation(summary = "특정 북BTI 설문 응답 조회", description = "특정 북BTI 설문 응답을 조회하는 API")
     @GetMapping("/{bookMbtiSurveyId}")
-    public ResponseEntity<ApiResponseBody> findById(
+    public ResponseEntity<ApiResponseBody> get(
             @Parameter(description = "북BTI 설문 응답 ID") @PathVariable Long bookMbtiSurveyId
     ) {
-        return apiResponseManager.ok(bookMbtiSurveyService.findById(bookMbtiSurveyId));
+        return apiResponseManager.ok(bookMbtiSurveyService.get(bookMbtiSurveyId));
     }
 
     @Operation(summary = "특정 북BTI 설문 응답 삭제", description = "특정 북BTI 설문 응답을 삭제하는 API")

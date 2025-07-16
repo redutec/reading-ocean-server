@@ -36,6 +36,14 @@ public class AdminMenuController {
         return apiResponseManager.ok(adminMenuService.find(findAdminMenuRequest));
     }
 
+    @Operation(summary = "특정 어드민 메뉴 조회", description = "특정 어드민 메뉴를 조회하는 API")
+    @GetMapping("/{adminMenuId}")
+    public ResponseEntity<ApiResponseBody> get(
+            @Parameter(description = "어드민 메뉴 ID") @PathVariable Long adminMenuId
+    ) {
+        return apiResponseManager.ok(adminMenuService.get(adminMenuId));
+    }
+
     @Operation(summary = "어드민 메뉴 정보 수정", description = "어드민 메뉴 정보를 수정하는 API")
     @PutMapping("/{adminMenuId}")
     public ResponseEntity<ApiResponseBody> update(

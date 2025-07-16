@@ -71,7 +71,7 @@ public class ProductServiceImpl implements ProductService {
      */
     @Override
     @Transactional(readOnly = true)
-    public ProductDto.ProductResponse findById(Long productId) {
+    public ProductDto.ProductResponse get(Long productId) {
         return productMapper.toResponseDto(getProduct(productId));
     }
 

@@ -34,9 +34,9 @@ public class LearningMaterialController {
 
     @Operation(summary = "특정 학습 자료 게시물 조회", description = "특정 학습 자료 게시물을 조회하는 API")
     @GetMapping("/{learningMaterialId}")
-    public ResponseEntity<ApiResponseBody> findById(
+    public ResponseEntity<ApiResponseBody> get(
             @Parameter(description = "학습 자료 게시물 ID") @PathVariable Long learningMaterialId
     ) {
-        return apiResponseManager.ok(learningMaterialService.findById(learningMaterialId));
+        return apiResponseManager.ok(learningMaterialService.get(learningMaterialId));
     }
 }

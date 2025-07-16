@@ -43,7 +43,7 @@ public class NoticeServiceImpl implements NoticeService {
      */
     @Override
     @Transactional(readOnly = true)
-    public NoticeDto.NoticeResponse findById(Long noticeId) {
+    public NoticeDto.NoticeResponse get(Long noticeId) {
         return noticeMapper.toResponseDto(
                 noticeRepository.findById(noticeId)
                         .orElseThrow(() -> new EntityNotFoundException("공지사항을 찾을 수 없습니다. noticeId: " + noticeId)));

@@ -95,7 +95,7 @@ public class HomeroomServiceImpl implements HomeroomService {
      */
     @Override
     @Transactional(readOnly = true)
-    public HomeroomDto.HomeroomResponse findById(Long homeroomId) {
+    public HomeroomDto.HomeroomResponse get(Long homeroomId) {
         return homeroomMapper.toResponseDto(homeroomRepository.findById(homeroomId).orElse(null));
     }
 

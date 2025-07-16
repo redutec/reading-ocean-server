@@ -75,7 +75,7 @@ public class TeachingOceanMenuServiceImpl implements TeachingOceanMenuService {
      */
     @Override
     @Transactional(readOnly = true)
-    public TeachingOceanMenuDto.TeachingOceanMenuResponse findById(Long teachingOceanMenuId) {
+    public TeachingOceanMenuDto.TeachingOceanMenuResponse get(Long teachingOceanMenuId) {
         return teachingOceanMenuMapper.toResponseDto(getTeachingOceanMenu(teachingOceanMenuId));
     }
 

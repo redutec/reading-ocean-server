@@ -36,6 +36,12 @@ public class AdminUserController {
         return apiResponseManager.ok(adminUserService.find(findAdminUserRequest));
     }
 
+    @Operation(summary = "특정 어드민 사용자 조회", description = "특정 어드민 사용자를 조회하는 API")
+    @GetMapping("/{adminUserId}")
+    public ResponseEntity<ApiResponseBody> get(@PathVariable Long adminUserId) {
+        return apiResponseManager.ok(adminUserService.get(adminUserId));
+    }
+
     @Operation(summary = "어드민 사용자 정보 수정", description = "어드민 사용자 정보를 수정하는 API")
     @PutMapping("/{adminUserId}")
     public ResponseEntity<ApiResponseBody> update(

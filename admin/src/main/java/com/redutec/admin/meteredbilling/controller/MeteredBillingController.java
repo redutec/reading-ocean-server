@@ -31,7 +31,7 @@ public class MeteredBillingController {
 
     @Operation(summary = "특정 월별 사용료 청구서 조회", description = "특정 월별 사용료 청구서를 조회하는 API")
     @GetMapping("/{meteredBillingId}")
-    public ResponseEntity<ApiResponseBody> findById(@PathVariable Long meteredBillingId) {
-        return apiResponseManager.ok(meteredBillingService.findById(meteredBillingId));
+    public ResponseEntity<ApiResponseBody> get(@PathVariable Long meteredBillingId) {
+        return apiResponseManager.ok(meteredBillingService.get(meteredBillingId));
     }
 }

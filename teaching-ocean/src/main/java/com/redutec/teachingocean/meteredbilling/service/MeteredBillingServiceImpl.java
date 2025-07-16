@@ -66,7 +66,7 @@ public class MeteredBillingServiceImpl implements MeteredBillingService {
      */
     @Override
     @Transactional(readOnly = true)
-    public MeteredBillingDto.MeteredBillingResponse findById(Long meteredBillingId) {
+    public MeteredBillingDto.MeteredBillingResponse get(Long meteredBillingId) {
         return meteredBillingMapper.toResponseDto(getMeteredBilling(meteredBillingId));
     }
 

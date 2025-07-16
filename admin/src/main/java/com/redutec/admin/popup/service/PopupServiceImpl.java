@@ -53,7 +53,7 @@ public class PopupServiceImpl implements PopupService {
      */
     @Override
     @Transactional(readOnly = true)
-    public PopupDto.PopupResponse findById(Long popupId) {
+    public PopupDto.PopupResponse get(Long popupId) {
         return popupMapper.toResponseDto(getPopup(popupId));
     }
 
