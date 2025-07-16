@@ -143,7 +143,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Transactional
     public void resetPassword(ReadingOceanEduAuthenticationDto.ResetPasswordRequest resetPasswordRequest) throws MessagingException {
         var student = studentRepository.findByAccountId(resetPasswordRequest.accountId())
-                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 학생 계정입니다. accountId = " + resetPasswordRequest.accountId()));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 학생 계정입니다. accountId: " + resetPasswordRequest.accountId()));
         validateAuthenticationStatus(student);
         var newPasswordLength = 8;
         var newPassword = generateRandomPassword(newPasswordLength);
@@ -160,7 +160,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Transactional
     public void updatePassword(ReadingOceanEduAuthenticationDto.UpdatePasswordRequest updatePasswordRequest) {
         var student = studentRepository.findByAccountId(updatePasswordRequest.accountId())
-                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 학생 계정입니다. accountId = " + updatePasswordRequest.accountId()));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 학생 계정입니다. accountId: " + updatePasswordRequest.accountId()));
         if (student.getAuthenticationStatus() != PASSWORD_RESET) {
             validateAuthenticationStatus(student);
         }
@@ -185,7 +185,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "유효하지 않거나 만료된 토큰입니다."));
         // refreshTokenEntity에 있는 학생 닉네임으로 학생 엔티티 조회
         Student student = studentRepository.findByAccountId(refreshTokenEntity.getUsername())
-                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 계정입니다. email = " + refreshTokenEntity.getUsername()));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 계정입니다. accountId: " + refreshTokenEntity.getUsername()));
         // 새로운 Access Token 생성 후 리턴
         return new ReadingOceanEduAuthenticationDto.LoginResponse(
                 jwtUtil.generateAccessToken(student, student.getInstitute(), student.getHomeroom()),

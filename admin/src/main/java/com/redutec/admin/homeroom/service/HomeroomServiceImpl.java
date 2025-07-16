@@ -42,7 +42,7 @@ public class HomeroomServiceImpl implements HomeroomService {
     public HomeroomDto.HomeroomResponse create(HomeroomDto.CreateHomeroomRequest createHomeroomRequest) {
         // 등록 요청 객체에 교육기관이 존재한다면 교육기관 엔티티를 조회
         Institute institute = instituteRepository.findById(createHomeroomRequest.instituteId())
-                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 교육기관입니다. instituteId = " + createHomeroomRequest.instituteId()));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 교육기관입니다. instituteId: " + createHomeroomRequest.instituteId()));
         // 등록 요청 객체에 학급에 소속될 교사 목록이 있다면 교사 엔티티 리스트 조회
         List<Teacher> teachers = Optional.ofNullable(createHomeroomRequest.teacherIds())
                 .map(teacherIds -> teacherIds.stream()

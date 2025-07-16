@@ -131,6 +131,6 @@ public class StudentServiceImpl implements StudentService {
     @Transactional(readOnly = true)
     public Student getStudent(Long studentId) {
         return studentRepository.findById(studentId)
-                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 학생입니다. studentId = " + studentId));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 학생입니다. studentId: " + studentId));
     }
 }

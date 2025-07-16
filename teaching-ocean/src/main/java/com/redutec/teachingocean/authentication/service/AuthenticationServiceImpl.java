@@ -153,7 +153,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Transactional
     public void resetPassword(TeachingOceanAuthenticationDto.ResetPasswordRequest resetPasswordRequest) throws MessagingException {
         var teacher = teacherRepository.findByAccountId(resetPasswordRequest.accountId())
-                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 교사 계정입니다. accountId = " + resetPasswordRequest.accountId()));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 교사 계정입니다. accountId: " + resetPasswordRequest.accountId()));
         validateAuthenticationStatus(teacher);
         var newPasswordLength = 8;
         var newPassword = generateRandomPassword(newPasswordLength);
@@ -170,7 +170,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Transactional
     public void updatePassword(TeachingOceanAuthenticationDto.UpdatePasswordRequest updatePasswordRequest) {
         var teacher = teacherRepository.findByAccountId(updatePasswordRequest.accountId())
-                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 교사 계정입니다. accountId = " + updatePasswordRequest.accountId()));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 교사 계정입니다. accountId: " + updatePasswordRequest.accountId()));
         if (teacher.getAuthenticationStatus() != PASSWORD_RESET) {
             validateAuthenticationStatus(teacher);
         }

@@ -97,7 +97,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                 if (accountId != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                     // 로그인한 교사 계정 정보 조회
                     Teacher teacher = teacherRepository.findByAccountId(accountId)
-                            .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 교사 계정입니다. accountId = " + accountId));
+                            .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 교사 계정입니다. accountId: " + accountId));
                     // 권한 부여 및 인증 객체 생성
                     var authorities = userDetailsService.loadUserByUsername(teacher.getAccountId());
                     var authenticationToken = new UsernamePasswordAuthenticationToken(authorities, accessToken, authorities.getAuthorities());

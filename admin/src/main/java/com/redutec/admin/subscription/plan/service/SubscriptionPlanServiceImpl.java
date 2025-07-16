@@ -100,6 +100,6 @@ public class SubscriptionPlanServiceImpl implements SubscriptionPlanService {
     @Transactional(readOnly = true)
     public SubscriptionPlan getSubscriptionPlan(Long subscriptionPlanId) {
         return subscriptionPlanRepository.findById(subscriptionPlanId)
-                .orElseThrow(() -> new EntityNotFoundException("구독 상품를 찾을 수 없습니다. subscriptionPlanId = " + subscriptionPlanId));
+                .orElseThrow(() -> new EntityNotFoundException("구독 상품를 찾을 수 없습니다. subscriptionPlanId: " + subscriptionPlanId));
     }
 }

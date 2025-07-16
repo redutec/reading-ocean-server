@@ -63,7 +63,7 @@ public class BranchServiceImpl implements BranchService {
     public InstituteDto.InstituteResponse findInstitute(Long instituteId) {
         Branch branch = getAuthenticatedBranch();
         Institute institute = instituteRepository.findByIdAndBranch(instituteId, branch)
-                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 교육기관입니다. instituteId = " + instituteId));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 교육기관입니다. instituteId: " + instituteId));
         return instituteMapper.toResponseDto(institute, branch.getManagerTeacher());
     }
 
@@ -141,6 +141,6 @@ public class BranchServiceImpl implements BranchService {
         Long managerTeacherId = authenticationService.getAuthenticatedTeacher().teacherId();
         // 해당 지사장(교사)가 소속된 지사의 엔티티 조회
         return branchRepository.findByManagerTeacherId(managerTeacherId)
-                .orElseThrow(() -> new EntityNotFoundException("지사 정보를 찾을 수 없습니다. managerTeacherId = " + managerTeacherId));
+                .orElseThrow(() -> new EntityNotFoundException("지사 정보를 찾을 수 없습니다. managerTeacherId: " + managerTeacherId));
     }
 }
