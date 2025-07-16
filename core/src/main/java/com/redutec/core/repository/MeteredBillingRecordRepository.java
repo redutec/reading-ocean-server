@@ -9,6 +9,6 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface MeteredBillingRecordRepository extends JpaRepository<MeteredBillingRecord, Long>, JpaSpecificationExecutor<MeteredBillingRecord> {
-    List<MeteredBillingRecord> findByBillingDateBetween(LocalDate startDate, LocalDate endDate);
-    List<MeteredBillingRecord> findByInstituteAndBillingDateBetween(Institute institute, LocalDate billingPeriodStart, LocalDate billingPeriodEnd);
+    List<MeteredBillingRecord> findByUsageDateBetween(LocalDate startDate, LocalDate endDate);
+    List<MeteredBillingRecord> findByInstituteAndUsageDateBetween(Institute institute, LocalDate billingPeriodStart, LocalDate billingPeriodEnd);
 }

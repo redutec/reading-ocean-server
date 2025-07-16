@@ -72,8 +72,8 @@ public class MeteredBillingRecordTasklet implements Tasklet {
             // MeteredBillingRecord 엔티티 생성
             MeteredBillingRecord meteredBillingRecord = MeteredBillingRecord.builder()
                     .institute(institute)
-                    .billingDate(LocalDate.now())
-                    .unitPrice(UNIT_PRICE)
+                    .usageDate(LocalDate.now())
+                    .pricePerStudent(UNIT_PRICE)
                     .activeStudents(activeStudents)
                     .dailyAmount(dailyAmount)
                     .build();

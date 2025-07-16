@@ -47,12 +47,12 @@ public class MeteredBillingRecord {
 
     @Column(nullable = false)
     @Comment("사용료 기준일")
-    private LocalDate billingDate;
+    private LocalDate usageDate;
 
     @Column(nullable = false)
     @Comment("학생 1명당 이용료")
     @PositiveOrZero
-    private Integer unitPrice;
+    private Integer pricePerStudent;
 
     @Column(nullable = false)
     @Comment("활성화된 학생 수")

@@ -51,14 +51,14 @@ public class MeteredBillingMapper {
                 .map(mb -> {
                     List<MeteredBillingRecordDto.MeteredBillingRecordResponse> meteredBillingRecordResponses =
                             meteredBillingRecordRepository
-                                    .findByInstituteAndBillingDateBetween(
+                                    .findByInstituteAndUsageDateBetween(
                                             mb.getInstitute(),
                                             mb.getBillingPeriodStart(),
                                             mb.getBillingPeriodEnd()
                                     ).stream()
                                     .map(record -> new MeteredBillingRecordDto.MeteredBillingRecordResponse(
                                             record.getId(),
-                                            record.getBillingDate(),
+                                            record.getUsageDate(),
                                             record.getActiveStudents(),
                                             record.getDailyAmount()
                                     ))
