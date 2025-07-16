@@ -53,7 +53,7 @@ public class MeteredBillingTasklet implements Tasklet {
         YearMonth previousMonth = YearMonth.now().minusMonths(1);
         LocalDate billingPeriodStartDate = previousMonth.atDay(1);
         LocalDate billingPeriodEndDate = previousMonth.atEndOfMonth();
-        List<MeteredBillingRecord> meteredBillingRecords = meteredBillingRecordRepository.findByBillingDateBetween(
+        List<MeteredBillingRecord> meteredBillingRecords = meteredBillingRecordRepository.findByUsageDateBetween(
                 billingPeriodStartDate,
                 billingPeriodEndDate
         );
