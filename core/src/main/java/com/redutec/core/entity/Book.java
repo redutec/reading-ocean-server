@@ -37,7 +37,7 @@ public class Book {
     @Column(nullable = false, unique = true, length = 13)
     private String isbn;
 
-    @Comment("제목")
+    @Comment("책 이름")
     @Setter
     @Column(nullable = false, length = 100)
     private String title;
