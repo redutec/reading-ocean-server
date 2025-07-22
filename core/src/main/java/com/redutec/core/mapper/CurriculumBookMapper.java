@@ -1,13 +1,17 @@
 package com.redutec.core.mapper;
 
+import com.redutec.core.criteria.CurriculumBookCriteria;
 import com.redutec.core.dto.CurriculumBookDto;
 import com.redutec.core.entity.Book;
 import com.redutec.core.entity.Curriculum;
 import com.redutec.core.entity.CurriculumBook;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -58,6 +62,25 @@ public class CurriculumBookMapper {
     }
 
     /**
+     * 이 메서드는 현재 FindCurriculumBookRequest 객체를 기반으로
+     * CurriculumBookCriteria 객체를 생성합니다.
+     * 내부 검색 로직에서 커리큘럼 검색 조건을 구성할 때 사용됩니다.
+     *
+     * @param findCurriculumBookRequest 커리큘럼 조회 요청 객체
+     * @return 해당 요청의 필드를 이용해 생성된 CurriculumBookCriteria 객체
+     */
+    public CurriculumBookCriteria toCriteria(
+            CurriculumBookDto.FindCurriculumBookRequest findCurriculumBookRequest
+    ) {
+        return new CurriculumBookCriteria(
+                findCurriculumBookRequest.curriculumBookIds(),
+                findCurriculumBookRequest.curriculumIds(),
+                StringUtils.stripToNull(findCurriculumBookRequest.title()),
+                findCurriculumBookRequest.readingStatuses()
+        );
+    }
+
+    /**
      * Curriculum 엔티티를 기반으로 응답용 CurriculumResponse DTO로 변환합니다.
      * Optional을 사용하여 null 검사를 수행합니다.
      *
@@ -75,5 +98,28 @@ public class CurriculumBookMapper {
                 curriculumBook.getCreatedAt(),
                 curriculumBook.getUpdatedAt()
         );
+    }
+
+    /**
+     * Page 형식의 CurriculumBook 엔티티 목록을 CurriculumBookPageResponse DTO로 변환합니다.
+     * 엔티티 리스트를 응답용 DTO 리스트로 매핑하고 페이지네이션 정보를 포함합니다.
+     * Optional을 사용하여 null 검사를 수행합니다.
+     *
+     * @param curriculumBookPage Page 형태로 조회된 CurriculumBook 엔티티 목록
+     * @return CurriculumBook 엔티티 리스트와 페이지 정보를 담은 CurriculumBookPageResponse DTO, curriculumBookPage가 null이면 null 반환
+     */
+    public CurriculumBookDto.CurriculumBookPageResponse toPageResponseDto(Page<CurriculumBook> curriculumBookPage) {
+        return Optional.ofNullable(curriculumBookPage)
+                .map(page -> {
+                    var responseList = page.getContent().stream()
+                            .map(this::toResponseDto)
+                            .collect(Collectors.toList());
+                    return new CurriculumBookDto.CurriculumBookPageResponse(
+                            responseList,
+                            page.getTotalElements(),
+                            page.getTotalPages()
+                    );
+                })
+                .orElse(null);
     }
 }

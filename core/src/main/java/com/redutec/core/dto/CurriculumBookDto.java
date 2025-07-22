@@ -20,7 +20,7 @@ public class CurriculumBookDto {
             @Schema(description = "소속할 커리큘럼 ID", requiredMode = Schema.RequiredMode.REQUIRED)
             @NotNull
             @Positive
-            Long curriculumBookId,
+            Long curriculumId,
 
             @Schema(description = "읽어야 할 도서 ID", requiredMode = Schema.RequiredMode.REQUIRED)
             @NotNull
@@ -76,10 +76,10 @@ public class CurriculumBookDto {
 
     @Schema(description = "커리큘럼에 소속된 도서 수정 요청 객체")
     public record UpdateCurriculumBookRequest(
-            @Schema(description = "소속할 커리큘럼 ID", requiredMode = Schema.RequiredMode.REQUIRED)
+            @Schema(description = "소속한 커리큘럼 ID", requiredMode = Schema.RequiredMode.REQUIRED)
             @NotNull
             @Positive
-            Long curriculumBookId,
+            Long curriculumId,
 
             @Schema(description = "읽어야 할 도서 ID", requiredMode = Schema.RequiredMode.REQUIRED)
             @NotNull
@@ -114,8 +114,8 @@ public class CurriculumBookDto {
     ) {}
 
     @Schema(description = "커리큘럼에 소속된 도서 응답 페이징 객체")
-    public record CurriculumPageResponse(
-            List<CurriculumBookResponse> curriculums,
+    public record CurriculumBookPageResponse(
+            List<CurriculumBookResponse> curriculumBooks,
             Long totalElements,
             Integer totalPages
     ) {}

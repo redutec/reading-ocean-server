@@ -46,15 +46,11 @@ public class CurriculumMapper {
      * UpdateCurriculumRequest DTO를 기반으로 Curriculum 엔티티를 수정합니다.
      * @param curriculum 수정할 Curriculum 엔티티
      * @param updateCurriculumRequest Curriculum 수정에 필요한 데이터를 담은 DTO
-     * @param student 커리큘럼을 진행할 학생의 엔티티
      */
     public void updateEntity(
             Curriculum curriculum,
-            CurriculumDto.UpdateCurriculumRequest updateCurriculumRequest,
-            Student student
+            CurriculumDto.UpdateCurriculumRequest updateCurriculumRequest
     ) {
-        Optional.ofNullable(student)
-                .ifPresent(curriculum::setStudent);
         Optional.ofNullable(StringUtils.stripToNull(updateCurriculumRequest.name()))
                 .ifPresent(curriculum::setName);
         Optional.ofNullable(StringUtils.stripToNull(updateCurriculumRequest.description()))

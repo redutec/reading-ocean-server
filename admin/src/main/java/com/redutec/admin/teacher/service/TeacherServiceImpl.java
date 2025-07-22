@@ -111,7 +111,7 @@ public class TeacherServiceImpl implements TeacherService {
         Homeroom homeroom = Optional.ofNullable(updateTeacherRequest.homeroomId())
                 .flatMap(homeroomRepository::findById)
                 .orElseGet(teacher::getHomeroom);
-        // 교사 정보 수정 엔티티 빌드 후 UPDATE
+        // 교사 정보 수정
         teacherMapper.updateEntity(
                 teacher,
                 updateTeacherRequest,
