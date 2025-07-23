@@ -1,6 +1,7 @@
 package com.redutec.readingocean.edu.authentication.service;
 
 import com.redutec.core.dto.ReadingOceanEduAuthenticationDto;
+import com.redutec.core.dto.StudentDto;
 import com.redutec.core.entity.Student;
 import jakarta.mail.MessagingException;
 import org.springframework.web.server.ResponseStatusException;
@@ -23,7 +24,7 @@ public interface AuthenticationService {
      *
      * @return 사용자 정보 객체입니다. 사용자의 아이디, 이름, 권한 등의 정보가 포함됩니다.
      */
-    ReadingOceanEduAuthenticationDto.AuthenticatedStudent getAuthenticatedStudent();
+    StudentDto.StudentResponse getAuthenticatedStudent();
 
     /**
      * 사용자의 비밀번호를 초기화합니다.

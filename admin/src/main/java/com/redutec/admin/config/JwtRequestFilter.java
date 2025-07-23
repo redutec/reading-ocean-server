@@ -1,6 +1,7 @@
 package com.redutec.admin.config;
 
 import com.redutec.core.entity.AdminUser;
+import com.redutec.core.meta.SampleData;
 import com.redutec.core.repository.AdminUserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.FilterChain;
@@ -72,8 +73,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         // 로컬 프로파일인 경우, 토큰이 없으면 샘플 데이터를 사용하여 토큰 생성
         if ("local".equals(activeProfile) && accessToken == null) {
             // 로컬용 임시 어드민 사용자 데이터로 accessToken 발급
-            AdminUser localAdminUser = adminUserRepository.findById(1L)
-                    .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 어드민 사용자입니다. adminUserId: " + 1L));
+            AdminUser localAdminUser = adminUserRepository.findByAccountId(SampleData.SampleAdminUser.MASTER_ADMIN.getAccountId())
+                    .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 어드민 사용자입니다"));
             accessToken = jwtUtil.generateAccessToken(localAdminUser);
             log.info("**** Local profile detected with no token. Generated accessToken for test: {}", accessToken);
         }

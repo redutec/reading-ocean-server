@@ -1,11 +1,9 @@
 package com.redutec.admin.student.service;
 
 import com.redutec.core.dto.StudentDto;
-import com.redutec.core.entity.Homeroom;
 import com.redutec.core.entity.Institute;
 import com.redutec.core.entity.Student;
 import com.redutec.core.mapper.StudentMapper;
-import com.redutec.core.repository.HomeroomRepository;
 import com.redutec.core.repository.InstituteRepository;
 import com.redutec.core.repository.StudentRepository;
 import com.redutec.core.specification.StudentSpecification;
@@ -27,7 +25,6 @@ public class StudentServiceImpl implements StudentService {
     private final StudentMapper studentMapper;
     private final StudentRepository studentRepository;
     private final InstituteRepository instituteRepository;
-    private final HomeroomRepository homeroomRepository;
     private final PasswordEncoder passwordEncoder;
 
     /**
@@ -42,14 +39,9 @@ public class StudentServiceImpl implements StudentService {
         Institute institute = Optional.ofNullable(createStudentRequest.instituteId())
                 .flatMap(instituteRepository::findById)
                 .orElse(null);
-        // 등록 요청 객체에 학급 고유번호가 있다면 학급 엔티티 조회
-        Homeroom homeroom = Optional.ofNullable(createStudentRequest.homeroomId())
-                .flatMap(homeroomRepository::findById)
-                .orElse(null);
         return studentMapper.toResponseDto(studentRepository.save(studentMapper.createEntity(
                 createStudentRequest,
-                institute,
-                homeroom
+                institute
         )));
     }
 
@@ -93,10 +85,6 @@ public class StudentServiceImpl implements StudentService {
         Institute institute = Optional.ofNullable(updateStudentRequest.instituteId())
                 .flatMap(instituteRepository::findById)
                 .orElseGet(student::getInstitute);
-        // 수정 요청 객체에 학급 ID가 있다면 학급 엔티티 조회(없으면 기존 값을 사용)
-        Homeroom homeroom = Optional.ofNullable(updateStudentRequest.homeroomId())
-                .flatMap(homeroomRepository::findById)
-                .orElseGet(student::getHomeroom);
         // 수정 요청 객체에 newPassword가 존재한다면 현재 비밀번호와 currentPassword가 일치하는지 검증
         Optional.ofNullable(updateStudentRequest.newPassword())
                 .filter(newPassword -> !newPassword.isBlank())
@@ -110,7 +98,7 @@ public class StudentServiceImpl implements StudentService {
                             .filter(currentPassword -> passwordEncoder.matches(currentPassword, student.getPassword()))
                             .orElseThrow(() -> new IllegalArgumentException("현재 비밀번호가 일치하지 않습니다."));
                 });
-        studentMapper.updateEntity(student, updateStudentRequest, institute, homeroom);
+        studentMapper.updateEntity(student, updateStudentRequest, institute);
     }
 
     /**

@@ -75,11 +75,7 @@ public class StudentDto {
 
             @Schema(description = "소속된 교육기관 ID", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
             @Positive
-            Long instituteId,
-
-            @Schema(description = "소속된 학급 ID", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-            @Positive
-            Long homeroomId
+            Long instituteId
     ) {}
 
     @Schema(description = "학생 조회 요청 객체")
@@ -177,11 +173,7 @@ public class StudentDto {
 
             @Schema(description = "소속된 교육기관 ID", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
             @Positive
-            Long instituteId,
-
-            @Schema(description = "소속된 학급 ID", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-            @Positive
-            Long homeroomId
+            Long instituteId
     ) {}
 
     @Schema(description = "학생 응답 객체")
@@ -198,14 +190,13 @@ public class StudentDto {
             Integer raq,
             SchoolGrade schoolGrade,
             BookMbtiResult bookMbtiResult,
+            Integer failedLoginAttempts,
             String lastLoginIp,
             LocalDateTime lastLoginAt,
             String description,
             Domain domain,
             Long instituteId,
             String instituteName,
-            Long homeroomId,
-            String homeroomName,
             LocalDateTime createdAt,
             LocalDateTime updatedAt
     ) {}

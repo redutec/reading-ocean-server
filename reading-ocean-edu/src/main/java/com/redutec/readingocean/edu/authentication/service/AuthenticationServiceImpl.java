@@ -1,6 +1,7 @@
 package com.redutec.readingocean.edu.authentication.service;
 
 import com.redutec.core.dto.ReadingOceanEduAuthenticationDto;
+import com.redutec.core.dto.StudentDto;
 import com.redutec.core.entity.*;
 import com.redutec.core.meta.AuthenticationStatus;
 import com.redutec.core.meta.Domain;
@@ -27,6 +28,7 @@ import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.redutec.core.meta.AuthenticationStatus.PASSWORD_RESET;
 
@@ -77,9 +79,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         student.setFailedLoginAttempts(0);
         studentRepository.save(student);
         // AccessToken 생성
-        String accessToken = jwtUtil.generateAccessToken(student, student.getInstitute(), student.getHomeroom());
+        String accessToken = jwtUtil.generateAccessToken(student);
         // RefreshToken 생성
-        String refreshToken = jwtUtil.generateRefreshToken(student, student.getInstitute(), student.getHomeroom());
+        String refreshToken = jwtUtil.generateRefreshToken(student);
         // 생성한 RefreshToken을 DB에 저장
         jwtUtil.saveRefreshToken(refreshToken, student.getAccountId(), Domain.TEACHING_OCEAN);
         // 생성한 Token으로 로그인 응답 객체를 리턴
@@ -93,7 +95,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
      */
     @Override
     @Transactional(readOnly = true)
-    public ReadingOceanEduAuthenticationDto.AuthenticatedStudent getAuthenticatedStudent() {
+    public StudentDto.StudentResponse getAuthenticatedStudent() {
         // 현재 접속한 계정 정보를 가져오기
         var accountId = SecurityContextHolder.getContext().getAuthentication().getName();
         // 학생 엔티티 조회
@@ -107,30 +109,33 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         String instituteName = Optional.ofNullable(institute)
                 .map(Institute::getName)
                 .orElse(null);
-        // 학급 정보 조회
-        Homeroom homeroom = student.getHomeroom();
-        Long homeroomId = Optional.ofNullable(homeroom)
-                .map(Homeroom::getId)
-                .orElse(null);
-        String homeroomName = Optional.ofNullable(homeroom)
-                .map(Homeroom::getName)
-                .orElse(null);
-        // 접근 가능한 메뉴 정보 조회
-        List<ReadingOceanEduMenu> readingOceanEduMenu = readingOceanEduMenuRepository.findAll();
+        // 접근 가능한 메뉴 ID 목록 조회
+        List<Long> readingOceanEduMenuIds = readingOceanEduMenuRepository.findAll().stream()
+                .map(ReadingOceanEduMenu::getId)
+                .collect(Collectors.toList());
         // 현재 로그인한 학생 정보를 리턴
-        return new ReadingOceanEduAuthenticationDto.AuthenticatedStudent(
+        return new StudentDto.StudentResponse(
                 student.getId(),
                 accountId,
                 student.getName(),
                 student.getPhoneNumber(),
                 student.getEmail(),
+                student.getBirthday(),
                 student.getStatus(),
                 student.getAuthenticationStatus(),
+                student.getReadingLevel(),
+                student.getRaq(),
+                student.getSchoolGrade(),
+                student.getBookMbtiResult(),
                 student.getFailedLoginAttempts(),
+                student.getLastLoginIp(),
+                student.getLastLoginAt(),
+                student.getDescription(),
+                student.getDomain(),
                 instituteId,
                 instituteName,
-                homeroomId,
-                homeroomName
+                student.getCreatedAt(),
+                student.getUpdatedAt()
         );
     }
 
@@ -188,7 +193,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 계정입니다. accountId: " + refreshTokenEntity.getUsername()));
         // 새로운 Access Token 생성 후 리턴
         return new ReadingOceanEduAuthenticationDto.LoginResponse(
-                jwtUtil.generateAccessToken(student, student.getInstitute(), student.getHomeroom()),
+                jwtUtil.generateAccessToken(student),
                 refreshToken
         );
     }

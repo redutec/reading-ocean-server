@@ -35,6 +35,7 @@ import java.util.Map;
 @Slf4j
 @Component
 public class JwtUtil {
+    private final ObjectMapper objectMapper;
     private final AdminMenuRepository adminMenuRepository;
     private final RefreshTokenRepository refreshTokenRepository;
 
@@ -54,9 +55,11 @@ public class JwtUtil {
      * Secret Key를 생성하고 HMAC-SHA256 알고리즘을 사용합니다.
      */
     public JwtUtil(
+            ObjectMapper objectMapper,
             AdminMenuRepository adminMenuRepository,
             RefreshTokenRepository refreshTokenRepository
     ) {
+        this.objectMapper = objectMapper;
         this.adminMenuRepository = adminMenuRepository;
         this.refreshTokenRepository = refreshTokenRepository;
         this.key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
@@ -108,7 +111,7 @@ public class JwtUtil {
     @Transactional(readOnly = true)
     public String generateAccessToken(AdminUser adminUser) {
         // 어드민 사용자 엔티티를 JWT Claims Map으로 변환
-        Map<String, Object> claims = new ObjectMapper().convertValue(buildJwtClaims(adminUser), new TypeReference<>() {});
+        Map<String, Object> claims = objectMapper.convertValue(buildJwtClaims(adminUser), new TypeReference<>() {});
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(claims.get("accountId").toString())
@@ -125,12 +128,9 @@ public class JwtUtil {
      * @return 생성된 Refresh Token
      */
     @Transactional(readOnly = true)
-    public String generateRefreshToken(
-            AdminUser adminUser
-    ) {
-        Map<String, Object> claims = new ObjectMapper().convertValue(buildJwtClaims(adminUser), new TypeReference<>() {});
+    public String generateRefreshToken(AdminUser adminUser) {
         return Jwts.builder()
-                .setSubject(claims.get("accountId").toString())
+                .setSubject(adminUser.getAccountId())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + refreshTokenExpiration))
                 .signWith(key)

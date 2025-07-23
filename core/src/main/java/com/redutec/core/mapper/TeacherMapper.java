@@ -2,9 +2,12 @@ package com.redutec.core.mapper;
 
 import com.redutec.core.criteria.TeacherCriteria;
 import com.redutec.core.dto.TeacherDto;
-import com.redutec.core.entity.Homeroom;
 import com.redutec.core.entity.Institute;
 import com.redutec.core.entity.Teacher;
+import com.redutec.core.entity.TeachingOceanMenu;
+import com.redutec.core.meta.TeacherRole;
+import com.redutec.core.repository.TeacherRepository;
+import com.redutec.core.repository.TeachingOceanMenuRepository;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
@@ -13,6 +16,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -21,6 +25,8 @@ import java.util.stream.Collectors;
 @Component
 public class TeacherMapper {
     private final PasswordEncoder passwordEncoder;
+    private final TeacherRepository teacherRepository;
+    private final TeachingOceanMenuRepository teachingOceanMenuRepository;
 
     /**
      * CreateTeacherRequest DTO를 기반으로 Teacher 등록 엔티티를 생성합니다.
@@ -29,8 +35,7 @@ public class TeacherMapper {
      */
     public Teacher createEntity(
             TeacherDto.CreateTeacherRequest createTeacherRequest,
-            Institute institute,
-            Homeroom homeroom
+            Institute institute
     ) {
         return Teacher.builder()
                 .accountId(StringUtils.stripToNull(createTeacherRequest.accountId()))
@@ -43,7 +48,6 @@ public class TeacherMapper {
                 .failedLoginAttempts(0)
                 .description(StringUtils.stripToNull(createTeacherRequest.description()))
                 .institute(institute)
-                .homeroom(homeroom)
                 .build();
     }
 
@@ -54,8 +58,7 @@ public class TeacherMapper {
     public void updateEntity(
             Teacher teacher,
             TeacherDto.UpdateTeacherRequest updateTeacherRequest,
-            Institute institute,
-            Homeroom homeroom
+            Institute institute
     ) {
         Optional.ofNullable(StringUtils.stripToNull(updateTeacherRequest.accountId()))
                 .ifPresent(teacher::setAccountId);
@@ -93,8 +96,6 @@ public class TeacherMapper {
                 .ifPresent(teacher::setDescription);
         Optional.ofNullable(institute)
                 .ifPresent(teacher::setInstitute);
-        Optional.ofNullable(homeroom)
-                .ifPresent(teacher::setHomeroom);
     }
     
     /**
@@ -118,28 +119,40 @@ public class TeacherMapper {
      * Teacher 엔티티를 기반으로 응답용 TeacherResponse DTO로 변환합니다.
      * Optional을 사용하여 null 검사를 수행합니다.
      *
-     * @param teacher 변환할 Teacher 엔티티 (null 가능)
+     * @param teacher 변환할 Teacher 엔티티
      * @return Teacher 엔티티의 데이터를 담은 TeacherResponse DTO, teacher가 null이면 null 반환
      */
     public TeacherDto.TeacherResponse toResponseDto(Teacher teacher) {
-        return Optional.ofNullable(teacher)
-                .map(t -> new TeacherDto.TeacherResponse(
-                        t.getId(),
-                        t.getAccountId(),
-                        t.getName(),
-                        t.getPhoneNumber(),
-                        t.getEmail(),
-                        t.getStatus(),
-                        t.getRole(),
-                        t.getAuthenticationStatus(),
-                        t.getFailedLoginAttempts(),
-                        t.getLastLoginIp(),
-                        t.getLastLoginAt(),
-                        t.getDescription(),
-                        t.getCreatedAt(),
-                        t.getUpdatedAt()
-                ))
+        // 현재 접속한 교사가 접근할 수 있는 메뉴 목록 조회
+        List<Long> accessibleMenuIds = teachingOceanMenuRepository.findAllByAccessibleRolesContains(teacher.getRole()).stream()
+                .map(TeachingOceanMenu::getId)
+                .toList();
+        // 현재 접속한 교사가 속한 교육기관의 원장 ID를 조회
+        Long chiefTeacherId = teacherRepository
+                .findByInstituteAndRole(teacher.getInstitute(), TeacherRole.CHIEF)
+                .map(Teacher::getId)
                 .orElse(null);
+        // 응답 객체 리턴
+        return new TeacherDto.TeacherResponse(
+                teacher.getId(),
+                teacher.getAccountId(),
+                teacher.getName(),
+                teacher.getPhoneNumber(),
+                teacher.getEmail(),
+                teacher.getStatus(),
+                teacher.getRole(),
+                teacher.getAuthenticationStatus(),
+                teacher.getFailedLoginAttempts(),
+                teacher.getLastLoginIp(),
+                teacher.getLastLoginAt(),
+                teacher.getDescription(),
+                teacher.getInstitute() != null ? teacher.getInstitute().getId() : null,
+                teacher.getInstitute() != null ? teacher.getInstitute().getName() : null,
+                accessibleMenuIds,
+                chiefTeacherId,
+                teacher.getCreatedAt(),
+                teacher.getUpdatedAt()
+        );
     }
 
     /**

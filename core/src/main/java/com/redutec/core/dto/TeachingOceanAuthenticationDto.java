@@ -1,35 +1,11 @@
 package com.redutec.core.dto;
 
-import com.redutec.core.meta.AuthenticationStatus;
-import com.redutec.core.meta.TeacherRole;
-import com.redutec.core.meta.TeacherStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
-import java.util.List;
-
 public class TeachingOceanAuthenticationDto {
-    @Schema(description = "현재 로그인한 교사의 정보가 담긴 객체")
-    public record AuthenticatedTeacher(
-            Long teacherId,
-            String accountId,
-            String name,
-            String phoneNumber,
-            String email,
-            TeacherStatus status,
-            TeacherRole role,
-            AuthenticationStatus authenticationStatus,
-            Integer failedLoginAttempts,
-            Long instituteId,
-            String instituteName,
-            Long homeroomId,
-            String homeroomName,
-            List<Long> accessibleMenus,
-            Long chiefTeacherId
-    ) {}
-
     @Schema(description = "교사 로그인 요청 객체")
     public record LoginRequest(
             @Schema(description = "로그인 아이디", requiredMode = Schema.RequiredMode.REQUIRED, example = "seongnam_chief")

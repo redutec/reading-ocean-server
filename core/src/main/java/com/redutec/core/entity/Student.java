@@ -131,12 +131,6 @@ public class Student {
     @JoinColumn
     private Institute institute;
 
-    @Comment("소속 학급")
-    @Setter
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn
-    private Homeroom homeroom;
-
     @CreatedDate
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;

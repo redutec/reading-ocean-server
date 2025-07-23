@@ -1,9 +1,7 @@
 package com.redutec.readingocean.edu.config;
 
-import com.redutec.core.entity.Homeroom;
-import com.redutec.core.entity.Institute;
 import com.redutec.core.entity.Student;
-import com.redutec.core.repository.HomeroomRepository;
+import com.redutec.core.meta.SampleData;
 import com.redutec.core.repository.InstituteRepository;
 import com.redutec.core.repository.StudentRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -36,7 +34,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
     private final StudentRepository studentRepository;
     private final InstituteRepository instituteRepository;
-    private final HomeroomRepository homeroomRepository;
 
     @Setter
     private UserDetailsService userDetailsService;
@@ -78,14 +75,9 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         // 로컬 프로파일인 경우, 토큰이 없으면 샘플 데이터를 사용하여 토큰 생성
         if ("local".equals(activeProfile) && accessToken == null) {
             // 로컬용 임시 학생 계정 데이터로 accessToken 발급
-            Student testStudent = studentRepository.findById(1L).orElseThrow(EntityNotFoundException::new);
-            Institute testInstitute = testStudent.getInstitute() != null
-                    ? instituteRepository.findById(testStudent.getInstitute().getId()).orElse(null)
-                    : null;
-            Homeroom testHomeroom = testStudent.getHomeroom() != null
-                    ? homeroomRepository.findById(testStudent.getHomeroom().getId()).orElse(null)
-                    : null;
-            accessToken = jwtUtil.generateAccessToken(testStudent, testInstitute, testHomeroom);
+            Student testStudent = studentRepository.findByAccountId(SampleData.SampleStudent.SEONGNAM_STUDENT_1.getAccountId())
+                    .orElseThrow(EntityNotFoundException::new);
+            accessToken = jwtUtil.generateAccessToken(testStudent);
             log.info("**** Local profile detected with no token. Generated accessToken for test: {}", accessToken);
         }
         if (accessToken != null) {

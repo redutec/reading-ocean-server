@@ -1,11 +1,9 @@
 package com.redutec.admin.teacher.service;
 
 import com.redutec.core.dto.TeacherDto;
-import com.redutec.core.entity.Homeroom;
 import com.redutec.core.entity.Institute;
 import com.redutec.core.entity.Teacher;
 import com.redutec.core.mapper.TeacherMapper;
-import com.redutec.core.repository.HomeroomRepository;
 import com.redutec.core.repository.InstituteRepository;
 import com.redutec.core.repository.TeacherRepository;
 import com.redutec.core.specification.TeacherSpecification;
@@ -27,7 +25,6 @@ public class TeacherServiceImpl implements TeacherService {
     private final TeacherMapper teacherMapper;
     private final TeacherRepository teacherRepository;
     private final InstituteRepository instituteRepository;
-    private final HomeroomRepository homeroomRepository;
     private final PasswordEncoder passwordEncoder;
 
     /**
@@ -42,15 +39,10 @@ public class TeacherServiceImpl implements TeacherService {
         Institute institute = Optional.ofNullable(createTeacherRequest.instituteId())
                 .flatMap(instituteRepository::findById)
                 .orElse(null);
-        // 등록 요청 객체에 교사가 소속한 학급 고유번호가 존재하면 학급 엔티티 조회
-        Homeroom homeroom = Optional.ofNullable(createTeacherRequest.homeroomId())
-                .flatMap(homeroomRepository::findById)
-                .orElse(null);
         // 교사 등록
         return teacherMapper.toResponseDto(teacherRepository.save(teacherMapper.createEntity(
                 createTeacherRequest,
-                institute,
-                homeroom
+                institute
         )));
     }
 
@@ -107,16 +99,11 @@ public class TeacherServiceImpl implements TeacherService {
         Institute institute = Optional.ofNullable(updateTeacherRequest.instituteId())
                 .flatMap(instituteRepository::findById)
                 .orElseGet(teacher::getInstitute);
-        // 수정 요청 객체에 학급 고유번호가 있다면 학급 엔티티 조회
-        Homeroom homeroom = Optional.ofNullable(updateTeacherRequest.homeroomId())
-                .flatMap(homeroomRepository::findById)
-                .orElseGet(teacher::getHomeroom);
         // 교사 정보 수정
         teacherMapper.updateEntity(
                 teacher,
                 updateTeacherRequest,
-                institute,
-                homeroom
+                institute
         );
     }
 

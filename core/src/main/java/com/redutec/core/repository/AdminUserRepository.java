@@ -8,5 +8,4 @@ import java.util.Optional;
 
 public interface AdminUserRepository extends JpaRepository<AdminUser, Long>, JpaSpecificationExecutor<AdminUser> {
     Optional<AdminUser> findByAccountId(String accountId);
-    Optional<AdminUser> findByNickname(String nickname);
 }

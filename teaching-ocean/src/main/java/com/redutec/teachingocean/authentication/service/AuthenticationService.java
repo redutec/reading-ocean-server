@@ -1,5 +1,6 @@
 package com.redutec.teachingocean.authentication.service;
 
+import com.redutec.core.dto.TeacherDto;
 import com.redutec.core.dto.TeachingOceanAuthenticationDto;
 import com.redutec.core.entity.Teacher;
 import jakarta.mail.MessagingException;
@@ -23,7 +24,7 @@ public interface AuthenticationService {
      *
      * @return 사용자 정보 객체입니다. 사용자의 아이디, 이름, 권한 등의 정보가 포함됩니다.
      */
-    TeachingOceanAuthenticationDto.AuthenticatedTeacher getAuthenticatedTeacher();
+    TeacherDto.TeacherResponse getAuthenticatedTeacher();
 
     /**
      * 사용자의 비밀번호를 초기화합니다.

@@ -2,6 +2,7 @@ package com.redutec.admin.authentication.service;
 
 import com.redutec.admin.config.JwtUtil;
 import com.redutec.core.dto.AdminAuthenticationDto;
+import com.redutec.core.dto.AdminUserDto;
 import com.redutec.core.entity.AdminMenu;
 import com.redutec.core.entity.AdminUser;
 import com.redutec.core.entity.RefreshToken;
@@ -92,22 +93,28 @@ public class AuthenticationServiceImpl implements AuthenticationService {
      */
     @Override
     @Transactional(readOnly = true)
-    public AdminAuthenticationDto.AuthenticatedAdminUser getAuthenticatedAdminUser() {
+    public AdminUserDto.AdminUserResponse getAuthenticatedAdminUser() {
         // 현재 접속한 계정 정보를 가져오기
         var accountId = SecurityContextHolder.getContext().getAuthentication().getName();
         // 로그인 아이디로 AdminUser 엔티티 조회
         AdminUser adminUser = adminUserRepository.findByAccountId(accountId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 어드민 사용자입니다. accountId: " + accountId));
         // 현재 로그인한 어드민 사용자 정보를 리턴
-        return new AdminAuthenticationDto.AuthenticatedAdminUser(
+        return new AdminUserDto.AdminUserResponse(
                 adminUser.getId(),
                 accountId,
-                adminUser.getEmail(),
                 adminUser.getNickname(),
+                adminUser.getEmail(),
                 adminMenuRepository.findAllByAccessibleRolesContains(adminUser.getRole()).stream()
                         .map(AdminMenu::getId)
                         .toList(),
-                adminUser.getRole()
+                adminUser.getRole(),
+                adminUser.getAuthenticationStatus(),
+                adminUser.getFailedLoginAttempts(),
+                adminUser.getLastLoginIp(),
+                adminUser.getLastLoginAt(),
+                adminUser.getCreatedAt(),
+                adminUser.getUpdatedAt()
         );
     }
 

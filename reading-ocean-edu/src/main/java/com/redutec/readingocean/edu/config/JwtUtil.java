@@ -2,12 +2,12 @@ package com.redutec.readingocean.edu.config;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.redutec.core.dto.ReadingOceanEduAuthenticationDto;
-import com.redutec.core.entity.Homeroom;
-import com.redutec.core.entity.Institute;
+import com.redutec.core.dto.StudentDto;
+import com.redutec.core.entity.ReadingOceanEduMenu;
 import com.redutec.core.entity.RefreshToken;
 import com.redutec.core.entity.Student;
 import com.redutec.core.meta.Domain;
+import com.redutec.core.repository.ReadingOceanEduMenuRepository;
 import com.redutec.core.repository.RefreshTokenRepository;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -25,7 +25,9 @@ import java.security.Key;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * JWT 토큰을 생성하고 검증하는 유틸리티 클래스입니다.
@@ -35,6 +37,7 @@ import java.util.Map;
 @Component
 public class JwtUtil {
     private final RefreshTokenRepository refreshTokenRepository;
+    private final ReadingOceanEduMenuRepository readingOceanEduMenuRepository;
 
     @Value("${jwt.secret}")
     private String jwtSecret;
@@ -51,8 +54,12 @@ public class JwtUtil {
      * JwtUtil 생성자.
      * Secret Key를 생성하고 HMAC-SHA256 알고리즘을 사용합니다.
      */
-    public JwtUtil(RefreshTokenRepository refreshTokenRepository) {
+    public JwtUtil(
+            RefreshTokenRepository refreshTokenRepository,
+            ReadingOceanEduMenuRepository readingOceanEduMenuRepository
+    ) {
         this.refreshTokenRepository = refreshTokenRepository;
+        this.readingOceanEduMenuRepository = readingOceanEduMenuRepository;
         this.key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
     }
 
@@ -74,34 +81,40 @@ public class JwtUtil {
      * 학생 계정 정보를 JWT Claims로 변환
      *
      * @param student 학생 계정 엔티티 객체
-     * @param institute 학생가 소속된 교육기관 엔티티 객체
-     * @param homeroom 학생가 소속된 학급 엔티티 객체
      * @return JWT Claims 맵 객체
      */
     @Transactional(readOnly = true)
-    protected ReadingOceanEduAuthenticationDto.AuthenticatedStudent buildJwtClaims(
-            Student student,
-            Institute institute,
-            Homeroom homeroom
+    protected StudentDto.StudentResponse buildJwtClaims(
+            Student student
     ) {
-        Long instituteId = institute != null ? institute.getId() : null;
-        String instituteName = institute != null ? institute.getName() : null;
-        Long homeroomId = homeroom != null ? homeroom.getId() : null;
-        String homeroomName = homeroom != null ? homeroom.getName() : null;
+        // 접근 가능한 리딩오션 에듀 메뉴 ID 목록을 조회
+        List<Long> readingOceanEduMenuIds = readingOceanEduMenuRepository.findAll().stream()
+                .map(ReadingOceanEduMenu::getId)
+                .collect(Collectors.toList());
         // 현재 로그인한 학생의 정보를 JWT Claims 응답 객체로 변환하여 리턴
-        return new ReadingOceanEduAuthenticationDto.AuthenticatedStudent(
+        return new StudentDto.StudentResponse(
                 student.getId(),
                 student.getAccountId(),
                 student.getName(),
                 student.getPhoneNumber(),
                 student.getEmail(),
+                student.getBirthday(),
                 student.getStatus(),
                 student.getAuthenticationStatus(),
+                student.getReadingLevel(),
+                student.getRaq(),
+                student.getSchoolGrade(),
+                student.getBookMbtiResult(),
                 student.getFailedLoginAttempts(),
-                instituteId,
-                instituteName,
-                homeroomId,
-                homeroomName
+                student.getLastLoginIp(),
+                student.getLastLoginAt(),
+                student.getDescription(),
+                student.getDomain(),
+                student.getInstitute().getId(),
+                student.getInstitute().getName(),
+                readingOceanEduMenuIds,
+                student.getCreatedAt(),
+                student.getUpdatedAt()
         );
     }
 
@@ -109,14 +122,12 @@ public class JwtUtil {
      * Access Token을 생성합니다.
      *
      * @param student Access Token을 발급할 학생 엔티티 객체
-     * @param institute Access Token을 발급할 학생가 소속된 교육기관 엔티티 객체
-     * @param homeroom Access Token을 발급할 학생가 소속된 학급 엔티티 객체
      * @return 생성된 Access Token
      */
     @Transactional(readOnly = true)
-    public String generateAccessToken(Student student, Institute institute, Homeroom homeroom) {
+    public String generateAccessToken(Student student) {
         // 학생 엔티티를 JWT Claims Map으로 변환
-        Map<String, Object> claims = new ObjectMapper().convertValue(buildJwtClaims(student, institute, homeroom), new TypeReference<>() {});
+        Map<String, Object> claims = new ObjectMapper().convertValue(buildJwtClaims(student), new TypeReference<>() {});
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(claims.get("accountId").toString())
@@ -133,12 +144,8 @@ public class JwtUtil {
      * @return 생성된 Refresh Token
      */
     @Transactional(readOnly = true)
-    public String generateRefreshToken(
-            Student student,
-            Institute institute,
-            Homeroom homeroom
-    ) {
-        Map<String, Object> claims = new ObjectMapper().convertValue(buildJwtClaims(student, institute, homeroom), new TypeReference<>() {});
+    public String generateRefreshToken(Student student) {
+        Map<String, Object> claims = new ObjectMapper().convertValue(buildJwtClaims(student), new TypeReference<>() {});
         return Jwts.builder()
                 .setSubject(claims.get("accountId").toString())
                 .setIssuedAt(new Date(System.currentTimeMillis()))

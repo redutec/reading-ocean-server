@@ -2,11 +2,9 @@ package com.redutec.teachingocean.institute.teacher.service;
 
 import com.redutec.core.criteria.TeacherCriteria;
 import com.redutec.core.dto.TeacherDto;
-import com.redutec.core.entity.Homeroom;
 import com.redutec.core.entity.Institute;
 import com.redutec.core.entity.Teacher;
 import com.redutec.core.mapper.TeacherMapper;
-import com.redutec.core.repository.HomeroomRepository;
 import com.redutec.core.repository.InstituteRepository;
 import com.redutec.core.repository.TeacherRepository;
 import com.redutec.core.specification.TeacherSpecification;
@@ -28,7 +26,6 @@ import java.util.Optional;
 public class TeacherServiceImpl implements TeacherService {
     private final TeacherMapper teacherMapper;
     private final TeacherRepository teacherRepository;
-    private final HomeroomRepository homeroomRepository;
     private final InstituteRepository instituteRepository;
     private final AuthenticationService authenticationService;
     private final PasswordEncoder passwordEncoder;
@@ -46,14 +43,10 @@ public class TeacherServiceImpl implements TeacherService {
         // 현재 로그인한 교사가 속한 교육기관 엔티티 조회
         Institute institute = instituteRepository.findById(authenticatedTeacher.instituteId())
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 교육기관입니다. instituteId: " + authenticatedTeacher.instituteId()));
-        // 등록 요청 객체에 학급 고유번호가 있다면 학급 엔티티 조회
-        Homeroom homeroom = homeroomRepository.findById(authenticatedTeacher.homeroomId())
-                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 학급입니다. homeroomId: " + authenticatedTeacher.homeroomId()));
         // 신규 교사 등록
         return teacherMapper.toResponseDto(teacherRepository.save(teacherMapper.createEntity(
                 createTeacherRequest,
-                institute,
-                homeroom
+                institute
         )));
     }
 
@@ -120,17 +113,8 @@ public class TeacherServiceImpl implements TeacherService {
         Institute institute = Optional.ofNullable(updateTeacherRequest.instituteId())
                 .flatMap(instituteRepository::findById)
                 .orElseGet(teacher::getInstitute);
-        // 수정 요청 객체에 학급 고유번호가 있다면 학급 엔티티 조회(없으면 Null)
-        Homeroom homeroom = Optional.ofNullable(updateTeacherRequest.homeroomId())
-                .flatMap(homeroomRepository::findById)
-                .orElseGet(teacher::getHomeroom);
         // 교사 정보 수정 엔티티 빌드 후 UPDATE
-        teacherMapper.updateEntity(
-                teacher,
-                updateTeacherRequest,
-                institute,
-                homeroom
-        );
+        teacherMapper.updateEntity(teacher, updateTeacherRequest, institute);
     }
 
     /**

@@ -1,10 +1,12 @@
 package com.redutec.teachingocean.authentication.service;
 
+import com.redutec.core.dto.TeacherDto;
 import com.redutec.core.dto.TeachingOceanAuthenticationDto;
-import com.redutec.core.entity.*;
+import com.redutec.core.entity.RefreshToken;
+import com.redutec.core.entity.Teacher;
+import com.redutec.core.mapper.TeacherMapper;
 import com.redutec.core.meta.AuthenticationStatus;
 import com.redutec.core.meta.Domain;
-import com.redutec.core.meta.TeacherRole;
 import com.redutec.core.repository.RefreshTokenRepository;
 import com.redutec.core.repository.TeacherRepository;
 import com.redutec.core.repository.TeachingOceanMenuRepository;
@@ -26,9 +28,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static com.redutec.core.meta.AuthenticationStatus.PASSWORD_RESET;
 
@@ -45,6 +45,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final RefreshTokenRepository refreshTokenRepository;
     private final PasswordEncoder passwordEncoder;
     private final TeachingOceanMenuRepository teachingOceanMenuRepository;
+    private final TeacherMapper teacherMapper;
 
     /**
      * 교사 로그인 처리
@@ -53,6 +54,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
      * @return Access Token 및 Refresh Token이 담긴 Map 객체
      */
     @Override
+    @Transactional
     public TeachingOceanAuthenticationDto.LoginResponse login(TeachingOceanAuthenticationDto.LoginRequest loginRequest) {
         // 교사 엔티티 조회
         Teacher teacher = teacherRepository.findByAccountId(loginRequest.accountId())
@@ -77,9 +79,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         teacher.setFailedLoginAttempts(0);
         teacherRepository.save(teacher);
         // AccessToken 생성
-        String accessToken = jwtUtil.generateAccessToken(teacher, teacher.getInstitute(), teacher.getHomeroom());
+        String accessToken = jwtUtil.generateAccessToken(teacher);
         // RefreshToken 생성
-        String refreshToken = jwtUtil.generateRefreshToken(teacher, teacher.getInstitute(), teacher.getHomeroom());
+        String refreshToken = jwtUtil.generateRefreshToken(teacher);
         // 생성한 RefreshToken을 DB에 저장
         jwtUtil.saveRefreshToken(refreshToken, teacher.getAccountId(), Domain.TEACHING_OCEAN);
         // 생성한 Token으로 로그인 응답 객체를 리턴
@@ -93,55 +95,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
      */
     @Override
     @Transactional(readOnly = true)
-    public TeachingOceanAuthenticationDto.AuthenticatedTeacher getAuthenticatedTeacher() {
+    public TeacherDto.TeacherResponse getAuthenticatedTeacher() {
         // 현재 접속한 계정 정보를 가져오기
         var accountId = SecurityContextHolder.getContext().getAuthentication().getName();
         // 교사 정보 조회
         Teacher teacher = teacherRepository.findByAccountId(accountId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 교사 계정입니다. accountId: " + accountId));
-        // 소속 교육기관 정보
-        Institute institute = teacher.getInstitute();
-        Long instituteId = Optional.ofNullable(institute)
-                .map(Institute::getId)
-                .orElse(null);
-        String instituteName = Optional.ofNullable(institute)
-                .map(Institute::getName)
-                .orElse(null);
-        // 담임 학급 정보
-        Homeroom homeroom = teacher.getHomeroom();
-        Long homeroomId = Optional.ofNullable(homeroom)
-                .map(Homeroom::getId)
-                .orElse(null);
-        String homeroomName = Optional.ofNullable(homeroom)
-                .map(Homeroom::getName)
-                .orElse(null);
-        // 원장 교사 ID 조회
-        Long chiefTeacherId = teacherRepository.findByInstituteAndRole(institute, TeacherRole.CHIEF)
-                .map(Teacher::getId)
-                .orElse(null);
-        // 접근 가능한 메뉴 목록
-        List<Long> accessibleMenuIds = teachingOceanMenuRepository.findAllByAccessibleRolesContains(teacher.getRole())
-                .stream()
-                .map(TeachingOceanMenu::getId)
-                .collect(Collectors.toList());
         // 현재 로그인한 교사 정보를 리턴
-        return new TeachingOceanAuthenticationDto.AuthenticatedTeacher(
-                teacher.getId(),
-                accountId,
-                teacher.getName(),
-                teacher.getPhoneNumber(),
-                teacher.getEmail(),
-                teacher.getStatus(),
-                teacher.getRole(),
-                teacher.getAuthenticationStatus(),
-                teacher.getFailedLoginAttempts(),
-                instituteId,
-                instituteName,
-                homeroomId,
-                homeroomName,
-                accessibleMenuIds,
-                chiefTeacherId
-        );
+        return teacherMapper.toResponseDto(teacher);
     }
 
     /**
@@ -195,10 +156,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "유효하지 않거나 만료된 토큰입니다."));
         // refreshTokenEntity에 있는 교사 닉네임으로 교사 엔티티 조회
         Teacher teacher = teacherRepository.findByAccountId(refreshTokenEntity.getUsername())
-                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 계정입니다. email = " + refreshTokenEntity.getUsername()));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 계정입니다. accountId: " + refreshTokenEntity.getUsername()));
         // 새로운 Access Token 생성 후 리턴
         return new TeachingOceanAuthenticationDto.LoginResponse(
-                jwtUtil.generateAccessToken(teacher, teacher.getInstitute(), teacher.getHomeroom()),
+                jwtUtil.generateAccessToken(teacher),
                 refreshToken
         );
     }

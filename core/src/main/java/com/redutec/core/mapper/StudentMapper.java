@@ -1,10 +1,10 @@
 package com.redutec.core.mapper;
 
-import com.redutec.core.dto.StudentDto;
 import com.redutec.core.criteria.StudentCriteria;
+import com.redutec.core.dto.StudentDto;
 import com.redutec.core.entity.Institute;
-import com.redutec.core.entity.Homeroom;
 import com.redutec.core.entity.Student;
+import com.redutec.core.repository.ReadingOceanEduMenuRepository;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Component
 public class StudentMapper {
+    private final ReadingOceanEduMenuRepository readingOceanEduMenuRepository;
     private final PasswordEncoder passwordEncoder;
 
     /**
@@ -27,13 +28,11 @@ public class StudentMapper {
      *
      * @param createStudentRequest 학생 등록에 필요한 데이터를 담은 DTO
      * @param institute 학생이 소속될 교육기관 엔티티
-     * @param homeroom 학생이 소속될 학급 엔티티
      * @return 등록할 Student 엔티티
      */
     public Student createEntity(
             StudentDto.CreateStudentRequest createStudentRequest,
-            Institute institute,
-            Homeroom homeroom
+            Institute institute
     ) {
         return Student.builder()
                 .accountId(StringUtils.stripToNull(createStudentRequest.accountId()))
@@ -50,7 +49,6 @@ public class StudentMapper {
                 .description(StringUtils.stripToNull(createStudentRequest.description()))
                 .domain(createStudentRequest.domain())
                 .institute(institute)
-                .homeroom(homeroom)
                 .build();
     }
 
@@ -60,13 +58,11 @@ public class StudentMapper {
      * @param student 수정할 Student 엔티티
      * @param updateStudentRequest 학생 수정에 필요한 데이터를 담은 DTO
      * @param institute 학생이 소속될 교육기관 엔티티
-     * @param homeroom 학생이 소속될 학급 엔티티
      */
     public void updateEntity(
             Student student,
             StudentDto.UpdateStudentRequest updateStudentRequest,
-            Institute institute,
-            Homeroom homeroom
+            Institute institute
     ) {
         Optional.ofNullable(StringUtils.stripToNull(updateStudentRequest.accountId()))
                 .ifPresent(student::setAccountId);
@@ -108,8 +104,6 @@ public class StudentMapper {
                 .ifPresent(student::setDomain);
         Optional.ofNullable(institute)
                 .ifPresent(student::setInstitute);
-        Optional.ofNullable(homeroom)
-                .ifPresent(student::setHomeroom);
     }
     
     /**
@@ -137,20 +131,7 @@ public class StudentMapper {
      * @return Student 엔티티의 데이터를 담은 StudentResponse DTO, student가 null이면 null 반환
      */
     public StudentDto.StudentResponse toResponseDto(Student student) {
-        // 교육기관 정보 담기
-        Long instituteId = Optional.ofNullable(student.getInstitute())
-                .map(Institute::getId)
-                .orElse(null);
-        String instituteName = Optional.ofNullable(student.getInstitute())
-                .map(Institute::getName)
-                .orElse(null);
-        // 학급 정보 담기
-        Long homeroomId = Optional.ofNullable(student.getHomeroom())
-                .map(Homeroom::getId)
-                .orElse(null);
-        String homeroomName = Optional.ofNullable(student.getHomeroom())
-                .map(Homeroom::getName)
-                .orElse(null);
+        // 학생이 속한 교육기관을 조회
         return new StudentDto.StudentResponse(
                 student.getId(),
                 student.getAccountId(),
@@ -164,14 +145,13 @@ public class StudentMapper {
                 student.getRaq(),
                 student.getSchoolGrade(),
                 student.getBookMbtiResult(),
+                student.getFailedLoginAttempts(),
                 student.getLastLoginIp(),
                 student.getLastLoginAt(),
                 student.getDescription(),
                 student.getDomain(),
-                instituteId,
-                instituteName,
-                homeroomId,
-                homeroomName,
+                student.getInstitute() != null ? student.getInstitute().getId() : null,
+                student.getInstitute() != null ? student.getInstitute().getName() : null,
                 student.getCreatedAt(),
                 student.getUpdatedAt()
         );

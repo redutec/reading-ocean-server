@@ -1,10 +1,7 @@
 package com.redutec.teachingocean.config;
 
-import com.redutec.core.entity.Homeroom;
-import com.redutec.core.entity.Institute;
 import com.redutec.core.entity.Teacher;
-import com.redutec.core.repository.HomeroomRepository;
-import com.redutec.core.repository.InstituteRepository;
+import com.redutec.core.meta.SampleData;
 import com.redutec.core.repository.TeacherRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.FilterChain;
@@ -35,8 +32,6 @@ import java.util.List;
 public class JwtRequestFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
     private final TeacherRepository teacherRepository;
-    private final InstituteRepository instituteRepository;
-    private final HomeroomRepository homeroomRepository;
 
     @Setter
     private UserDetailsService userDetailsService;
@@ -78,14 +73,9 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         // 로컬 프로파일인 경우, 토큰이 없으면 샘플 데이터를 사용하여 토큰 생성
         if ("local".equals(activeProfile) && accessToken == null) {
             // 로컬용 임시 교사 계정 데이터로 accessToken 발급
-            Teacher testTeacher = teacherRepository.findById(1L).orElseThrow(EntityNotFoundException::new);
-            Institute testInstitute = testTeacher.getInstitute() != null
-                    ? instituteRepository.findById(testTeacher.getInstitute().getId()).orElse(null)
-                    : null;
-            Homeroom testHomeroom = testTeacher.getHomeroom() != null
-                    ? homeroomRepository.findById(testTeacher.getHomeroom().getId()).orElse(null)
-                    : null;
-            accessToken = jwtUtil.generateAccessToken(testTeacher, testInstitute, testHomeroom);
+            Teacher testTeacher = teacherRepository.findByAccountId(SampleData.SampleTeacher.SEONGNAM_CHIEF.getAccountId())
+                    .orElseThrow(EntityNotFoundException::new);
+            accessToken = jwtUtil.generateAccessToken(testTeacher);
             log.info("**** Local profile detected with no token. Generated accessToken for test: {}", accessToken);
         }
         if (accessToken != null) {

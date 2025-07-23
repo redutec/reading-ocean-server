@@ -58,11 +58,7 @@ public class TeacherDto {
             @Schema(description = "소속된 교육기관 ID", requiredMode = Schema.RequiredMode.REQUIRED)
             @NotNull
             @Positive
-            Long instituteId,
-
-            @Schema(description = "소속된 학급 ID", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-            @Positive
-            Long homeroomId
+            Long instituteId
     ) {}
 
     @Schema(description = "교사 조회 요청 객체")
@@ -156,11 +152,7 @@ public class TeacherDto {
 
             @Schema(description = "소속된 교육기관 ID", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
             @Positive
-            Long instituteId,
-
-            @Schema(description = "소속된 학급 ID", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-            @Positive
-            Long homeroomId
+            Long instituteId
     ) {}
 
     @Schema(description = "교사 응답 객체")
@@ -177,6 +169,10 @@ public class TeacherDto {
             String lastLoginIp,
             LocalDateTime lastLoginAt,
             String description,
+            Long instituteId,
+            String instituteName,
+            List<Long> accessibleMenuIds,
+            Long chiefTeacherId,
             LocalDateTime createdAt,
             LocalDateTime updatedAt
     ) {}

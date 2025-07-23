@@ -1,11 +1,9 @@
 package com.redutec.teachingocean.institute.student.service;
 
 import com.redutec.core.dto.StudentDto;
-import com.redutec.core.entity.Homeroom;
 import com.redutec.core.entity.Institute;
 import com.redutec.core.entity.Student;
 import com.redutec.core.mapper.StudentMapper;
-import com.redutec.core.repository.HomeroomRepository;
 import com.redutec.core.repository.InstituteRepository;
 import com.redutec.core.repository.StudentRepository;
 import com.redutec.core.specification.StudentSpecification;
@@ -29,7 +27,6 @@ public class StudentServiceImpl implements StudentService {
     private final StudentRepository studentRepository;
     private final PasswordEncoder passwordEncoder;
     private final InstituteRepository instituteRepository;
-    private final HomeroomRepository homeroomRepository;
     private final AuthenticationService authenticationService;
 
     /**
@@ -44,15 +41,10 @@ public class StudentServiceImpl implements StudentService {
         Institute institute = Optional.ofNullable(createStudentRequest.instituteId())
                 .flatMap(instituteRepository::findById)
                 .orElse(null);
-        // 등록 요청 객체에 학급 고유번호가 있으면 학생이 소속할 학급 엔티티 조회
-        Homeroom homeroom = Optional.ofNullable(createStudentRequest.homeroomId())
-                .flatMap(homeroomRepository::findById)
-                .orElse(null);
         // 학생 등록
         return studentMapper.toResponseDto(studentRepository.save(studentMapper.createEntity(
                 createStudentRequest,
-                institute,
-                homeroom
+                institute
         )));
     }
 
@@ -109,11 +101,7 @@ public class StudentServiceImpl implements StudentService {
         Institute institute = Optional.ofNullable(updateStudentRequest.instituteId())
                 .flatMap(instituteRepository::findById)
                 .orElseGet(student::getInstitute);
-        // 수정 요청 객체에 학급 ID가 있다면 학급 엔티티 조회(없으면 Null)
-        Homeroom homeroom = Optional.ofNullable(updateStudentRequest.homeroomId())
-                .flatMap(homeroomRepository::findById)
-                .orElseGet(student::getHomeroom);
-        studentMapper.updateEntity(student, updateStudentRequest, institute, homeroom);
+        studentMapper.updateEntity(student, updateStudentRequest, institute);
     }
 
     /**

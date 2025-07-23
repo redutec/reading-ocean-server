@@ -1,29 +1,11 @@
 package com.redutec.core.dto;
 
-import com.redutec.core.meta.AuthenticationStatus;
-import com.redutec.core.meta.StudentStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 public class ReadingOceanEduAuthenticationDto {
-    @Schema(description = "현재 로그인한 학생의 정보가 담긴 객체")
-    public record AuthenticatedStudent(
-            Long studentId,
-            String accountId,
-            String name,
-            String phoneNumber,
-            String email,
-            StudentStatus status,
-            AuthenticationStatus authenticationStatus,
-            Integer failedLoginAttempts,
-            Long instituteId,
-            String instituteName,
-            Long homeroomId,
-            String homeroomName
-    ) {}
-
     @Schema(description = "학생 로그인 요청 객체")
     public record LoginRequest(
             @Schema(description = "로그인 아이디", requiredMode = Schema.RequiredMode.REQUIRED, example = "seongnam_chief")
