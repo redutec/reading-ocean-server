@@ -8,8 +8,6 @@ import com.redutec.core.entity.Teacher;
 import com.redutec.core.mapper.TeacherMapper;
 import com.redutec.core.meta.Domain;
 import com.redutec.core.repository.RefreshTokenRepository;
-import com.redutec.core.repository.TeacherRepository;
-import com.redutec.core.repository.TeachingOceanMenuRepository;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -37,8 +35,6 @@ import java.util.Map;
 public class JwtUtil {
     private final ObjectMapper objectMapper;
     private final TeacherMapper teacherMapper;
-    private final TeacherRepository teacherRepository;
-    private final TeachingOceanMenuRepository teachingOceanMenuRepository;
     private final RefreshTokenRepository refreshTokenRepository;
 
     @Value("${jwt.secret}")
@@ -59,14 +55,10 @@ public class JwtUtil {
     public JwtUtil(
             ObjectMapper objectMapper,
             TeacherMapper teacherMapper,
-            TeacherRepository teacherRepository,
-            TeachingOceanMenuRepository teachingOceanMenuRepository,
             RefreshTokenRepository refreshTokenRepository
     ) {
         this.objectMapper = objectMapper;
         this.teacherMapper = teacherMapper;
-        this.teacherRepository = teacherRepository;
-        this.teachingOceanMenuRepository = teachingOceanMenuRepository;
         this.refreshTokenRepository = refreshTokenRepository;
         this.key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
     }

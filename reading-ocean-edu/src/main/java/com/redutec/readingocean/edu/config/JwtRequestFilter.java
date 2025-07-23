@@ -2,7 +2,6 @@ package com.redutec.readingocean.edu.config;
 
 import com.redutec.core.entity.Student;
 import com.redutec.core.meta.SampleData;
-import com.redutec.core.repository.InstituteRepository;
 import com.redutec.core.repository.StudentRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.FilterChain;
@@ -33,7 +32,6 @@ import java.util.List;
 public class JwtRequestFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
     private final StudentRepository studentRepository;
-    private final InstituteRepository instituteRepository;
 
     @Setter
     private UserDetailsService userDetailsService;
