@@ -15,6 +15,8 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Comment("교육기관")
@@ -99,6 +101,11 @@ public class Institute {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
     private Branch branch;
+
+    @Comment("소속 교사들")
+    @OneToMany(mappedBy = "institute", fetch = FetchType.LAZY)
+    @Builder.Default
+    private List<Teacher> teachers = new ArrayList<>();
 
     @CreatedDate
     @Column(nullable = false, updatable = false)

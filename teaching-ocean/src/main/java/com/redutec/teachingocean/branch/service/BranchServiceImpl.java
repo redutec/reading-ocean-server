@@ -21,13 +21,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -75,6 +75,9 @@ public class BranchServiceImpl implements BranchService {
     @Override
     @Transactional(readOnly = true)
     public InstituteDto.InstitutePageResponse findInstitutes() {
+        // 현재 로그인한 지사장의 지사 엔티티 조회
+        Branch branch = getAuthenticatedBranch();
+        // 이 지사에 속한 교육기관 조회 후 응답 객체로 리턴
         InstituteDto.FindInstituteRequest findInstituteRequest = new InstituteDto.FindInstituteRequest(
                 null,
                 null,
@@ -83,25 +86,29 @@ public class BranchServiceImpl implements BranchService {
                 null,
                 null,
                 null,
-                List.of(getAuthenticatedBranch().getId()),
+                List.of(branch.getId()),
                 0,
                 30
         );
-        Page<Institute> page = instituteRepository.findAll(
-                InstituteSpecification.findWith(instituteMapper.toCriteria(findInstituteRequest)),
-                (findInstituteRequest.page() != null && findInstituteRequest.size() != null)
-                        ? PageRequest.of(findInstituteRequest.page(), findInstituteRequest.size())
-                        : Pageable.unpaged()
+        Specification<Institute> specification = InstituteSpecification.findWith(
+                instituteMapper.toCriteria(findInstituteRequest)
         );
-        List<InstituteDto.InstituteResponse> instituteResponses = page.getContent().stream()
+        Pageable pageRequest = PageRequest.of(findInstituteRequest.page(), findInstituteRequest.size());
+        Page<Institute> institutePage = instituteRepository.findAll(specification, pageRequest);
+        List<InstituteDto.InstituteResponse> instituteResponses = institutePage.getContent().stream()
                 .map(institute -> {
-                    // Chief 교사 조회
-                    Teacher chiefTeacher = teacherRepository.findByInstituteAndRole(institute, TeacherRole.CHIEF)
+                    Teacher chiefTeacher = institute.getTeachers().stream()
+                            .filter(teacher -> teacher.getRole() == TeacherRole.CHIEF)
+                            .findFirst()
                             .orElse(null);
                     return instituteMapper.toResponseDto(institute, chiefTeacher);
                 })
-                .collect(Collectors.toList());
-        return new InstituteDto.InstitutePageResponse(instituteResponses, page.getTotalElements(), page.getTotalPages());
+                .toList();
+        return new InstituteDto.InstitutePageResponse(
+                instituteResponses,
+                institutePage.getTotalElements(),
+                institutePage.getTotalPages()
+        );
     }
 
     /**
