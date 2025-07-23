@@ -135,9 +135,8 @@ public class JwtUtil {
      */
     @Transactional(readOnly = true)
     public String generateRefreshToken(Student student) {
-        Map<String, Object> claims = new ObjectMapper().convertValue(buildJwtClaims(student), new TypeReference<>() {});
         return Jwts.builder()
-                .setSubject(claims.get("accountId").toString())
+                .setSubject(student.getAccountId())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + refreshTokenExpiration))
                 .signWith(key)
