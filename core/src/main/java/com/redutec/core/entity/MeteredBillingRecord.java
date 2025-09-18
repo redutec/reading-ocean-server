@@ -20,11 +20,11 @@ import java.time.LocalDateTime;
         name = "metered_billing_record",
         uniqueConstraints = @UniqueConstraint(
                 name = "uc_mbr_institute_date",
-                columnNames = {"institute_id", "billing_date"}
+                columnNames = {"institute_id", "usage_date"}
         ),
         indexes = {
                 @Index(name = "idx_mbr_institute", columnList = "institute_id"),
-                @Index(name = "idx_mbr_billing_date", columnList = "billing_date")
+                @Index(name = "idx_mbr_usage_date", columnList = "usage_date")
         }
 )
 @Comment("교육기관의 일별 사용료 내역")

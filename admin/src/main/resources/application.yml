@@ -76,7 +76,7 @@ spring:
   datasource:
     url: jdbc:log4jdbc:mysql://127.0.0.1:3306/redutec?characterEncoding=UTF-8&serverTimezone=Asia/Seoul&noAccessToProcedureBodies=true&allowPublicKeyRetrieval=true&useSSL=false&allowMultiQueries=true&useInformationSchema=true&autoReconnect=true
     username: "redutec"
-    password: "readingocean2022"
+    password: "readingocean2026"
 # Custom
 front-end-server: 127.0.0.1
 file:
